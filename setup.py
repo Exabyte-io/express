@@ -16,7 +16,7 @@ setup(
         "esse==0.1.0"
     ],
     dependency_links=[
-        "git+https://git@github.com/Exabyte-io/exabyte-materials-json@8e9ae51bad9f1361d70892366ceb4d18c3f3d8df#egg=esse-0.1.0"
+        "git+https://git@github.com/Exabyte-io/exabyte-materials-json@421bb59f33a8190beecc4427ac99b7a4da0ea366#egg=esse-0.1.0"
     ],
     classifiers=[
         'Programming Language :: Python',
