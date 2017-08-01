@@ -1,8 +1,8 @@
 import numpy as np
 
-from express.utils import find_file
-from express.settings import Constant
 from express.parsers.apps import BaseParser
+from express.parsers.utils import find_file
+from express.parsers.settings import Constant
 from express.parsers.apps.espresso import settings
 from express.parsers.mixins.ionic import IonicDataMixin
 from express.parsers.mixins.reciprocal import ReciprocalDataMixin

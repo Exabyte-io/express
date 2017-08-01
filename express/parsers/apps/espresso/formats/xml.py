@@ -6,7 +6,7 @@ import string
 import numpy as np
 import xml.etree.ElementTree as ET
 
-from express.settings import Constant
+from express.parsers.settings import Constant
 from express.parsers.settings import GENERAL_REGEX
 from express.parsers.formats.xml import BaseXMLParser
 

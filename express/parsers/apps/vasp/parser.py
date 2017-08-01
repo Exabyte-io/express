@@ -1,6 +1,6 @@
 import os
 
-from express.utils import find_file
+from express.parsers.utils import find_file
 from express.parsers.apps import BaseParser
 from express.parsers.apps.vasp import settings
 from express.parsers.mixins.ionic import IonicDataMixin

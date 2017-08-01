@@ -62,6 +62,6 @@ class BaseProperty(object):
         Returns:
             dict
         """
-        data = self._serialize()
-        self.esse.validate(self.esse.get_schema(self.name), data)
-        return data
+        instance = self._serialize()
+        self.esse.validate(instance, self.esse.get_schema(self.name))
+        return instance

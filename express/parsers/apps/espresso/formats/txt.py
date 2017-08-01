@@ -3,8 +3,8 @@ import re
 import StringIO
 import numpy as np
 
-from express.utils import find_file
-from express.settings import Constant
+from express.parsers.utils import find_file
+from express.parsers.settings import Constant
 from express.parsers.apps.espresso import settings
 from express.parsers.formats.txt import BaseTXTParser
 
@@ -196,7 +196,8 @@ class EspressoTXTParser(BaseTXTParser):
         Returns:
              list[float]
         """
-        return np.array(self._general_output_parser(text, **settings.REGEX["convergence_electronic"])) * Constant.RYDBERG
+        return np.array(
+            self._general_output_parser(text, **settings.REGEX["convergence_electronic"])) * Constant.RYDBERG
 
     def convergence_ionic(self, text):
         """
@@ -208,7 +209,8 @@ class EspressoTXTParser(BaseTXTParser):
         Returns:
              list[dict]
         """
-        energies = (np.array(self._general_output_parser(text, **settings.REGEX["convergence_ionic"])) * Constant.RYDBERG).tolist()
+        energies = (
+        np.array(self._general_output_parser(text, **settings.REGEX["convergence_ionic"])) * Constant.RYDBERG).tolist()
         lattice_convergence = self._lattice_convergence(text)
         basis_convergence = self._basis_convergence(text)
         if energies:
