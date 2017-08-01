@@ -13,6 +13,10 @@ setup(
         "bunch==1.0.1",
         "numpy==1.10.4",
         "xmltodict==0.9.2",
+        "exabyte_materials_json==0.1.0"
+    ],
+    dependency_links=[
+        "git+https://git@github.com/Exabyte-io/exabyte-materials-json@master#egg=exabyte_materials_json-0.1.0"
     ],
     classifiers=[
         'Programming Language :: Python',
