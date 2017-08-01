@@ -2,8 +2,8 @@ import importlib
 
 from abc import abstractmethod
 
+from esse import ESSE
 from express.properties import settings
-from property_schema import PropertySchema
 
 
 class BaseProperty(object):
@@ -30,7 +30,7 @@ class BaseProperty(object):
         self.args, self.kwargs = args, kwargs
         self.manifest = settings.PROPERTIES_MANIFEST[name]
         self.parser_data = self._get_data_from_parsers()
-        self.property_schema = PropertySchema(self.name)
+        self.esse = ESSE()
 
     @abstractmethod
     def _serialize(self):
@@ -63,5 +63,5 @@ class BaseProperty(object):
             dict
         """
         data = self._serialize()
-        self.property_schema.validate(data)
+        self.esse.validate(self.esse.get_schema(self.name), data)
         return data

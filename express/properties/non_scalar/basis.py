@@ -14,6 +14,6 @@ class Basis(NonScalarProperty):
         serialized_data = self.basis
         serialized_data.update({
             "name": self.name,
-            "units": self.property_schema.defaults["units"]
+            "units": self.esse.get_schema_default_values(self.name)["units"]
         })
         return serialized_data

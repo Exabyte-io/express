@@ -51,7 +51,7 @@ class BandGaps(NonScalarProperty):
 
         result = {
             'type': type,
-            'units': self.property_schema.defaults["units"],
+            'units': self.esse.get_schema_default_values(self.name)["units"],
             'value': gap
         }
         if k1 is not None and k2 is not None:
