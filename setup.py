@@ -16,7 +16,7 @@ setup(
         "exabyte_materials_json==0.1.0"
     ],
     dependency_links=[
-        "git+https://git@github.com/Exabyte-io/exabyte-materials-json@master#egg=exabyte_materials_json-0.1.0"
+        "git+https://git@github.com/Exabyte-io/exabyte-materials-json@99fa5fae2919d060b0ac4b28b6c98dabf5216568#egg=exabyte_materials_json-0.1.0"
     ],
     classifiers=[
         'Programming Language :: Python',
