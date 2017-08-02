@@ -15,9 +15,9 @@ class BandStructure(TwoDimensionalPlotProperty):
 
     def __init__(self, name, parser, *args, **kwargs):
         super(BandStructure, self).__init__(name, parser, *args, **kwargs)
-        self.nspins = self.parser_data["nspins"]
-        self.ibz_k_points = self.parser_data["ibz_k_points"]
-        self.eigenvalues_at_kpoints = self.parser_data["eigenvalues_at_kpoints"]
+        self.nspins = self.raw_data["nspins"]
+        self.ibz_k_points = self.raw_data["ibz_k_points"]
+        self.eigenvalues_at_kpoints = self.raw_data["eigenvalues_at_kpoints"]
         self.nkpoints = len(self.eigenvalues_at_kpoints)
         self.bands = self._get_band()
         self.xDataArray = self.ibz_k_points.tolist()

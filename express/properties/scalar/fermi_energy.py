@@ -6,6 +6,6 @@ class FermiEnergy(ScalarProperty):
     The highest energy level occupied by electrons in a system.
     """
 
-    def __init__(self, name, parser, *args, **kwargs):
-        super(FermiEnergy, self).__init__(name, parser, *args, **kwargs)
-        self.value = self.parser_data["fermi_energy"]
+    def __init__(self, name, raw_data, *args, **kwargs):
+        super(FermiEnergy, self).__init__(name, raw_data, *args, **kwargs)
+        self.value = self.raw_data["fermi_energy"]

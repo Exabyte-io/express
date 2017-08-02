@@ -8,9 +8,9 @@ class Lattice(NonScalarProperty):
     vectors, or in implicit way, by specifying a lattice type, lengths and angles between lattice vectors.
     """
 
-    def __init__(self, name, parser, *args, **kwargs):
-        super(Lattice, self).__init__(name, parser, *args, **kwargs)
-        self.lattice = self.parser_data["lattice"]
+    def __init__(self, name, raw_data, *args, **kwargs):
+        super(Lattice, self).__init__(name, raw_data, *args, **kwargs)
+        self.lattice = self.raw_data["lattice"]
 
     def _serialize(self):
         serialized_data = self.lattice

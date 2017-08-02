@@ -6,9 +6,9 @@ class Basis(NonScalarProperty):
     Defines elemental and geometrical constitution of the unit cell.
     """
 
-    def __init__(self, name, parser, *args, **kwargs):
-        super(Basis, self).__init__(name, parser, *args, **kwargs)
-        self.basis = self.parser_data["basis"]
+    def __init__(self, name, raw_data, *args, **kwargs):
+        super(Basis, self).__init__(name, raw_data, *args, **kwargs)
+        self.basis = self.raw_data["basis"]
 
     def _serialize(self):
         serialized_data = self.basis

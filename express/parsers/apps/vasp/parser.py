@@ -1,7 +1,7 @@
 import os
 
+from express.parsers import BaseParser
 from express.parsers.utils import find_file
-from express.parsers.apps import BaseParser
 from express.parsers.apps.vasp import settings
 from express.parsers.mixins.ionic import IonicDataMixin
 from express.parsers.apps.vasp.formats.txt import VaspTXTParser
@@ -20,8 +20,8 @@ class VaspParser(BaseParser, IonicDataMixin, ElectronicDataMixin, ReciprocalData
             app_stdout (str): path to the application stdout file.
     """
 
-    def __init__(self, work_dir, **kwargs):
-        super(VaspParser, self).__init__(work_dir, **kwargs)
+    def __init__(self, work_dir, stdout_file=None):
+        super(VaspParser, self).__init__(work_dir, stdout_file)
         self.txt_parser = VaspTXTParser(self.work_dir)
         self.xml_parser = VaspXMLParser(find_file(settings.XML_DATA_FILE, self.work_dir))
 

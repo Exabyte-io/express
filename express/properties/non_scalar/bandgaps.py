@@ -13,12 +13,12 @@ class BandGaps(NonScalarProperty):
     either using 'mesh' or 'path'.
     """
 
-    def __init__(self, name, parser, *args, **kwargs):
-        super(BandGaps, self).__init__(name, parser, *args, **kwargs)
-        self.nspins = self.parser_data["nspins"]
-        self.ibz_k_points = self.parser_data["ibz_k_points"]
-        self.fermi_energy = self.parser_data["fermi_energy"]
-        self.eigenvalues_at_kpoints = self.parser_data["eigenvalues_at_kpoints"]
+    def __init__(self, name, raw_data, *args, **kwargs):
+        super(BandGaps, self).__init__(name, raw_data, *args, **kwargs)
+        self.nspins = self.raw_data["nspins"]
+        self.ibz_k_points = self.raw_data["ibz_k_points"]
+        self.fermi_energy = self.raw_data["fermi_energy"]
+        self.eigenvalues_at_kpoints = self.raw_data["eigenvalues_at_kpoints"]
 
     def _serialize(self):
         return {

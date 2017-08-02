@@ -75,6 +75,9 @@ NON_SCALAR_PROPERTIES_MANIFEST = {
         'mixins': [
             'express.parsers.mixins.electronic.ElectronicDataMixin',
         ]
+    },
+    'space_group_symbol': {
+        'reference': 'express.properties.non_scalar.space_group_symbol.SpaceGroupSymbol'
     }
 }
 
@@ -99,3 +102,8 @@ PROPERTIES_MANIFEST = dict()
 PROPERTIES_MANIFEST.update(CONVERGENCE_PROPERTIES)
 PROPERTIES_MANIFEST.update(SCALAR_PROPERTIES_MANIFEST)
 PROPERTIES_MANIFEST.update(NON_SCALAR_PROPERTIES_MANIFEST)
+
+PARSERS_REGISTRY = {
+    'espresso': 'express.parsers.apps.espresso.parser.EspressoParser',
+    'vasp': 'express.parsers.apps.vasp.parser.VaspParser'
+}

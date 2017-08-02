@@ -1,6 +1,6 @@
 import numpy as np
 
-from express.parsers.apps import BaseParser
+from express.parsers import BaseParser
 from express.parsers.utils import find_file
 from express.parsers.settings import Constant
 from express.parsers.apps.espresso import settings
@@ -21,8 +21,8 @@ class EspressoParser(BaseParser, IonicDataMixin, ElectronicDataMixin, Reciprocal
             app_stdout (str): path to the application stdout file.
     """
 
-    def __init__(self, work_dir, **kwargs):
-        super(EspressoParser, self).__init__(work_dir, **kwargs)
+    def __init__(self, work_dir, stdout_file=None):
+        super(EspressoParser, self).__init__(work_dir, stdout_file)
         self.txt_parser = EspressoTXTParser(self.work_dir)
         self.xml_parser = EspressoXMLParser(find_file(settings.XML_DATA_FILE, self.work_dir))
 
