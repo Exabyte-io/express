@@ -45,18 +45,19 @@ class ExPrESS(object):
                     pass
         return data
 
-    def extract_property(self, property_name, *args, **kwargs):
+    def extract_property(self, property_name, raw_data=None, *args, **kwargs):
         """
         Extracts a given property and validates it against its schema.
 
         Args:
             property_name (str): property name.
+            raw_data (dict): raw data passed to the property class to calculate the property.
             args (list): args passed to the underlying property method.
             kwargs (dict): kwargs passed to the underlying property method.
 
         Returns:
              dict
         """
-        raw_data = self._get_raw_data(property_name)
+        raw_data = self._get_raw_data(property_name) if not raw_data else raw_data
         property_instance = self._get_property_class(property_name)(property_name, raw_data, *args, **kwargs)
         return property_instance.serialize_and_validate()
