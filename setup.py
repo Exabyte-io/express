@@ -17,7 +17,7 @@ setup(
         "pymatgen==4.2.1"
     ],
     dependency_links=[
-        "git+file:///stack/lib/esse@826dcbdf585591d2df940740bb27a6949eb150a3#egg=esse-0.1.0"
+        "git+file:///stack/lib/esse@503693c6d8027ffadaeeda3d8724a05096680b86#egg=esse-0.1.0"
     ],
     classifiers=[
         'Programming Language :: Python',
