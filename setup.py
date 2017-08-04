@@ -17,7 +17,7 @@ setup(
         "pymatgen==4.2.1"
     ],
     dependency_links=[
-        "git+https://git@github.com/Exabyte-io/exabyte-materials-json@af40dcd37bfa9015cebc6cae25b671e2db941b93#egg=esse-0.1.0"
+        "git+file:///stack/lib/esse@46a3a05e34d6b74352c9b12b4ffdcd3e164fd844"
     ],
     classifiers=[
         'Programming Language :: Python',
