@@ -8,22 +8,46 @@ class ExPrESS(object):
     Exabyte Property Ex(ss)tractor, Sourcer, Serializer class.
 
     Args:
-        work_dir (str): path to the working directory.
-        app_name (str): application name.
-        app_stdout_file (str): path to the application stdout file.
+        parser_name (str): parser name.
+        args (list): args passed to the parser.
+        kwargs (dict): kwargs passed to the parser.
+            espresso and vasp parsers specific keys:
+                work_dir (str): path to the working directory.
+                stdout_file (str): path to the stdout file.
+            pymatgen parser specific keys:
+                structure_string (str): structure string.
+                structure_format (str): structure format.
     """
 
-    def __init__(self, work_dir=None, app_name=None, app_stdout_file=None):
-        self._parser = self._get_parser_class(app_name)(work_dir, app_stdout_file) if app_name else None
+    def __init__(self, parser_name, *args, **kwargs):
+        self._parser = self._get_parser_class(parser_name)(*args, **kwargs)
 
-    def _get_property_class(self, name):
-        reference = settings.PROPERTIES_MANIFEST[name]["reference"]
+    def _get_property_class(self, property_name):
+        """
+        Returns property class for a given property name.
+
+        Args:
+            property_name (str): property name.
+
+        Returns:
+
+        """
+        reference = settings.PROPERTIES_MANIFEST[property_name]["reference"]
         cls_name = reference.split('.')[-1]
         mod_name = '.'.join(reference.split('.')[:-1])
         return getattr(importlib.import_module(mod_name), cls_name)
 
-    def _get_parser_class(self, name):
-        path = settings.PARSERS_REGISTRY[name]
+    def _get_parser_class(self, parser_name):
+        """
+        Returns parser class for a given parser name.
+
+        Args:
+            parser_name (str): parser name.
+
+        Returns:
+
+        """
+        path = settings.PARSERS_REGISTRY[parser_name]
         return getattr(importlib.import_module('.'.join(path.split('.')[:-1])), path.split('.')[-1])
 
     def _get_raw_data(self, property_name):
@@ -41,23 +65,22 @@ class ExPrESS(object):
             for name in [f for f in dir(cls) if callable(getattr(cls, f)) and not f.startswith("__")]:
                 try:
                     data[name] = getattr(self._parser, name)()
-                except:
+                except Exception as e:
                     pass
         return data
 
-    def extract_property(self, property_name, raw_data=None, *args, **kwargs):
+    def property(self, property_name, *args, **kwargs):
         """
         Extracts a given property and validates it against its schema.
 
         Args:
             property_name (str): property name.
-            raw_data (dict): raw data passed to the property class to calculate the property.
             args (list): args passed to the underlying property method.
             kwargs (dict): kwargs passed to the underlying property method.
 
         Returns:
              dict
         """
-        raw_data = self._get_raw_data(property_name) if not raw_data else raw_data
+        raw_data = self._get_raw_data(property_name)
         property_instance = self._get_property_class(property_name)(property_name, raw_data, *args, **kwargs)
         return property_instance.serialize_and_validate()

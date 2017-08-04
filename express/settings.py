@@ -78,20 +78,24 @@ NON_SCALAR_PROPERTIES_MANIFEST = {
     },
     'space_group_symbol': {
         'reference': 'express.properties.non_scalar.space_group_symbol.SpaceGroupSymbol'
+    },
+    'material': {
+        'reference': 'express.properties.material.Material',
+        'mixins': [
+            'express.parsers.mixins.ionic.IonicDataMixin',
+        ]
     }
 }
 
 CONVERGENCE_PROPERTIES = {
     'convergence_electronic': {
         'reference': 'express.properties.convergence.electronic.ConvergenceElectronic',
-        'schema': 'science/models/dft/convergence/electronic.json',
         'mixins': [
             'express.parsers.mixins.electronic.ElectronicDataMixin',
         ]
     },
     'convergence_ionic': {
         'reference': 'express.properties.convergence.ionic.ConvergenceIonic',
-        'schema': 'science/models/dft/convergence/ionic.json',
         'mixins': [
             'express.parsers.mixins.ionic.IonicDataMixin',
         ]
@@ -105,5 +109,6 @@ PROPERTIES_MANIFEST.update(NON_SCALAR_PROPERTIES_MANIFEST)
 
 PARSERS_REGISTRY = {
     'espresso': 'express.parsers.apps.espresso.parser.EspressoParser',
-    'vasp': 'express.parsers.apps.vasp.parser.VaspParser'
+    'vasp': 'express.parsers.apps.vasp.parser.VaspParser',
+    'pymatgen': 'express.parsers.apps.pymatgen_parser.PyMatGenParser'
 }

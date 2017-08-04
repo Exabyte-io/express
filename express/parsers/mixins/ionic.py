@@ -10,22 +10,45 @@ class IonicDataMixin(object):
     """
 
     @abstractmethod
-    def lattice(self):
+    def lattice_vectors(self):
         """
-        Returns lattice.
+        Returns lattice vectors.
 
         Returns:
             dict
 
         Example:
             {
-                'vectors': {
-                    'a': [-0.561154473, -0.000000000, 0.561154473],
-                    'b': [-0.000000000, 0.561154473, 0.561154473],
-                    'c': [-0.561154473, 0.561154473, 0.000000000],
-                    'alat': 9.44858082
-                }
+                'a': [-0.561154473, -0.000000000, 0.561154473],
+                'b': [-0.000000000, 0.561154473, 0.561154473],
+                'c': [-0.561154473, 0.561154473, 0.000000000],
+                'alat': 9.44858082
              }
+        """
+        pass
+
+    @abstractmethod
+    def lattice_bravais(self):
+        """
+        Returns lattice bravais.
+
+        Returns:
+            dict
+
+        Example:
+            {
+                "type": "CUB",
+                "a": 5.14,
+                "b": 5.14,
+                "c": 5.14,
+                "alpha": 90.0,
+                "beta": 90.0,
+                "gamma": 90.0,
+                "units": {
+                    "length": "angstrom",
+                    "angle": "degree"
+                }
+            }
         """
         pass
 
@@ -132,5 +155,35 @@ class IonicDataMixin(object):
                     0.0
                 ]
             ]
+        """
+        pass
+
+    @abstractmethod
+    def space_group_symbol(self):
+        """
+        Returns space group symbol.
+
+        Returns:
+             str
+        """
+        pass
+
+    @abstractmethod
+    def formula(self):
+        """
+        Returns formula.
+
+        Return:
+             str
+        """
+        pass
+
+    @abstractmethod
+    def reduced_formula(self):
+        """
+        Returns reduced formula.
+
+        Return:
+             str
         """
         pass

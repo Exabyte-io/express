@@ -11,13 +11,6 @@ class BaseProperty(object):
         raw_data (dict): raw data used to calculate the property.
         args (list): property-specific args.
         kwargs (dict): property-specific kwargs.
-
-    Attributes:
-        name (str): property name.
-        parser (rupy.exapex.parsers.apps.BaseParser): parser instance.
-        args (list): property-specific args.
-        kwargs (dict): property-specific kwargs.
-        mixins_data (dict): raw data obtained from mixins.
     """
 
     def __init__(self, name, raw_data, *args, **kwargs):

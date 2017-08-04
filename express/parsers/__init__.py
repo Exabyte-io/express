@@ -4,15 +4,11 @@ import os
 class BaseParser(object):
     """
     Base Parser class.
-
-    Args:
-        work_dir (str): working directory path.
-        stdout_file (str): path to the stdout file.
     """
 
-    def __init__(self, work_dir, stdout_file=None):
-        self.work_dir = work_dir
-        self.stdout_file = stdout_file
+    def __init__(self, *args, **kwargs):
+        self.args = args
+        self.kwargs = kwargs
 
     def _get_file_content(self, file_path):
         """

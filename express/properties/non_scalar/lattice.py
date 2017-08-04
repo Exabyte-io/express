@@ -10,7 +10,7 @@ class Lattice(NonScalarProperty):
 
     def __init__(self, name, raw_data, *args, **kwargs):
         super(Lattice, self).__init__(name, raw_data, *args, **kwargs)
-        self.lattice = self.raw_data["lattice"]
+        self.lattice = self.raw_data[kwargs.get("type", "lattice_vectors")]
 
     def _serialize(self):
         serialized_data = self.lattice
