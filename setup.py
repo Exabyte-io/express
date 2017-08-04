@@ -1,4 +1,9 @@
+import os
+
 from setuptools import setup
+from pip.req import parse_requirements
+
+REQUIREMENTS_TXT = os.path.join(os.path.dirname(__file__), "requirements.txt")
 
 setup(
     name='ExPreSS',
@@ -8,17 +13,7 @@ setup(
     author='Exabyte Inc.',
     author_email='info@exabyte.io',
     packages=["express"],
-    install_requires=[
-        "mock==1.3.0",
-        "bunch==1.0.1",
-        "numpy==1.10.4",
-        "xmltodict==0.9.2",
-        "esse==0.1.0",
-        "pymatgen==4.2.1"
-    ],
-    dependency_links=[
-        "git+https://git@github.com/Exabyte-io/exabyte-materials-json@fc34d884e3204f4415e411e5148df48907c3d8c9#egg=esse-0.1.0"
-    ],
+    install_requires=[str(i.req) for i in parse_requirements(REQUIREMENTS_TXT)],
     classifiers=[
         'Programming Language :: Python',
         'Development Status :: 3 - Alpha',
