@@ -7,6 +7,7 @@ setup(
     url='https://github.com/Exabyte-io/exabyte-express',
     author='Exabyte Inc.',
     author_email='info@exabyte.io',
+    include_package_data=True,
     packages=["express"],
     install_requires=[
         "mock==1.3.0",
@@ -17,7 +18,7 @@ setup(
         "pymatgen==4.2.1"
     ],
     dependency_links=[
-        "git+file:///stack/lib/esse@cf79ca5dcda900fc63e5f4c7b45936f316ed6e85#egg=esse-0.1.0"
+        "git+file:///stack/lib/esse@0d08a00797b392d3a5e6bd55e338f50176dfa5a5#egg=esse-0.1.0"
     ],
     classifiers=[
         'Programming Language :: Python',
