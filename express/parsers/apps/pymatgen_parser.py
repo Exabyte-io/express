@@ -67,8 +67,7 @@ class PyMatGenParser(BaseParser, IonicDataMixin):
 
     def _lattice_type(self):
         """
-        Returns lattice type.
-            TODO: find a better implementation for
+        Returns lattice type according to AFLOW (http://aflowlib.org/) classification.
 
         Returns:
              str
@@ -77,6 +76,7 @@ class PyMatGenParser(BaseParser, IonicDataMixin):
         lattice_type = analyzer.get_lattice_type()
         spg_symbol = analyzer.get_spacegroup_symbol()
 
+        # TODO: find a better implementation
         if lattice_type == "cubic":
             if "P" in spg_symbol:
                 return "CUB"
