@@ -25,12 +25,3 @@ class BaseParser(object):
             with open(file_path) as f:
                 content = f.read()
         return content
-
-    def _get_stdout_content(self):
-        """
-        Returns the content of stdout file.
-
-        Returns:
-             str
-        """
-        return self._get_file_content(self.stdout_file)

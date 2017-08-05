@@ -13,6 +13,6 @@ class ConvergenceIonic(NonScalarProperty):
     def _serialize(self):
         return {
             'name': self.name,
-            'units': self.property_schema.defaults["units"],
+            'units': self.esse.get_schema_default_values(self.name)["units"],
             'data': self.convergence_ionic
         }
