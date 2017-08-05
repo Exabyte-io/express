@@ -133,7 +133,10 @@ class PyMatGenParser(BaseParser, IonicDataMixin):
         Returns:
              str
         """
-        return mg.symmetry.analyzer.SpacegroupAnalyzer(self.structure).get_spacegroup_symbol()
+        return {
+            "value": mg.symmetry.analyzer.SpacegroupAnalyzer(self.structure).get_spacegroup_symbol(),
+            "tolerance": 0.3
+        }
 
     def formula(self):
         """
@@ -152,3 +155,31 @@ class PyMatGenParser(BaseParser, IonicDataMixin):
              str
         """
         return self.structure.composition.reduced_formula
+
+    def volume(self):
+        """
+        Returns volume.
+
+        Returns:
+             float
+        """
+        return self.structure.volume
+
+    def elemental_ratios(self):
+        """
+        Returns elemental ratios.
+
+        Returns:
+            dict
+        """
+        return {el.symbol: self.structure.composition.get_atomic_fraction(el) for el in
+                self.structure.composition.elements}
+
+    def density(self):
+        """
+        Returns density.
+
+        Returns:
+             float
+        """
+        return self.structure.density
