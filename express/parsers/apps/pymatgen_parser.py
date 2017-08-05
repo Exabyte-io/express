@@ -172,8 +172,9 @@ class PyMatGenParser(BaseParser, IonicDataMixin):
         Returns:
             dict
         """
-        return {el.symbol: self.structure.composition.get_atomic_fraction(el) for el in
-                self.structure.composition.elements}
+        return {
+            el.symbol: self.structure.composition.get_atomic_fraction(el) for el in self.structure.composition.elements
+        }
 
     def density(self):
         """
