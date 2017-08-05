@@ -22,6 +22,30 @@ SCALAR_PROPERTIES_MANIFEST = {
         'mixins': [
             'express.parsers.mixins.ionic.IonicDataMixin',
         ]
+    },
+    'volume': {
+        'reference': 'express.properties.scalar.volume.Volume',
+        'mixins': [
+            'express.parsers.mixins.ionic.IonicDataMixin',
+        ]
+    },
+    'density': {
+        'reference': 'express.properties.scalar.density.Density',
+        'mixins': [
+            'express.parsers.mixins.ionic.IonicDataMixin',
+        ]
+    },
+    'elemental_ratio': {
+        'reference': 'express.properties.scalar.elemental_ratio.ElementalRatio',
+        'mixins': [
+            'express.parsers.mixins.ionic.IonicDataMixin',
+        ]
+    },
+    'p-norm': {
+        'reference': 'express.properties.scalar.p_norm.PNorm',
+        'mixins': [
+            'express.parsers.mixins.ionic.IonicDataMixin',
+        ]
     }
 }
 
@@ -76,11 +100,14 @@ NON_SCALAR_PROPERTIES_MANIFEST = {
             'express.parsers.mixins.electronic.ElectronicDataMixin',
         ]
     },
-    'space_group_symbol': {
-        'reference': 'express.properties.non_scalar.space_group_symbol.SpaceGroupSymbol'
-    },
     'material': {
         'reference': 'express.properties.material.Material',
+        'mixins': [
+            'express.parsers.mixins.ionic.IonicDataMixin',
+        ]
+    },
+    'symmetry': {
+        'reference': 'express.properties.non_scalar.symmetry.Symmetry',
         'mixins': [
             'express.parsers.mixins.ionic.IonicDataMixin',
         ]
@@ -110,5 +137,5 @@ PROPERTIES_MANIFEST.update(NON_SCALAR_PROPERTIES_MANIFEST)
 PARSERS_REGISTRY = {
     'espresso': 'express.parsers.apps.espresso.parser.EspressoParser',
     'vasp': 'express.parsers.apps.vasp.parser.VaspParser',
-    'pymatgen': 'express.parsers.apps.pymatgen_parser.PyMatGenParser'
+    'pymatgen': 'express.parsers.pymatgen_parser.PyMatGenParser'
 }

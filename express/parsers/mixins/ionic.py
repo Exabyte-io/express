@@ -164,7 +164,13 @@ class IonicDataMixin(object):
         Returns space group symbol.
 
         Returns:
-             str
+             dict
+
+        Example:
+            {
+                "value": "Fd-3m",
+                "tolerance": 0.3
+            }
         """
         pass
 
@@ -185,5 +191,35 @@ class IonicDataMixin(object):
 
         Return:
              str
+        """
+        pass
+
+    @abstractmethod
+    def volume(self):
+        """
+        Returns volume.
+
+        Returns:
+             float
+        """
+        pass
+
+    @abstractmethod
+    def elemental_ratios(self):
+        """
+        Returns elemental ratio.
+
+        Returns:
+             dict
+        """
+        pass
+
+    @abstractmethod
+    def density(self):
+        """
+        Returns density.
+
+        Returns:
+             float
         """
         pass
