@@ -13,15 +13,12 @@ from express.parsers.mixins.electronic import ElectronicDataMixin
 class VaspParser(BaseParser, IonicDataMixin, ElectronicDataMixin, ReciprocalDataMixin):
     """
     Vasp parser class.
-
-    Args:
-        work_dir (str): working directory path.
-        kwargs (dict):
-            app_stdout (str): path to the application stdout file.
     """
 
-    def __init__(self, work_dir, stdout_file=None):
-        super(VaspParser, self).__init__(work_dir, stdout_file)
+    def __init__(self, *args, **kwargs):
+        super(VaspParser, self).__init__(*args, **kwargs)
+        self.work_dir = self.kwargs["work_dir"]
+        self.stdout_file = self.kwargs["stdout_file"]
         self.txt_parser = VaspTXTParser(self.work_dir)
         self.xml_parser = VaspXMLParser(find_file(settings.XML_DATA_FILE, self.work_dir))
 
@@ -49,7 +46,7 @@ class VaspParser(BaseParser, IonicDataMixin, ElectronicDataMixin, ReciprocalData
         Example:
              -19.00890332
         """
-        self.txt_parser.total_energy(self._get_stdout_content())
+        self.txt_parser.total_energy(self._get_file_content(self.stdout_file))
 
     def fermi_energy(self):
         """
@@ -194,7 +191,7 @@ class VaspParser(BaseParser, IonicDataMixin, ElectronicDataMixin, ReciprocalData
                 7.619190783544846e-06
             ]
         """
-        return self.txt_parser.convergence_electronic(self._get_stdout_content())
+        return self.txt_parser.convergence_electronic(self._get_file_content(self.stdout_file))
 
     def convergence_ionic(self):
         """

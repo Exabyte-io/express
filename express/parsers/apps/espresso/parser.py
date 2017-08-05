@@ -14,15 +14,12 @@ from express.parsers.apps.espresso.formats.xml import EspressoXMLParser
 class EspressoParser(BaseParser, IonicDataMixin, ElectronicDataMixin, ReciprocalDataMixin):
     """
     Espresso parser class.
-
-    Args:
-        work_dir (str): working directory path.
-        kwargs (dict):
-            app_stdout (str): path to the application stdout file.
     """
 
-    def __init__(self, work_dir, stdout_file=None):
-        super(EspressoParser, self).__init__(work_dir, stdout_file)
+    def __init__(self, *args, **kwargs):
+        super(EspressoParser, self).__init__(*args, **kwargs)
+        self.work_dir = self.kwargs["work_dir"]
+        self.stdout_file = self.kwargs["stdout_file"]
         self.txt_parser = EspressoTXTParser(self.work_dir)
         self.xml_parser = EspressoXMLParser(find_file(settings.XML_DATA_FILE, self.work_dir))
 
@@ -36,7 +33,7 @@ class EspressoParser(BaseParser, IonicDataMixin, ElectronicDataMixin, Reciprocal
         Example:
              -19.00890332
         """
-        return self.txt_parser.total_energy(self._get_stdout_content())
+        return self.txt_parser.total_energy(self._get_file_content(self.stdout_file))
 
     def fermi_energy(self):
         """
@@ -185,7 +182,7 @@ class EspressoParser(BaseParser, IonicDataMixin, ElectronicDataMixin, Reciprocal
                 7.619190783544846e-06
             ]
         """
-        return self.txt_parser.convergence_electronic(self._get_stdout_content())
+        return self.txt_parser.convergence_electronic(self._get_file_content(self.stdout_file))
 
     def convergence_ionic(self):
         """
@@ -194,7 +191,7 @@ class EspressoParser(BaseParser, IonicDataMixin, ElectronicDataMixin, Reciprocal
         Returns:
              list[dict]
         """
-        return self.txt_parser.convergence_ionic(self._get_stdout_content())
+        return self.txt_parser.convergence_ionic(self._get_file_content(self.stdout_file))
 
     def stress_tensor(self):
         """
@@ -222,7 +219,7 @@ class EspressoParser(BaseParser, IonicDataMixin, ElectronicDataMixin, Reciprocal
                 ]
             ]
         """
-        return self.txt_parser.stress_tensor(self._get_stdout_content())
+        return self.txt_parser.stress_tensor(self._get_file_content(self.stdout_file))
 
     def pressure(self):
         """
@@ -234,7 +231,7 @@ class EspressoParser(BaseParser, IonicDataMixin, ElectronicDataMixin, Reciprocal
         Examples:
              73.72
         """
-        return self.txt_parser.pressure(self._get_stdout_content())
+        return self.txt_parser.pressure(self._get_file_content(self.stdout_file))
 
     def total_force(self):
         """
@@ -246,7 +243,7 @@ class EspressoParser(BaseParser, IonicDataMixin, ElectronicDataMixin, Reciprocal
         Example:
             1e-06
         """
-        return self.txt_parser.total_force(self._get_stdout_content())
+        return self.txt_parser.total_force(self._get_file_content(self.stdout_file))
 
     def atomic_forces(self):
         """
@@ -269,7 +266,7 @@ class EspressoParser(BaseParser, IonicDataMixin, ElectronicDataMixin, Reciprocal
                 ]
             ]
         """
-        return self.txt_parser.atomic_forces(self._get_stdout_content())
+        return self.txt_parser.atomic_forces(self._get_file_content(self.stdout_file))
 
     def total_energy_contributions(self):
         """
@@ -307,4 +304,4 @@ class EspressoParser(BaseParser, IonicDataMixin, ElectronicDataMixin, Reciprocal
             }
         }
         """
-        return self.txt_parser.total_energy_contributions(self._get_stdout_content())
+        return self.txt_parser.total_energy_contributions(self._get_file_content(self.stdout_file))
