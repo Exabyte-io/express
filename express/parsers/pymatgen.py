@@ -1,3 +1,5 @@
+from __future__ import absolute_import
+
 import pymatgen as mg
 
 from express.parsers import BaseParser
