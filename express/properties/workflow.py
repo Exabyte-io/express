@@ -13,9 +13,10 @@ class ExabyteMLPredictWorkflow(BaseProperty):
 
     def __init__(self, name, raw_data, *args, **kwargs):
         super(ExabyteMLPredictWorkflow, self).__init__(name, raw_data, *args, **kwargs)
+        self.name = "workflow"
         self.model = self.raw_data["model"]
         self.units = self.raw_data["units"]
-        self.properties = [p["name"] for p in self.raw_data["model"]["data"]["perProperty"]]
+        self.properties = [p["name"] for p in self.raw_data["model"]["method"]["data"]["perProperty"]]
 
     def _serialize(self):
         """

@@ -2,24 +2,22 @@ from express.parsers import BaseParser
 from express.parsers.mixins.exabyteml import ExabyteMLDataMixin
 
 
-class ExabyteExabyteMLParser(BaseParser, ExabyteMLDataMixin):
+class ExabyteMLParser(BaseParser, ExabyteMLDataMixin):
     """
     Exabyte ML parser class.
     """
 
     def __init__(self, *args, **kwargs):
-        super(ExabyteExabyteMLParser, self).__init__(*args, **kwargs)
-        self.model = kwargs["model"]
-        self.units = kwargs["units"]
+        super(ExabyteMLParser, self).__init__(*args, **kwargs)
 
     def model(self):
         """
         docstring: express.parsers.mixins.ml.MLDataMixin#model
         """
-        return self.model
+        return self.kwargs["model"].toDict()
 
     def units(self):
         """
         docstring: express.parsers.mixins.ml.MLDataMixin#units
         """
-        return self.units
+        return [u.toDict() for u in self.kwargs["units"]]
