@@ -20,3 +20,11 @@ class ExabyteMLDataMixin(object):
     @abstractmethod
     def scaling_params_per_feature(self):
         pass
+
+    @abstractmethod
+    def band_gaps_direct(self):
+        pass
+
+    @abstractmethod
+    def band_gaps_indirect(self):
+        pass

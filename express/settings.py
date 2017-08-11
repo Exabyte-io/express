@@ -54,7 +54,8 @@ NON_SCALAR_PROPERTIES_MANIFEST = {
         'reference': 'express.properties.non_scalar.bandgaps.BandGaps',
         'mixins': [
             'express.parsers.mixins.electronic.ElectronicDataMixin',
-            'express.parsers.mixins.reciprocal.ReciprocalDataMixin'
+            'express.parsers.mixins.reciprocal.ReciprocalDataMixin',
+            'express.parsers.mixins.exabyteml.ExabyteMLDataMixin',
         ]
     },
     'density_of_states': {
@@ -67,7 +68,7 @@ NON_SCALAR_PROPERTIES_MANIFEST = {
         'reference': 'express.properties.non_scalar.two_dimensional_plot.band_structure.BandStructure',
         'mixins': [
             'express.parsers.mixins.electronic.ElectronicDataMixin',
-            'express.parsers.mixins.reciprocal.ReciprocalDataMixin'
+            'express.parsers.mixins.reciprocal.ReciprocalDataMixin',
         ]
     },
     'lattice': {

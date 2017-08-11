@@ -10,6 +10,7 @@ class ExabyteMLParser(BaseParser, ExabyteMLDataMixin):
     def __init__(self, *args, **kwargs):
         super(ExabyteMLParser, self).__init__(*args, **kwargs)
         self.dataPerProperty = kwargs.get("dataPerProperty")
+        self.predictedProperties = self.kwargs["predictedProperties"]
         self.precisionPerProperty = kwargs.get("precisionPerProperty")
         self.scalingParamsPerFeature = kwargs.get("scalingParamsPerFeature")
 
@@ -21,3 +22,9 @@ class ExabyteMLParser(BaseParser, ExabyteMLDataMixin):
 
     def scaling_params_per_feature(self):
         return self.scalingParamsPerFeature
+
+    def band_gaps_direct(self):
+        return next((i["value"] for i in self.predictedProperties if i["name"] == "band_gaps:direct"))
+
+    def band_gaps_indirect(self):
+        return next((i["value"] for i in self.predictedProperties if i["name"] == "band_gaps:indirect"))

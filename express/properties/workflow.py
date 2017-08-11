@@ -40,6 +40,7 @@ class ExabyteMLPredictWorkflow(BaseProperty):
             "subworkflows": [
                 {
                     "name": "ml_predict_subworkflow",
+                    "isDraft": True,
                     "app": {
                         "version": "0.2.0",
                         "name": "exabyteml",
@@ -135,7 +136,11 @@ class ExabyteMLPredictWorkflow(BaseProperty):
                             "name": "score",
                             "postProcessors": [],
                             "preProcessors": [],
-                            "results": [],
+                            "results": [
+                                {
+                                    "name": "predicted_properties"
+                                }
+                            ],
                             "status": "idle",
                             "type": "execution"
                         }

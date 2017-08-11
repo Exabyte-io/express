@@ -65,8 +65,8 @@ class ExPrESS(object):
             for name in [f for f in dir(cls) if callable(getattr(cls, f)) and not f.startswith("__")]:
                 try:
                     data[name] = getattr(self._parser, name)()
-                except Exception as e:
-                    pass
+                except:
+                    data[name] = None
         return data
 
     def property(self, property_name, *args, **kwargs):
