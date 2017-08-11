@@ -10,21 +10,13 @@ class ExabyteMLDataMixin(object):
     """
 
     @abstractmethod
-    def model(self):
-        """
-        Returns ML model parameters.
-
-        Returns:
-             dict
-        """
+    def data_per_property(self):
         pass
 
     @abstractmethod
-    def units(self):
-        """
-        Returns ML unit configs such as scale_and_reduce.
+    def precision_per_property(self):
+        pass
 
-        Returns:
-             dict
-        """
+    @abstractmethod
+    def scaling_params_per_feature(self):
         pass

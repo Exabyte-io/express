@@ -9,15 +9,15 @@ class ExabyteMLParser(BaseParser, ExabyteMLDataMixin):
 
     def __init__(self, *args, **kwargs):
         super(ExabyteMLParser, self).__init__(*args, **kwargs)
+        self.dataPerProperty = kwargs.get("dataPerProperty")
+        self.precisionPerProperty = kwargs.get("precisionPerProperty")
+        self.scalingParamsPerFeature = kwargs.get("scalingParamsPerFeature")
 
-    def model(self):
-        """
-        docstring: express.parsers.mixins.ml.MLDataMixin#model
-        """
-        return self.kwargs["model"].toDict()
+    def data_per_property(self):
+        return self.dataPerProperty
 
-    def units(self):
-        """
-        docstring: express.parsers.mixins.ml.MLDataMixin#units
-        """
-        return [u.toDict() for u in self.kwargs["units"]]
+    def precision_per_property(self):
+        return self.precisionPerProperty
+
+    def scaling_params_per_feature(self):
+        return self.scalingParamsPerFeature
