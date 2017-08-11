@@ -111,7 +111,13 @@ NON_SCALAR_PROPERTIES_MANIFEST = {
         'mixins': [
             'express.parsers.mixins.ionic.IonicDataMixin',
         ]
-    }
+    },
+    'workflow:ml_predict': {
+        'reference': 'express.properties.workflow.ExabyteMLPredictWorkflow',
+        'mixins': [
+            'express.parsers.mixins.exabyteml.ExabyteMLDataMixin',
+        ]
+    },
 }
 
 CONVERGENCE_PROPERTIES = {
@@ -137,5 +143,6 @@ PROPERTIES_MANIFEST.update(NON_SCALAR_PROPERTIES_MANIFEST)
 PARSERS_REGISTRY = {
     'espresso': 'express.parsers.apps.espresso.parser.EspressoParser',
     'vasp': 'express.parsers.apps.vasp.parser.VaspParser',
-    'pymatgen': 'express.parsers.pymatgen_parser.PyMatGenParser'
+    'pymatgen': 'express.parsers.pymatgen.PyMatGenParser',
+    'exabyteml': 'express.parsers.exabyteml.ExabyteMLParser'
 }
