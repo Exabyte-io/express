@@ -127,7 +127,7 @@ class ExabyteMLPredictWorkflow(BaseProperty):
                                     "summary": "exabyte machine learning engine",
                                     "version": "0.2.0"
                                 },
-                                "input": {}
+                                "input": []
                             },
                             "flowchartId": "score",
                             "head": False,
