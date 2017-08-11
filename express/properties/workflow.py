@@ -63,7 +63,8 @@ class ExabyteMLPredictWorkflow(BaseProperty):
                                             },
                                             "headers": {},
                                             "method": "POST",
-                                            "params": {}
+                                            "params": {},
+                                            "jobId": ""
                                         }
                                     }
                                 ],
