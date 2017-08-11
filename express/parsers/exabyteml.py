@@ -10,7 +10,7 @@ class ExabyteMLParser(BaseParser, ExabyteMLDataMixin):
     def __init__(self, *args, **kwargs):
         super(ExabyteMLParser, self).__init__(*args, **kwargs)
         self.dataPerProperty = kwargs.get("dataPerProperty")
-        self.predictedProperties = self.kwargs["predictedProperties"]
+        self.predictedProperties = self.kwargs.get("predictedProperties")
         self.precisionPerProperty = kwargs.get("precisionPerProperty")
         self.scalingParamsPerFeature = kwargs.get("scalingParamsPerFeature")
 
