@@ -46,7 +46,7 @@ class VaspParser(BaseParser, IonicDataMixin, ElectronicDataMixin, ReciprocalData
         Example:
              -19.00890332
         """
-        self.txt_parser.total_energy(self._get_file_content(self.stdout_file))
+        return self.txt_parser.total_energy(self._get_file_content(self.stdout_file))
 
     def fermi_energy(self):
         """
@@ -114,7 +114,7 @@ class VaspParser(BaseParser, IonicDataMixin, ElectronicDataMixin, ReciprocalData
                 [ -5.00000000e-01  -5.00000000e-01   0.00000000e+00]
             ]
         """
-        self.txt_parser.ibz_kpoints(self._get_outcar_content(), space="crystal")
+        return self.txt_parser.ibz_kpoints(self._get_outcar_content(), space="crystal")
 
     def dos(self):
         """
@@ -240,7 +240,7 @@ class VaspParser(BaseParser, IonicDataMixin, ElectronicDataMixin, ReciprocalData
         Examples:
              73.72
         """
-        self.txt_parser.pressure(self._get_outcar_content())
+        return self.txt_parser.pressure(self._get_outcar_content())
 
     def total_force(self):
         """

@@ -63,6 +63,8 @@ class VaspXMLParser(BaseXMLParser):
                 })
             eigenvalues_at_kpoints.append(eigenvalues_at_kpoint)
 
+        return eigenvalues_at_kpoints
+
     def _parse_eigenvalues_occupations(self):
         """
         Extracts eigenvalues and occupations for each spin and kpoint.
@@ -309,7 +311,7 @@ class VaspXMLParser(BaseXMLParser):
         Returns:
             ndarray: a matrix containing all the values found in the varray.
         """
-        return np.array([v.text.split() for v in varray.findall('v')], dtype=np.float) if varray else np.array([])
+        return np.array([v.text.split() for v in varray.findall('v')], dtype=np.float) if varray is not None else np.array([])
 
     def stress_tensor(self):
         """
@@ -318,7 +320,7 @@ class VaspXMLParser(BaseXMLParser):
         Returns:
             list
         """
-        return self._parse_varray(self.root.findall('calculation')[-1].find('.//varray[@name="stress"]'))
+        return self._parse_varray(self.root.findall('calculation')[-1].find('.//varray[@name="stress"]')).tolist()
 
     def atomic_forces(self):
         """
@@ -327,4 +329,4 @@ class VaspXMLParser(BaseXMLParser):
         Returns:
             list
         """
-        return self._parse_varray(self.root.findall('calculation')[-1].find('.//varray[@name="forces"]'))
+        return self._parse_varray(self.root.findall('calculation')[-1].find('.//varray[@name="forces"]')).tolist()
