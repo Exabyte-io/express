@@ -22,6 +22,7 @@ class BandGaps(NonScalarProperty):
         self.band_gaps_indirect = self.raw_data["band_gaps_indirect"]
         self.eigenvalues_at_kpoints = self.raw_data["eigenvalues_at_kpoints"]
 
+        self.values = None
         if self.band_gaps_direct and self.band_gaps_indirect:
             self.values = [
                 self._serialize_band_gaps(self.band_gaps_direct, "direct"),
