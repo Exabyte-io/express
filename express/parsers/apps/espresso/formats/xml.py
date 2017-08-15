@@ -75,7 +75,7 @@ class EspressoXMLParser(BaseXMLParser):
         Returns:
             ndarray
         """
-        reciprocal_lattice = self.lattice(reciprocal=True)
+        reciprocal_lattice = self.lattice_vectors(reciprocal=True)
         lattice_array = []
         for i in ['a', 'b', 'c']:
             lattice_array.append(reciprocal_lattice['vectors'][i])
