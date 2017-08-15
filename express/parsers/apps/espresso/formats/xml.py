@@ -82,7 +82,7 @@ class EspressoXMLParser(BaseXMLParser):
         reciprocal_lattice = np.linalg.inv(np.array(lattice_array))
         return np.dot(np.array([e['kpoint'] for e in self.eigenvalues_at_kpoints()]), reciprocal_lattice)
 
-    def lattice(self, reciprocal=False):
+    def lattice_vectors(self, reciprocal=False):
         """
         Extracts lattice.
 

@@ -146,7 +146,7 @@ class EspressoParser(BaseParser, IonicDataMixin, ElectronicDataMixin, Reciprocal
         """
         return self.xml_parser.basis()
 
-    def lattice(self):
+    def lattice_vectors(self):
         """
         Returns lattice.
 
@@ -163,7 +163,7 @@ class EspressoParser(BaseParser, IonicDataMixin, ElectronicDataMixin, Reciprocal
                 }
              }
         """
-        return self.xml_parser.lattice(reciprocal=False)
+        return self.xml_parser.lattice_vectors(reciprocal=False)
 
     def convergence_electronic(self):
         """
