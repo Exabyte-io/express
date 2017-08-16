@@ -230,9 +230,9 @@ class VaspXMLParser(BaseXMLParser):
                         })
         return partial_dos_values, partial_dos_infos, electronic_states
 
-    def lattice(self):
+    def lattice_vectors(self):
         """
-        Extract lattice.
+        Extracts lattice.
 
         Returns:
             dict

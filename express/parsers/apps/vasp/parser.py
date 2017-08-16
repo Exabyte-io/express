@@ -155,7 +155,7 @@ class VaspParser(BaseParser, IonicDataMixin, ElectronicDataMixin, ReciprocalData
         """
         return self.xml_parser.basis()
 
-    def lattice(self):
+    def lattice_vectors(self):
         """
         Returns lattice.
 
@@ -172,7 +172,7 @@ class VaspParser(BaseParser, IonicDataMixin, ElectronicDataMixin, ReciprocalData
                 }
              }
         """
-        return self.xml_parser.lattice()
+        return self.xml_parser.lattice_vectors()
 
     def convergence_electronic(self):
         """
