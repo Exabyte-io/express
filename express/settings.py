@@ -46,6 +46,12 @@ SCALAR_PROPERTIES_MANIFEST = {
         'mixins': [
             'express.parsers.mixins.ionic.IonicDataMixin',
         ]
+    },
+    'zero_point_energy': {
+        'reference': 'express.properties.scalar.zero_point_energy.ZeroPointEnergy',
+        'mixins': [
+            'express.parsers.mixins.electronic.ElectronicDataMixin',
+        ]
     }
 }
 
