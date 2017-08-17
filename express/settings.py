@@ -50,7 +50,7 @@ SCALAR_PROPERTIES_MANIFEST = {
     'zero_point_energy': {
         'reference': 'express.properties.scalar.zero_point_energy.ZeroPointEnergy',
         'mixins': [
-            'express.parsers.mixins.electronic.ElectronicDataMixin',
+            'express.parsers.mixins.ionic.IonicDataMixin',
         ]
     }
 }
