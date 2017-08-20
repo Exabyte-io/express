@@ -63,6 +63,11 @@ REGEX = {
         "occurrences": -2,
         "output_type": "float",
         "match_groups": [1, 2, 3]
+    },
+    "zero_point_energy": {
+        "regex": r"freq\s\(\s+\d+\)\s+\=\s+\d+\.\d+\s+\[THz\]\s+\=\s+({0})\s+\[cm\-1\]".format(GENERAL_REGEX.double_number),
+        "start_flag": "Diagonalizing the dynamical matrix",
+        "output_type": "float"
     }
 }
 
