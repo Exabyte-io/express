@@ -435,3 +435,13 @@ class EspressoTXTParser(BaseTXTParser):
                     'value': value * Constant.RYDBERG
                 }})
         return energy_contributions
+
+    def zero_point_energy(self, text):
+        """
+        Extracts zero point energy.
+
+        Returns:
+             float
+        """
+        data = self._general_output_parser(text, **settings.REGEX['zero_point_energy'])
+        return (sum(data) / 2) * Constant.cm_inv_to_ev
