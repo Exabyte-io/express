@@ -118,7 +118,7 @@ class EspressoXMLParser(BaseXMLParser):
             if vector.tag.startswith(vector_tag):
                 vectors.update({
                     string.ascii_lowercase[int(vector.tag[1]) - 1]: (
-                        0.529 * self._get_xml_tag_value(vector)[0]).tolist()
+                        Constant.BOHR * self._get_xml_tag_value(vector)[0]).tolist()
                 })
         vectors.update({'alat': 1.0})
         return {'vectors': vectors, 'units': 'angstrom'} if not reciprocal else {'vectors': vectors}
@@ -203,11 +203,11 @@ class EspressoXMLParser(BaseXMLParser):
                 })
                 coordinates.append({
                     'id': int(atom.tag[5:]),
-                    'value': (0.529 * np.array(atom.attrib.get("tau").split()).astype(np.float)).tolist()
+                    'value': (Constant.BOHR * np.array(atom.attrib.get("tau").split()).astype(np.float)).tolist()
                 })
 
         return {
-            'units': "angstrom",
+            'units': 'angstrom',
             'elements': elements,
             'coordinates': coordinates
         }
