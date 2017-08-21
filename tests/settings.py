@@ -1,1 +1,0 @@
-RERUN_TEST = True
