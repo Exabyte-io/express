@@ -10,6 +10,14 @@ test_espresso_pressure:
   workDir: data/espresso/test-001
   stdoutFile: data/espresso/test-001/pw-scf.out
 
+test_espresso_basis:
+  workDir: data/espresso/test-001
+  stdoutFile: data/espresso/test-001/pw-scf.out
+
+test_espresso_lattice_vectors:
+  workDir: data/espresso/test-001
+  stdoutFile: data/espresso/test-001/pw-scf.out
+
 test_vasp_total_energy:
   workDir: data/vasp/test-001
   stdoutFile: data/vasp/test-001/vasp.out
@@ -19,5 +27,13 @@ test_vasp_pressure:
   stdoutFile: data/vasp/test-001/vasp.out
 
 test_vasp_fermi_energy:
+  workDir: data/vasp/test-001
+  stdoutFile: data/vasp/test-001/vasp.out
+
+test_vasp_basis:
+  workDir: data/vasp/test-001
+  stdoutFile: data/vasp/test-001/vasp.out
+
+test_vasp_lattice_vectors:
   workDir: data/vasp/test-001
   stdoutFile: data/vasp/test-001/vasp.out
