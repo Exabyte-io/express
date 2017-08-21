@@ -5,8 +5,6 @@ import numpy as np
 
 from tests import settings
 
-PWD = os.path.dirname(__file__)
-
 
 class TestBase(unittest.TestCase):
     """
@@ -15,10 +13,7 @@ class TestBase(unittest.TestCase):
 
     def setUp(self):
         super(TestBase, self).setUp()
-        self.workDir = os.path.join(PWD, self.getManifest()["workDir"])
-        self.stdoutFile = os.path.join(PWD, self.getManifest()["stdoutFile"])
-        if settings.RERUN_TEST:
-            os.system("cd {}; sh run.sh".format(self.workDir))
+        self.rootDir = os.path.dirname(__file__)
 
     def tearDown(self):
         super(TestBase, self).tearDown()
@@ -30,7 +25,7 @@ class TestBase(unittest.TestCase):
         Returns:
             dict
         """
-        with open(os.path.join(PWD, "manifest.yaml")) as f:
+        with open(os.path.join(self.rootDir, "manifest.yaml")) as f:
             return yaml.load(f.read())[self._testMethodName]
 
     def assertDeepAlmostEqual(self, expected, actual, *args, **kwargs):

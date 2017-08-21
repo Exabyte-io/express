@@ -1,1 +1,1 @@
-RERUN_TEST = False
+RERUN_TEST = True
