@@ -3,8 +3,6 @@ import yaml
 import unittest
 import numpy as np
 
-from tests import settings
-
 
 class TestBase(unittest.TestCase):
     """
