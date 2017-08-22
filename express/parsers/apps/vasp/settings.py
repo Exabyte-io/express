@@ -41,6 +41,11 @@ REGEX = {
         "occurrences": -1,
         "output_type": "float",
         "match_groups": [1, 2, 3]
+    },
+    "zero_point_energy": {
+        "regex": r"f\s\s=.*2PiTHz\s+\d+\.\d+\s+cm\-1\s+({0})\s+meV".format(GENERAL_REGEX.double_number),
+        "start_flag": "Eigenvectors and eigenvalues of the dynamical matrix",
+        "output_type": "float",
     }
 }
 
