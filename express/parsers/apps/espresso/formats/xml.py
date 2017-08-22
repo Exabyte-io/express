@@ -114,14 +114,14 @@ class EspressoXMLParser(BaseXMLParser):
         vectors = {}
         cell_tag = self.root.find("CELL")
         lattice_units_tag = cell_tag.find(lattice_tag).find(units_tag)
-        units = lattice_units_tag.attrib.get('UNITS', 'angstrom').lower()
         for vector in cell_tag.find(lattice_tag):
             if vector.tag.startswith(vector_tag):
                 vectors.update({
-                    string.ascii_lowercase[int(vector.tag[1]) - 1]: self._get_xml_tag_value(vector)[0].tolist()
+                    string.ascii_lowercase[int(vector.tag[1]) - 1]: (
+                        Constant.BOHR * self._get_xml_tag_value(vector)[0]).tolist()
                 })
         vectors.update({'alat': 1.0})
-        return {'vectors': vectors, 'units': units} if not reciprocal else {'vectors': vectors}
+        return {'vectors': vectors, 'units': 'angstrom'} if not reciprocal else {'vectors': vectors}
 
     def eigenvalues_at_kpoints(self):
         """
@@ -188,7 +188,7 @@ class EspressoXMLParser(BaseXMLParser):
 
         Example:
             {
-                'units': 'bohr',
+                'units': 'angstrom',
                 'elements': [{'id': 1, 'value': 'Si'}, {'id': 2, 'value': 'Si'}],
                 'coordinates': [{'id': 1, 'value': [0.0, 0.0, 0.0]}, {'id': 2, 'value': [0.0, 0.0, 0.0]}]
              }
@@ -203,11 +203,11 @@ class EspressoXMLParser(BaseXMLParser):
                 })
                 coordinates.append({
                     'id': int(atom.tag[5:]),
-                    'value': np.array(atom.attrib.get("tau").split()).astype(np.float).tolist()
+                    'value': (Constant.BOHR * np.array(atom.attrib.get("tau").split()).astype(np.float)).tolist()
                 })
 
         return {
-            'units': ion_tag.find("UNITS_FOR_ATOMIC_POSITIONS").attrib.get("UNITS").lower(),
+            'units': 'angstrom',
             'elements': elements,
             'coordinates': coordinates
         }
