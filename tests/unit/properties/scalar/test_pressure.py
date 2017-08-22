@@ -9,10 +9,6 @@ PRESSURE = {
 
 
 class PressureTest(UnitTestBase):
-    """
-    Tests pressure extraction.
-    """
-
     def setUp(self):
         super(PressureTest, self).setUp()
 

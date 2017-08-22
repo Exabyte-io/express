@@ -9,10 +9,6 @@ FERMI_ENERGY = {
 
 
 class FermiEnergyTest(UnitTestBase):
-    """
-    Tests fermi energy extraction.
-    """
-
     def setUp(self):
         super(FermiEnergyTest, self).setUp()
 
