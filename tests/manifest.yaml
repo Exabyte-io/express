@@ -6,7 +6,19 @@ test_espresso_fermi_energy:
   workDir: data/espresso/test-001
   stdoutFile: data/espresso/test-001/pw-scf.out
 
-test_espresso_pressure:
+test_espresso_nspins:
+  workDir: data/espresso/test-001
+  stdoutFile: data/espresso/test-001/pw-scf.out
+
+test_espresso_eigenvalues_at_kpoints:
+  workDir: data/espresso/test-001
+  stdoutFile: data/espresso/test-001/pw-scf.out
+
+test_espresso_ibz_k_points:
+  workDir: data/espresso/test-001
+  stdoutFile: data/espresso/test-001/pw-scf.out
+
+test_espresso_dos:
   workDir: data/espresso/test-001
   stdoutFile: data/espresso/test-001/pw-scf.out
 
@@ -15,6 +27,34 @@ test_espresso_basis:
   stdoutFile: data/espresso/test-001/pw-scf.out
 
 test_espresso_lattice_vectors:
+  workDir: data/espresso/test-001
+  stdoutFile: data/espresso/test-001/pw-scf.out
+
+test_espresso_convergence_electronic:
+  workDir: data/espresso/test-001
+  stdoutFile: data/espresso/test-001/pw-scf.out
+
+test_espresso_convergence_ionic:
+  workDir: data/espresso/test-001
+  stdoutFile: data/espresso/test-001/pw-scf.out
+
+test_espresso_stress_tensor:
+  workDir: data/espresso/test-001
+  stdoutFile: data/espresso/test-001/pw-scf.out
+
+test_espresso_pressure:
+  workDir: data/espresso/test-001
+  stdoutFile: data/espresso/test-001/pw-scf.out
+
+test_espresso_total_force:
+  workDir: data/espresso/test-001
+  stdoutFile: data/espresso/test-001/pw-scf.out
+
+test_espresso_atomic_forces:
+  workDir: data/espresso/test-001
+  stdoutFile: data/espresso/test-001/pw-scf.out
+
+test_espresso_total_energy_contributions:
   workDir: data/espresso/test-001
   stdoutFile: data/espresso/test-001/pw-scf.out
 
