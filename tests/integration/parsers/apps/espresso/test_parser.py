@@ -165,6 +165,12 @@ EIGENVALUES_AT_KPOINTS_ZERO = {
     ]
 }
 
+NSPIN = 1
+PRESSURE = 73.72
+TOTAL_FORCE = 1e-06
+FERMI_ENERGY = 6.607
+TOTAL_ENERGY = -19.008
+
 
 class TestEspressoParser(IntegrationTestBase):
     def setUp(self):
@@ -175,13 +181,13 @@ class TestEspressoParser(IntegrationTestBase):
         super(TestEspressoParser, self).setUp()
 
     def test_espresso_total_energy(self):
-        self.assertAlmostEqual(self.parser.total_energy(), -19.008, places=2)
+        self.assertAlmostEqual(self.parser.total_energy(), TOTAL_ENERGY, places=2)
 
     def test_espresso_fermi_energy(self):
-        self.assertAlmostEqual(self.parser.fermi_energy(), 6.607, places=2)
+        self.assertAlmostEqual(self.parser.fermi_energy(), FERMI_ENERGY, places=2)
 
     def test_espresso_nspins(self):
-        self.assertEqual(self.parser.nspins(), 1)
+        self.assertEqual(self.parser.nspins(), NSPIN)
 
     def test_espresso_eigenvalues_at_kpoints(self):
         self.assertDeepAlmostEqual(self.parser.eigenvalues_at_kpoints()[0], EIGENVALUES_AT_KPOINTS_ZERO, places=2)
@@ -208,10 +214,10 @@ class TestEspressoParser(IntegrationTestBase):
         self.assertDeepAlmostEqual(self.parser.stress_tensor(), STRESS_TENSOR, places=2)
 
     def test_espresso_pressure(self):
-        self.assertAlmostEqual(self.parser.pressure(), 73.72, places=2)
+        self.assertAlmostEqual(self.parser.pressure(), PRESSURE, places=2)
 
     def test_espresso_total_force(self):
-        self.assertAlmostEqual(self.parser.total_force(), 1e-06, places=2)
+        self.assertAlmostEqual(self.parser.total_force(), TOTAL_FORCE, places=2)
 
     def test_espresso_atomic_forces(self):
         self.assertDeepAlmostEqual(self.parser.atomic_forces(), ATOMIC_FORCES, places=2)
