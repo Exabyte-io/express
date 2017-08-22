@@ -9,16 +9,12 @@ TOTAL_ENERGY = {
 
 
 class TotalEnergyTest(UnitTestBase):
-    """
-    Tests total energy extraction.
-    """
-
     def setUp(self):
         super(TotalEnergyTest, self).setUp()
 
     def tearDown(self):
         super(TotalEnergyTest, self).setUp()
 
-    def test_espresso_total_energy(self):
+    def test_total_energy(self):
         property_ = TotalEnergy("total_energy", raw_data={"total_energy": 1})
         self.assertDeepAlmostEqual(property_.serialize_and_validate(), TOTAL_ENERGY)
