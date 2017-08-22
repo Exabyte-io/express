@@ -318,3 +318,12 @@ class VaspParser(BaseParser, IonicDataMixin, ElectronicDataMixin, ReciprocalData
         }
         """
         return self.txt_parser.total_energy_contributions(self._get_outcar_content())
+
+    def zero_point_energy(self):
+        """
+        Returns zero point energy.
+
+        Returns:
+             float
+        """
+        return self.txt_parser.zero_point_energy(self._get_outcar_content())
