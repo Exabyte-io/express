@@ -223,3 +223,13 @@ class IonicDataMixin(object):
              float
         """
         pass
+
+    @abstractmethod
+    def zero_point_energy(self):
+        """
+        Returns zero point energy.
+
+        Returns:
+             float
+        """
+        pass
