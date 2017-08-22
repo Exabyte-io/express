@@ -56,8 +56,12 @@ LATTICE = {
 }
 
 CONVERGENCE_ELECTRONIC = [
-    1.40182131e+00, 5.93994699e-01, 7.00312479e-03,
-    1.01988311e-03, 4.20416063e-05, 7.61919078e-06
+    1.40182131e+00,
+    5.93994699e-01,
+    7.00312479e-03,
+    1.01988311e-03,
+    4.20416063e-05,
+    7.61919078e-06
 ]
 
 STRESS_TENSOR = [
@@ -153,8 +157,8 @@ EIGENVALUES_AT_KPOINTS_ZERO = {
     'weight': 0.25,
     'eigenvalues': [
         {
-            'energies': [-5.5990059, 6.26931638, 6.26931998, 6.26934533, 8.71135349, 8.71135587, 8.71135838,
-                         9.41550185],
+            'energies': [-5.5990059, 6.26931638, 6.26931998, 6.26934533,
+                         8.71135349, 8.71135587, 8.71135838, 9.41550185],
             'spin': 0.5,
             'occupations': [1.0, 0.9999999999990231, 0.9999999999990226, 0.9999999999990189, 0.0, 0.0, 0.0, 0.0]
         }
@@ -177,7 +181,7 @@ class TestEspressoParser(IntegrationTestBase):
         self.assertAlmostEqual(self.parser.fermi_energy(), 6.607, places=2)
 
     def test_espresso_nspins(self):
-        self.assertAlmostEqual(self.parser.nspins(), 1, places=2)
+        self.assertEqual(self.parser.nspins(), 1)
 
     def test_espresso_eigenvalues_at_kpoints(self):
         self.assertDeepAlmostEqual(self.parser.eigenvalues_at_kpoints()[0], EIGENVALUES_AT_KPOINTS_ZERO, places=2)
@@ -186,8 +190,7 @@ class TestEspressoParser(IntegrationTestBase):
         self.assertDeepAlmostEqual(self.parser.ibz_k_points(), IBZ_KPOINTS, places=2)
 
     def test_espresso_dos(self):
-        print self.parser.dos()
-        self.assertAlmostEqual(self.parser.dos(), -19.008, places=2)
+        self.assertEqual(len(self.parser.dos()["energy"]), 453)
 
     def test_espresso_basis(self):
         self.assertDeepAlmostEqual(self.parser.basis(), BASIS, places=2)
