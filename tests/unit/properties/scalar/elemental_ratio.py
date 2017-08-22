@@ -1,4 +1,5 @@
 from tests.unit import UnitTestBase
+from tests.unit.properties.raw_data import ELEMENTAL_RATIOS_RAW_DATA
 from express.properties.scalar.elemental_ratio import ElementalRatio
 
 ELEMENTAL_RATIO = {
@@ -15,6 +16,6 @@ class ElementalRatioTest(UnitTestBase):
     def tearDown(self):
         super(ElementalRatioTest, self).setUp()
 
-    def test_fermi_energy(self):
-        property_ = ElementalRatio("elemental_ratio", raw_data={"elemental_ratios": {"Si": 0.6, "Ge": 0.4}}, element="Ge")
+    def test_elemental_ratio(self):
+        property_ = ElementalRatio("elemental_ratio", raw_data=ELEMENTAL_RATIOS_RAW_DATA, element="Ge")
         self.assertDeepAlmostEqual(property_.serialize_and_validate(), ELEMENTAL_RATIO)
