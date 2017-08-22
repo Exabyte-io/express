@@ -23,3 +23,13 @@ tar zxvf data.tgz
 ![integration-tests](https://user-images.githubusercontent.com/10528238/29536163-955f839c-8671-11e7-90e0-b4003e4b4273.png)
 
 
+## Re-generate input data
+In order to re-generate input data for tests you should go to each test directory located and run `sh run.sh` command. Please note that the command needs to be executed on master node where module files and applications are installed. After re-running the tests
+you should create a new `data.tgz` file and push to git LFS:
+```bash
+cd tests
+tar zcvf data.tgz data
+git add data.tgz
+git commit -m 're-generated data.tgz'
+git push
+```
