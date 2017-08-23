@@ -253,7 +253,7 @@ class VaspXMLParser(BaseXMLParser):
             vectors.update({
                 string.ascii_lowercase[idx]: vector.tolist()
             })
-        vectors.update({'alat': 1.0})
+        vectors.update({'alat': 1.0, 'units': 'angstrom'})
 
         return {
             'vectors': vectors
@@ -268,11 +268,14 @@ class VaspXMLParser(BaseXMLParser):
 
         Example:
             {
-                'units': 'crystal',
+                'units': 'angstrom',
                 'elements': [{'id': 1, 'value': 'Si'}, {'id': 2, 'value': 'Si'}],
-                'coordinates': [{'id': 1, 'value': [0.0, 0.0, 0.0]}, {'id': 2, 'value': [0.0, 0.0, 0.0]}]
+                'coordinates': [{'id': 1, 'value': [0.0, 0.0, 0.0]}, {'id': 2, 'value': [1.11, 0.78, 1.93]}]
              }
         """
+        lattice = self.lattice_vectors()
+        lattice_matrix = np.array([lattice["vectors"][key] for key in ["a", "b", "c"]], dtype=np.float64).reshape(
+            (3, 3))
         elements, coordinates = [], []
         for idx, vector in enumerate(
                 self._parse_varray(self.root.find('structure[@name="finalpos"]/varray[@name="positions"]'))):
@@ -282,11 +285,11 @@ class VaspXMLParser(BaseXMLParser):
             })
             coordinates.append({
                 'id': idx,
-                'value': vector.tolist()
+                'value': np.dot(vector, lattice_matrix).tolist()
             })
 
         return {
-            'units': 'crystal',
+            'units': 'angstrom',
             'elements': elements,
             'coordinates': coordinates
         }

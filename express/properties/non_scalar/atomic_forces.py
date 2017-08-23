@@ -14,5 +14,5 @@ class AtomicForces(NonScalarProperty):
         return {
             'name': self.name,
             "units": self.esse.get_property_default_values(self.name)["units"],
-            "value": self.atomic_forces
+            "values": self.atomic_forces
         }
