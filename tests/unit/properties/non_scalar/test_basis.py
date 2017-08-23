@@ -34,7 +34,7 @@ BASIS = {
             }
         ]
     },
-    "units": "angstrom"
+    "units": "bohr"
 }
 
 
