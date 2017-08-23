@@ -1,4 +1,5 @@
 from tests.unit import UnitTestBase
+from tests.unit.properties.raw_data import STRESS_TENSOR_RAW_DATA
 from express.properties.non_scalar.stress_tensor import StressTensor
 
 STRESS_TENSOR = {
@@ -32,24 +33,5 @@ class StressTensorTest(UnitTestBase):
         super(StressTensorTest, self).setUp()
 
     def test_stress_tensor(self):
-        raw_data = {
-            "stress_tensor": [
-                [
-                    3,
-                    0,
-                    0
-                ],
-                [
-                    0,
-                    3,
-                    0
-                ],
-                [
-                    0,
-                    0,
-                    3
-                ]
-            ]
-        }
-        property_ = StressTensor("stress_tensor", raw_data=raw_data)
+        property_ = StressTensor("stress_tensor", raw_data=STRESS_TENSOR_RAW_DATA)
         self.assertDeepAlmostEqual(property_.serialize_and_validate(), STRESS_TENSOR)
