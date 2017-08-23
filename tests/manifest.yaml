@@ -1,0 +1,119 @@
+test_espresso_total_energy:
+  workDir: data/espresso/test-001
+  stdoutFile: data/espresso/test-001/pw-scf.out
+
+test_espresso_fermi_energy:
+  workDir: data/espresso/test-001
+  stdoutFile: data/espresso/test-001/pw-scf.out
+
+test_espresso_nspins:
+  workDir: data/espresso/test-001
+  stdoutFile: data/espresso/test-001/pw-scf.out
+
+test_espresso_eigenvalues_at_kpoints:
+  workDir: data/espresso/test-001
+  stdoutFile: data/espresso/test-001/pw-scf.out
+
+test_espresso_ibz_k_points:
+  workDir: data/espresso/test-001
+  stdoutFile: data/espresso/test-001/pw-scf.out
+
+test_espresso_dos:
+  workDir: data/espresso/test-002
+  stdoutFile: data/espresso/test-002/projwfc.out
+
+test_espresso_basis:
+  workDir: data/espresso/test-001
+  stdoutFile: data/espresso/test-001/pw-scf.out
+
+test_espresso_lattice_vectors:
+  workDir: data/espresso/test-001
+  stdoutFile: data/espresso/test-001/pw-scf.out
+
+test_espresso_convergence_electronic:
+  workDir: data/espresso/test-001
+  stdoutFile: data/espresso/test-001/pw-scf.out
+
+test_espresso_convergence_ionic:
+  workDir: data/espresso/test-001
+  stdoutFile: data/espresso/test-001/pw-scf.out
+
+test_espresso_stress_tensor:
+  workDir: data/espresso/test-001
+  stdoutFile: data/espresso/test-001/pw-scf.out
+
+test_espresso_pressure:
+  workDir: data/espresso/test-001
+  stdoutFile: data/espresso/test-001/pw-scf.out
+
+test_espresso_total_force:
+  workDir: data/espresso/test-001
+  stdoutFile: data/espresso/test-001/pw-scf.out
+
+test_espresso_atomic_forces:
+  workDir: data/espresso/test-001
+  stdoutFile: data/espresso/test-001/pw-scf.out
+
+test_espresso_total_energy_contributions:
+  workDir: data/espresso/test-001
+  stdoutFile: data/espresso/test-001/pw-scf.out
+
+test_vasp_total_energy:
+  workDir: data/vasp/test-001
+  stdoutFile: data/vasp/test-001/vasp.out
+
+test_vasp_fermi_energy:
+  workDir: data/vasp/test-001
+  stdoutFile: data/vasp/test-001/vasp.out
+
+test_vasp_nspins:
+  workDir: data/vasp/test-001
+  stdoutFile: data/vasp/test-001/vasp.out
+
+test_vasp_eigenvalues_at_kpoints:
+  workDir: data/vasp/test-001
+  stdoutFile: data/vasp/test-001/vasp.out
+
+test_vasp_ibz_k_points:
+  workDir: data/vasp/test-001
+  stdoutFile: data/vasp/test-001/vasp.out
+
+test_vasp_dos:
+  workDir: data/vasp/test-002
+  stdoutFile: data/vasp/test-001/chgcar.out
+
+test_vasp_basis:
+  workDir: data/vasp/test-001
+  stdoutFile: data/vasp/test-001/vasp.out
+
+test_vasp_lattice_vectors:
+  workDir: data/vasp/test-001
+  stdoutFile: data/vasp/test-001/vasp.out
+
+test_vasp_convergence_electronic:
+  workDir: data/vasp/test-001
+  stdoutFile: data/vasp/test-001/vasp.out
+
+test_vasp_convergence_ionic:
+  workDir: data/vasp/test-001
+  stdoutFile: data/vasp/test-001/vasp.out
+
+test_vasp_stress_tensor:
+  workDir: data/vasp/test-001
+  stdoutFile: data/vasp/test-001/vasp.out
+
+test_vasp_pressure:
+  workDir: data/vasp/test-001
+  stdoutFile: data/vasp/test-001/vasp.out
+
+test_vasp_total_force:
+  workDir: data/vasp/test-001
+  stdoutFile: data/vasp/test-001/vasp.out
+
+test_vasp_atomic_forces:
+  workDir: data/vasp/test-001
+  stdoutFile: data/vasp/test-001/vasp.out
+
+test_vasp_total_energy_contributions:
+  workDir: data/vasp/test-001
+  stdoutFile: data/vasp/test-001/vasp.out
