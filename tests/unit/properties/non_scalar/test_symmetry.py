@@ -1,5 +1,6 @@
 from tests.unit import UnitTestBase
 from express.properties.non_scalar.symmetry import Symmetry
+from tests.unit.properties.raw_data import SYMMETRY_RAW_DATA
 
 SYMMETRY = {
     "spaceGroupSymbol": "Fd-3m",
@@ -19,11 +20,5 @@ class SymmetryTest(UnitTestBase):
         super(SymmetryTest, self).setUp()
 
     def test_atomic_forces(self):
-        raw_data = {
-            "space_group_symbol": {
-                "value": "Fd-3m",
-                "tolerance": 0.3
-            }
-        }
-        property_ = Symmetry("symmetry", raw_data=raw_data)
+        property_ = Symmetry("symmetry", raw_data=SYMMETRY_RAW_DATA)
         self.assertDeepAlmostEqual(property_.serialize_and_validate(), SYMMETRY)
