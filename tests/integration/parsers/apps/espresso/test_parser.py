@@ -27,7 +27,7 @@ class TestEspressoParser(IntegrationTestBase):
         self.assertDeepAlmostEqual(self.parser.ibz_k_points(), IBZ_KPOINTS, places=2)
 
     def test_espresso_dos(self):
-        self.assertEqual(len(self.parser.dos()["energy"]), 453)
+        self.assertDeepAlmostEqual(self.parser.dos(), DOS, places=2)
 
     def test_espresso_basis(self):
         self.assertDeepAlmostEqual(self.parser.basis(), BASIS, places=2)
