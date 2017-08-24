@@ -13,8 +13,8 @@ class BandStructure(TwoDimensionalPlotProperty):
     reciprocal space.
     """
 
-    def __init__(self, name, parser, *args, **kwargs):
-        super(BandStructure, self).__init__(name, parser, *args, **kwargs)
+    def __init__(self, name, raw_data, *args, **kwargs):
+        super(BandStructure, self).__init__(name, raw_data, *args, **kwargs)
         self.nspins = self.raw_data["nspins"]
         self.ibz_k_points = self.raw_data["ibz_k_points"]
         self.eigenvalues_at_kpoints = self.raw_data["eigenvalues_at_kpoints"]

@@ -216,3 +216,13 @@ class VaspTXTParser(BaseTXTParser):
                     'value': np.sqrt(np.sum(np.square(value)))
                 }})
         return energy_contributions
+
+    def zero_point_energy(self, text):
+        """
+        Extracts zero point energy.
+
+        Returns:
+             float
+        """
+        data = self._general_output_parser(text, **settings.REGEX['zero_point_energy'])
+        return sum(data) / 2 / 1000
