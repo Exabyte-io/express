@@ -2,22 +2,15 @@ import numpy as np
 
 ATOMIC_FORCES_RAW_DATA = {
     "atomic_forces": [
-        {
-            "id": 1,
-            "value": [
-                -3.9e-07,
-                -2.4e-07,
-                0.0
-            ]
-        },
-        {
-            "id": 2,
-            "value": [
-                3.9e-07,
-                2.4e-07,
-                0.0
-            ]
-        }
+        [
+            -3.9e-07,
+            -2.4e-07,
+            0.0
+        ], [
+            3.9e-07,
+            2.4e-07,
+            0.0
+        ]
     ]
 }
 
