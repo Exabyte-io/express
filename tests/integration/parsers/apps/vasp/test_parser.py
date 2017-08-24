@@ -27,7 +27,7 @@ class TestVaspParser(IntegrationTestBase):
         self.assertDeepAlmostEqual(self.parser.ibz_k_points(), IBZ_KPOINTS, places=2)
 
     def test_vasp_dos(self):
-        self.assertEqual(len(self.parser.dos()["energy"]), 301)
+        self.assertDeepAlmostEqual(self.parser.dos(), DOS)
 
     def test_vasp_basis(self):
         self.assertDeepAlmostEqual(self.parser.basis(), BASIS, places=2)
