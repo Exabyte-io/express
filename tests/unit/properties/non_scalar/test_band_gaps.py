@@ -1,6 +1,6 @@
 from tests.unit import UnitTestBase
+from tests.unit.properties.raw_data import BAND_RAW_DATA
 from express.properties.non_scalar.bandgaps import BandGaps
-from tests.unit.properties.raw_data import BAND_GAPS_RAW_DATA
 
 BAND_GAPS = {
     "values": [
@@ -22,9 +22,9 @@ BAND_GAPS = {
         {
             "units": "eV",
             "kpointConduction": [
-                -7.19668434e-17,
-                -0.944862979,
-                -0.944862979
+                -4.8471013318887174e-17,
+                -0.4999999999999998,
+                -0.5000000000000001
             ],
             "type": "indirect",
             "value": 0.65023092000000027,
@@ -39,13 +39,13 @@ BAND_GAPS = {
 }
 
 
-class BasisTest(UnitTestBase):
+class BandGapsTest(UnitTestBase):
     def setUp(self):
-        super(BasisTest, self).setUp()
+        super(BandGapsTest, self).setUp()
 
     def tearDown(self):
-        super(BasisTest, self).setUp()
+        super(BandGapsTest, self).setUp()
 
     def test_band_gaps(self):
-        property_ = BandGaps("band_gaps", raw_data=BAND_GAPS_RAW_DATA)
+        property_ = BandGaps("band_gaps", raw_data=BAND_RAW_DATA)
         self.assertDeepAlmostEqual(property_.serialize_and_validate(), BAND_GAPS)
