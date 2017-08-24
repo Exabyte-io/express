@@ -69,7 +69,7 @@ class EspressoXMLParser(BaseXMLParser):
 
     def ibz_k_points(self):
         """
-        Extracts kpoints coordinates. First reciprocal lattice is inverseed and then kpoints in cartesian space are
+        Extracts kpoints coordinates. First reciprocal lattice is inversed and then kpoints in cartesian space are
         converted to reciprocal space.
 
         Returns:
