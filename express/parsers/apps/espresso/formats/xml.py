@@ -118,7 +118,7 @@ class EspressoXMLParser(BaseXMLParser):
             if vector.tag.startswith(vector_tag):
                 vectors.update({
                     string.ascii_lowercase[int(vector.tag[1]) - 1]: (
-                        Constant.BOHR * self._get_xml_tag_value(vector)[0]).tolist()
+                        (Constant.BOHR if not reciprocal else 1.0) * self._get_xml_tag_value(vector)[0]).tolist()
                 })
         vectors.update({'alat': 1.0})
         return {'vectors': vectors, 'units': 'angstrom'} if not reciprocal else {'vectors': vectors}
