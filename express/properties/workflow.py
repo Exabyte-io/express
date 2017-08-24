@@ -147,8 +147,8 @@ class ExabyteMLPredictWorkflow(BaseProperty):
                         }
                     ],
                     "model": {
-                        "subtype": "supervised",
-                        "type": "machine_learning",
+                        "type": "ml",
+                        "subtype": "re",
                         "method": {
                             "subtype": "least_squares",
                             "type": "linear",

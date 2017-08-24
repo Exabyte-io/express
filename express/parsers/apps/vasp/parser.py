@@ -1,4 +1,5 @@
 import os
+import numpy as np
 
 from express.parsers import BaseParser
 from express.parsers.utils import find_file
@@ -101,6 +102,9 @@ class VaspParser(BaseParser, IonicDataMixin, ElectronicDataMixin, ReciprocalData
         """
         Returns ibz_k_points.
 
+        Note:
+            VASP does not return kpoints in irreducible Brillouin zone!
+
         Returns:
              ndarray
 
@@ -114,7 +118,7 @@ class VaspParser(BaseParser, IonicDataMixin, ElectronicDataMixin, ReciprocalData
                 [ -5.00000000e-01  -5.00000000e-01   0.00000000e+00]
             ]
         """
-        return self.txt_parser.ibz_kpoints(self._get_outcar_content(), space="crystal")
+        return np.array([eigenvalueData["kpoint"] for eigenvalueData in self.eigenvalues_at_kpoints()])
 
     def dos(self):
         """
@@ -314,3 +318,12 @@ class VaspParser(BaseParser, IonicDataMixin, ElectronicDataMixin, ReciprocalData
         }
         """
         return self.txt_parser.total_energy_contributions(self._get_outcar_content())
+
+    def zero_point_energy(self):
+        """
+        Returns zero point energy.
+
+        Returns:
+             float
+        """
+        return self.txt_parser.zero_point_energy(self._get_outcar_content())
