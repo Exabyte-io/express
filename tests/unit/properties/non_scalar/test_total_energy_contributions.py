@@ -27,6 +27,6 @@ class TotalEnergyContributionsTest(UnitTestBase):
     def tearDown(self):
         super(TotalEnergyContributionsTest, self).setUp()
 
-    def test_atomic_forces(self):
+    def test_total_energy_contributions(self):
         property_ = TotalEnergyContributions("total_energy_contributions", raw_data=TOTAL_ENERGY_CONTRIBUTIONS_RAW_DATA)
         self.assertDeepAlmostEqual(property_.serialize_and_validate(), TOTAL_ENERGY_CONTRIBUTIONS)
