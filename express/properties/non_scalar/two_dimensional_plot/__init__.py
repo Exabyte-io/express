@@ -6,8 +6,8 @@ class TwoDimensionalPlotProperty(NonScalarProperty):
     Base 2D-plot property class.
     """
 
-    def __init__(self, name, parser, *args, **kwargs):
-        super(TwoDimensionalPlotProperty, self).__init__(name, parser, *args, **kwargs)
+    def __init__(self, name, raw_data, *args, **kwargs):
+        super(TwoDimensionalPlotProperty, self).__init__(name, raw_data, *args, **kwargs)
         self.legend = None
         self.xDataArray = None
         self.yDataSeries = None
@@ -15,8 +15,8 @@ class TwoDimensionalPlotProperty(NonScalarProperty):
     def _serialize(self):
         serialized_data = {
             'name': self.name,
-            'xAxis': self.esse.get_schema_default_values(self.name)["xAxis"],
-            'yAxis': self.esse.get_schema_default_values(self.name)["yAxis"],
+            'xAxis': self.esse.get_property_default_values(self.name)["xAxis"],
+            'yAxis': self.esse.get_property_default_values(self.name)["yAxis"],
             'xDataArray': self.xDataArray,
             'yDataSeries': self.yDataSeries,
         }

@@ -38,7 +38,7 @@ class BandGaps(NonScalarProperty):
     def _serialize_band_gaps(self, gap, type_):
         return {
             'type': type_,
-            'units': self.esse.get_schema_default_values(self.name)["units"],
+            'units': self.esse.get_property_default_values(self.name)["units"],
             'value': gap
         }
 
