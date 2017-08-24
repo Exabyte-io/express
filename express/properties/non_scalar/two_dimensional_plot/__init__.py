@@ -6,8 +6,8 @@ class TwoDimensionalPlotProperty(NonScalarProperty):
     Base 2D-plot property class.
     """
 
-    def __init__(self, name, parser, *args, **kwargs):
-        super(TwoDimensionalPlotProperty, self).__init__(name, parser, *args, **kwargs)
+    def __init__(self, name, raw_data, *args, **kwargs):
+        super(TwoDimensionalPlotProperty, self).__init__(name, raw_data, *args, **kwargs)
         self.legend = None
         self.xDataArray = None
         self.yDataSeries = None

@@ -19,6 +19,6 @@ class SymmetryTest(UnitTestBase):
     def tearDown(self):
         super(SymmetryTest, self).setUp()
 
-    def test_atomic_forces(self):
+    def test_symmetry(self):
         property_ = Symmetry("symmetry", raw_data=SYMMETRY_RAW_DATA)
         self.assertDeepAlmostEqual(property_.serialize_and_validate(), SYMMETRY)
