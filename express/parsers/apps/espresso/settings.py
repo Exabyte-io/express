@@ -39,9 +39,9 @@ REGEX = {
         "regex": r"([A-Z][a-z]?)\s+({0})\s+({0})\s+({0})".format(GENERAL_REGEX.double_number)
     },
     "stress_tensor": {
-        "regex": r"^\s*({0})\s+({0})\s+({0})\s+{0}\s+{0}\s+{0}".format(GENERAL_REGEX.double_number),
+        "regex": r"^\s*({0})\s+({0})\s+({0}) +{0}\s+{0}\s+{0}".format(GENERAL_REGEX.double_number),
         "start_flag": "entering subroutine stress ...",
-        "occurrences": -3,
+        "occurrences": 3,
         "output_type": "float",
         "match_groups": [1, 2, 3]
     },
@@ -58,9 +58,9 @@ REGEX = {
         "output_type": "float"
     },
     "forces_on_atoms": {
-        "regex": r"^\s*atom\s+\d\s+type\s+\d\s+force\s+=\s+({0})\s+({0})\s+({0})".format(GENERAL_REGEX.double_number),
+        "regex": r"^\s*atom\s+\d+\s+type\s+\d+\s+force\s+=\s+({0})\s+({0})\s+({0})".format(GENERAL_REGEX.double_number),
         "start_flag": "Forces acting on atoms (Ry/au):",
-        "occurrences": -2,
+        "occurrences": 0,
         "output_type": "float",
         "match_groups": [1, 2, 3]
     },
