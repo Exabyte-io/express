@@ -1,5 +1,7 @@
 import numpy as np
 
+from tests.integration.parsers.apps.espresso.references import DOS
+
 ATOMIC_FORCES_RAW_DATA = {
     "atomic_forces": [
         [
@@ -363,4 +365,8 @@ ELEMENTAL_RATIOS_RAW_DATA = {
         "Si": 0.6,
         "Ge": 0.4
     }
+}
+
+DOS_RAW_DATA = {
+    "dos": DOS
 }
