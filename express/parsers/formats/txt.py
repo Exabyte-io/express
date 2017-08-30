@@ -33,7 +33,7 @@ class BaseTXTParser(object):
         Return:
             any
         """
-        start_index = text.find(start_flag) if start_flag else 0
+        start_index = text.rfind(start_flag) if start_flag else 0
         pattern = re.compile(regex, re.I | re.MULTILINE)
         cast = getattr(__builtin__, output_type)
         # output type depends on the number of values required. List or single number.
@@ -41,8 +41,8 @@ class BaseTXTParser(object):
 
         match = pattern.findall(text[start_index:])
         if match:
-            if occurrences < 0:
-                match = match[occurrences:]
+            occurrences = len(match) if occurrences == 0 else occurrences
+            match = match[occurrences:] if occurrences < 0 else match[:occurrences]
             if isinstance(result, list):
                 for m in match:
                     result.append([cast(m[i - 1]) for i in match_groups]) if match_groups else result.append(cast(m))
