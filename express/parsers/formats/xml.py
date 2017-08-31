@@ -14,5 +14,9 @@ class BaseXMLParser(object):
         self.root = None
         self.xml_dir_name = None
         if self.xml_path and os.path.exists(self.xml_path):
-            self.root = ET.parse(self.xml_path).getroot()
-            self.xml_dir_name = os.path.dirname(self.xml_path)
+            try:
+                self.xml_dir_name = os.path.dirname(self.xml_path)
+                self.root = ET.parse(self.xml_path).getroot()
+            except:
+                # safely ignore broken xml file
+                pass
