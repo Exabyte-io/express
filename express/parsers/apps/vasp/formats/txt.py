@@ -85,7 +85,7 @@ class VaspTXTParser(BaseTXTParser):
         """
 
         lattices = []
-        match = re.findall(settings.REGEX["lattice_vectors"], text)
+        match = re.findall(settings.REGEX["lattice_vectors"]["regex"], text)
         if match:
             for lattice in match:
                 lattice = [float(_) for _ in lattice]
@@ -126,10 +126,10 @@ class VaspTXTParser(BaseTXTParser):
             ]
         """
         results = []
-        matches = re.findall(settings.REGEX["ion_positions_block"], text, re.DOTALL | re.MULTILINE)
+        matches = re.findall(settings.REGEX["ion_positions_block"]["regex"], text, re.DOTALL | re.MULTILINE)
         if matches:
             for match in matches:
-                ions = re.findall(settings.REGEX["basis_vectors"], match)
+                ions = re.findall(settings.REGEX["basis_vectors"]["regex"], match)
                 results.append({
                     "units": "angstrom",
                     "elements": [{"id": idx, "value": atom_names[idx]} for idx in range(len(ions))],
@@ -137,20 +137,20 @@ class VaspTXTParser(BaseTXTParser):
                 })
             return results
 
-    def convergence_ionic(self, text, atom_names):
+    def convergence_ionic(self, outcar, stdout, atom_names):
         """
         Extracts convergence ionic.
 
         Args:
-            text (str): text to extract data from.
-            atom_names (list): list of atom names.
+            outcar (str): OUTCAR content.
+            stdout (str): stdout content.
 
         Returns:
              list[dict]
         """
-        energies = (np.array(self._general_output_parser(text, **settings.REGEX["convergence_ionic"]))).tolist()
-        lattice_convergence = self._lattice_convergence(text)
-        basis_convergence = self._basis_convergence(text, atom_names)
+        energies = (np.array(self._general_output_parser(stdout, **settings.REGEX["convergence_ionic"]))).tolist()
+        lattice_convergence = self._lattice_convergence(outcar)
+        basis_convergence = self._basis_convergence(outcar, atom_names)
         if energies:
             data = [{'energy': _} for _ in energies]
             for idx, structure in enumerate(zip(lattice_convergence, basis_convergence)):

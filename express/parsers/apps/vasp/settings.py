@@ -31,6 +31,10 @@ REGEX = {
                  r"\s+({double})\s+({double})\s+({double}).+\n"
                  r"\s+({double})\s+({double})\s+({double})".format(double=GENERAL_REGEX.double_number)
     },
+    "basis_vectors": {
+        "regex": r'\s+({double})\s+({double})\s+({double})\s+{double}\s+{double}\s+{double}'.format(
+            double=GENERAL_REGEX.double_number)
+    },
     "pressure": {
         "regex": r"external pressure\s+=\s+({0})\s+kB".format(GENERAL_REGEX.double_number),
         "occurrences": -1,
