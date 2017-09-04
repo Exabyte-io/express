@@ -204,7 +204,9 @@ class VaspParser(BaseParser, IonicDataMixin, ElectronicDataMixin, ReciprocalData
         Returns:
              list[dict]
         """
-        return self.txt_parser.convergence_ionic(self._get_outcar_content(), self.xml_parser.atom_names())
+        outcar = self._get_outcar_content()
+        stdout = self._get_file_content(self.stdout_file)
+        return self.txt_parser.convergence_ionic(outcar, stdout, self.xml_parser.atom_names())
 
     def stress_tensor(self):
         """
