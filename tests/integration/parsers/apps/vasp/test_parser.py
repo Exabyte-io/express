@@ -38,6 +38,9 @@ class TestVaspParser(IntegrationTestBase):
     def test_vasp_convergence_electronic(self):
         self.assertDeepAlmostEqual(self.parser.convergence_electronic(), CONVERGENCE_ELECTRONIC, places=2)
 
+    def test_vasp_convergence_ionic(self):
+        self.assertDeepAlmostEqual(self.parser.convergence_ionic(), CONVERGENCE_IONIC, places=2)
+
     def test_vasp_stress_tensor(self):
         self.assertDeepAlmostEqual(self.parser.stress_tensor(), STRESS_TENSOR, places=2)
 
