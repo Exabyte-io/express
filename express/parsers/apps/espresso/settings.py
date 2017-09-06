@@ -109,3 +109,5 @@ TOTAL_ENERGY_CONTRIBUTIONS = {
         "output_type": "float"
     }
 }
+
+PHONON_DOS_FILE = "phonon_dos.out"
