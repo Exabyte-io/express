@@ -131,6 +131,12 @@ NON_SCALAR_PROPERTIES_MANIFEST = {
             'express.parsers.mixins.ionic.IonicDataMixin',
         ]
     },
+    'phonon_dispersions': {
+        'reference': 'express.properties.non_scalar.two_dimensional_plot.phonon_dispersions.PhononDispersions',
+        'mixins': [
+            'express.parsers.mixins.ionic.IonicDataMixin',
+        ]
+    },
 }
 
 CONVERGENCE_PROPERTIES = {
