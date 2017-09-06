@@ -210,7 +210,8 @@ class EspressoTXTParser(BaseTXTParser):
              list[dict]
         """
         energies = (
-        np.array(self._general_output_parser(text, **settings.REGEX["convergence_ionic"])) * Constant.RYDBERG).tolist()
+            np.array(
+                self._general_output_parser(text, **settings.REGEX["convergence_ionic"])) * Constant.RYDBERG).tolist()
         lattice_convergence = self._lattice_convergence(text)
         basis_convergence = self._basis_convergence(text)
         if energies:
@@ -445,3 +446,23 @@ class EspressoTXTParser(BaseTXTParser):
         """
         data = self._general_output_parser(text, **settings.REGEX['zero_point_energy'])
         return (sum(data) / 2) * Constant.cm_inv_to_ev
+
+    def phonon_dos(self):
+        """
+        Reads phonon dos file to extract vibrational frequencies and total DOS.
+
+        Returns:
+            dict
+
+        Example:
+            {
+                'frequency': [-1.2588E-05, 9.9999E-01, 2.0000E+00, 3.0000E+00, ....]
+                'total': [0.0000E+00, 2.5386E-07, 1.0154E-06, 2.2847E-06, ....]
+            }
+        """
+        phonon_dos_tot_file = find_file(settings.PHONON_DOS_FILE, self.work_dir)
+        frequencies, total_phonon_dos = self._total_dos(phonon_dos_tot_file)
+        return {
+            'frequency': frequencies.tolist(),
+            'total': total_phonon_dos.tolist()
+        }

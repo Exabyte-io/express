@@ -233,3 +233,13 @@ class IonicDataMixin(object):
              float
         """
         pass
+
+    @abstractmethod
+    def phonon_dos(self):
+        """
+        Returns phonon dos.
+
+        Returns:
+             dict
+        """
+        pass

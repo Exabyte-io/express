@@ -314,3 +314,12 @@ class EspressoParser(BaseParser, IonicDataMixin, ElectronicDataMixin, Reciprocal
              float
         """
         return self.txt_parser.zero_point_energy(self._get_file_content(self.stdout_file))
+
+    def phonon_dos(self):
+        """
+        Returns phonon dos.
+
+        Returns:
+             dict
+        """
+        return self.txt_parser.phonon_dos()
