@@ -243,3 +243,13 @@ class IonicDataMixin(object):
              dict
         """
         pass
+
+    @abstractmethod
+    def phonon_bands(self):
+        """
+        Returns phonon bands.
+
+        Returns:
+             dict
+        """
+        pass

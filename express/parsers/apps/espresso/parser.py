@@ -323,3 +323,12 @@ class EspressoParser(BaseParser, IonicDataMixin, ElectronicDataMixin, Reciprocal
              dict
         """
         return self.txt_parser.phonon_dos()
+
+    def phonon_bands(self):
+        """
+        Returns phonon bands.
+
+        Returns:
+             dict
+        """
+        return self.txt_parser.phonon_bands()
