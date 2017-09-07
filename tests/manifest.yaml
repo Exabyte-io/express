@@ -62,7 +62,7 @@ test_espresso_phonon_dos:
   workDir: data/espresso/test-003
   stdoutFile: data/espresso/test-003/phonon_dos.out
 
-test_espresso_phonon_dispersions:
+test_espresso_phonon_bands:
   workDir: data/espresso/test-003
   stdoutFile: data/espresso/test-003/normal_modes.out
 
