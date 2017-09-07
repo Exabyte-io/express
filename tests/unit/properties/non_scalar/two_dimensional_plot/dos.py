@@ -1,3 +1,5 @@
+from tests.integration.parsers.apps.espresso.references import DOS as dos
+
 DOS = {
     "legend": [
         {},
@@ -2761,4 +2763,8 @@ DOS = {
             0.00004400000034365803
         ]
     ]
+}
+
+DOS_RAW_DATA = {
+    "dos": dos
 }

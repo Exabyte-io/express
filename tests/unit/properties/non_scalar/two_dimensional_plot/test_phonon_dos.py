@@ -1,7 +1,6 @@
 from tests.unit import UnitTestBase
-from tests.unit.properties.raw_data import PHONON_DOS_RAW_DATA
-from tests.unit.properties.non_scalar.two_dimensional_plot.phonon_dos import PHONON_DOS
 from express.properties.non_scalar.two_dimensional_plot.phonon_dos import PhononDOS
+from tests.unit.properties.non_scalar.two_dimensional_plot.phonon_dos import PHONON_DOS, PHONON_DOS_RAW_DATA
 
 
 class PhononDOSTest(UnitTestBase):

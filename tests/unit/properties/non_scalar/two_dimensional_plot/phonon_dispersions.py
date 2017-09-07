@@ -1,3 +1,5 @@
+from tests.integration.parsers.apps.espresso.references import PHONON_BANDS as phonon_bands
+
 PHONON_DISPERSIONS = {
     "yDataSeries": [
         [
@@ -475,4 +477,8 @@ PHONON_DISPERSIONS = {
         "units": "cm-1",
         "label": "frequency"
     }
+}
+
+PHONON_DISPERSIONS_RAW_DATA = {
+    "phonon_bands": phonon_bands
 }
