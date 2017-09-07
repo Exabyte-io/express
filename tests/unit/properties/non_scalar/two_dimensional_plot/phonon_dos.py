@@ -1,3 +1,5 @@
+from tests.integration.parsers.apps.espresso.references import PHONON_DOS as phonon_dos
+
 PHONON_DOS = {
     "yDataSeries": [
         [
@@ -2116,4 +2118,8 @@ PHONON_DOS = {
         "units": "states/cm-1",
         "label": "Phonon DOS"
     }
+}
+
+PHONON_DOS_RAW_DATA = {
+    "phonon_dos": phonon_dos
 }

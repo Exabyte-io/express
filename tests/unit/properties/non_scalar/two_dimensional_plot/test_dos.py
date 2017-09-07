@@ -1,6 +1,5 @@
 from tests.unit import UnitTestBase
-from tests.unit.properties.raw_data import DOS_RAW_DATA
-from tests.unit.properties.non_scalar.two_dimensional_plot.dos import DOS
+from tests.unit.properties.non_scalar.two_dimensional_plot.dos import DOS, DOS_RAW_DATA
 from express.properties.non_scalar.two_dimensional_plot.density_of_states import DensityOfStates
 
 
