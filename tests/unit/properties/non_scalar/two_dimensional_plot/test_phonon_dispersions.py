@@ -1,7 +1,6 @@
 from tests.unit import UnitTestBase
-from tests.unit.properties.raw_data import PHONON_DISPERSIONS_RAW_DATA
 from express.properties.non_scalar.two_dimensional_plot.phonon_dispersions import PhononDispersions
-from tests.unit.properties.non_scalar.two_dimensional_plot.phonon_dispersions import PHONON_DISPERSIONS
+from tests.unit.properties.non_scalar.two_dimensional_plot.phonon_dispersions import PHONON_DISPERSIONS, PHONON_DISPERSIONS_RAW_DATA
 
 
 class PhononDispersionsTest(UnitTestBase):

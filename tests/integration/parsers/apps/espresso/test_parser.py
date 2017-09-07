@@ -55,3 +55,9 @@ class TestEspressoParser(IntegrationTestBase):
 
     def test_espresso_total_energy_contributions(self):
         self.assertDeepAlmostEqual(self.parser.total_energy_contributions(), TOTAL_ENERGY_CONTRIBUTION, places=2)
+
+    def test_espresso_phonon_dos(self):
+        self.assertDeepAlmostEqual(self.parser.phonon_dos(), PHONON_DOS, places=2)
+
+    def test_espresso_phonon_bands(self):
+        self.assertDeepAlmostEqual(self.parser.phonon_bands(), PHONON_BANDS, places=2)
