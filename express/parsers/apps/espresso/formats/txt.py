@@ -210,7 +210,8 @@ class EspressoTXTParser(BaseTXTParser):
              list[dict]
         """
         energies = (
-        np.array(self._general_output_parser(text, **settings.REGEX["convergence_ionic"])) * Constant.RYDBERG).tolist()
+            np.array(
+                self._general_output_parser(text, **settings.REGEX["convergence_ionic"])) * Constant.RYDBERG).tolist()
         lattice_convergence = self._lattice_convergence(text)
         basis_convergence = self._basis_convergence(text)
         if energies:
@@ -445,3 +446,98 @@ class EspressoTXTParser(BaseTXTParser):
         """
         data = self._general_output_parser(text, **settings.REGEX['zero_point_energy'])
         return (sum(data) / 2) * Constant.cm_inv_to_ev
+
+    def phonon_dos(self):
+        """
+        Extract vibrational frequencies and total DOS.
+
+        Returns:
+            dict
+
+        Example:
+            {
+                'frequency': [-1.2588E-05, 9.9999E-01, 2.0000E+00, 3.0000E+00, ....]
+                'total': [0.0000E+00, 2.5386E-07, 1.0154E-06, 2.2847E-06, ....]
+            }
+        """
+        phonon_dos_tot_file = find_file(settings.PHONON_DOS_FILE, self.work_dir)
+        frequencies, total_phonon_dos = self._total_dos(phonon_dos_tot_file)
+        return {
+            'frequency': frequencies.tolist(),
+            'total': total_phonon_dos.tolist()
+        }
+
+    def phonon_dispersions(self):
+        """
+        Extract vibrational frequencies at qpoints along the high symmetry points in Brillouin zone.
+
+        Returns:
+            dict
+
+        Example:
+            {
+                'qpoints': [[0.00, 0.00, 0.00],[0.00, 0.00, 0.01],....],
+                'frequencies': [['-0.0000', '-0.0000', '-0.0000', '574.0778', '574.0778', '574.2923'],
+                ['29.3716', '30.0630', '70.4699', '568.0790', '569.7664', '569.9710'], ....]
+            }
+        """
+        modes_file = find_file(settings.PHONON_MODES_FILE, self.work_dir)
+        qpoints, frequencies = self.phonon_frequencies(modes_file)
+        return {
+            'qpoints': qpoints.tolist(),
+            'frequencies': frequencies.tolist()
+        }
+
+    def phonon_frequencies(self, modes_file):
+        """
+        Extracts qpoints along the paths in Brillouin zone and the phonon frequencies at each qpoint.
+
+        Example file:
+            #
+             q =       0.0000      0.0000      0.0000
+             **************************************************************************
+             freq (    1) =      -0.004399 [THz] =      -0.146739 [cm-1]
+             ( -0.366864   0.000000     0.211786   0.000000     0.265747   0.000000   )
+             ( -0.367203   0.000000     0.211982   0.000000     0.264868   0.000000   )
+             ( -0.367036   0.000000     0.211885   0.000000     0.265493   0.000000   )
+             ( -0.367206   0.000000     0.211984   0.000000     0.264823   0.000000   )
+             freq (    2) =      -0.004372 [THz] =      -0.145845 [cm-1]
+             ....
+             ....
+             **************************************************************************
+             q =       0.0000      0.0000      0.1000
+             **************************************************************************
+             freq (    1) =      -0.004399 [THz] =      -0.146739 [cm-1]
+             ( -0.366864   0.000000     0.211786   0.000000     0.265747   0.000000   )
+             ( -0.367203   0.000000     0.211982   0.000000     0.264868   0.000000   )
+             ( -0.367036   0.000000     0.211885   0.000000     0.265493   0.000000   )
+             ( -0.367206   0.000000     0.211984   0.000000     0.264823   0.000000   )
+             freq (    2) =      -0.004372 [THz] =      -0.145845 [cm-1]
+             ....
+             ....
+             **************************************************************************
+
+        Args:
+            modes_file (str): path to modes file (normal_modes.out).
+
+        Returns:
+            tuple
+
+        Example:
+            ([
+                [0.0000, 0.0000, 0.0000],
+                [0.000, 0.0000, 0.1000]
+            ],
+            [
+                [5.7429E+02, 5.7429E+02],
+                [5.69970E+02, 5.69970E+02],
+                .....,
+                [4.5469E+02, 4.5469E+02]
+            ])
+        """
+        with open(modes_file, 'r') as f:
+            text = f.read()
+        qpoints = np.array(re.compile(settings.REGEX["qpoints"]["regex"]).findall(text), dtype=np.float)
+        frequencies = np.array(re.compile(settings.REGEX["phonon_frequencies"]["regex"]).findall(text), dtype=np.float)
+        frequencies = np.transpose(frequencies.reshape(qpoints.shape[0], frequencies.shape[0] / qpoints.shape[0]))
+        return qpoints, frequencies
