@@ -467,7 +467,7 @@ class EspressoTXTParser(BaseTXTParser):
             'total': total_phonon_dos.tolist()
         }
 
-    def phonon_bands(self):
+    def phonon_dispersions(self):
         """
         Extract vibrational frequencies at qpoints along the high symmetry points in Brillouin zone.
 

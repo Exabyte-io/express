@@ -8,6 +8,6 @@ class PhononDispersions(TwoDimensionalPlotProperty):
 
     def __init__(self, name, raw_data, *args, **kwargs):
         super(PhononDispersions, self).__init__(name, raw_data, *args, **kwargs)
-        phonon_bands = self.raw_data["phonon_bands"]
-        self.xDataArray = phonon_bands['qpoints']
-        self.yDataSeries = phonon_bands['frequencies']
+        phonon_dispersions = self.raw_data["phonon_dispersions"]
+        self.xDataArray = phonon_dispersions['qpoints']
+        self.yDataSeries = phonon_dispersions['frequencies']
