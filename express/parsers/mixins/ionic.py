@@ -75,7 +75,17 @@ class IonicDataMixin(object):
         Extracts convergence ionic.
 
         Returns:
-             list[dict]
+             list[float]
+
+        Example:
+            [
+                1.4018213061907816,
+                0.5939946985677435,
+                0.007003124785903934,
+                0.0010198831091687887,
+                0.000042041606287774244,
+                0.000007619190783544846
+              ]
         """
         pass
 
@@ -181,6 +191,9 @@ class IonicDataMixin(object):
 
         Return:
              str
+
+        Examples:
+             SiGe
         """
         pass
 
@@ -191,6 +204,9 @@ class IonicDataMixin(object):
 
         Return:
              str
+
+        Examples:
+             SiGe
         """
         pass
 
@@ -201,6 +217,9 @@ class IonicDataMixin(object):
 
         Returns:
              float
+
+        Examples:
+             1
         """
         pass
 
@@ -211,6 +230,12 @@ class IonicDataMixin(object):
 
         Returns:
              dict
+
+        Examples:
+            {
+                "Si": 0.6,
+                "Ge": 0.4
+            }
         """
         pass
 
@@ -221,6 +246,9 @@ class IonicDataMixin(object):
 
         Returns:
              float
+
+        Examples:
+             1
         """
         pass
 
@@ -231,6 +259,9 @@ class IonicDataMixin(object):
 
         Returns:
              float
+
+        Examples:
+             73.72
         """
         pass
 
@@ -241,6 +272,12 @@ class IonicDataMixin(object):
 
         Returns:
              dict
+
+        Example:
+            {
+                'frequency': [-1.2588E-05, 9.9999E-01, 2.0000E+00, 3.0000E+00, ....]
+                'total': [0.0000E+00, 2.5386E-07, 1.0154E-06, 2.2847E-06, ....]
+            }
         """
         pass
 
@@ -251,5 +288,12 @@ class IonicDataMixin(object):
 
         Returns:
              dict
+
+        Example:
+            {
+                'qpoints': [[0.00, 0.00, 0.00],[0.00, 0.00, 0.01],....],
+                'frequencies': [['-0.0000', '-0.0000', '-0.0000', '574.0778', '574.0778', '574.2923'],
+                ['29.3716', '30.0630', '70.4699', '568.0790', '569.7664', '569.9710'], ....]
+            }
         """
         pass
