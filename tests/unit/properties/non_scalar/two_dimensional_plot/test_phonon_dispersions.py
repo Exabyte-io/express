@@ -1,6 +1,40 @@
 from tests.unit import UnitTestBase
+from tests.data.raw_data import PHONON_DISPERSIONS_RAW_DATA
 from express.properties.non_scalar.two_dimensional_plot.phonon_dispersions import PhononDispersions
-from tests.unit.properties.non_scalar.two_dimensional_plot.phonon_dispersions import PHONON_DISPERSIONS, PHONON_DISPERSIONS_RAW_DATA
+
+PHONON_DISPERSIONS = {
+    "yDataSeries": [
+        [
+            -6e-06,
+            -6.859784
+        ],
+        [
+            -6e-06,
+            -6.859784
+        ]
+    ],
+    "xDataArray": [
+        [
+            0.0,
+            0.0,
+            0.0
+        ],
+        [
+            0.0,
+            0.05,
+            0.05
+        ]
+    ],
+    "name": "phonon_dispersions",
+    "xAxis": {
+        "units": "crystal",
+        "label": "qpoints"
+    },
+    "yAxis": {
+        "units": "cm-1",
+        "label": "frequency"
+    }
+}
 
 
 class PhononDispersionsTest(UnitTestBase):
