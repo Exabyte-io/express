@@ -1,5 +1,5 @@
 from tests.unit import UnitTestBase
-from tests.unit.properties.raw_data import BAND_RAW_DATA
+from tests.data.raw_data import BAND_RAW_DATA
 from express.properties.non_scalar.bandgaps import BandGaps
 
 BAND_GAPS = {
