@@ -1,6 +1,6 @@
 from tests.unit import UnitTestBase
 from express.properties.scalar.p_norm import PNorm
-from tests.unit.properties.raw_data import ELEMENTAL_RATIOS_RAW_DATA
+from tests.data.raw_data import ELEMENTAL_RATIOS_RAW_DATA
 
 P_NORM = {
     "degree": 0,
