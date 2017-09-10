@@ -1,6 +1,32 @@
 from tests.unit import UnitTestBase
+from tests.data.raw_data import PHONON_DOS_RAW_DATA
 from express.properties.non_scalar.two_dimensional_plot.phonon_dos import PhononDOS
-from tests.unit.properties.non_scalar.two_dimensional_plot.phonon_dos import PHONON_DOS, PHONON_DOS_RAW_DATA
+
+PHONON_DOS = {
+    "yDataSeries": [
+        [
+            0.0,
+            1.7269000451847205e-08,
+            6.90749999421314e-08
+        ]
+    ],
+    "xDataArray": [
+        [
+            -313.8999938964844,
+            -312.8999938964844,
+            -311.8999938964844
+        ]
+    ],
+    "name": "phonon_dos",
+    "xAxis": {
+        "units": "cm-1",
+        "label": "frequency"
+    },
+    "yAxis": {
+        "units": "states/cm-1",
+        "label": "Phonon DOS"
+    }
+}
 
 
 class PhononDOSTest(UnitTestBase):
