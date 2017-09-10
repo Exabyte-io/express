@@ -83,18 +83,43 @@ class ElectronicDataMixin(object):
             dict
 
         Example:
-            [
-                {
-                    'element': 'C',
-                    'electronicState': 's-down',
-                    'value': [0.00015, 0.000187, 0.000232, 0.000287, 0.000355, 0.000437]
-                },
-                {
-                    'element': 'Ti',
-                    'electronicState': 'p-up',
-                    'value': [6.87e-06, 8.5e-06, 1.0e-05, 1.3e-05, 1.63e-05, 2.01e-05]
-                }
-            ]
+            {
+                "energy": [
+                    -6.005000114440918,
+                    -5.954999923706055,
+                    -5.90500020980835
+                ],
+                "partial": [
+                    [
+                        1.6499999980444308E-17,
+                        1.3080000562020133E-16,
+                        7.899999954541818E-16
+                    ]
+                ],
+                "partial_info": [
+                    {
+                        "electronicState": "2py",
+                        "element": "Si"
+                    },
+                    {
+                        "electronicState": "2px",
+                        "element": "Si"
+                    },
+                    {
+                        "electronicState": "1s",
+                        "element": "Si"
+                    },
+                    {
+                        "electronicState": "2pz",
+                        "element": "Si"
+                    }
+                ],
+                "total": [
+                    0.00012799999967683107,
+                    0.0010100000072270632,
+                    0.006130000110715628
+                ]
+            }
         """
         pass
 
