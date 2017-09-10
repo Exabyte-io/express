@@ -5,11 +5,12 @@ ExPreSS: Exabyte Property Ex(ss)tractor, Sourcer, Serializer class.
 ## Run tests
 Follow the below steps to run ExPrESS tests:
 
-1. Untar `data.tgz` file which contains input data for ExPrESS parsers:
+1. Download `express-tests-data.tgz` and extract it:
 
 ```bash
-cd tests/data
-tar zxvf data.tgz
+cd tests
+wget http://files.exabyte.io:18/apps/express-tests-data.tgz
+tar zxvf express-tests-data.tgz
 ``` 
 
 2. Setup Python environment according to the attached screenshot:
@@ -24,12 +25,12 @@ tar zxvf data.tgz
 
 
 ## Re-generate input data
-In order to re-generate input data for tests you should go to each test directory located and run `sh run.sh` command. Please note that the command needs to be executed on master node where module files and applications are installed. After re-running the tests
-you should create a new `data.tgz` file and push to git LFS:
+In order to re-generate input data for tests you should go to each test directory located and run `sh run.sh` command. 
+Please note that the command needs to be executed on master node where module files and applications are installed. 
+After re-running the tests you should create a new `express-tests-data.tgz` file and push to file server:
+
 ```bash
 cd tests
-tar zcvf data.tgz data
-git add data.tgz
-git commit -m 're-generated data.tgz'
-git push
+tar zcvf express-tests-data.tgz data
+scp express-tests-data.tgz root@exabyte.io:/www/files/apps/express-tests-data.tgz
 ```
