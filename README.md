@@ -9,7 +9,7 @@ Follow the below steps to run ExPrESS tests:
 
 ```bash
 cd tests
-wget http://files.exabyte.io:18/apps/express-tests-data.tgz
+wget http://files.exabyte.io:18/uploads/express-tests-data.tgz
 tar zxvf express-tests-data.tgz
 ``` 
 
@@ -32,5 +32,5 @@ After re-running the tests you should create a new `express-tests-data.tgz` file
 ```bash
 cd tests
 tar zcvf express-tests-data.tgz data
-scp express-tests-data.tgz root@exabyte.io:/www/files/apps/express-tests-data.tgz
+sh {EXABYTE_STACK_REPO_PATH}/vagrant/scripts/upload-file.sh express-tests-data.tgz
 ```
