@@ -1,6 +1,6 @@
 from tests.unit import UnitTestBase
+from tests.data.raw_data import SYMMETRY_RAW_DATA
 from express.properties.non_scalar.symmetry import Symmetry
-from tests.unit.properties.raw_data import SYMMETRY_RAW_DATA
 
 SYMMETRY = {
     "spaceGroupSymbol": "Fd-3m",

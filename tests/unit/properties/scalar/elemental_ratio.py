@@ -1,5 +1,5 @@
 from tests.unit import UnitTestBase
-from tests.unit.properties.raw_data import ELEMENTAL_RATIOS_RAW_DATA
+from tests.data.raw_data import ELEMENTAL_RATIOS_RAW_DATA
 from express.properties.scalar.elemental_ratio import ElementalRatio
 
 ELEMENTAL_RATIO = {

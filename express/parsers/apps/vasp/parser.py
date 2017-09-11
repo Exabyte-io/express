@@ -41,11 +41,8 @@ class VaspParser(BaseParser, IonicDataMixin, ElectronicDataMixin, ReciprocalData
         """
         Returns total energy.
 
-        Returns:
-             float
-
-        Example:
-             -19.00890332
+        Reference:
+            func: express.parsers.mixins.electronic.ElectronicDataMixin.total_energy
         """
         return self.txt_parser.total_energy(self._get_file_content(self.stdout_file))
 
@@ -53,11 +50,8 @@ class VaspParser(BaseParser, IonicDataMixin, ElectronicDataMixin, ReciprocalData
         """
         Returns fermi energy.
 
-        Returns:
-             float
-
-        Example:
-             6.6078556811104292
+        Reference:
+            func: express.parsers.mixins.electronic.ElectronicDataMixin.fermi_energy
         """
         return self.xml_parser.fermi_energy()
 
@@ -65,11 +59,8 @@ class VaspParser(BaseParser, IonicDataMixin, ElectronicDataMixin, ReciprocalData
         """
         Returns the number of spins.
 
-        Returns:
-             int
-
-        Example:
-             2
+        Reference:
+            func: express.parsers.mixins.electronic.ElectronicDataMixin.nspins
         """
         return self.xml_parser.nspins()
 
@@ -77,24 +68,8 @@ class VaspParser(BaseParser, IonicDataMixin, ElectronicDataMixin, ReciprocalData
         """
         Returns eigenvalues for all kpoints.
 
-        Returns:
-             list[dict]
-
-        Example:
-            [
-                {
-                    'kpoint': [-0.5, 0.5, 0.5],
-                    'weight': 9.5238095E-002,
-                    'eigenvalues': [
-                        {
-                            'energies': [-1.4498446E-001, ..., 4.6507387E-001],
-                            'occupations': [1, ... , 0],
-                            'spin': 0.5
-                        }
-                    ]
-                },
-                ...
-            ]
+        Reference:
+            func: express.parsers.mixins.electronic.ElectronicDataMixin.eigenvalues_at_kpoints
         """
         return self.xml_parser.eigenvalues_at_kpoints()
 
@@ -102,21 +77,8 @@ class VaspParser(BaseParser, IonicDataMixin, ElectronicDataMixin, ReciprocalData
         """
         Returns ibz_k_points.
 
-        Note:
-            VASP does not return kpoints in irreducible Brillouin zone!
-
-        Returns:
-             ndarray
-
-        Example:
-            [
-                [  0.00000000e+00   0.00000000e+00   0.00000000e+00]
-                [ -4.84710133e-17  -4.84710133e-17  -5.00000000e-01]
-                [  0.00000000e+00  -5.00000000e-01   0.00000000e+00]
-                [ -4.84710133e-17  -5.00000000e-01  -5.00000000e-01]
-                [ -5.00000000e-01   6.58404272e-17   0.00000000e+00]
-                [ -5.00000000e-01  -5.00000000e-01   0.00000000e+00]
-            ]
+        Reference:
+            func: express.parsers.mixins.reciprocal.ReciprocalDataMixin.ibz_k_points
         """
         return np.array([eigenvalueData["kpoint"] for eigenvalueData in self.eigenvalues_at_kpoints()])
 
@@ -124,22 +86,8 @@ class VaspParser(BaseParser, IonicDataMixin, ElectronicDataMixin, ReciprocalData
         """
         Returns density of states.
 
-        Returns:
-            dict
-
-        Example:
-            [
-                {
-                    'element': 'C',
-                    'electronicState': 's-down',
-                    'value': [0.00015, 0.000187, 0.000232, 0.000287, 0.000355, 0.000437]
-                },
-                {
-                    'element': 'Ti',
-                    'electronicState': 'p-up',
-                    'value': [6.87e-06, 8.5e-06, 1.0e-05, 1.3e-05, 1.63e-05, 2.01e-05]
-                }
-            ]
+        Reference:
+            func: express.parsers.mixins.electronic.ElectronicDataMixin.dos
         """
         return self.xml_parser.dos(combined=True)
 
@@ -147,15 +95,8 @@ class VaspParser(BaseParser, IonicDataMixin, ElectronicDataMixin, ReciprocalData
         """
         Returns basis.
 
-        Returns:
-            dict
-
-        Example:
-            {
-                'units': 'bohr',
-                'elements': [{'id': 1, 'value': 'Si'}, {'id': 2, 'value': 'Si'}],
-                'coordinates': [{'id': 1, 'value': [0.0, 0.0, 0.0]}, {'id': 2, 'value': [0.0, 0.0, 0.0]}]
-             }
+        Reference:
+            func: express.parsers.mixins.ionic.IonicDataMixin.basis
         """
         return self.xml_parser.basis()
 
@@ -163,18 +104,8 @@ class VaspParser(BaseParser, IonicDataMixin, ElectronicDataMixin, ReciprocalData
         """
         Returns lattice.
 
-        Returns:
-            dict
-
-        Example:
-            {
-                'vectors': {
-                    'a': [-0.561154473, -0.000000000, 0.561154473],
-                    'b': [-0.000000000, 0.561154473, 0.561154473],
-                    'c': [-0.561154473, 0.561154473, 0.000000000],
-                    'alat': 9.44858082
-                }
-             }
+        Reference:
+            func: express.parsers.mixins.ionic.IonicDataMixin.lattice_vectors
         """
         return self.xml_parser.lattice_vectors()
 
@@ -182,18 +113,8 @@ class VaspParser(BaseParser, IonicDataMixin, ElectronicDataMixin, ReciprocalData
         """
         Extracts convergence electronic.
 
-        Returns:
-             list[float]
-
-        Example:
-            [
-                1.4018213061907816,
-                0.5939946985677435,
-                0.007003124785903934,
-                0.0010198831091687887,
-                4.2041606287774244e-05,
-                7.619190783544846e-06
-            ]
+        Reference:
+            func: express.parsers.mixins.electronic.ElectronicDataMixin.convergence_electronic
         """
         return self.txt_parser.convergence_electronic(self._get_file_content(self.stdout_file))
 
@@ -201,8 +122,8 @@ class VaspParser(BaseParser, IonicDataMixin, ElectronicDataMixin, ReciprocalData
         """
         Extracts convergence ionic.
 
-        Returns:
-             list[dict]
+        Reference:
+            func: express.parsers.mixins.ionic.IonicDataMixin.convergence_ionic
         """
         outcar = self._get_outcar_content()
         stdout = self._get_file_content(self.stdout_file)
@@ -212,27 +133,8 @@ class VaspParser(BaseParser, IonicDataMixin, ElectronicDataMixin, ReciprocalData
         """
         Returns stress tensor.
 
-        Returns:
-            list
-
-        Example:
-            [
-                [
-                    0.00050115,
-                    -1e-08,
-                    0.0
-                ],
-                [
-                    -1e-08,
-                    0.0005011,
-                    0.0
-                ],
-                [
-                    0.0,
-                    -0.0,
-                    0.00050111
-                ]
-            ]
+        Reference:
+            func: express.parsers.mixins.ionic.IonicDataMixin.stress_tensor
         """
         return self.xml_parser.stress_tensor()
 
@@ -240,11 +142,8 @@ class VaspParser(BaseParser, IonicDataMixin, ElectronicDataMixin, ReciprocalData
         """
         Returns pressure.
 
-        Returns:
-            float
-
-        Examples:
-             73.72
+        Reference:
+            func: express.parsers.mixins.ionic.IonicDataMixin.pressure
         """
         return self.txt_parser.pressure(self._get_outcar_content())
 
@@ -252,11 +151,8 @@ class VaspParser(BaseParser, IonicDataMixin, ElectronicDataMixin, ReciprocalData
         """
         Returns total force.
 
-        Returns:
-            float
-
-        Example:
-            1e-06
+        Reference:
+            func: express.parsers.mixins.ionic.IonicDataMixin.total_force
         """
         return self.txt_parser.total_force(self._get_outcar_content())
 
@@ -264,22 +160,8 @@ class VaspParser(BaseParser, IonicDataMixin, ElectronicDataMixin, ReciprocalData
         """
         Returns forces that is exerted on each atom by its surroundings.
 
-        Returns:
-            list
-
-        Example:
-            [
-                [
-                    -3.9e-07,
-                    -2.4e-07,
-                    0.0
-                ],
-                [
-                    3.9e-07,
-                    2.4e-07,
-                    0.0
-                ]
-            ]
+        Reference:
+            func: express.parsers.mixins.ionic.IonicDataMixin.atomic_forces
         """
         return self.xml_parser.atomic_forces()
 
@@ -287,37 +169,8 @@ class VaspParser(BaseParser, IonicDataMixin, ElectronicDataMixin, ReciprocalData
         """
         Extracts total energy contributions.
 
-        Returns:
-            dict
-
-        Example:
-            {
-                "harrisFoulkes": {
-                    "name": "harris_foulkes",
-                    "value": -258.6293887585482
-                },
-                "ewald": {
-                    "name": "ewald",
-                    "value": -226.94126871332813
-                },
-                "oneElectron": {
-                    "name": "one_electron",
-                    "value": 68.65366986552296
-                },
-                "smearing": {
-                    "name": "smearing",
-                    "value": -0.0
-                },
-                "hartree": {
-                    "name": "hartree",
-                    "value": 17.72349166363712
-                },
-                "exchangeCorrelation": {
-                    "name": "exchange_correlation",
-                    "value": -118.06528742483022
-                }
-            }
-        }
+        Reference:
+            func: express.parsers.mixins.electronic.ElectronicDataMixin.total_energy_contributions
         """
         return self.txt_parser.total_energy_contributions(self._get_outcar_content())
 
@@ -325,7 +178,7 @@ class VaspParser(BaseParser, IonicDataMixin, ElectronicDataMixin, ReciprocalData
         """
         Returns zero point energy.
 
-        Returns:
-             float
+        Reference:
+            func: express.parsers.mixins.ionic.IonicDataMixin.zero_point_energy
         """
         return self.txt_parser.zero_point_energy(self._get_outcar_content())

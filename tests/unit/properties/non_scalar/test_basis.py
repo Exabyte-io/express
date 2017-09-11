@@ -1,6 +1,6 @@
 from tests.unit import UnitTestBase
+from tests.data.raw_data import BASIS_RAW_DATA
 from express.properties.non_scalar.basis import Basis
-from tests.unit.properties.raw_data import BASIS_RAW_DATA
 
 BASIS = {
     "name": "basis",

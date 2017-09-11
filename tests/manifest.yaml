@@ -58,6 +58,14 @@ test_espresso_total_energy_contributions:
   workDir: data/espresso/test-001
   stdoutFile: data/espresso/test-001/pw-scf.out
 
+test_espresso_phonon_dos:
+  workDir: data/espresso/test-003
+  stdoutFile: data/espresso/test-003/phonon_dos.out
+
+test_espresso_phonon_dispersion:
+  workDir: data/espresso/test-003
+  stdoutFile: data/espresso/test-003/normal_modes.out
+
 test_vasp_total_energy:
   workDir: data/vasp/test-001
   stdoutFile: data/vasp/test-001/vasp.out

@@ -1,6 +1,6 @@
+from tests.data.espresso.references import *
 from tests.integration import IntegrationTestBase
 from express.parsers.apps.espresso.parser import EspressoParser
-from tests.integration.parsers.apps.espresso.references import *
 
 
 class TestEspressoParser(IntegrationTestBase):
@@ -55,3 +55,9 @@ class TestEspressoParser(IntegrationTestBase):
 
     def test_espresso_total_energy_contributions(self):
         self.assertDeepAlmostEqual(self.parser.total_energy_contributions(), TOTAL_ENERGY_CONTRIBUTION, places=2)
+
+    def test_espresso_phonon_dos(self):
+        self.assertDeepAlmostEqual(self.parser.phonon_dos(), PHONON_DOS, places=2)
+
+    def test_espresso_phonon_dispersion(self):
+        self.assertDeepAlmostEqual(self.parser.phonon_dispersions(), PHONON_DISPERSIONS, places=2)
