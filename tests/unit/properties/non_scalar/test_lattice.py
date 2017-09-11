@@ -1,6 +1,6 @@
 from tests.unit import UnitTestBase
+from tests.data.raw_data import LATTICE_RAW_DATA
 from express.properties.non_scalar.lattice import Lattice
-from tests.unit.properties.raw_data import LATTICE_RAW_DATA
 
 LATTICE = {
     "vectors": {

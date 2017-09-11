@@ -28,11 +28,8 @@ class PyMatGenParser(BaseParser, IonicDataMixin):
         """
         Returns lattice vectors.
 
-        Returns:
-            dict
-
-        Example:
-            express.parsers.mixins.ionic.IonicDataMixin#lattice_vectors
+        Reference:
+            func: express.parsers.mixins.ionic.IonicDataMixin.lattice_vectors
         """
         return {
             'vectors': {
@@ -47,11 +44,8 @@ class PyMatGenParser(BaseParser, IonicDataMixin):
         """
         Returns lattice bravais.
 
-        Returns:
-            dict
-
-        Example:
-            express.parsers.mixins.ionic.IonicDataMixin#lattice_bravais
+        Reference:
+            func: express.parsers.mixins.ionic.IonicDataMixin.lattice_bravais
         """
         return {
             "type": self._lattice_type(),
@@ -116,11 +110,8 @@ class PyMatGenParser(BaseParser, IonicDataMixin):
         """
         Returns basis.
 
-        Returns:
-            dict
-
-        Example:
-            express.parsers.mixins.ionic.IonicDataMixin#basis
+        Reference:
+            func: express.parsers.mixins.ionic.IonicDataMixin.basis
         """
         return {
             'units': 'crystal',
@@ -132,8 +123,8 @@ class PyMatGenParser(BaseParser, IonicDataMixin):
         """
         Returns space group symbol.
 
-        Returns:
-             str
+        Reference:
+            func: express.parsers.mixins.ionic.IonicDataMixin.space_group_symbol
         """
         return {
             "value": mg.symmetry.analyzer.SpacegroupAnalyzer(self.structure).get_spacegroup_symbol(),
@@ -144,8 +135,8 @@ class PyMatGenParser(BaseParser, IonicDataMixin):
         """
         Returns formula.
 
-        Return:
-             str
+        Reference:
+            func: express.parsers.mixins.ionic.IonicDataMixin.formula
         """
         return self.structure.composition.formula
 
@@ -153,8 +144,8 @@ class PyMatGenParser(BaseParser, IonicDataMixin):
         """
         Returns reduced formula.
 
-        Return:
-             str
+        Reference:
+            func: express.parsers.mixins.ionic.IonicDataMixin.reduced_formula
         """
         return self.structure.composition.reduced_formula
 
@@ -162,8 +153,8 @@ class PyMatGenParser(BaseParser, IonicDataMixin):
         """
         Returns volume.
 
-        Returns:
-             float
+        Reference:
+            func: express.parsers.mixins.ionic.IonicDataMixin.volume
         """
         return self.structure.volume
 
@@ -171,8 +162,8 @@ class PyMatGenParser(BaseParser, IonicDataMixin):
         """
         Returns elemental ratios.
 
-        Returns:
-            dict
+        Reference:
+            func: express.parsers.mixins.ionic.IonicDataMixin.elemental_ratios
         """
         return {
             el.symbol: self.structure.composition.get_atomic_fraction(el) for el in self.structure.composition.elements
@@ -182,7 +173,7 @@ class PyMatGenParser(BaseParser, IonicDataMixin):
         """
         Returns density.
 
-        Returns:
-             float
+        Reference:
+            func: express.parsers.mixins.ionic.IonicDataMixin.density
         """
         return self.structure.density
