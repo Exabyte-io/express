@@ -79,7 +79,10 @@ class VaspXMLParser(BaseXMLParser):
             eigenvalues[id_spin] = {}
             occupations[id_spin] = {}
             for id_kpt, eigen_kpt in enumerate(eigen_spin):
-                kpt_data = np.array([list(map(float, _.text.split())) for _ in eigen_kpt])
+                # TODO: strip out the non-numeric values (*) for all kpoints instead of replacing them with last number.
+                kpt_data = [list(map(float, _.text.split())) for _ in eigen_kpt if "*" not in _.text]
+                kpt_data.extend([kpt_data[-1] for i in range(len(eigen_kpt) - len(kpt_data))])
+                kpt_data = np.array(kpt_data)
                 eigenvalues[id_spin][id_kpt] = kpt_data[:, 0]
                 occupations[id_spin][id_kpt] = kpt_data[:, 1]
         return eigenvalues, occupations
