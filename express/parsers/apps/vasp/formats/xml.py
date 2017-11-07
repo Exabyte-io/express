@@ -1,6 +1,6 @@
 import string
-
 import numpy as np
+from operator import itemgetter
 
 from express.parsers.formats.xml import BaseXMLParser
 
@@ -82,7 +82,8 @@ class VaspXMLParser(BaseXMLParser):
                 # TODO: strip out the non-numeric values (*) for all kpoints instead of replacing them with last number.
                 kpt_data = [list(map(float, _.text.split())) for _ in eigen_kpt if "*" not in _.text]
                 kpt_data.extend([kpt_data[-1] for i in range(len(eigen_kpt) - len(kpt_data))])
-                kpt_data = np.array(kpt_data)
+                # eigenvalues mayn't be sorted properly.
+                kpt_data = np.array(sorted(sorted(kpt_data, key=itemgetter(0)), key=itemgetter(1), reverse=True))
                 eigenvalues[id_spin][id_kpt] = kpt_data[:, 0]
                 occupations[id_spin][id_kpt] = kpt_data[:, 1]
         return eigenvalues, occupations
