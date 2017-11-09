@@ -148,17 +148,29 @@ class VaspTXTParser(BaseTXTParser):
         Returns:
              list[dict]
         """
-        energies = (np.array(self._general_output_parser(stdout, **settings.REGEX["convergence_ionic"]))).tolist()
+        data = []
+        blocks = re.findall(settings.REGEX["convergence_ionic_blocks"]["regex"], stdout, re.DOTALL | re.MULTILINE)
+        for idx, block in enumerate(blocks):
+            energies = self._general_output_parser(block, **settings.REGEX["convergence_ionic_energies"])
+            data.append({
+                "energy": energies[-1],
+                "electronic": {
+                    "units": "eV",
+                    "data": self._general_output_parser(block, **settings.REGEX["convergence_electronic"])
+                },
+            })
+
         lattice_convergence = self._lattice_convergence(outcar)
         basis_convergence = self._basis_convergence(outcar, atom_names)
-        if energies:
-            data = [{'energy': _} for _ in energies]
-            for idx, structure in enumerate(zip(lattice_convergence, basis_convergence)):
-                data[idx].update({'structure': {
+        for idx, structure in enumerate(zip(lattice_convergence, basis_convergence)):
+            data[idx].update({
+                'structure': {
                     'lattice': structure[0],
                     'basis': structure[1]
-                }})
-            return data
+                }
+            })
+
+        return data
 
     def convergence_electronic(self, text):
         """

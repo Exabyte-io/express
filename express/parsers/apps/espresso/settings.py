@@ -23,7 +23,10 @@ REGEX = {
         "regex": r"estimated scf accuracy\s+<\s+({0})".format(DOUBLE_REGEX),
         "output_type": "float",
     },
-    "convergence_ionic": {
+    "convergence_ionic_blocks": {
+        "regex": r"\s+Self-consistent Calculation.+?\n(.+?)\s+convergence has been achieved"
+    },
+    "convergence_ionic_energies": {
         "regex": r"total energy\s+=\s+({0})".format(DOUBLE_REGEX),
         "output_type": "float",
     },
@@ -32,10 +35,29 @@ REGEX = {
     },
     "lattice": {
         "regex": (
-            r"CELL_PARAMETERS\s+\(alat=\s+({0})\)"
+            r"CELL_PARAMETERS\s+\(angstrom\)"
             r"\s+({0})\s+({0})\s+({0})"
             r"\s+({0})\s+({0})\s+({0})"
             r"\s+({0})\s+({0})\s+({0})"
+        ).format(DOUBLE_REGEX)
+    },
+    "lattice_alat": {
+        "regex": (
+            r"crystal axes:.*\n"
+            r".*({0})\s+({0})\s+({0}).*\n"
+            r".*({0})\s+({0})\s+({0}).*\n"
+            r".*({0})\s+({0})\s+({0}).*\n"
+        ).format(DOUBLE_REGEX)
+    },
+    "lattice_parameter_alat": {
+        "regex": r"lattice parameter \(alat\)\s+=\s+({0})\s+".format(DOUBLE_REGEX),
+        "output_type": "float",
+    },
+    "basis_alat": {
+        "regex": (
+            r".*positions\s+\(alat units\).*\n"
+            r".+?\d\s+([A-Z][a-z]?).+?({0})\s+({0})\s+({0}).+?\n"
+            r".+?\d\s+([A-Z][a-z]?).+?({0})\s+({0})\s+({0}).+?\n"
         ).format(DOUBLE_REGEX)
     },
     "ion_position": {
