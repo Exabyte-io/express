@@ -209,19 +209,107 @@ class EspressoTXTParser(BaseTXTParser):
         Returns:
              list[dict]
         """
-        energies = (
-            np.array(
-                self._general_output_parser(text, **settings.REGEX["convergence_ionic"])) * Constant.RYDBERG).tolist()
+        data = []
+        blocks = re.findall(settings.REGEX["convergence_ionic_blocks"]["regex"], text, re.DOTALL | re.MULTILINE)
+        for idx, block in enumerate(blocks):
+            energies = self._general_output_parser(block, **settings.REGEX["convergence_ionic_energies"])
+            energies = (np.array(energies) * Constant.RYDBERG).tolist()
+            data.append({
+                "energy": energies[-1],
+                "electronic": {
+                    "units": "eV",
+                    "data": self._general_output_parser(block, **settings.REGEX["convergence_electronic"])
+                },
+            })
+
         lattice_convergence = self._lattice_convergence(text)
         basis_convergence = self._basis_convergence(text)
-        if energies:
-            data = [{'energy': _} for _ in energies]
-            for idx, structure in enumerate(zip(lattice_convergence, basis_convergence)):
-                data[idx].update({'structure': {
+        for idx, structure in enumerate(zip(lattice_convergence, basis_convergence)):
+            structure[1]["units"] = "angstrom"
+            lattice_matrix = np.array([structure[0]["vectors"][key] for key in ["a", "b", "c"]]).reshape((3, 3))
+            for coordinate in structure[1]["coordinates"]:
+                coordinate["value"] = np.dot(coordinate["value"], lattice_matrix).tolist()
+            data[idx + 1].update({
+                'structure': {
                     'lattice': structure[0],
                     'basis': structure[1]
-                }})
-            return data
+                }
+            })
+
+        # inject initial structure
+        data[0].update({
+            "structure": {
+                "basis": self._initial_basis(text),
+                "lattice": self._initial_lattice(text)
+            }
+        })
+        return data
+
+    def _initial_lattice(self, text):
+        """
+        Extracts initial lattice from a given text. The initial lattice is in alat format and needs to be converted.
+        The text looks like the following:
+
+            crystal axes: (cart. coord. in units of alat)
+               a(1) = (   0.866025   0.000000   0.500000 )
+               a(2) = (   0.288675   0.816497   0.500000 )
+               a(3) = (   0.000000   0.000000   1.000000 )
+
+        Args:
+            text (str): text to extract data from.
+
+        Returns:
+            dict
+
+        Example:
+            {
+                'vectors': {
+                    'a': [-0.561154473, -0.000000000, 0.561154473],
+                    'b': [-0.000000000, 0.561154473, 0.561154473],
+                    'c': [-0.561154473, 0.561154473, 0.000000000],
+                    'alat': 9.44858082
+                }
+            }
+        """
+        lattice = self._extract_lattice(text, regex="lattice_alat")
+        lattice_alat = self._general_output_parser(text, **settings.REGEX["lattice_parameter_alat"])[0]
+        for key in ["a", "b", "c"]:
+            lattice["vectors"][key] = [e * lattice_alat * Constant.BOHR for e in lattice["vectors"][key]]
+        return lattice
+
+    def _initial_basis(self, text):
+        """
+        Extracts initial basis from a given text. The initial basis is in alat format and needs to be converted.
+        The text looks like the following:
+
+             site n.     atom                  positions (alat units)
+                 1           Si  tau(   1) = (   0.0000000   0.0000000   0.0000000  )
+                 2           Si  tau(   2) = (   0.2886752   0.2041241   0.5000000  )
+
+        Args:
+            text (str): text to extract data from.
+
+        Returns:
+            dict
+
+         Example:
+            {
+                'units': 'angstrom',
+                'elements': [{'id': 1, 'value': 'Si'}, {'id': 2, 'value': 'Si'}],
+                'coordinates': [{'id': 1, 'value': [0.0, 0.0, 0.0]}, {'id': 2, 'value': [2.1095228, 1.49165, 3.6538]}]
+             }
+        """
+        lattice_alat = self._general_output_parser(text, **settings.REGEX["lattice_parameter_alat"])[0]
+        basis = {"units": "angstrom", "elements": [], "coordinates": []}
+        matches = re.findall(settings.REGEX["basis_alat"]["regex"], text)[0]
+        matches = [matches[i:i + 4] for i in range(0, len(matches), 4)]  # group coordinates
+        for idx, match in enumerate(matches):
+            basis["elements"].append({"id": idx, "value": match[0]})
+            coordinate = [float(match[1]), float(match[2]), float(match[3])]
+            coordinate = map(lambda x: x * lattice_alat * Constant.BOHR, coordinate)  # alat to angstrom
+            basis["coordinates"].append({"id": idx, "value": coordinate})
+
+        return basis
 
     def _lattice_convergence(self, text):
         """
@@ -274,7 +362,7 @@ class EspressoTXTParser(BaseTXTParser):
             results.append(func(block))
         return results
 
-    def _extract_lattice(self, text, last_value=False):
+    def _extract_lattice(self, text, last_value=False, regex="lattice"):
         """
         Extracts lattice.
 
@@ -295,15 +383,15 @@ class EspressoTXTParser(BaseTXTParser):
             }
         """
         text = text[text.find('Begin final coordinates'):] if last_value else text
-        match = re.search(settings.REGEX["lattice"], text)
+        match = re.search(settings.REGEX[regex]["regex"], text)
         if match:
             lattice = [float(_) for _ in match.groups(1)]
             return {
                 'vectors': {
-                    'a': lattice[1:4],
-                    'b': lattice[4:7],
-                    'c': lattice[7:10],
-                    'alat': lattice[0]
+                    'a': lattice[0:3],
+                    'b': lattice[3:6],
+                    'c': lattice[6:9],
+                    'alat': 1
                 }
             }
 
@@ -351,23 +439,22 @@ class EspressoTXTParser(BaseTXTParser):
                 'coordinates': [{'id': 1, 'value': [0.0, 0.0, 0.0]}, {'id': 2, 'value': [0.0, 0.0, 0.0]}]
              }
         """
-        text = text[text.find('Begin final coordinates'):] if last_value else text
+        text = text[text.find("Begin final coordinates"):] if last_value else text
         basis = {
-            'units': 'crystal',
-            'elements': [],
-            'coordinates': []
+            "units": "crystal",
+            "elements": [],
+            "coordinates": []
         }
-
-        matches = re.findall(settings.REGEX["ion_position"], text)
+        matches = re.findall(settings.REGEX["ion_position"]["regex"], text)
         if matches:
             for idx, match in enumerate(matches):
-                basis['elements'].append({
-                    'id': idx,
-                    'value': match[0]
+                basis["elements"].append({
+                    "id": idx,
+                    "value": match[0]
                 })
-                basis['coordinates'].append({
-                    'id': idx,
-                    'value': [float(match[1]), float(match[2]), float(match[3])]
+                basis["coordinates"].append({
+                    "id": idx,
+                    "value": [float(match[1]), float(match[2]), float(match[3])]
                 })
 
             return basis
