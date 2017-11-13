@@ -1,5 +1,6 @@
 import numpy as np
 
+from copy import deepcopy
 from express.properties.utils import eigenvalues
 from express.properties.non_scalar import NonScalarProperty
 
@@ -32,7 +33,8 @@ class BandGaps(NonScalarProperty):
     def _serialize(self):
         return {
             'name': self.name,
-            'values': self.values if self.values else [self.compute_on_mesh(type_) for type_ in ["direct", "indirect"]]
+            'values': self.values if self.values else [self.compute_on_mesh(type_) for type_ in ["direct", "indirect"]],
+            'eigenvalues': self._eigenvalues() if not self.values else []
         }
 
     def _serialize_band_gaps(self, gap, type_):
@@ -125,3 +127,20 @@ class BandGaps(NonScalarProperty):
         kv = ev_k.argmax()
         kc = ec_k.argmin()
         return ec_k[kc] - ev_k[kv], kv, kc
+
+    def _eigenvalues(self):
+        """
+        Extracts eigenvalues between last value in occupation 1 and first value in occupation 0.
+
+        Returns:
+             dict
+        """
+        eigens_at_kpoints = deepcopy(self.eigenvalues_at_kpoints)
+        for eigens_at_kpoint in eigens_at_kpoints:
+            eigens_at_kpoint["kpoint"] = eigens_at_kpoint["kpoint"]
+            for eigens_at_spin in eigens_at_kpoint["eigenvalues"]:
+                last_one_index = len(eigens_at_spin["occupations"]) - eigens_at_spin["occupations"][::-1].index(1) - 1
+                first_zero_index = eigens_at_spin["occupations"].index(0)
+                eigens_at_spin["energies"] = eigens_at_spin["energies"][last_one_index:first_zero_index + 1]
+                eigens_at_spin["occupations"] = eigens_at_spin["occupations"][last_one_index:first_zero_index + 1]
+        return eigens_at_kpoints
