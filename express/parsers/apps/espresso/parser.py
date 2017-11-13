@@ -60,7 +60,7 @@ class EspressoParser(BaseParser, IonicDataMixin, ElectronicDataMixin, Reciprocal
         eigenvalues_at_kpoints = self.xml_parser.eigenvalues_at_kpoints()
         for eigenvalues_at_kpoint in eigenvalues_at_kpoints:
             for eigenvalue in eigenvalues_at_kpoint["eigenvalues"]:
-                eigenvalue['energies'] = np.array(eigenvalue['energies']) * Constant.HARTREE
+                eigenvalue['energies'] = (np.array(eigenvalue['energies']) * Constant.HARTREE).tolist()
         return eigenvalues_at_kpoints
 
     def ibz_k_points(self):

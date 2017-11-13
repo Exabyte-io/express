@@ -149,7 +149,7 @@ class EspressoXMLParser(BaseXMLParser):
         eigenvalues_at_kpoints = []
         for eigenvalue_tag in self.root.find("EIGENVALUES"):
             eigenvalues_at_kpoint = {
-                "kpoint": self._get_xml_tag_value(eigenvalue_tag.find("K-POINT_COORDS"))[0],
+                "kpoint": self._get_xml_tag_value(eigenvalue_tag.find("K-POINT_COORDS"))[0].tolist(),
                 "weight": self._get_xml_tag_value(eigenvalue_tag.find("WEIGHT")),
                 "eigenvalues": []
             }
