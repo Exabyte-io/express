@@ -1,6 +1,7 @@
 import numpy as np
 
 from copy import deepcopy
+from express import settings
 from express.properties.utils import eigenvalues
 from express.properties.non_scalar import NonScalarProperty
 
@@ -137,10 +138,12 @@ class BandGaps(NonScalarProperty):
         """
         eigens_at_kpoints = deepcopy(self.eigenvalues_at_kpoints)
         for eigens_at_kpoint in eigens_at_kpoints:
-            eigens_at_kpoint["kpoint"] = eigens_at_kpoint["kpoint"]
+            eigens_at_kpoint["kpoint"] = np.round(eigens_at_kpoint["kpoint"], settings.PRECISION).tolist()
             for eigens_at_spin in eigens_at_kpoint["eigenvalues"]:
-                last_one_index = len(eigens_at_spin["occupations"]) - eigens_at_spin["occupations"][::-1].index(1) - 1
-                first_zero_index = eigens_at_spin["occupations"].index(0)
-                eigens_at_spin["energies"] = eigens_at_spin["energies"][last_one_index:first_zero_index + 1]
-                eigens_at_spin["occupations"] = eigens_at_spin["occupations"][last_one_index:first_zero_index + 1]
+                eigens_at_spin["energies"] = np.round(eigens_at_spin["energies"], settings.PRECISION).tolist()
+                eigens_at_spin["occupations"] = np.round(eigens_at_spin["occupations"], settings.PRECISION).tolist()
+                start = max(0, len(eigens_at_spin["occupations"]) - eigens_at_spin["occupations"][::-1].index(1.0) - 2)
+                end = min(len(eigens_at_spin["occupations"]), eigens_at_spin["occupations"].index(0.0) + 2)
+                eigens_at_spin["energies"] = eigens_at_spin["energies"][start:end]
+                eigens_at_spin["occupations"] = eigens_at_spin["occupations"][start:end]
         return eigens_at_kpoints
