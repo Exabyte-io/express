@@ -116,7 +116,9 @@ class VaspParser(BaseParser, IonicDataMixin, ElectronicDataMixin, ReciprocalData
         Reference:
             func: express.parsers.mixins.electronic.ElectronicDataMixin.convergence_electronic
         """
-        return self.txt_parser.convergence_electronic(self._get_file_content(self.stdout_file))
+        outcar = self._get_outcar_content()
+        stdout = self._get_file_content(self.stdout_file)
+        return self.txt_parser.convergence_electronic(outcar, stdout, self.xml_parser.atom_names())
 
     def convergence_ionic(self):
         """

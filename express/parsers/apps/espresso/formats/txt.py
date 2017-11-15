@@ -196,8 +196,12 @@ class EspressoTXTParser(BaseTXTParser):
         Returns:
              list[float]
         """
-        return np.array(
-            self._general_output_parser(text, **settings.REGEX["convergence_electronic"])) * Constant.RYDBERG
+        data = self._general_output_parser(text, **settings.REGEX["convergence_electronic"])
+        # The next 3 lines are necessary to have realtime data
+        ionic_data = [_["electronic"]["data"] for _ in self.convergence_ionic(text)]
+        last_step_data = data[sum([len(_) for _ in ionic_data]): len(data)]
+        if last_step_data: ionic_data.append(last_step_data)
+        return [(np.array(_) * Constant.RYDBERG).tolist() for _ in ionic_data]
 
     def convergence_ionic(self, text):
         """
