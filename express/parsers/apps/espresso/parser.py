@@ -2,7 +2,6 @@ import numpy as np
 
 from express.parsers import BaseParser
 from express.parsers.utils import find_file
-from express.parsers.settings import Constant
 from express.parsers.apps.espresso import settings
 from express.parsers.mixins.ionic import IonicDataMixin
 from express.parsers.mixins.reciprocal import ReciprocalDataMixin
@@ -57,11 +56,7 @@ class EspressoParser(BaseParser, IonicDataMixin, ElectronicDataMixin, Reciprocal
         Reference:
             func: express.parsers.mixins.electronic.ElectronicDataMixin.eigenvalues_at_kpoints
         """
-        eigenvalues_at_kpoints = self.xml_parser.eigenvalues_at_kpoints()
-        for eigenvalues_at_kpoint in eigenvalues_at_kpoints:
-            for eigenvalue in eigenvalues_at_kpoint["eigenvalues"]:
-                eigenvalue['energies'] = (np.array(eigenvalue['energies']) * Constant.HARTREE).tolist()
-        return eigenvalues_at_kpoints
+        return self.xml_parser.eigenvalues_at_kpoints()
 
     def ibz_k_points(self):
         """
@@ -70,7 +65,7 @@ class EspressoParser(BaseParser, IonicDataMixin, ElectronicDataMixin, Reciprocal
         Reference:
             func: express.parsers.mixins.reciprocal.ReciprocalDataMixin.ibz_k_points
         """
-        return self.xml_parser.ibz_k_points()
+        return np.array([eigenvalueData["kpoint"] for eigenvalueData in self.eigenvalues_at_kpoints()])
 
     def dos(self):
         """

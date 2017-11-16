@@ -67,21 +67,6 @@ class EspressoXMLParser(BaseXMLParser):
         bs_tag = self.root.find("BAND_STRUCTURE_INFO")
         return self._get_xml_tag_value(bs_tag.find("NUMBER_OF_SPIN_COMPONENTS"))
 
-    def ibz_k_points(self):
-        """
-        Extracts kpoints coordinates. First reciprocal lattice is inversed and then kpoints in cartesian space are
-        converted to reciprocal space.
-
-        Returns:
-            ndarray
-        """
-        reciprocal_lattice = self.lattice_vectors(reciprocal=True)
-        lattice_array = []
-        for i in ['a', 'b', 'c']:
-            lattice_array.append(reciprocal_lattice['vectors'][i])
-        reciprocal_lattice = np.linalg.inv(np.array(lattice_array))
-        return np.dot(np.array([e['kpoint'] for e in self.eigenvalues_at_kpoints()]), reciprocal_lattice)
-
     def lattice_vectors(self, reciprocal=False):
         """
         Extracts lattice.
@@ -146,10 +131,16 @@ class EspressoXMLParser(BaseXMLParser):
                 ...
             ]
         """
+        reciprocal_lattice = self.lattice_vectors(reciprocal=True)
+        lattice_array = []
+        for i in ['a', 'b', 'c']:
+            lattice_array.append(reciprocal_lattice['vectors'][i])
+        reciprocal_lattice = np.linalg.inv(np.array(lattice_array))
         eigenvalues_at_kpoints = []
         for eigenvalue_tag in self.root.find("EIGENVALUES"):
+            kpoint = np.dot(self._get_xml_tag_value(eigenvalue_tag.find("K-POINT_COORDS"))[0], reciprocal_lattice)
             eigenvalues_at_kpoint = {
-                "kpoint": self._get_xml_tag_value(eigenvalue_tag.find("K-POINT_COORDS"))[0].tolist(),
+                "kpoint": kpoint.tolist(),
                 "weight": self._get_xml_tag_value(eigenvalue_tag.find("WEIGHT")),
                 "eigenvalues": []
             }
@@ -157,7 +148,7 @@ class EspressoXMLParser(BaseXMLParser):
                 eigenval_file = os.path.join(self.xml_dir_name, datafile_tag.attrib.get("iotk_link"))
                 energies, occupations = self._parse_eigenvalue_file(os.path.join(self.xml_dir_name, eigenval_file))
                 eigenvalues_at_kpoint['eigenvalues'].append({
-                    'energies': energies,
+                    'energies': (np.array(energies) * Constant.HARTREE).tolist(),
                     'occupations': occupations,
                     'spin': 0.5 if datafile_tag.tag in ['DATAFILE', 'DATAFILE.1'] else -0.5
                 })

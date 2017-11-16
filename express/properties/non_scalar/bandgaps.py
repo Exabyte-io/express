@@ -68,8 +68,8 @@ class BandGaps(NonScalarProperty):
         result = self._serialize_band_gaps(gap, type_)
         if k1 is not None and k2 is not None:
             result.update({
-                'kpointValence': self.ibz_k_points[k1[1] if isinstance(k1, tuple) else k1].tolist(),
-                'kpointConduction': self.ibz_k_points[k2[1] if isinstance(k2, tuple) else k2].tolist()
+                'kpointValence': self._round(self.ibz_k_points[k1[1] if isinstance(k1, tuple) else k1]),
+                'kpointConduction': self._round(self.ibz_k_points[k2[1] if isinstance(k2, tuple) else k2])
             })
         return result
 
@@ -138,12 +138,15 @@ class BandGaps(NonScalarProperty):
         """
         eigens_at_kpoints = deepcopy(self.eigenvalues_at_kpoints)
         for eigens_at_kpoint in eigens_at_kpoints:
-            eigens_at_kpoint["kpoint"] = np.round(eigens_at_kpoint["kpoint"], settings.PRECISION).tolist()
+            eigens_at_kpoint["kpoint"] = self._round(eigens_at_kpoint["kpoint"])
             for eigens_at_spin in eigens_at_kpoint["eigenvalues"]:
-                eigens_at_spin["energies"] = np.round(eigens_at_spin["energies"], settings.PRECISION).tolist()
-                eigens_at_spin["occupations"] = np.round(eigens_at_spin["occupations"], settings.PRECISION).tolist()
+                eigens_at_spin["energies"] = self._round(eigens_at_spin["energies"])
+                eigens_at_spin["occupations"] = self._round(eigens_at_spin["occupations"])
                 start = max(0, len(eigens_at_spin["occupations"]) - eigens_at_spin["occupations"][::-1].index(1.0) - 2)
                 end = min(len(eigens_at_spin["occupations"]), eigens_at_spin["occupations"].index(0.0) + 2)
                 eigens_at_spin["energies"] = eigens_at_spin["energies"][start:end]
                 eigens_at_spin["occupations"] = eigens_at_spin["occupations"][start:end]
         return eigens_at_kpoints
+
+    def _round(self, array):
+        return np.round(array, settings.PRECISION).tolist()

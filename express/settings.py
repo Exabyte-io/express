@@ -166,4 +166,4 @@ PARSERS_REGISTRY = {
     'exabyteml': 'express.parsers.exabyteml.ExabyteMLParser'
 }
 
-PRECISION = 8
+PRECISION = 4
