@@ -23,7 +23,7 @@ REGEX = {
         "output_type": "float",
     },
     "convergence_ionic_blocks": {
-        "regex": r"\s+N\s+.+?\n(.+?)\s+\d\s+F="
+        "regex": r"\s+N\s+.+?\n(.+?)\s+\d+\s+F="
     },
     "ion_positions_block": {
         "regex": r"POSITION.+?-{5,}\n(.+?)-{5,}"
