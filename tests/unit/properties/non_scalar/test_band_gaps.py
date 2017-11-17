@@ -3,6 +3,158 @@ from tests.data.raw_data import BAND_RAW_DATA
 from express.properties.non_scalar.bandgaps import BandGaps
 
 BAND_GAPS = {
+    "eigenvalues": [
+        {
+            "eigenvalues": [
+                {
+                    "energies": [
+                        6.2693,
+                        6.2693,
+                        8.7114,
+                        8.7114
+                    ],
+                    "spin": 0.5,
+                    "occupations": [
+                        1.0,
+                        1.0,
+                        0.0,
+                        0.0
+                    ]
+                }
+            ],
+            "weight": 0.25,
+            "kpoint": [
+                0,
+                0,
+                0
+            ]
+        },
+        {
+            "eigenvalues": [
+                {
+                    "energies": [
+                        5.0608,
+                        5.0609,
+                        7.695,
+                        9.4927
+                    ],
+                    "spin": 0.5,
+                    "occupations": [
+                        1.0,
+                        1.0,
+                        0.0,
+                        0.0
+                    ]
+                }
+            ],
+            "weight": 0.5,
+            "kpoint": [
+                0.2887,
+                0.2041,
+                -0.5
+            ]
+        },
+        {
+            "eigenvalues": [
+                {
+                    "energies": [
+                        5.0608,
+                        5.0609,
+                        7.695,
+                        9.4927
+                    ],
+                    "spin": 0.5,
+                    "occupations": [
+                        1.0,
+                        1.0,
+                        0.0,
+                        0.0
+                    ]
+                }
+            ],
+            "weight": 0.25,
+            "kpoint": [
+                0.0,
+                -0.6124,
+                0.0
+            ]
+        },
+        {
+            "eigenvalues": [
+                {
+                    "energies": [
+                        3.4107,
+                        3.4107,
+                        6.9196,
+                        6.9196
+                    ],
+                    "spin": 0.5,
+                    "occupations": [
+                        1.0,
+                        1.0,
+                        0.0,
+                        0.0
+                    ]
+                }
+            ],
+            "weight": 0.5,
+            "kpoint": [
+                0.2887,
+                -0.4082,
+                -0.5
+            ]
+        },
+        {
+            "eigenvalues": [
+                {
+                    "energies": [
+                        5.0609,
+                        5.0609,
+                        7.695,
+                        9.4927
+                    ],
+                    "spin": 0.5,
+                    "occupations": [
+                        1.0,
+                        1.0,
+                        0.0,
+                        0.0
+                    ]
+                }
+            ],
+            "weight": 0.25,
+            "kpoint": [
+                -0.5774,
+                0.2041,
+                0.0
+            ]
+        },
+        {
+            "eigenvalues": [
+                {
+                    "energies": [
+                        3.4107,
+                        3.4107,
+                        6.9196,
+                        6.9196
+                    ],
+                    "spin": 0.5,
+                    "occupations": [
+                        1.0,
+                        1.0,
+                        0.0,
+                        0.0
+                    ]
+                }
+            ],
+            "weight": 0.25,
+            "kpoint": [
+                -0.5774,
+                -0.4082,
+                0.0
+            ]
+        }
+    ],
     "values": [
         {
             "units": "eV",
