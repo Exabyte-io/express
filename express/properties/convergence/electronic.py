@@ -11,8 +11,15 @@ class ConvergenceElectronic(NonScalarProperty):
         self.convergence_electronic = self.raw_data["convergence_electronic"]
 
     def _serialize(self):
+        data = []
+        for step, energies in enumerate(self.convergence_electronic):
+            for energy in energies:
+                data.append({
+                    "step": step,
+                    "value": energy
+                })
         return {
             'name': self.name,
             'units': self.esse.get_property_default_values(self.name)["units"],
-            'data': self.convergence_electronic
+            'data': data
         }
