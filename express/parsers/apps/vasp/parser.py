@@ -77,6 +77,10 @@ class VaspParser(BaseParser, IonicDataMixin, ElectronicDataMixin, ReciprocalData
         """
         Returns ibz_k_points.
 
+        Note:
+            The function assumes that kpoints extracted from parsed source are inside the irreducible wedge of the
+            Brillouin zone. Without checking whether it is the case or not.
+
         Reference:
             func: express.parsers.mixins.reciprocal.ReciprocalDataMixin.ibz_k_points
         """
