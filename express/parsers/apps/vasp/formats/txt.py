@@ -144,6 +144,7 @@ class VaspTXTParser(BaseTXTParser):
         Args:
             outcar (str): OUTCAR content.
             stdout (str): stdout content.
+            atom_names (list): list of atoms.
 
         Returns:
              list[dict]
@@ -172,17 +173,24 @@ class VaspTXTParser(BaseTXTParser):
 
         return data
 
-    def convergence_electronic(self, text):
+    def convergence_electronic(self, outcar, stdout, atom_names):
         """
         Extracts convergence electronic.
 
         Args:
-            text (str): text to extract data from.
+            outcar (str): OUTCAR content.
+            stdout (str): stdout content.
+            atom_names (list): list of atoms.
 
         Returns:
              list[float]
         """
-        return np.array(self._general_output_parser(text, **settings.REGEX["convergence_electronic"]))
+        data = self._general_output_parser(stdout, **settings.REGEX["convergence_electronic"])
+        # The next 3 lines are necessary to have realtime data
+        ionic_data = [_["electronic"]["data"] for _ in self.convergence_ionic(outcar, stdout, atom_names)]
+        last_step_data = data[sum([len(_) for _ in ionic_data]): len(data)]
+        if last_step_data: ionic_data.append(last_step_data)
+        return ionic_data
 
     def pressure(self, text):
         """

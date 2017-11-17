@@ -14,5 +14,5 @@ class ConvergenceElectronic(NonScalarProperty):
         return {
             'name': self.name,
             'units': self.esse.get_property_default_values(self.name)["units"],
-            'data': self.convergence_electronic.tolist()
+            'data': self.convergence_electronic
         }
