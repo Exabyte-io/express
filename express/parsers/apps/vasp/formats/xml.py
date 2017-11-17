@@ -57,8 +57,8 @@ class VaspXMLParser(BaseXMLParser):
             }
             for spin in eigenvalues:
                 eigenvalues_at_kpoint['eigenvalues'].append({
-                    'energies': eigenvalues[spin][kp_id],
-                    'occupations': occupations[spin][kp_id],
+                    'energies': eigenvalues[spin][kp_id].tolist(),
+                    'occupations': occupations[spin][kp_id].tolist(),
                     'spin': 0.5 if spin == 0 else -0.5
                 })
             eigenvalues_at_kpoints.append(eigenvalues_at_kpoint)

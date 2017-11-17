@@ -165,3 +165,5 @@ PARSERS_REGISTRY = {
     'pymatgen': 'express.parsers.pymatgen.PyMatGenParser',
     'exabyteml': 'express.parsers.exabyteml.ExabyteMLParser'
 }
+
+PRECISION = 4
