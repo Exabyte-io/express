@@ -227,8 +227,9 @@ class EspressoTXTParser(BaseTXTParser):
             })
 
         if data:
-            lattice_convergence = self._lattice_convergence(text)
-            basis_convergence = self._basis_convergence(text)
+            # last structure is used for the next ionic step, hence [:max(0, len(data) - 1)]
+            lattice_convergence = self._lattice_convergence(text)[:max(0, len(data) - 1)]
+            basis_convergence = self._basis_convergence(text)[:max(0, len(data) - 1)]
             for idx, structure in enumerate(zip(lattice_convergence, basis_convergence)):
                 structure[1]["units"] = "angstrom"
                 lattice_matrix = np.array([structure[0]["vectors"][key] for key in ["a", "b", "c"]]).reshape((3, 3))
