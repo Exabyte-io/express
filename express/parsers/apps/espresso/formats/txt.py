@@ -226,29 +226,30 @@ class EspressoTXTParser(BaseTXTParser):
                 },
             })
 
-        if data:
-            # last structure is used for the next ionic step, hence [:max(0, len(data) - 1)]
-            lattice_convergence = self._lattice_convergence(text)[:max(0, len(data) - 1)]
-            basis_convergence = self._basis_convergence(text)[:max(0, len(data) - 1)]
-            for idx, structure in enumerate(zip(lattice_convergence, basis_convergence)):
-                structure[1]["units"] = "angstrom"
-                lattice_matrix = np.array([structure[0]["vectors"][key] for key in ["a", "b", "c"]]).reshape((3, 3))
-                for coordinate in structure[1]["coordinates"]:
-                    coordinate["value"] = np.dot(coordinate["value"], lattice_matrix).tolist()
-                data[idx + 1].update({
-                    'structure': {
-                        'lattice': structure[0],
-                        'basis': structure[1]
-                    }
-                })
+        if not data: return []
 
-            # inject initial structure
-            data[0].update({
-                "structure": {
-                    "basis": self._initial_basis(text),
-                    "lattice": self._initial_lattice(text)
+        # last structure is used for the next ionic step, hence [:max(0, len(data) - 1)]
+        lattice_convergence = self._lattice_convergence(text)[:max(0, len(data) - 1)]
+        basis_convergence = self._basis_convergence(text)[:max(0, len(data) - 1)]
+        for idx, structure in enumerate(zip(lattice_convergence, basis_convergence)):
+            structure[1]["units"] = "angstrom"
+            lattice_matrix = np.array([structure[0]["vectors"][key] for key in ["a", "b", "c"]]).reshape((3, 3))
+            for coordinate in structure[1]["coordinates"]:
+                coordinate["value"] = np.dot(coordinate["value"], lattice_matrix).tolist()
+            data[idx + 1].update({
+                'structure': {
+                    'lattice': structure[0],
+                    'basis': structure[1]
                 }
             })
+
+        # inject initial structure
+        data[0].update({
+            "structure": {
+                "basis": self._initial_basis(text),
+                "lattice": self._initial_lattice(text)
+            }
+        })
 
         return data
 

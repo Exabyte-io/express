@@ -161,16 +161,17 @@ class VaspTXTParser(BaseTXTParser):
                 },
             })
 
-        if data:
-            lattice_convergence = self._lattice_convergence(outcar)
-            basis_convergence = self._basis_convergence(outcar, atom_names)
-            for idx, structure in enumerate(zip(lattice_convergence, basis_convergence)):
-                data[idx].update({
-                    'structure': {
-                        'lattice': structure[0],
-                        'basis': structure[1]
-                    }
-                })
+        if not data: return []
+
+        lattice_convergence = self._lattice_convergence(outcar)
+        basis_convergence = self._basis_convergence(outcar, atom_names)
+        for idx, structure in enumerate(zip(lattice_convergence, basis_convergence)):
+            data[idx].update({
+                'structure': {
+                    'lattice': structure[0],
+                    'basis': structure[1]
+                }
+            })
 
         return data
 
