@@ -190,7 +190,7 @@ class EspressoXMLParser(BaseXMLParser):
             if atom.tag.startswith("ATOM"):
                 elements.append({
                     'id': int(atom.tag[5:]),
-                    'value': atom.attrib.get("SPECIES")
+                    'value': atom.attrib.get("SPECIES").strip(' \t\n\r')
                 })
                 coordinates.append({
                     'id': int(atom.tag[5:]),
