@@ -22,16 +22,14 @@ class PyMatGenParser(BaseParser, IonicDataMixin):
         self.structure_format = kwargs.get("structure_format")
         self.structure = mg.Structure.from_str(self.structure_string, self.structure_format)
 
-        # cell is either primitive or conventional
-        self.is_original = not kwargs.get("cell", False)
+        # cell is either original, primitive or conventional
+        self.cell = kwargs["cell"]
+        self.structure = mg.Structure.from_str(self.structure_string, self.structure_format)
+        if self.cell != "original": self.structure = STRUCTURE_MAP[self.cell](self.structure)
 
-        self.structure_ = mg.Structure.from_str(self.structure_string, self.structure_format)
-        if not self.is_original:
-            self.structure = STRUCTURE_MAP[kwargs.get("cell")](self.structure)
-        else:
-            # keep only one atom inside the basis in order to have the original lattice type
-            self.lattice_only_structure = mg.Structure.from_str(self.structure_string, self.structure_format) # deepcopy
-            self.lattice_only_structure.remove_sites(range(1, len(self.structure.sites)))
+        # keep only one atom inside the basis in order to have the original lattice type
+        self.lattice_only_structure = mg.Structure.from_str(self.structure_string, self.structure_format)  # deepcopy
+        self.lattice_only_structure.remove_sites(range(1, len(self.structure.sites)))
 
     def lattice_vectors(self):
         """
@@ -77,7 +75,7 @@ class PyMatGenParser(BaseParser, IonicDataMixin):
         Returns:
              str
         """
-        structure_ = self.lattice_only_structure if self.is_original else self.structure
+        structure_ = self.lattice_only_structure if self.cell != "primitive" else self.structure
         analyzer = mg.symmetry.analyzer.SpacegroupAnalyzer(structure_, symprec=0.001)
         lattice_type = analyzer.get_lattice_type()
         spg_symbol = analyzer.get_spacegroup_symbol()
