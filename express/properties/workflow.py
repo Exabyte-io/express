@@ -41,109 +41,133 @@ class ExabyteMLPredictWorkflow(BaseProperty):
                 {
                     "name": "ml_predict_subworkflow",
                     "isDraft": True,
-                    "app": {
+                    "application": {
                         "version": "0.2.0",
                         "name": "exabyteml",
                         "summary": "exabyte machine learning engine"
                     },
                     "units": [
                         {
-                            "flowchartId": "io",
+                            "status": "idle",
+                            "statusTrack": [],
                             "head": True,
-                            "io": {
-                                "flavor": "api",
-                                "input": [
-                                    {
-                                        "endpoint": "dataframe",
-                                        "endpoint_options": {
-                                            "data": {
-                                                "features": self.features,
-                                                "ids": [],
-                                                "targets": self.targets
-                                            },
-                                            "headers": {},
-                                            "method": "POST",
-                                            "params": {},
-                                            "jobId": ""
-                                        }
-                                    }
-                                ],
-                                "subtype": "input"
+                            "flowchartId": "io",
+                            "name": "input",
+                            "application": {
+                                "version": "0.2.0",
+                                "build": "Default",
+                                "name": "exabyteml",
+                                "summary": "Exabyte Machine Learning Engine"
                             },
-                            "monitors": [],
-                            "name": "io",
+                            "results": [],
                             "next": "data_transformation_manipulation",
+                            "source": "api",
                             "postProcessors": [],
                             "preProcessors": [],
-                            "results": [],
-                            "status": "idle",
-                            "type": "io"
+                            "subtype": "input",
+                            "input": [
+                                {
+                                    "endpoint": "dataframe",
+                                    "endpoint_options": {
+                                        "headers": {},
+                                        "data": {
+                                            "features": self.features,
+                                            "ids": [],
+                                            "targets": self.targets
+                                        },
+                                        "method": "POST",
+                                        "params": {},
+                                        "jobId": ""
+                                    }
+                                }
+                            ],
+                            "type": "io",
+                            "monitors": []
                         },
                         {
+                            "status": "idle",
+                            "statusTrack": [],
+                            "head": False,
                             "flowchartId": "data_transformation_manipulation",
-                            "head": False,
+                            "name": "clean data",
                             "monitors": [],
-                            "name": "data_transformation_manipulation",
+                            "results": [],
                             "next": "data_transformation_scale_and_reduce",
+                            "application": {
+                                "version": "0.2.0",
+                                "build": "Default",
+                                "name": "exabyteml",
+                                "summary": "Exabyte Machine Learning Engine"
+                            },
                             "postProcessors": [],
                             "preProcessors": [],
-                            "processing": {
-                                "flavor": "manipulation",
-                                "input": {
-                                    "cleanMissingData": True,
-                                    "removeDuplicateRows": True,
-                                    "replaceNoneValuesWith": 0
-                                },
-                                "operation": "data_transformation"
-                            },
-                            "results": [],
-                            "status": "idle",
-                            "type": "processing"
+                            "operationType": "manipulation",
+                            "operation": "data_transformation",
+                            "type": "processing",
+                            "inputData": {
+                                "cleanMissingData": True,
+                                "replaceNoneValuesWith": 0,
+                                "removeDuplicateRows": True
+                            }
                         },
                         {
-                            "flowchartId": "data_transformation_scale_and_reduce",
+                            "status": "idle",
+                            "statusTrack": [],
                             "head": False,
+                            "flowchartId": "data_transformation_scale_and_reduce",
+                            "name": "scale and reduce",
                             "monitors": [],
-                            "name": "data_transformation_scale_and_reduce",
+                            "results": [],
                             "next": "score",
+                            "application": {
+                                "version": "0.2.0",
+                                "build": "Default",
+                                "name": "exabyteml",
+                                "summary": "Exabyte Machine Learning Engine"
+                            },
                             "postProcessors": [],
                             "preProcessors": [],
-                            "processing": {
-                                "flavor": "scale_and_reduce",
-                                "input": {
-                                    "scaler": "standard_scaler",
-                                    "perFeature": self.scaling_params_per_feature,
-                                },
-                                "operation": "data_transformation"
-                            },
-                            "results": [],
-                            "status": "idle",
-                            "type": "processing"
+                            "operationType": "scale_and_reduce",
+                            "operation": "data_transformation",
+                            "type": "processing",
+                            "inputData": {
+                                "scaler": "standard_scaler",
+                                "perFeature": self.scaling_params_per_feature,
+                            }
                         },
                         {
-                            "execution": {
-                                "app": {
-                                    "exec": "score",
-                                    "flavor": "score",
-                                    "name": "exabyteml",
-                                    "summary": "exabyte machine learning engine",
-                                    "version": "0.2.0"
-                                },
-                                "input": []
+                            "status": "idle",
+                            "statusTrack": [],
+                            "executable": {
+                                "name": "score"
                             },
                             "flowchartId": "score",
-                            "head": False,
-                            "monitors": [],
                             "name": "score",
-                            "postProcessors": [],
-                            "preProcessors": [],
+                            "head": False,
                             "results": [
                                 {
                                     "name": "predicted_properties"
                                 }
                             ],
-                            "status": "idle",
-                            "type": "execution"
+                            "application": {
+                                "version": "0.2.0",
+                                "build": "Default",
+                                "name": "exabyteml",
+                                "summary": "Exabyte Machine Learning Engine"
+                            },
+                            "postProcessors": [],
+                            "preProcessors": [],
+                            "context": {},
+                            "input": [],
+                            "flavor": {
+                                "name": "score"
+                            },
+                            "type": "execution",
+                            "monitors": [
+                                {
+                                    "name": "standard_output"
+                                }
+                            ]
                         }
                     ],
                     "model": {
