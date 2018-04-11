@@ -43,8 +43,9 @@ class ExabyteMLPredictWorkflow(BaseProperty):
                     "isDraft": True,
                     "application": {
                         "version": "0.2.0",
+                        "summary": "Exabyte Machine Learning Engine",
                         "name": "exabyteml",
-                        "summary": "exabyte machine learning engine"
+                        "build": "Default"
                     },
                     "units": [
                         {
@@ -55,9 +56,9 @@ class ExabyteMLPredictWorkflow(BaseProperty):
                             "name": "input",
                             "application": {
                                 "version": "0.2.0",
-                                "build": "Default",
+                                "summary": "Exabyte Machine Learning Engine",
                                 "name": "exabyteml",
-                                "summary": "Exabyte Machine Learning Engine"
+                                "build": "Default"
                             },
                             "results": [],
                             "next": "data_transformation_manipulation",
@@ -95,9 +96,9 @@ class ExabyteMLPredictWorkflow(BaseProperty):
                             "next": "data_transformation_scale_and_reduce",
                             "application": {
                                 "version": "0.2.0",
-                                "build": "Default",
+                                "summary": "Exabyte Machine Learning Engine",
                                 "name": "exabyteml",
-                                "summary": "Exabyte Machine Learning Engine"
+                                "build": "Default"
                             },
                             "postProcessors": [],
                             "preProcessors": [],
