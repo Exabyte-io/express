@@ -125,6 +125,7 @@ class VaspParser(BaseParser, IonicDataMixin, ElectronicDataMixin, ReciprocalData
         try:
             atom_names = self.xml_parser.atom_names()
         except:
+            print "atom_names can not be extracted"
             atom_names = []
         return self.txt_parser.convergence_electronic(outcar, stdout, atom_names)
 
