@@ -122,7 +122,11 @@ class VaspParser(BaseParser, IonicDataMixin, ElectronicDataMixin, ReciprocalData
         """
         outcar = self._get_outcar_content()
         stdout = self._get_file_content(self.stdout_file)
-        return self.txt_parser.convergence_electronic(outcar, stdout, self.xml_parser.atom_names())
+        try:
+            atom_names = self.xml_parser.atom_names()
+        except:
+            atom_names = []
+        return self.txt_parser.convergence_electronic(outcar, stdout, atom_names)
 
     def convergence_ionic(self):
         """
