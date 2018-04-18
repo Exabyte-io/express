@@ -224,6 +224,8 @@ class VaspXMLParser(BaseXMLParser):
                         # if number of spins are more than 1
                         elec_state = '{0}-{1}'.format(orbit_symbols[column_id], SPIN_MAP[spin_id + 1]) if len(
                             atom) > 1 else orbit_symbols[column_id - 1]
+                        # orbit_symbol is missed in VASP 5.4.4, hence the below
+                        elec_state = "".join(("d", elec_state)) if elec_state == "x2-y2" else elec_state
                         electronic_states.add(elec_state)
                         partial_dos_values.append(column.tolist())
                         partial_dos_infos.append({

@@ -16,11 +16,14 @@ class BandStructure(TwoDimensionalPlotProperty):
     def __init__(self, name, raw_data, *args, **kwargs):
         super(BandStructure, self).__init__(name, raw_data, *args, **kwargs)
         self.nspins = self.raw_data["nspins"]
-        self.ibz_k_points = self.raw_data["ibz_k_points"]
+
         self.eigenvalues_at_kpoints = self.raw_data["eigenvalues_at_kpoints"]
+        if kwargs.get("remove_non_zero_weight_kpoints", False):
+            self.eigenvalues_at_kpoints = [e for e in self.eigenvalues_at_kpoints if e['weight'] == 0]
+
         self.nkpoints = len(self.eigenvalues_at_kpoints)
         self.bands = self._get_band()
-        self.xDataArray = self.ibz_k_points.tolist()
+        self.xDataArray = [eigenvalueData["kpoint"] for eigenvalueData in self.eigenvalues_at_kpoints]
         self.yDataSeries = self.bands.tolist()
 
     def _serialize(self):
