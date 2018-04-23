@@ -4,9 +4,16 @@ from operator import itemgetter
 
 from express.parsers.formats.xml import BaseXMLParser
 
-SPIN_MAP = {
+SPIN_MAP_COLLINEAR = {
     1: 'up',
     2: 'down'
+}
+
+SPIN_MAP_NON_COLLINEAR = {
+    1: 'total',
+    2: 'x',
+    3: 'y',
+    4: 'z'
 }
 
 
@@ -138,7 +145,7 @@ class VaspXMLParser(BaseXMLParser):
                 ]
             }
         """
-        energy_levels, total_dos, partial_dos_values, partial_dos_infos, electronic_states = self._extract_dos()
+        total_dos, partial_dos_values, partial_dos_infos, electronic_states = self._extract_dos()
         if combined:
             combined_pdos_values = []
             combined_pdos_infos = []
@@ -155,9 +162,11 @@ class VaspXMLParser(BaseXMLParser):
                         'spin': 0.5 if 'up' in elec_state else -0.5
                     })
             partial_dos_values, partial_dos_infos = combined_pdos_values, combined_pdos_infos
+
+        # TODO: extract and return total dos for all the spins
         return {
-            'energy': energy_levels.tolist(),
-            'total': total_dos.tolist(),
+            'energy': total_dos[0]["energy"].tolist(),
+            'total': np.sum([dos["total"] for dos in total_dos], axis=0).tolist(),
             'partial': partial_dos_values,
             'partial_info': partial_dos_infos
         }
@@ -171,6 +180,18 @@ class VaspXMLParser(BaseXMLParser):
         """
         return [atom.find('c').text.strip() for atom in self.root.find('atominfo/array/set').findall('rc')]
 
+    def _extract_total_dos(self, dos_root):
+        total_dos = []
+        total_dos_root = dos_root.find('total/array/set')
+        for index, spin in enumerate(total_dos_root):
+            tdos_spin = np.array([map(float, tdos.text.split()) for tdos in spin.findall('r')])
+            total_dos.append({
+                "spin": index + 1,
+                "energy": tdos_spin[:, 0],
+                "total": tdos_spin[:, 1]
+            })
+        return total_dos
+
     def _extract_dos(self):
 
         """
@@ -180,12 +201,9 @@ class VaspXMLParser(BaseXMLParser):
             tuple: energy levels, total dos, partial dos and electronic states values
         """
         dos_root = self.root.findall('calculation')[-1].find('dos')
-        tdos_root = dos_root.find('total').find('array').find('set').find('set').findall('r')
-        tot_dos = np.array([map(float, tdos.text.split()) for tdos in tdos_root])
-        energy_levels = tot_dos[:, 0]
-        total_dos = tot_dos[:, 1]
+        total_dos = self._extract_total_dos(dos_root)
         partial_dos_values, partial_dos_infos, electronic_states = self._partial_dos(dos_root)
-        return energy_levels, total_dos, partial_dos_values, partial_dos_infos, electronic_states
+        return total_dos, partial_dos_values, partial_dos_infos, electronic_states
 
     def _partial_dos(self, dos_root):
         """
@@ -211,6 +229,7 @@ class VaspXMLParser(BaseXMLParser):
                         }
                     ]
         """
+        # TODO: simplify the logic and break it down into multiple functions
         partial_dos_values = []
         partial_dos_infos = []
         electronic_states = set()
@@ -221,11 +240,13 @@ class VaspXMLParser(BaseXMLParser):
                 for spin_id, spin in enumerate(atom):
                     pdos_spin = np.array([map(float, pdos.text.split()[1:]) for pdos in spin.findall('r')])
                     for column_id, column in enumerate(pdos_spin.T):
-                        # if number of spins are more than 1
-                        elec_state = '{0}-{1}'.format(orbit_symbols[column_id], SPIN_MAP[spin_id + 1]) if len(
-                            atom) > 1 else orbit_symbols[column_id - 1]
+                        elec_state = orbit_symbols[column_id - 1]
+                        if len(atom) == 2:
+                            elec_state = '{0}-{1}'.format(orbit_symbols[column_id], SPIN_MAP_COLLINEAR[spin_id + 1])
+                        elif len(atom) == 4:
+                            elec_state = '{0}-{1}'.format(orbit_symbols[column_id], SPIN_MAP_NON_COLLINEAR[spin_id + 1])
                         # orbit_symbol is missed in VASP 5.4.4, hence the below
-                        elec_state = "".join(("d", elec_state)) if elec_state == "x2-y2" else elec_state
+                        elec_state = "".join(("d", elec_state)) if "x2-y2" in elec_state else elec_state
                         electronic_states.add(elec_state)
                         partial_dos_values.append(column.tolist())
                         partial_dos_infos.append({
@@ -320,7 +341,8 @@ class VaspXMLParser(BaseXMLParser):
         Returns:
             ndarray: a matrix containing all the values found in the varray.
         """
-        return np.array([v.text.split() for v in varray.findall('v')], dtype=np.float) if varray is not None else np.array([])
+        return np.array([v.text.split() for v in varray.findall('v')],
+                        dtype=np.float) if varray is not None else np.array([])
 
     def stress_tensor(self):
         """
