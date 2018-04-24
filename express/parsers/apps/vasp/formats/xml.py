@@ -16,6 +16,8 @@ SPIN_MAP_NON_COLLINEAR = {
     4: 'z'
 }
 
+EXTRACT_PARTIAL_DOS_FOR_ALL_SPINS = False
+
 
 class VaspXMLParser(BaseXMLParser):
     """
@@ -238,6 +240,8 @@ class VaspXMLParser(BaseXMLParser):
             partial_root = dos_root.find('partial/array/set')
             for atom_id, atom in enumerate(partial_root):
                 for spin_id, spin in enumerate(atom):
+                    # extract partial dos only for the first spin in case of non-collinear calculation
+                    if spin_id > 0 and len(atom) == 4 and not EXTRACT_PARTIAL_DOS_FOR_ALL_SPINS: continue
                     pdos_spin = np.array([map(float, pdos.text.split()[1:]) for pdos in spin.findall('r')])
                     for column_id, column in enumerate(pdos_spin.T):
                         elec_state = orbit_symbols[column_id - 1]
