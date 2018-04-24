@@ -19,12 +19,16 @@ class Material(BaseProperty):
 
     def __init__(self, name, raw_data, *args, **kwargs):
         super(Material, self).__init__(name, raw_data, *args, **kwargs)
-        self.volume = Volume("volume", raw_data).serialize_and_validate()
-        self.density = Density("density", raw_data).serialize_and_validate()
-        self.symmetry = Symmetry("symmetry", raw_data).serialize_and_validate()
-        self.derived_properties = [self.volume, self.density, self.symmetry]
-        self.derived_properties.extend(self._elemental_ratios())
-        self.derived_properties.extend(self._p_norms())
+        self.derived_properties = []
+        try:
+            volume = Volume("volume", raw_data).serialize_and_validate()
+            density = Density("density", raw_data).serialize_and_validate()
+            symmetry = Symmetry("symmetry", raw_data).serialize_and_validate()
+            self.derived_properties = [volume, density, symmetry]
+            self.derived_properties.extend(self._elemental_ratios())
+            self.derived_properties.extend(self._p_norms())
+        except:
+            pass
 
     def _serialize(self):
         """
@@ -34,13 +38,13 @@ class Material(BaseProperty):
              dict
         """
         return {
-            "name": "",
             "_id": "",
+            "name": "",
             "exabyteId": "",
-            "formula": self.raw_data["reduced_formula"],
-            "unitCellFormula": self.raw_data["formula"],
-            "lattice": self.raw_data["lattice_bravais"],
-            "basis": self.raw_data["basis"],
+            "formula": self.raw_data.get("reduced_formula") or "",
+            "unitCellFormula": self.raw_data.get("formula") or "",
+            "lattice": self.raw_data.get("lattice_bravais") or self.raw_data.get("lattice_vectors"),
+            "basis": self.raw_data.get("basis"),
             "derivedProperties": self.derived_properties
         }
 
