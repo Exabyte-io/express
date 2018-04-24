@@ -39,7 +39,7 @@ class Material(BaseProperty):
         """
         return {
             "_id": "",
-            "name": "",
+            "name": self.name,
             "exabyteId": "",
             "formula": self.raw_data.get("reduced_formula") or "",
             "unitCellFormula": self.raw_data.get("formula") or "",

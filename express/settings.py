@@ -137,7 +137,7 @@ NON_SCALAR_PROPERTIES_MANIFEST = {
             'express.parsers.mixins.ionic.IonicDataMixin',
         ]
     },
-    'relaxed_structure': {
+    'final_structure': {
         'reference': 'express.properties.material.Material',
         'mixins': [
             'express.parsers.mixins.ionic.IonicDataMixin',
