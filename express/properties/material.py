@@ -78,7 +78,7 @@ class Material(BaseProperty):
 
     def serialize_and_validate(self):
         """
-        Serialize the property and validates it against the schema.
+        Serialize the property and validate it against the schema.
 
         Returns:
             dict
