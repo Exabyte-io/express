@@ -20,6 +20,7 @@ class Material(BaseProperty):
     def __init__(self, name, raw_data, *args, **kwargs):
         super(Material, self).__init__(name, raw_data, *args, **kwargs)
         self.derived_properties = []
+        self.lattice_format = kwargs.get("lattice_format", "lattice_bravais")
         try:
             volume = Volume("volume", raw_data).serialize_and_validate()
             density = Density("density", raw_data).serialize_and_validate()
@@ -43,7 +44,7 @@ class Material(BaseProperty):
             "exabyteId": "",
             "formula": self.raw_data.get("reduced_formula") or "",
             "unitCellFormula": self.raw_data.get("formula") or "",
-            "lattice": self.raw_data.get("lattice_bravais") or self.raw_data.get("lattice_vectors"),
+            "lattice": self.raw_data.get(self.lattice_format),
             "basis": self.raw_data.get("basis"),
             "derivedProperties": self.derived_properties
         }

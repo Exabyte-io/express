@@ -76,9 +76,26 @@ class PyMatGenParser(BaseParser, IonicDataMixin):
              str
         """
         structure_ = self.lattice_only_structure if self.cell != "primitive" else self.structure
+        try:
+            # try getting the lattice type from the lattice only structure
+            return self._lattice_type_from_structure(structure_)
+        except:
+            try:
+                # try getting the lattice type from the current structure
+                return self._lattice_type_from_structure(self.structure)
+            except:
+                return "TRI"
+
+    def _lattice_type_from_structure(self, structure_):
+        """
+        Returns lattice type according to AFLOW (http://aflowlib.org/) classification.
+
+        Returns:
+             str
+        """
         analyzer = mg.symmetry.analyzer.SpacegroupAnalyzer(structure_, symprec=0.001)
         lattice_type = analyzer.get_lattice_type()
-        spg_symbol = analyzer.get_spacegroup_symbol()
+        spg_symbol = analyzer.get_space_group_symbol()
 
         # TODO: find a better implementation
         if lattice_type == "cubic":
@@ -135,7 +152,7 @@ class PyMatGenParser(BaseParser, IonicDataMixin):
             func: express.parsers.mixins.ionic.IonicDataMixin.space_group_symbol
         """
         return {
-            "value": mg.symmetry.analyzer.SpacegroupAnalyzer(self.structure).get_spacegroup_symbol(),
+            "value": mg.symmetry.analyzer.SpacegroupAnalyzer(self.structure).get_space_group_symbol(),
             "tolerance": 0.3
         }
 
