@@ -11,10 +11,10 @@ setup(
     install_requires=[
         "mock==1.3.0",
         "bunch==1.0.1",
-        "numpy==1.10.4",
+        "numpy==1.14.3",
         "xmltodict==0.9.2",
         "esse==0.1.0",
-        "pymatgen==4.2.1"
+        "pymatgen==2018.5.3"
     ],
     dependency_links=[
         "git+file:///stack/lib/esse@18870c882e26c385467183d2861b558e93b12556#egg=esse-0.1.0"
