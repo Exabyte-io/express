@@ -1,5 +1,6 @@
 import re
 import numpy as np
+from pymatgen.io.vasp import Outcar
 
 from express.parsers.apps.vasp import settings
 from express.parsers.formats.txt import BaseTXTParser
@@ -248,3 +249,13 @@ class VaspTXTParser(BaseTXTParser):
         """
         data = self._general_output_parser(text, **settings.REGEX['zero_point_energy'])
         return sum(data) / 2 / 1000
+
+    def magnetic_moments(self, outcar):
+        """
+        Extracts magnetic moments.
+
+        Returns:
+             list
+        """
+        mag = Outcar(outcar).magnetization
+        return [[0, 0, ion['tot']] if isinstance(ion['tot'], float) else ion['tot'].moment.tolist() for ion in mag]

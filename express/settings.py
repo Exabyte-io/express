@@ -143,6 +143,12 @@ NON_SCALAR_PROPERTIES_MANIFEST = {
             'express.parsers.mixins.ionic.IonicDataMixin',
         ]
     },
+    'magnetic_moments': {
+        'reference': 'express.properties.non_scalar.magnetic_moments.MagneticMoments',
+        'mixins': [
+            'express.parsers.mixins.ionic.IonicDataMixin',
+        ]
+    },
 }
 
 CONVERGENCE_PROPERTIES = {
