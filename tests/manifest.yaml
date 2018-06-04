@@ -125,3 +125,7 @@ test_vasp_atomic_forces:
 test_vasp_total_energy_contributions:
   workDir: data/vasp/test-001
   stdoutFile: data/vasp/test-001/vasp.out
+
+test_vasp_magnetic_moments:
+  workDir: data/vasp/test-004
+  stdoutFile: data/vasp/test-004/vasp.out
