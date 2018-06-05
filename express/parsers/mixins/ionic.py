@@ -297,3 +297,16 @@ class IonicDataMixin(object):
             }
         """
         pass
+
+    @abstractmethod
+    def magnetic_moments(self):
+        """
+        Returns magnetic moments.
+
+        Returns:
+            list
+
+        Examples:
+             [[0, 0, 3.046], [0, 0, -3.045]]
+        """
+        pass

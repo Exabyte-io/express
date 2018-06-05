@@ -193,3 +193,12 @@ class VaspParser(BaseParser, IonicDataMixin, ElectronicDataMixin, ReciprocalData
             func: express.parsers.mixins.ionic.IonicDataMixin.zero_point_energy
         """
         return self.txt_parser.zero_point_energy(self._get_outcar_content())
+
+    def magnetic_moments(self):
+        """
+        Returns magnetic moments.
+
+        Reference:
+            func: express.parsers.mixins.ionic.IonicDataMixin.magnetic_moments
+        """
+        return self.txt_parser.magnetic_moments(os.path.join(self.work_dir, "OUTCAR"))
