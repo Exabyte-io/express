@@ -63,8 +63,9 @@ REGEX = {
     "ion_position": {
         "regex": r"([A-Z][a-z]?)\s+({0})\s+({0})\s+({0})".format(DOUBLE_REGEX)
     },
+    # migrate values extracted before Mon Jun 18 20:55:40 UTC 2018
     "stress_tensor": {
-        "regex": r"^\s*({0})\s+({0})\s+({0}) +{0}\s+{0}\s+{0}".format(DOUBLE_REGEX),
+        "regex": r"^\s*{0}\s+{0}\s+{0} +({0})\s+({0})\s+({0})".format(DOUBLE_REGEX),
         "start_flag": "entering subroutine stress ...",
         "occurrences": 3,
         "output_type": "float",
