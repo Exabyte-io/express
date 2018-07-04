@@ -52,6 +52,10 @@ SCALAR_PROPERTIES_MANIFEST = {
         'mixins': [
             'express.parsers.mixins.ionic.IonicDataMixin',
         ]
+    },
+    'surface_energy': {
+        'reference': 'express.properties.scalar.surface_energy.SurfaceEnergy',
+        'mixins': []
     }
 }
 
