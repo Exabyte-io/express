@@ -3,4 +3,4 @@ bunch==1.0.1
 numpy==1.14.3
 xmltodict==0.9.2
 pymatgen==2018.5.3
--e git+file:///stack/lib/esse@695a9ee83f5ee825fe07affc620cbfd0cb46c979#egg=esse
+-e git+file:///stack/lib/esse@003f0c6f23a93684dc9703be6e497f25ae62935f#egg=esse
