@@ -65,7 +65,7 @@ class ExabyteMLPredictWorkflow(BaseProperty):
                             "source": "api",
                             "postProcessors": [],
                             "preProcessors": [],
-                            "subtype": "input",
+                            "subtype": "dataFrame",
                             "input": [
                                 {
                                     "endpoint": "dataframe",
