@@ -33,7 +33,7 @@ class EspressoTXTParser(BaseTXTParser):
         Returns:
              float
         """
-        return self._general_output_parser(text, **settings.REGEX["total_energy"])
+        return Constant.RYDBERG * self._general_output_parser(text, **settings.REGEX["total_energy"])
 
     def dos(self):
         """

@@ -45,6 +45,7 @@ class ExabyteMLPredictWorkflow(BaseProperty):
                         "version": "0.2.0",
                         "summary": "Exabyte Machine Learning Engine",
                         "name": "exabyteml",
+                        "shortName": "ml",
                         "build": "Default"
                     },
                     "units": [
@@ -58,6 +59,7 @@ class ExabyteMLPredictWorkflow(BaseProperty):
                                 "version": "0.2.0",
                                 "summary": "Exabyte Machine Learning Engine",
                                 "name": "exabyteml",
+                                "shortName": "ml",
                                 "build": "Default"
                             },
                             "results": [],
@@ -65,7 +67,7 @@ class ExabyteMLPredictWorkflow(BaseProperty):
                             "source": "api",
                             "postProcessors": [],
                             "preProcessors": [],
-                            "subtype": "input",
+                            "subtype": "dataFrame",
                             "input": [
                                 {
                                     "endpoint": "dataframe",
@@ -98,6 +100,7 @@ class ExabyteMLPredictWorkflow(BaseProperty):
                                 "version": "0.2.0",
                                 "summary": "Exabyte Machine Learning Engine",
                                 "name": "exabyteml",
+                                "shortName": "ml",
                                 "build": "Default"
                             },
                             "postProcessors": [],
@@ -124,6 +127,7 @@ class ExabyteMLPredictWorkflow(BaseProperty):
                                 "version": "0.2.0",
                                 "build": "Default",
                                 "name": "exabyteml",
+                                "shortName": "ml",
                                 "summary": "Exabyte Machine Learning Engine"
                             },
                             "postProcessors": [],
@@ -154,6 +158,7 @@ class ExabyteMLPredictWorkflow(BaseProperty):
                                 "version": "0.2.0",
                                 "build": "Default",
                                 "name": "exabyteml",
+                                "shortName": "ml",
                                 "summary": "Exabyte Machine Learning Engine"
                             },
                             "postProcessors": [],

@@ -19,8 +19,8 @@ class ExPrESS(object):
                 structure_format (str): structure format.
     """
 
-    def __init__(self, parser_name, *args, **kwargs):
-        self._parser = self._get_parser_class(parser_name)(*args, **kwargs)
+    def __init__(self, parser_name=None, *args, **kwargs):
+        if parser_name: self._parser = self._get_parser_class(parser_name)(*args, **kwargs)
 
     def _get_property_class(self, property_name):
         """
