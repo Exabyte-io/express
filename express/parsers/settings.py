@@ -27,6 +27,7 @@ class Constant(object):
     kJ = 1000.0 / _e
     kcal = 4.184 * kJ
     cm_inv_to_ev = 0.00012398  # cm^-1 to eV
+    ry_bohr_to_eV_A = 25.71104309541616  # or RYDBERG / BOHR
 
 
 GENERAL_REGEX = Bunch()
