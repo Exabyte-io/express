@@ -3,7 +3,7 @@ from tests.data.raw_data import ATOMIC_FORCES_RAW_DATA
 from express.properties.non_scalar.atomic_forces import AtomicForces
 
 ATOMIC_FORCES = {
-    "units": "eV/bohr",
+    "units": "eV/angstrom",
     "name": "atomic_forces",
     "values": [
         {

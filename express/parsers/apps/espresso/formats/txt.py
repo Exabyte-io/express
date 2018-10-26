@@ -511,7 +511,7 @@ class EspressoTXTParser(BaseTXTParser):
             list
         """
         forces = self._general_output_parser(text, **settings.REGEX['forces_on_atoms'])
-        return [v * Constant.ry_bohr_to_eV_A for v in forces]
+        return (np.array(forces) * Constant.ry_bohr_to_eV_A).tolist()
 
     def total_energy_contributions(self, text):
         """
