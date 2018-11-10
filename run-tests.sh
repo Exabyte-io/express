@@ -49,7 +49,7 @@ check_args () {
 
 check_args $@
 
-irm -rf ${PYTHON_ENV}
+rm -rf ${PYTHON_ENV}
 virtualenv ${PYTHON_ENV}
 
 for LIB in esse; do
