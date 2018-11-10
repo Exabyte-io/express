@@ -49,11 +49,17 @@ check_args () {
 
 check_args $@
 
-if [ ! -f ${PYTHON_ENV}/bin/python ]; then
-    virtualenv ${PYTHON_ENV}
-fi
+irm -rf ${PYTHON_ENV}
+virtualenv ${PYTHON_ENV}
 
-#${PYTHON_ENV}/bin/pip -q install --process-dependency-links -r ${SRC}/requirements.txt
+for LIB in esse; do
+    cd /stack/lib/${LIB}
+    git checkout dev
+    git pull --all
+done
+cd ${SRC}
+
+${PYTHON_ENV}/bin/pip install --process-dependency-links -r ${SRC}/requirements.txt
 
 source ${PYTHON_ENV}/bin/activate
 export PYTHONPATH=${SRC}:${PYTHONPATH}
