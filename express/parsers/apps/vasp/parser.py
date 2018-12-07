@@ -202,3 +202,24 @@ class VaspParser(BaseParser, IonicDataMixin, ElectronicDataMixin, ReciprocalData
             func: express.parsers.mixins.ionic.IonicDataMixin.magnetic_moments
         """
         return self.txt_parser.magnetic_moments(os.path.join(self.work_dir, "OUTCAR"))
+
+    def reaction_energies(self, prefix="0", output_file="stdout"):
+        """
+        Returns reaction energies.
+
+        Note: only image 01 writes to the usual stdout file, other images write to `stdout` inside image directory.
+
+        Args:
+            prefix (str): image directory prefix.
+            output_file (str): output file name.
+
+        Returns:
+             list
+        """
+        energies = []
+        for root, dirs, files in os.walk(self.work_dir):
+            for dir_ in [d for d in dirs if str(d).startswith(prefix)]:
+                path = self.stdout_file if dir_ == "01" else os.path.join(root, dir_, output_file)
+                energies.append(self.txt_parser.total_energy(self._get_outcar_content(path)))
+            break
+        return energies

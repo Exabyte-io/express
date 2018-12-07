@@ -1,3 +1,4 @@
+import os
 import numpy as np
 
 from express.parsers import BaseParser
@@ -187,3 +188,22 @@ class EspressoParser(BaseParser, IonicDataMixin, ElectronicDataMixin, Reciprocal
             func: express.parsers.mixins.ionic.IonicDataMixin.phonon_dispersions
         """
         return self.txt_parser.phonon_dispersions()
+
+    def reaction_energies(self, prefix="__prefix___", output_file="PW.out"):
+        """
+        Returns reaction energies.
+
+        Args:
+            prefix (str): image directory prefix.
+            output_file (str): output file name.
+
+        Returns:
+             list
+        """
+        energies = []
+        for root, dirs, files in os.walk(self.work_dir):
+            for dir_ in [d for d in dirs if str(d).startswith(prefix)]:
+                path = os.path.join(root, dir_, output_file)
+                energies.append(self.txt_parser.total_energy(self._get_file_content(path)))
+            break
+        return energies

@@ -56,7 +56,13 @@ SCALAR_PROPERTIES_MANIFEST = {
     'surface_energy': {
         'reference': 'express.properties.scalar.surface_energy.SurfaceEnergy',
         'mixins': []
-    }
+    },
+    'reaction_energy_barrier': {
+        'reference': 'express.properties.scalar.reaction_energy_barrier.ReactionEnergyBarrier',
+        'mixins': [
+            'express.parsers.mixins.electronic.ElectronicDataMixin',
+        ]
+    },
 }
 
 NON_SCALAR_PROPERTIES_MANIFEST = {
@@ -151,6 +157,12 @@ NON_SCALAR_PROPERTIES_MANIFEST = {
         'reference': 'express.properties.non_scalar.magnetic_moments.MagneticMoments',
         'mixins': [
             'express.parsers.mixins.ionic.IonicDataMixin',
+        ]
+    },
+    'reaction_energy_profile': {
+        'reference': 'express.properties.non_scalar.two_dimensional_plot.reaction_energy_profile.ReactionEnergyProfile',
+        'mixins': [
+            'express.parsers.mixins.electronic.ElectronicDataMixin',
         ]
     },
 }
