@@ -220,6 +220,6 @@ class VaspParser(BaseParser, IonicDataMixin, ElectronicDataMixin, ReciprocalData
         for root, dirs, files in os.walk(self.work_dir):
             for dir_ in [d for d in dirs if str(d).startswith(prefix)]:
                 path = self.stdout_file if dir_ == "01" else os.path.join(root, dir_, output_file)
-                energies.append(self.txt_parser.total_energy(self._get_outcar_content(path)))
+                energies.append(self.txt_parser.total_energy(self._get_file_content(path)))
             break
         return energies
