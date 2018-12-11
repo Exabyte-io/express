@@ -189,6 +189,24 @@ class EspressoParser(BaseParser, IonicDataMixin, ElectronicDataMixin, Reciprocal
         """
         return self.txt_parser.phonon_dispersions()
 
+    def _get_neb_image_paths_via_prefix(self, prefix, output_file):
+        """
+        Returns the paths to images' output files.
+
+        Args:
+            prefix (str): image directory prefix.
+            output_file (str): output file name.
+
+        Returns:
+             list[str]
+        """
+        paths = []
+        for root, dirs, files in os.walk(self.work_dir):
+            for dir_ in [d for d in dirs if str(d).startswith(prefix)]:
+                paths.append(os.path.join(root, dir_, output_file))
+            break
+        return paths
+
     def reaction_energies(self, prefix="__prefix___", output_file="PW.out"):
         """
         Returns reaction energies.
@@ -201,9 +219,6 @@ class EspressoParser(BaseParser, IonicDataMixin, ElectronicDataMixin, Reciprocal
              list
         """
         energies = []
-        for root, dirs, files in os.walk(self.work_dir):
-            for dir_ in [d for d in dirs if str(d).startswith(prefix)]:
-                path = os.path.join(root, dir_, output_file)
-                energies.append(self.txt_parser.total_energy(self._get_file_content(path)))
-            break
+        for path in self._get_neb_image_paths_via_prefix(prefix, output_file):
+            energies.append(self.txt_parser.total_energy(self._get_file_content(path)))
         return energies

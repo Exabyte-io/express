@@ -203,11 +203,30 @@ class VaspParser(BaseParser, IonicDataMixin, ElectronicDataMixin, ReciprocalData
         """
         return self.txt_parser.magnetic_moments(os.path.join(self.work_dir, "OUTCAR"))
 
+    def _get_neb_image_paths_via_prefix(self, prefix="0", output_file="stdout"):
+        """
+        Returns the paths to images' output files.
+
+        Note: only image 01 writes to the usual stdout file, other images write to `stdout` inside image directory.
+
+        Args:
+            prefix (str): image directory prefix.
+            output_file (str): output file name.
+
+        Returns:
+             list[str]
+        """
+        paths = []
+        for root, dirs, files in os.walk(self.work_dir):
+            for dir_ in [d for d in dirs if str(d).startswith(prefix)]:
+                path = self.stdout_file if dir_ == "01" else os.path.join(root, dir_, output_file)
+                paths.append(path)
+            break
+        return paths
+
     def reaction_energies(self, prefix="0", output_file="stdout"):
         """
         Returns reaction energies.
-
-        Note: only image 01 writes to the usual stdout file, other images write to `stdout` inside image directory.
 
         Args:
             prefix (str): image directory prefix.
@@ -217,9 +236,6 @@ class VaspParser(BaseParser, IonicDataMixin, ElectronicDataMixin, ReciprocalData
              list
         """
         energies = []
-        for root, dirs, files in os.walk(self.work_dir):
-            for dir_ in [d for d in dirs if str(d).startswith(prefix)]:
-                path = self.stdout_file if dir_ == "01" else os.path.join(root, dir_, output_file)
-                energies.append(self.txt_parser.total_energy(self._get_file_content(path)))
-            break
+        for path in self._get_neb_image_paths_via_prefix(prefix, output_file):
+            energies.append(self.txt_parser.total_energy(self._get_file_content(path)))
         return energies
