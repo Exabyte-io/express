@@ -151,14 +151,15 @@ class VaspTXTParser(BaseTXTParser):
              list[dict]
         """
         data = []
-        blocks = re.findall(settings.REGEX["convergence_ionic_blocks"]["regex"], stdout, re.DOTALL | re.MULTILINE)
-        for idx, block in enumerate(blocks):
-            energies = self._general_output_parser(block, **settings.REGEX["convergence_ionic_energies"])
+        energies = self._general_output_parser(stdout, **settings.REGEX["convergence_ionic_energies"])
+        indices = [i for i, e in enumerate(energies) if e[0] == 1.0]
+        ionic_energies = [[e[1] for e in energies[i:indices[ind + 1]]] if (ind + 1) < len(indices) else energies[i:] for ind, i in enumerate(indices)]
+        for energies in ionic_energies:
             data.append({
                 "energy": energies[-1],
                 "electronic": {
                     "units": "eV",
-                    "data": self._general_output_parser(block, **settings.REGEX["convergence_electronic"])
+                    "data": energies
                 },
             })
 
