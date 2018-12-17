@@ -141,7 +141,7 @@ class VaspTXTParser(BaseTXTParser):
     def convergence_electronic(self, outcar, stdout, atom_names):
         """
         Extracts convergence electronic.
-            1. Extract all energies along with the corresponding step [(1, 0.699E+04), (2, -0.402E+03)]
+            1. Extract all energies (from dE column) along with the corresponding step [(1, 0.69948E+04), (2, -0.73973E+04)]
             2. Group the energies for each ionic step
 
         Sample input:
@@ -192,10 +192,10 @@ class VaspTXTParser(BaseTXTParser):
              list[dict]
         """
         data = []
-        ionic_energies = self.convergence_electronic(outcar, stdout, atom_names)
-        for energies in ionic_energies:
+        convergence_electronic_data = self.convergence_electronic(outcar, stdout, atom_names)
+        for ind, energies in enumerate(convergence_electronic_data):
             data.append({
-                "energy": energies[-1],
+                "energy": sum([sum(e) for e in convergence_electronic_data[0:ind + 1]]),
                 "electronic": {
                     "units": "eV",
                     "data": energies
@@ -206,6 +206,8 @@ class VaspTXTParser(BaseTXTParser):
 
         lattice_convergence = self._lattice_convergence(outcar)
         basis_convergence = self._basis_convergence(outcar, atom_names)
+        data = data[0:len(lattice_convergence)]  # strip out the last non-complete step
+        if not data: return []
         for idx, structure in enumerate(zip(lattice_convergence, basis_convergence)):
             data[idx].update({
                 'structure': {
