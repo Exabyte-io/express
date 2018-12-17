@@ -195,7 +195,21 @@ class ExabyteMLPredictWorkflow(BaseProperty):
                 }
             ],
             "name": self.name,
-            "properties": self.targets
+            "properties": self.targets,
+            "creator": {
+                "_id": "",
+                "cls": "User",
+                "slug": ""
+            },
+            "owner": {
+                "_id": "",
+                "cls": "Account",
+                "slug": ""
+            },
+            "schemaVersion": "0.2.0",
+            "exabyteId": "",
+            "hash": "",
+            "_id": "",
         }
 
     def serialize_and_validate(self):
