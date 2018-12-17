@@ -15,10 +15,6 @@ REGEX = {
         "regex": r'({double})\s+({double})\s+({double})\s+{double}'.format(double=GENERAL_REGEX.double_number)
     },
     "convergence_electronic": {
-        "regex": r".+:\s+\d+\s+\S+\s+({0})".format(GENERAL_REGEX.double_number),
-        "output_type": "float",
-    },
-    "convergence_ionic_energies": {
         "regex": r"DAV:\s+(\d+)\s+({0})".format(GENERAL_REGEX.double_number),
         "output_type": "float",
         "match_groups": [1, 2]
