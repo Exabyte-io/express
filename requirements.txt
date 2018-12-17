@@ -4,4 +4,4 @@ numpy==1.14.3
 xmltodict==0.9.2
 pymatgen==2018.5.3
 git+git://github.com/Exabyte-io/json_include.git#egg=json_include
--e git+file:///stack/lib/esse@9f41b01828836361a5f38e2888933a507e2d40ad#egg=esse
+-e git+file:///stack/lib/esse@ad70908027f74effcd7535cac4de1136b7132ed7#egg=esse
