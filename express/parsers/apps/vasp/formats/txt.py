@@ -138,6 +138,47 @@ class VaspTXTParser(BaseTXTParser):
                 })
             return results
 
+    def convergence_electronic(self, outcar, stdout, atom_names):
+        """
+        Extracts convergence electronic.
+            1. Extract all energies (from dE column) along with the corresponding step [(1, 0.69948E+04), (2, -0.73973E+04)]
+            2. Group the energies for each ionic step
+
+        Sample input:
+                   N       E                     dE             d eps       ncg     rms          rms(c)
+            DAV:   1     0.699475439520E+04    0.69948E+04   -0.37054E+05   920   0.140E+03
+            DAV:   2    -0.402547717878E+03   -0.73973E+04   -0.71440E+04  1084   0.442E+02
+            DAV:   3    -0.105567783952E+04   -0.65313E+03   -0.64960E+03  1160   0.125E+02
+            DAV:   4    -0.110887818556E+04   -0.53200E+02   -0.53162E+02  1560   0.284E+01
+            DAV:   5    -0.111382548259E+04   -0.49473E+01   -0.49469E+01  1240   0.562E+00    0.137E+02
+                1 T=  2001. E= -.89713765E+03 F= -.92170983E+03 E0= -.92172095E+03  EK= 0.24572E+02
+
+                   N       E                     dE             d eps       ncg     rms          rms(c)
+            DAV:   1    -0.916206954626E+03    0.55030E+01   -0.19221E+03   920   0.750E+01    0.931E+00
+            DAV:   2    -0.920149095159E+03   -0.39421E+01   -0.47144E+01  1072   0.109E+01    0.625E+00
+            DAV:   3    -0.919835295300E+03    0.31380E+00   -0.27646E+00  1288   0.256E+00    0.367E+00
+            DAV:   4    -0.919705445969E+03    0.12985E+00   -0.93950E-01  1128   0.186E+00    0.145E+00
+                2 T=  1843. E= -.89706481E+03 F= -.91969309E+03 E0= -.91970717E+03  EK= 0.22628E+02
+
+        Args:
+            outcar (str): OUTCAR content.
+            stdout (str): stdout content.
+            atom_names (list): list of atoms.
+
+        Returns:
+             list[list]
+        """
+        data = []
+        matches = self._general_output_parser(stdout, **settings.REGEX["convergence_electronic"])
+        first_step_indices = [ind for ind, elm in enumerate(matches) if int(elm[0]) == 1]
+        for ind, first_step_index in enumerate(first_step_indices):
+            if ind + 1 == len(first_step_indices):
+                energies = matches[first_step_index:]
+            else:
+                energies = matches[first_step_index:first_step_indices[ind + 1]]
+            data.append([energy[1] for energy in energies])  # strip out the step numbers
+        return data
+
     def convergence_ionic(self, outcar, stdout, atom_names):
         """
         Extracts convergence ionic.
@@ -151,14 +192,13 @@ class VaspTXTParser(BaseTXTParser):
              list[dict]
         """
         data = []
-        blocks = re.findall(settings.REGEX["convergence_ionic_blocks"]["regex"], stdout, re.DOTALL | re.MULTILINE)
-        for idx, block in enumerate(blocks):
-            energies = self._general_output_parser(block, **settings.REGEX["convergence_ionic_energies"])
+        convergence_electronic_data = self.convergence_electronic(outcar, stdout, atom_names)
+        for ind, energies in enumerate(convergence_electronic_data):
             data.append({
-                "energy": energies[-1],
+                "energy": sum([sum(e) for e in convergence_electronic_data[0:ind + 1]]),
                 "electronic": {
                     "units": "eV",
-                    "data": self._general_output_parser(block, **settings.REGEX["convergence_electronic"])
+                    "data": energies
                 },
             })
 
@@ -166,6 +206,8 @@ class VaspTXTParser(BaseTXTParser):
 
         lattice_convergence = self._lattice_convergence(outcar)
         basis_convergence = self._basis_convergence(outcar, atom_names)
+        data = data[0:len(lattice_convergence)]  # strip out the last non-complete step
+        if not data: return []
         for idx, structure in enumerate(zip(lattice_convergence, basis_convergence)):
             data[idx].update({
                 'structure': {
@@ -175,25 +217,6 @@ class VaspTXTParser(BaseTXTParser):
             })
 
         return data
-
-    def convergence_electronic(self, outcar, stdout, atom_names):
-        """
-        Extracts convergence electronic.
-
-        Args:
-            outcar (str): OUTCAR content.
-            stdout (str): stdout content.
-            atom_names (list): list of atoms.
-
-        Returns:
-             list[float]
-        """
-        data = self._general_output_parser(stdout, **settings.REGEX["convergence_electronic"])
-        # The next 3 lines are necessary to have realtime data
-        ionic_data = [_["electronic"]["data"] for _ in self.convergence_ionic(outcar, stdout, atom_names)]
-        last_step_data = data[sum([len(_) for _ in ionic_data]): len(data)]
-        if last_step_data: ionic_data.append(last_step_data)
-        return ionic_data
 
     def pressure(self, text):
         """

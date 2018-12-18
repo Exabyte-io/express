@@ -15,15 +15,9 @@ REGEX = {
         "regex": r'({double})\s+({double})\s+({double})\s+{double}'.format(double=GENERAL_REGEX.double_number)
     },
     "convergence_electronic": {
-        "regex": r".+:\s+\d+\s+\S+\s+({0})".format(GENERAL_REGEX.double_number),
+        "regex": r"DAV:\s+(\d+)\s+{0}\s+({0})".format(GENERAL_REGEX.double_number),
         "output_type": "float",
-    },
-    "convergence_ionic_energies": {
-        "regex": r".+:\s+\d+\s+({0})".format(GENERAL_REGEX.double_number),
-        "output_type": "float",
-    },
-    "convergence_ionic_blocks": {
-        "regex": r"\s+N\s+.+?\n(.+?)\s+\d+\s+F="
+        "match_groups": [1, 2]
     },
     "ion_positions_block": {
         "regex": r"POSITION.+?-{5,}\n(.+?)-{5,}"
