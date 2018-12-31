@@ -181,3 +181,24 @@ class ElectronicDataMixin(object):
         }
         """
         pass
+
+    @abstractmethod
+    def reaction_energies(self):
+        """
+        Returns reaction energies.
+
+        Returns:
+             list[float]
+
+        Example:
+             [
+                0.0,
+                0.0336637211,
+                0.1282952413,
+                0.2032895454,
+                0.1282953846,
+                0.0336637671,
+                -5.3E-9
+            ]
+        """
+        pass
