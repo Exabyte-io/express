@@ -15,8 +15,8 @@ class TwoDimensionalPlotProperty(NonScalarProperty):
     def _serialize(self):
         serialized_data = {
             'name': self.name,
-            'xAxis': self.esse.get_property_default_values(self.name)["xAxis"],
-            'yAxis': self.esse.get_property_default_values(self.name)["yAxis"],
+            'xAxis': self.manifest["xAxis"],
+            'yAxis': self.manifest["yAxis"],
             'xDataArray': self.xDataArray,
             'yDataSeries': self.yDataSeries,
         }

@@ -13,6 +13,6 @@ class AtomicForces(NonScalarProperty):
     def _serialize(self):
         return {
             'name': self.name,
-            "units": self.esse.get_property_default_values(self.name)["units"],
+            "units": self.manifest["units"],
             "values": [{"id": index + 1, "value": value} for index, value in enumerate(self.atomic_forces)]
         }

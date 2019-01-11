@@ -13,7 +13,7 @@ class TotalEnergyContributions(NonScalarProperty):
     def _serialize(self):
         data = {
             'name': self.name,
-            'units': self.esse.get_property_default_values(self.name)["units"]
+            'units': self.manifest["units"]
         }
         data.update(self.total_energy_contributions)
         return data
