@@ -14,6 +14,6 @@ class Basis(NonScalarProperty):
         serialized_data = self.basis
         serialized_data.update({
             "name": self.name,
-            "units": self.manifest["units"]
+            "units": self.manifest["defaults"]["units"]
         })
         return serialized_data

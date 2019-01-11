@@ -13,6 +13,6 @@ class ConvergenceElectronic(NonScalarProperty):
     def _serialize(self):
         return {
             'name': self.name,
-            'units': self.manifest["units"],
+            'units': self.manifest["defaults"]["units"],
             'data': self.convergence_electronic
         }

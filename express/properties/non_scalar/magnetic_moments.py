@@ -10,6 +10,6 @@ class MagneticMoments(NonScalarProperty):
     def _serialize(self):
         return {
             'name': self.name,
-            "units": self.manifest["units"],
+            "units": self.manifest["defaults"]["units"],
             "values": [{"id": index + 1, "value": value} for index, value in enumerate(self.magnetic_moments)]
         }

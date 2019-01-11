@@ -13,6 +13,6 @@ class StressTensor(NonScalarProperty):
     def _serialize(self):
         return {
             'name': self.name,
-            "units": self.manifest["units"],
+            "units": self.manifest["defaults"]["units"],
             "value": self.stress_tensor
         }

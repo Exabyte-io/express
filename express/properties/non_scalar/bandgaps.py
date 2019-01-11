@@ -41,7 +41,7 @@ class BandGaps(NonScalarProperty):
     def _serialize_band_gaps(self, gap, type_):
         return {
             'type': type_,
-            'units': self.manifest["units"],
+            'units': self.manifest["defaults"]["units"],
             'value': gap
         }
 

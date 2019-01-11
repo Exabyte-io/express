@@ -13,7 +13,7 @@ class TotalEnergyContributions(NonScalarProperty):
     def _serialize(self):
         data = {
             'name': self.name,
-            'units': self.manifest["units"]
+            'units': self.manifest["defaults"]["units"]
         }
         data.update(self.total_energy_contributions)
         return data
