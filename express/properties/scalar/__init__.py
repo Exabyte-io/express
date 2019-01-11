@@ -14,6 +14,6 @@ class ScalarProperty(BaseProperty):
     def _serialize(self):
         return {
             'name': self.name,
-            'units': self.esse.get_property_default_values(self.name).get("units", ''),
+            'units': self.manifest["defaults"]["units"],
             'value': self.value,
         }
