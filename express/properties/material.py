@@ -88,13 +88,6 @@ class Material(BaseProperty):
             p_norms.append(PNorm("p-norm", self.raw_data, degree=degree).serialize_and_validate())
         return p_norms
 
-    def serialize_and_validate(self):
-        """
-        Serialize the property and validate it against the schema.
-
-        Returns:
-            dict
-        """
-        instance = self._serialize()
-        self.esse.validate(instance, self.esse.get_schema('material'))
-        return instance
+    @property
+    def schema(self):
+        return self.esse.get_schema_by_id("material")

@@ -19,11 +19,15 @@ class BaseProperty(object):
         self.args, self.kwargs = args, kwargs
         self.esse = ESSE()
         self.manifest = self.esse.get_property_manifest(self.name)
-        self.schema = self.esse.get_schema_by_id(self.manifest["schemaId"])
+        print name, self.manifest
 
     @abstractmethod
     def _serialize(self):
         pass
+
+    @property
+    def schema(self):
+        return self.esse.get_schema_by_id(self.manifest["schemaId"])
 
     def serialize_and_validate(self):
         """
