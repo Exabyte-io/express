@@ -41,11 +41,23 @@ class Material(BaseProperty):
             "_id": "",
             "name": self.name,
             "exabyteId": "",
+            "hash": "",
             "formula": self.raw_data.get("reduced_formula") or "",
             "unitCellFormula": self.raw_data.get("formula") or "",
             "lattice": self.raw_data.get("lattice_bravais") or self.raw_data.get("lattice_vectors"),
             "basis": self.raw_data.get("basis"),
-            "derivedProperties": self.derived_properties
+            "derivedProperties": self.derived_properties,
+            "creator": {
+                "_id": "",
+                "cls": "User",
+                "slug": ""
+            },
+            "owner": {
+                "_id": "",
+                "cls": "Account",
+                "slug": ""
+            },
+            "schemaVersion": "0.2.0",
         }
 
     def _elemental_ratios(self):
@@ -76,13 +88,6 @@ class Material(BaseProperty):
             p_norms.append(PNorm("p-norm", self.raw_data, degree=degree).serialize_and_validate())
         return p_norms
 
-    def serialize_and_validate(self):
-        """
-        Serialize the property and validate it against the schema.
-
-        Returns:
-            dict
-        """
-        instance = self._serialize()
-        self.esse.validate(instance, self.esse.get_schema('material'))
-        return instance
+    @property
+    def schema(self):
+        return self.esse.get_schema_by_id("material")

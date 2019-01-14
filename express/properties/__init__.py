@@ -18,10 +18,16 @@ class BaseProperty(object):
         self.raw_data = raw_data
         self.args, self.kwargs = args, kwargs
         self.esse = ESSE()
+        self.manifest = self.esse.get_property_manifest(self.name)
+        print name, self.manifest
 
     @abstractmethod
     def _serialize(self):
         pass
+
+    @property
+    def schema(self):
+        return self.esse.get_schema_by_id(self.manifest["schemaId"])
 
     def serialize_and_validate(self):
         """
@@ -31,5 +37,5 @@ class BaseProperty(object):
             dict
         """
         instance = self._serialize()
-        self.esse.validate(instance, self.esse.get_schema(self.name))
+        self.esse.validate(instance, self.schema)
         return instance

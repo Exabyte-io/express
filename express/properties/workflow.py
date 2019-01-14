@@ -195,16 +195,23 @@ class ExabyteMLPredictWorkflow(BaseProperty):
                 }
             ],
             "name": self.name,
-            "properties": self.targets
+            "properties": self.targets,
+            "creator": {
+                "_id": "",
+                "cls": "User",
+                "slug": ""
+            },
+            "owner": {
+                "_id": "",
+                "cls": "Account",
+                "slug": ""
+            },
+            "schemaVersion": "0.2.0",
+            "exabyteId": "",
+            "hash": "",
+            "_id": "",
         }
 
-    def serialize_and_validate(self):
-        """
-        Serialize the property and validates it against the schema.
-
-        Returns:
-            dict
-        """
-        instance = self._serialize()
-        self.esse.validate(instance, self.esse.get_schema("workflow"))
-        return instance
+    @property
+    def schema(self):
+        return self.esse.get_schema_by_id("workflow")

@@ -146,7 +146,7 @@ class EspressoXMLParser(BaseXMLParser):
             }
             for datafile_tag in [t for t in eigenvalue_tag.iter() if t.tag.startswith('DATAFILE')]:
                 eigenval_file = os.path.join(self.xml_dir_name, datafile_tag.attrib.get("iotk_link"))
-                energies, occupations = self._parse_eigenvalue_file(os.path.join(self.xml_dir_name, eigenval_file))
+                energies, occupations = self._parse_eigenvalue_file(eigenval_file)
                 eigenvalues_at_kpoint['eigenvalues'].append({
                     'energies': (np.array(energies) * Constant.HARTREE).tolist(),
                     'occupations': occupations,

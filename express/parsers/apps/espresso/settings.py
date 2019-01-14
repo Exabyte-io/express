@@ -65,14 +65,14 @@ REGEX = {
     },
     "stress_tensor": {
         "regex": r"^\s*{0}\s+{0}\s+{0} +({0})\s+({0})\s+({0})".format(DOUBLE_REGEX),
-        "start_flag": "entering subroutine stress ...",
+        "start_flag": "Forces acting on atoms",
         "occurrences": 3,
         "output_type": "float",
         "match_groups": [1, 2, 3]
     },
     "pressure": {
         "regex": r"\s*total\s+stress\s+\(Ry/bohr\*\*3\)\s*\(kbar\)\s*P=\s*({0})".format(DOUBLE_REGEX),
-        "start_flag": "entering subroutine stress",
+        "start_flag": "Forces acting on atoms",
         "occurrences": -1,
         "output_type": "float"
     },
@@ -84,7 +84,7 @@ REGEX = {
     },
     "forces_on_atoms": {
         "regex": r"^\s*atom\s+\d+\s+type\s+\d+\s+force\s+=\s+({0})\s+({0})\s+({0})".format(DOUBLE_REGEX),
-        "start_flag": "Forces acting on atoms (Ry/au):",
+        "start_flag": "Forces acting on atoms",
         "occurrences": 0,
         "output_type": "float",
         "match_groups": [1, 2, 3]

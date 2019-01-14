@@ -59,11 +59,10 @@ for LIB in esse; do
 done
 cd ${SRC}
 
-${PYTHON_ENV}/bin/pip install --process-dependency-links -r ${SRC}/requirements.txt
-
 source ${PYTHON_ENV}/bin/activate
-export PYTHONPATH=${SRC}:${PYTHONPATH}
+pip install --process-dependency-links -r ${SRC}/requirements.txt
 
+export PYTHONPATH=${SRC}:${PYTHONPATH}
 python -m unittest discover -v -c -s ${SRC}/tests/${TEST_TYPE}
 if [ $? -ne 0 ]; then
     exit 1
