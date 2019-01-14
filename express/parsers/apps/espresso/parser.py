@@ -203,8 +203,8 @@ class EspressoParser(BaseParser, IonicDataMixin, ElectronicDataMixin, Reciprocal
         paths = []
         for root, dirs, files in os.walk(self.work_dir):
             for dir_ in [d for d in dirs if str(d).startswith(prefix)]:
-                paths.append(os.path.join(root, dir_, output_file))
-            break
+                path = os.path.join(root, dir_, output_file)
+                if os.path.exists(path): paths.append(path)
         return paths
 
     def reaction_energies(self, prefix="__prefix___", output_file="PW.out"):

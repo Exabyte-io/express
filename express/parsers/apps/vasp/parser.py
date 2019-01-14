@@ -220,8 +220,7 @@ class VaspParser(BaseParser, IonicDataMixin, ElectronicDataMixin, ReciprocalData
         for root, dirs, files in os.walk(self.work_dir):
             for dir_ in [d for d in dirs if str(d).startswith(prefix)]:
                 path = self.stdout_file if dir_ == "01" else os.path.join(root, dir_, output_file)
-                paths.append(path)
-            break
+                if os.path.exists(path): paths.append(path)
         return paths
 
     def reaction_energies(self, prefix="0", output_file="stdout"):
