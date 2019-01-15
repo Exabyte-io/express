@@ -19,7 +19,6 @@ class BaseProperty(object):
         self.args, self.kwargs = args, kwargs
         self.esse = ESSE()
         self.manifest = self.esse.get_property_manifest(self.name)
-        print name, self.manifest
 
     @abstractmethod
     def _serialize(self):
