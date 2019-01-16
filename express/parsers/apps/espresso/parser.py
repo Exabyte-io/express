@@ -189,36 +189,39 @@ class EspressoParser(BaseParser, IonicDataMixin, ElectronicDataMixin, Reciprocal
         """
         return self.txt_parser.phonon_dispersions()
 
-    def _get_neb_image_paths_via_prefix(self, prefix, output_file):
+    def _get_neb_image_paths_via_prefix(self, prefix, output_file, outdir):
         """
         Returns the paths to images' output files.
 
         Args:
             prefix (str): image directory prefix.
             output_file (str): output file name.
+            outdir (str): outdir name.
 
         Returns:
              list[str]
         """
         paths = []
-        for root, dirs, files in os.walk(self.work_dir):
+        for root, dirs, files in os.walk(os.path.join(self.work_dir, outdir)):
             for dir_ in [d for d in dirs if str(d).startswith(prefix)]:
                 path = os.path.join(root, dir_, output_file)
-                if os.path.exists(path): paths.append(path)
-        return paths
+                paths.append({"path": path, "index": int(dir_.replace(prefix, ""))})
+            break
+        return map(lambda p: p["path"], sorted(paths, key=lambda p: p["index"]))
 
-    def reaction_energies(self, prefix="__prefix___", output_file="PW.out"):
+    def reaction_energies(self, prefix="__prefix___", output_file="PW.out", outdir="outdir"):
         """
         Returns reaction energies.
 
         Args:
             prefix (str): image directory prefix.
             output_file (str): output file name.
+            outdir (str): outdir name.
 
         Returns:
              list
         """
         energies = []
-        for path in self._get_neb_image_paths_via_prefix(prefix, output_file):
+        for path in self._get_neb_image_paths_via_prefix(prefix, output_file, outdir):
             energies.append(self.txt_parser.total_energy(self._get_file_content(path)))
         return energies
