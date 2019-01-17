@@ -1,5 +1,7 @@
 from express.parsers.settings import GENERAL_REGEX
 
+NEB_DIR_PREFIX = "0"
+NEB_STD_OUT_FILE = "stdout"
 XML_DATA_FILE = "vasprun.xml"
 
 _COMMON_REGEX = r"{0}\s+({1})\s+({1})\s+({1})\s+({1})\s+({1})\s+({1})"

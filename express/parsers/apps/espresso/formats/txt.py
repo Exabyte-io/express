@@ -637,3 +637,9 @@ class EspressoTXTParser(BaseTXTParser):
         frequencies = np.array(re.compile(settings.REGEX["phonon_frequencies"]["regex"]).findall(text), dtype=np.float)
         frequencies = np.transpose(frequencies.reshape(qpoints.shape[0], frequencies.shape[0] / qpoints.shape[0]))
         return qpoints, frequencies
+
+    def reaction_coordinates(self, text):
+        return self._general_output_parser(text, **settings.REGEX["reaction_coordinates"])
+
+    def reaction_energies(self, text):
+        return self._general_output_parser(text, **settings.REGEX["reaction_energies"])

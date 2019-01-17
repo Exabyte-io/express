@@ -7,6 +7,7 @@ from express.parsers.apps.espresso import settings
 from express.parsers.mixins.ionic import IonicDataMixin
 from express.parsers.mixins.reciprocal import ReciprocalDataMixin
 from express.parsers.mixins.electronic import ElectronicDataMixin
+from express.parsers.apps.espresso.settings import NEB_DAT_FILE_NAME
 from express.parsers.apps.espresso.formats.txt import EspressoTXTParser
 from express.parsers.apps.espresso.formats.xml import EspressoXMLParser
 
@@ -189,39 +190,22 @@ class EspressoParser(BaseParser, IonicDataMixin, ElectronicDataMixin, Reciprocal
         """
         return self.txt_parser.phonon_dispersions()
 
-    def _get_neb_image_paths_via_prefix(self, prefix, output_file, outdir):
+    def reaction_coordinates(self):
         """
-        Returns the paths to images' output files.
-
-        Args:
-            prefix (str): image directory prefix.
-            output_file (str): output file name.
-            outdir (str): outdir name.
-
-        Returns:
-             list[str]
-        """
-        paths = []
-        for root, dirs, files in os.walk(os.path.join(self.work_dir, outdir)):
-            for dir_ in [d for d in dirs if str(d).startswith(prefix)]:
-                path = os.path.join(root, dir_, output_file)
-                paths.append({"path": path, "index": int(dir_.replace(prefix, ""))})
-            break
-        return map(lambda p: p["path"], sorted(paths, key=lambda p: p["index"]))
-
-    def reaction_energies(self, prefix="__prefix___", output_file="PW.out", outdir="outdir"):
-        """
-        Returns reaction energies.
-
-        Args:
-            prefix (str): image directory prefix.
-            output_file (str): output file name.
-            outdir (str): outdir name.
+        Returns reaction coordinates.
 
         Returns:
              list
         """
-        energies = []
-        for path in self._get_neb_image_paths_via_prefix(prefix, output_file, outdir):
-            energies.append(self.txt_parser.total_energy(self._get_file_content(path)))
-        return energies
+        neb_dat_file = os.path.join(self.work_dir, NEB_DAT_FILE_NAME)
+        return self.txt_parser.reaction_coordinates(self._get_file_content(neb_dat_file))
+
+    def reaction_energies(self):
+        """
+        Returns reaction energies.
+
+        Returns:
+             list
+        """
+        neb_dat_file = os.path.join(self.work_dir, NEB_DAT_FILE_NAME)
+        return self.txt_parser.reaction_energies(self._get_file_content(neb_dat_file))
