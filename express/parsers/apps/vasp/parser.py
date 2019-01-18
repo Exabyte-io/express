@@ -235,7 +235,7 @@ class VaspParser(BaseParser, IonicDataMixin, ElectronicDataMixin, ReciprocalData
         energies = []
         for path in self._get_neb_image_paths_via_prefix(NEB_DIR_PREFIX, NEB_STD_OUT_FILE):
             energies.append(self.txt_parser.total_energy(self._get_file_content(path)))
-        return energies
+        return [energies[i] - energies[0] for i in range(len(energies))]
 
     def reaction_coordinates(self):
         """
