@@ -2,6 +2,7 @@ from express.parsers.settings import GENERAL_REGEX
 
 PDOS_TOT_FILE = "pdos_tot"
 XML_DATA_FILE = "data-file.xml"
+NEB_DAT_FILE = "__prefix__.dat"
 PHONON_DOS_FILE = "phonon_dos.out"
 PHONON_MODES_FILE = "normal_modes.out"
 
@@ -99,7 +100,16 @@ REGEX = {
     },
     'qpoints': {
         "regex": r'q\s+\=\s+({0})\s+({0})\s+({0})'.format(DOUBLE_REGEX)
-    }
+    },
+    "reaction_coordinates": {
+        "regex": r"^\s+({0})\s+{0}\s+{0}".format(DOUBLE_REGEX),
+        "output_type": "float",
+    },
+    "reaction_energies": {
+        "regex": r"^\s+{0}\s+({0})\s+{0}".format(DOUBLE_REGEX),
+        "output_type": "float",
+    },
+
 }
 
 TOTAL_ENERGY_CONTRIBUTIONS = {

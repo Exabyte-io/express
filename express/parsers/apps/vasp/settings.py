@@ -1,5 +1,7 @@
 from express.parsers.settings import GENERAL_REGEX
 
+NEB_DIR_PREFIX = "0"
+NEB_STD_OUT_FILE = "stdout"
 XML_DATA_FILE = "vasprun.xml"
 
 _COMMON_REGEX = r"{0}\s+({1})\s+({1})\s+({1})\s+({1})\s+({1})\s+({1})"
@@ -15,7 +17,7 @@ REGEX = {
         "regex": r'({double})\s+({double})\s+({double})\s+{double}'.format(double=GENERAL_REGEX.double_number)
     },
     "convergence_electronic": {
-        "regex": r"DAV:\s+(\d+)\s+{0}\s+({0})".format(GENERAL_REGEX.double_number),
+        "regex": r".+:\s+(\d+)\s+{0}\s+({0})".format(GENERAL_REGEX.double_number),
         "output_type": "float",
         "match_groups": [1, 2]
     },

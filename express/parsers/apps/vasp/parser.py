@@ -9,6 +9,7 @@ from express.parsers.apps.vasp.formats.txt import VaspTXTParser
 from express.parsers.apps.vasp.formats.xml import VaspXMLParser
 from express.parsers.mixins.reciprocal import ReciprocalDataMixin
 from express.parsers.mixins.electronic import ElectronicDataMixin
+from express.parsers.apps.vasp.settings import NEB_DIR_PREFIX, NEB_STD_OUT_FILE
 
 
 class VaspParser(BaseParser, IonicDataMixin, ElectronicDataMixin, ReciprocalDataMixin):
@@ -224,18 +225,24 @@ class VaspParser(BaseParser, IonicDataMixin, ElectronicDataMixin, ReciprocalData
             break
         return map(lambda p: p["path"], sorted(paths, key=lambda p: p["index"]))
 
-    def reaction_energies(self, prefix="0", output_file="stdout"):
+    def reaction_energies(self):
         """
         Returns reaction energies.
-
-        Args:
-            prefix (str): image directory prefix.
-            output_file (str): output file name.
 
         Returns:
              list
         """
         energies = []
-        for path in self._get_neb_image_paths_via_prefix(prefix, output_file):
+        for path in self._get_neb_image_paths_via_prefix(NEB_DIR_PREFIX, NEB_STD_OUT_FILE):
             energies.append(self.txt_parser.total_energy(self._get_file_content(path)))
-        return energies
+        return [energies[i] - energies[0] for i in range(len(energies))]
+
+    def reaction_coordinates(self):
+        """
+        Returns reaction coordinates.
+
+        Returns:
+             list
+        """
+        # TODO: calculate the reaction coordinates based on initial and final structures.
+        return range(0, len(self.reaction_energies()))
