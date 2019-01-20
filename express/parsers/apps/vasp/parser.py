@@ -244,6 +244,5 @@ class VaspParser(BaseParser, IonicDataMixin, ElectronicDataMixin, ReciprocalData
         Returns:
              list
         """
-        # TODO: calculate the coordinates as they are not always uniformly distributed.
-        energies = self.reaction_energies()
-        return [x * (1.0 / (len(energies) - 1)) for x in range(len(energies))]
+        # TODO: calculate the reaction coordinates based on initial and final structures.
+        return range(0, len(self.reaction_energies()))

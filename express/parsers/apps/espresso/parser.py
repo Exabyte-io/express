@@ -5,9 +5,9 @@ from express.parsers import BaseParser
 from express.parsers.utils import find_file
 from express.parsers.apps.espresso import settings
 from express.parsers.mixins.ionic import IonicDataMixin
+from express.parsers.apps.espresso.settings import NEB_DAT_FILE
 from express.parsers.mixins.reciprocal import ReciprocalDataMixin
 from express.parsers.mixins.electronic import ElectronicDataMixin
-from express.parsers.apps.espresso.settings import NEB_DAT_FILE_NAME
 from express.parsers.apps.espresso.formats.txt import EspressoTXTParser
 from express.parsers.apps.espresso.formats.xml import EspressoXMLParser
 
@@ -197,7 +197,7 @@ class EspressoParser(BaseParser, IonicDataMixin, ElectronicDataMixin, Reciprocal
         Returns:
              list
         """
-        neb_dat_file = os.path.join(self.work_dir, NEB_DAT_FILE_NAME)
+        neb_dat_file = os.path.join(self.work_dir, NEB_DAT_FILE)
         return self.txt_parser.reaction_coordinates(self._get_file_content(neb_dat_file))
 
     def reaction_energies(self):
@@ -207,5 +207,5 @@ class EspressoParser(BaseParser, IonicDataMixin, ElectronicDataMixin, Reciprocal
         Returns:
              list
         """
-        neb_dat_file = os.path.join(self.work_dir, NEB_DAT_FILE_NAME)
+        neb_dat_file = os.path.join(self.work_dir, NEB_DAT_FILE)
         return self.txt_parser.reaction_energies(self._get_file_content(neb_dat_file))

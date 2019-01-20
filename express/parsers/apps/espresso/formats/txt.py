@@ -639,7 +639,39 @@ class EspressoTXTParser(BaseTXTParser):
         return qpoints, frequencies
 
     def reaction_coordinates(self, text):
+        """
+        Extracts reaction coordinates from the first column of NEB dat file.
+
+        Example input:
+            0.0000000000      0.0000000000      0.1145416373
+            0.1944842569      0.0341286086      0.0886712471
+            0.3625057164      0.1308566687      0.0995133799
+            0.4999390812      0.2030519699      0.0010169552
+            0.6383139128      0.1302022095      0.0385626296
+            0.8046562342      0.0345676488      0.0062796586
+            1.0000000000      0.0000000063      0.1146893883
+
+
+        Returns:
+            list[float]
+        """
         return self._general_output_parser(text, **settings.REGEX["reaction_coordinates"])
 
     def reaction_energies(self, text):
+        """
+        Extracts reaction energies from the second column of NEB dat file.
+
+        Example input:
+            0.0000000000      0.0000000000      0.1145416373
+            0.1944842569      0.0341286086      0.0886712471
+            0.3625057164      0.1308566687      0.0995133799
+            0.4999390812      0.2030519699      0.0010169552
+            0.6383139128      0.1302022095      0.0385626296
+            0.8046562342      0.0345676488      0.0062796586
+            1.0000000000      0.0000000063      0.1146893883
+
+
+        Returns:
+            list[float]
+        """
         return self._general_output_parser(text, **settings.REGEX["reaction_energies"])
