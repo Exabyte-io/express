@@ -202,3 +202,12 @@ class PyMatGenParser(BaseParser, IonicDataMixin):
             func: express.parsers.mixins.ionic.IonicDataMixin.density
         """
         return self.structure.density
+
+    def atomic_constraints(self):
+        """
+        Returns atomic constraints.
+
+        Reference:
+            func: express.parsers.mixins.ionic.IonicDataMixin.atomic_constraints
+        """
+        return self.structure.selective_dynamics

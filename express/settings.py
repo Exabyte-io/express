@@ -111,6 +111,12 @@ NON_SCALAR_PROPERTIES_MANIFEST = {
             'express.parsers.mixins.ionic.IonicDataMixin',
         ]
     },
+    'atomic_constraints': {
+        'reference': 'express.properties.non_scalar.atomic_constraints.AtomicConstraints',
+        'mixins': [
+            'express.parsers.mixins.ionic.IonicDataMixin',
+        ]
+    },
     'total_energy_contributions': {
         'reference': 'express.properties.non_scalar.total_energy_contributions.TotalEnergyContributions',
         'mixins': [
