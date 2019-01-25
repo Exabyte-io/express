@@ -210,4 +210,4 @@ class PyMatGenParser(BaseParser, IonicDataMixin):
         Reference:
             func: express.parsers.mixins.ionic.IonicDataMixin.atomic_constraints
         """
-        return self.structure.selective_dynamics
+        return self.structure.site_properties.get("selective_dynamics")
