@@ -169,6 +169,30 @@ class IonicDataMixin(object):
         pass
 
     @abstractmethod
+    def atomic_constraints(self):
+        """
+        Returns atomic constraints.
+
+        Returns:
+            list
+
+        Example:
+            [
+                [
+                    True,
+                    False,
+                    True
+                ],
+                [
+                    False,
+                    False,
+                    True
+                ]
+            ]
+        """
+        pass
+
+    @abstractmethod
     def space_group_symbol(self):
         """
         Returns space group symbol.
