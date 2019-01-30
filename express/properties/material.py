@@ -35,7 +35,7 @@ class Material(BaseProperty):
             is_final_structure = kwargs.get("is_final_structure")
             if is_final_structure:
                 basis = self.raw_data.get("final_basis")
-                lattice = self.raw_data.get("final_lattice")
+                lattice = self.raw_data.get("final_lattice_vectors")
                 structure_string = self._to_poscar(lattice, basis)
 
         self.pymatgen = PyMatGenParser(structure_string=structure_string, structure_format=structure_format, cell=cell)
@@ -134,5 +134,21 @@ class Material(BaseProperty):
             p_norms.append(PNorm("p-norm", raw_data, degree=degree).serialize_and_validate())
         return p_norms
 
+    def _get_unique_elements(self, basis):
+        return list(set([e["value"] for e in basis["elements"]]))
+
+    def _get_element_count(self, el, basis):
+        return len([x for x in basis["elements"] if x["value"] == el])
+
     def _to_poscar(self, lattice, basis):
-        return ""
+        return "\n".join([
+            "material",
+            "1.0",
+            "\t".join(["{0:14.9f}".format(x) for x in lattice["vectors"]["a"]]),
+            "\t".join(["{0:14.9f}".format(x) for x in lattice["vectors"]["b"]]),
+            "\t".join(["{0:14.9f}".format(x) for x in lattice["vectors"]["c"]]),
+            " ".join(self._get_unique_elements(basis)),
+            " ".join([str(self._get_element_count(el, basis)) for el in self._get_unique_elements(basis)]),
+            "cartesian",
+            "\n".join([" ".join(["{0:14.9f}".format(v) for v in x["value"]]) for x in basis["coordinates"]])
+        ])
