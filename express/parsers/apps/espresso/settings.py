@@ -45,21 +45,23 @@ REGEX = {
     "lattice_alat": {
         "regex": (
             r"crystal axes:.*\n"
-            r".*({0})\s+({0})\s+({0}).*\n"
-            r".*({0})\s+({0})\s+({0}).*\n"
-            r".*({0})\s+({0})\s+({0}).*\n"
+            r".*(\s+{0})\s+({0})\s+({0}\s+).*\n"
+            r".*(\s+{0})\s+({0})\s+({0}\s+).*\n"
+            r".*(\s+{0})\s+({0})\s+({0}\s+).*\n"
         ).format(DOUBLE_REGEX)
     },
     "lattice_parameter_alat": {
         "regex": r"lattice parameter \(alat\)\s+=\s+({0})\s+".format(DOUBLE_REGEX),
         "output_type": "float",
     },
+    "number_of_atoms": {
+        "regex": r"number of atoms/cell\s+=\s+(\d+)",
+        "output_type": "int",
+    },
     "basis_alat": {
-        "regex": (
-            r".*positions\s+\(alat units\).*\n"
-            r".+?\d\s+([A-Z][a-z]?).+?({0})\s+({0})\s+({0}).+?\n"
-            r".+?\d\s+([A-Z][a-z]?).+?({0})\s+({0})\s+({0}).+?\n"
-        ).format(DOUBLE_REGEX)
+        "regex": lambda number_of_atoms: "".join([r".*positions\s+\(alat units\).*\n"] +
+                                                 [r".+?\d\s+([A-Z][a-z]?).+?({0})\s+({0})\s+({0}).+?\n".format(
+                                                     DOUBLE_REGEX) for i in range(number_of_atoms)])
     },
     "ion_position": {
         "regex": r"([A-Z][a-z]?)\s+({0})\s+({0})\s+({0})".format(DOUBLE_REGEX)

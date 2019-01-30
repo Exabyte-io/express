@@ -308,8 +308,9 @@ class EspressoTXTParser(BaseTXTParser):
              }
         """
         lattice_alat = self._general_output_parser(text, **settings.REGEX["lattice_parameter_alat"])[0]
+        number_of_atoms = self._general_output_parser(text, **settings.REGEX["number_of_atoms"])[0]
         basis = {"units": "angstrom", "elements": [], "coordinates": []}
-        matches = re.findall(settings.REGEX["basis_alat"]["regex"], text)[0]
+        matches = re.findall(settings.REGEX["basis_alat"]["regex"](number_of_atoms), text)[0]
         matches = [matches[i:i + 4] for i in range(0, len(matches), 4)]  # group coordinates
         for idx, match in enumerate(matches):
             basis["elements"].append({"id": idx, "value": match[0]})
