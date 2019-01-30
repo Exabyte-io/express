@@ -246,14 +246,14 @@ class EspressoTXTParser(BaseTXTParser):
         # inject initial structure
         data[0].update({
             "structure": {
-                "basis": self._initial_basis(text),
-                "lattice": self._initial_lattice(text)
+                "basis": self.initial_basis(text),
+                "lattice": self.initial_lattice_vectors(text)
             }
         })
 
         return data
 
-    def _initial_lattice(self, text):
+    def initial_lattice_vectors(self, text):
         """
         Extracts initial lattice from a given text. The initial lattice is in alat format and needs to be converted.
         The text looks like the following:
@@ -285,7 +285,7 @@ class EspressoTXTParser(BaseTXTParser):
             lattice["vectors"][key] = [e * lattice_alat * Constant.BOHR for e in lattice["vectors"][key]]
         return lattice
 
-    def _initial_basis(self, text):
+    def initial_basis(self, text):
         """
         Extracts initial basis from a given text. The initial basis is in alat format and needs to be converted.
         The text looks like the following:

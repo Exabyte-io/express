@@ -87,18 +87,6 @@ NON_SCALAR_PROPERTIES_MANIFEST = {
             'express.parsers.mixins.reciprocal.ReciprocalDataMixin',
         ]
     },
-    'lattice': {
-        'reference': 'express.properties.non_scalar.lattice.Lattice',
-        'mixins': [
-            'express.parsers.mixins.ionic.IonicDataMixin',
-        ]
-    },
-    'basis': {
-        'reference': 'express.properties.non_scalar.basis.Basis',
-        'mixins': [
-            'express.parsers.mixins.ionic.IonicDataMixin',
-        ]
-    },
     'stress_tensor': {
         'reference': 'express.properties.non_scalar.stress_tensor.StressTensor',
         'mixins': [
@@ -149,12 +137,6 @@ NON_SCALAR_PROPERTIES_MANIFEST = {
     },
     'phonon_dispersions': {
         'reference': 'express.properties.non_scalar.two_dimensional_plot.phonon_dispersions.PhononDispersions',
-        'mixins': [
-            'express.parsers.mixins.ionic.IonicDataMixin',
-        ]
-    },
-    'final_structure': {
-        'reference': 'express.properties.material.Material',
         'mixins': [
             'express.parsers.mixins.ionic.IonicDataMixin',
         ]

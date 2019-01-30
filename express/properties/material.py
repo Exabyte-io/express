@@ -1,6 +1,7 @@
 from express.properties import BaseProperty
 from express.properties.scalar.p_norm import PNorm
 from express.properties.scalar.volume import Volume
+from express.parsers.pymatgen import PyMatGenParser
 from express.properties.scalar.density import Density
 from express.properties.non_scalar.symmetry import Symmetry
 from express.properties.scalar.elemental_ratio import ElementalRatio
@@ -19,16 +20,61 @@ class Material(BaseProperty):
 
     def __init__(self, name, raw_data, *args, **kwargs):
         super(Material, self).__init__(name, raw_data, *args, **kwargs)
-        self.derived_properties = []
+
+        cell = kwargs.get("cell", "original")
+        structure_string = kwargs.get("structure_string")
+        structure_format = kwargs.get("structure_format", "poscar")
+
+        if not structure_string:
+            is_initial_structure = kwargs.get("is_initial_structure")
+            if is_initial_structure:
+                basis = self.raw_data.get("initial_basis")
+                lattice = self.raw_data.get("initial_lattice_vectors")
+                structure_string = self._to_poscar(lattice, basis)
+
+            is_final_structure = kwargs.get("is_final_structure")
+            if is_final_structure:
+                basis = self.raw_data.get("final_basis")
+                lattice = self.raw_data.get("final_lattice")
+                structure_string = self._to_poscar(lattice, basis)
+
+        self.pymatgen = PyMatGenParser(structure_string=structure_string, structure_format=structure_format, cell=cell)
+
+    @property
+    def formula(self):
+        return self.pymatgen.reduced_formula()
+
+    @property
+    def unitCellFormula(self):
+        return self.pymatgen.formula()
+
+    @property
+    def derived_properties(self):
+        derived_properties = []
         try:
+            raw_data = {
+                "volume": self.pymatgen.volume(),
+                "density": self.pymatgen.density(),
+                "elemental_ratios": self.pymatgen.elemental_ratios(),
+                "space_group_symbol": self.pymatgen.space_group_symbol(),
+            }
             volume = Volume("volume", raw_data).serialize_and_validate()
             density = Density("density", raw_data).serialize_and_validate()
             symmetry = Symmetry("symmetry", raw_data).serialize_and_validate()
-            self.derived_properties = [volume, density, symmetry]
-            self.derived_properties.extend(self._elemental_ratios())
-            self.derived_properties.extend(self._p_norms())
+            derived_properties = [volume, density, symmetry]
+            derived_properties.extend(self._elemental_ratios(raw_data))
+            derived_properties.extend(self._p_norms(raw_data))
         except:
             pass
+        return derived_properties
+
+    @property
+    def basis(self):
+        return self.pymatgen.basis()
+
+    @property
+    def lattice(self):
+        return self.pymatgen.lattice_bravais()
 
     def _serialize(self):
         """
@@ -42,10 +88,10 @@ class Material(BaseProperty):
             "name": self.name,
             "exabyteId": "",
             "hash": "",
-            "formula": self.raw_data.get("reduced_formula") or "",
-            "unitCellFormula": self.raw_data.get("formula") or "",
-            "lattice": self.raw_data.get("lattice_bravais") or self.raw_data.get("lattice_vectors"),
-            "basis": self.raw_data.get("basis"),
+            "formula": self.formula,
+            "unitCellFormula": self.unitCellFormula,
+            "lattice": self.lattice,
+            "basis": self.basis,
             "derivedProperties": self.derived_properties,
             "creator": {
                 "_id": "",
@@ -60,7 +106,7 @@ class Material(BaseProperty):
             "schemaVersion": "0.2.0",
         }
 
-    def _elemental_ratios(self):
+    def _elemental_ratios(self, raw_data):
         """
         Returns a list of elemental ratios.
 
@@ -68,12 +114,12 @@ class Material(BaseProperty):
              list
         """
         elemental_ratios = []
-        for element in self.raw_data["elemental_ratios"].keys():
-            elemental_ratio = ElementalRatio("elemental_ratio", self.raw_data, element=element).serialize_and_validate()
+        for element in raw_data["elemental_ratios"].keys():
+            elemental_ratio = ElementalRatio("elemental_ratio", raw_data, element=element).serialize_and_validate()
             elemental_ratios.append(elemental_ratio)
         return elemental_ratios
 
-    def _p_norms(self):
+    def _p_norms(self, raw_data):
         """
         Returns a list of p-norms.
 
@@ -85,9 +131,8 @@ class Material(BaseProperty):
         """
         p_norms = []
         for degree in [0, 2, 3, 5, 7, 10]:
-            p_norms.append(PNorm("p-norm", self.raw_data, degree=degree).serialize_and_validate())
+            p_norms.append(PNorm("p-norm", raw_data, degree=degree).serialize_and_validate())
         return p_norms
 
-    @property
-    def schema(self):
-        return self.esse.get_schema_by_id("material")
+    def _to_poscar(self, lattice, basis):
+        return ""

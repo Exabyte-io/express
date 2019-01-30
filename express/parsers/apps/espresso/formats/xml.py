@@ -67,7 +67,7 @@ class EspressoXMLParser(BaseXMLParser):
         bs_tag = self.root.find("BAND_STRUCTURE_INFO")
         return self._get_xml_tag_value(bs_tag.find("NUMBER_OF_SPIN_COMPONENTS"))
 
-    def lattice_vectors(self, reciprocal=False):
+    def final_lattice_vectors(self, reciprocal=False):
         """
         Extracts lattice.
 
@@ -131,7 +131,7 @@ class EspressoXMLParser(BaseXMLParser):
                 ...
             ]
         """
-        reciprocal_lattice = self.lattice_vectors(reciprocal=True)
+        reciprocal_lattice = self.final_lattice_vectors(reciprocal=True)
         lattice_array = []
         for i in ['a', 'b', 'c']:
             lattice_array.append(reciprocal_lattice['vectors'][i])
@@ -170,7 +170,7 @@ class EspressoXMLParser(BaseXMLParser):
         occupations = [float(_) for _ in re.findall(GENERAL_REGEX.double_number, root.find('OCCUPATIONS').text)]
         return energies, occupations
 
-    def basis(self):
+    def final_basis(self):
         """
         Extracts basis.
 

@@ -20,7 +20,6 @@ class PyMatGenParser(BaseParser, IonicDataMixin):
         super(PyMatGenParser, self).__init__(*args, **kwargs)
         self.structure_string = kwargs.get("structure_string")
         self.structure_format = kwargs.get("structure_format")
-        self.structure = mg.Structure.from_str(self.structure_string, self.structure_format)
 
         # cell is either original, primitive or conventional
         self.cell = kwargs["cell"]

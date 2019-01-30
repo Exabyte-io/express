@@ -96,23 +96,23 @@ class VaspParser(BaseParser, IonicDataMixin, ElectronicDataMixin, ReciprocalData
         """
         return self.xml_parser.dos(combined=True)
 
-    def basis(self):
+    def final_basis(self):
         """
-        Returns basis.
+        Returns final basis.
 
         Reference:
-            func: express.parsers.mixins.ionic.IonicDataMixin.basis
+            func: express.parsers.mixins.ionic.IonicDataMixin.final_basis
         """
-        return self.xml_parser.basis()
+        return self.xml_parser.final_basis()
 
-    def lattice_vectors(self):
+    def final_lattice_vectors(self):
         """
-        Returns lattice.
+        Returns final lattice vectors.
 
         Reference:
-            func: express.parsers.mixins.ionic.IonicDataMixin.lattice_vectors
+            func: express.parsers.mixins.ionic.IonicDataMixin.final_lattice_vectors
         """
-        return self.xml_parser.lattice_vectors()
+        return self.xml_parser.final_lattice_vectors()
 
     def convergence_electronic(self):
         """

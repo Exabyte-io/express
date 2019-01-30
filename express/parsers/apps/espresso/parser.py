@@ -82,23 +82,41 @@ class EspressoParser(BaseParser, IonicDataMixin, ElectronicDataMixin, Reciprocal
         """
         return self.txt_parser.dos()
 
-    def basis(self):
+    def initial_basis(self):
         """
-        Returns basis.
+        Returns initial basis.
+
+        Reference:
+            func: express.parsers.mixins.ionic.IonicDataMixin.initial_basis
+        """
+        return self.txt_parser.initial_basis(self._get_file_content(self.stdout_file))
+
+    def initial_lattice_vectors(self):
+        """
+        Returns initial lattice vectors.
+
+        Reference:
+            func: express.parsers.mixins.ionic.IonicDataMixin.initial_lattice_vectors
+        """
+        return self.txt_parser.initial_lattice_vectors(self._get_file_content(self.stdout_file))
+
+    def final_basis(self):
+        """
+        Returns final basis.
 
         Reference:
             func: express.parsers.mixins.ionic.IonicDataMixin.basis
         """
-        return self.xml_parser.basis()
+        return self.xml_parser.final_basis()
 
-    def lattice_vectors(self):
+    def final_lattice_vectors(self):
         """
-        Returns lattice.
+        Returns final lattice.
 
         Reference:
             func: express.parsers.mixins.ionic.IonicDataMixin.lattice_vectors
         """
-        return self.xml_parser.lattice_vectors(reciprocal=False)
+        return self.xml_parser.final_lattice_vectors(reciprocal=False)
 
     def convergence_electronic(self):
         """
