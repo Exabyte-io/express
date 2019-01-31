@@ -229,7 +229,7 @@ class ElectronicDataMixin(object):
 
     def reaction_coordinates_from_poscars(self, poscars):
         """
-        Returns reaction coordinates based on the given structures.
+        Returns reaction coordinates based on the given poscars.
 
         See `NEBAnalysis` class in http://pymatgen.org/_modules/pymatgen/analysis/transition_state.html for more info.
 
