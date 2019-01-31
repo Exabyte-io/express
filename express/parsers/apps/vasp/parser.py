@@ -1,5 +1,6 @@
 import os
 import numpy as np
+import pymatgen as mg
 
 from express.parsers import BaseParser
 from express.parsers.utils import find_file
@@ -204,9 +205,27 @@ class VaspParser(BaseParser, IonicDataMixin, ElectronicDataMixin, ReciprocalData
         """
         return self.txt_parser.magnetic_moments(os.path.join(self.work_dir, "OUTCAR"))
 
-    def _get_neb_image_paths_via_prefix(self, prefix="0", output_file="stdout"):
+    def _get_neb_image_dirs(self, prefix="0"):
         """
-        Returns the paths to images' output files.
+        Returns the sorted list of NEB image directories.
+
+        Args:
+            prefix (str): image directory prefix.
+
+        Returns:
+             list[str]
+        """
+        paths = []
+        for root, dirs, files in os.walk(self.work_dir):
+            for dir_ in [d for d in dirs if str(d).startswith(prefix)]:
+                path = os.path.join(root, dir_)
+                paths.append({"path": path, "index": int(dir_)})
+            break
+        return map(lambda p: p["path"], sorted(paths, key=lambda p: p["index"]))
+
+    def _get_neb_image_stdout_files(self, prefix="0", output_file="stdout"):
+        """
+        Returns the paths to NEB image standard output files.
 
         Note: only image 01 writes to the usual stdout file, other images write to `stdout` inside image directory.
 
@@ -217,13 +236,11 @@ class VaspParser(BaseParser, IonicDataMixin, ElectronicDataMixin, ReciprocalData
         Returns:
              list[str]
         """
-        paths = []
-        for root, dirs, files in os.walk(self.work_dir):
-            for dir_ in [d for d in dirs if str(d).startswith(prefix)]:
-                path = self.stdout_file if dir_ == "01" else os.path.join(root, dir_, output_file)
-                paths.append({"path": path, "index": int(dir_)})
-            break
-        return map(lambda p: p["path"], sorted(paths, key=lambda p: p["index"]))
+        files = []
+        for path in self._get_neb_image_dirs(prefix):
+            file_ = self.stdout_file if os.path.basename(path) == "01" else os.path.join(path, output_file)
+            files.append(file_)
+        return files
 
     def reaction_energies(self):
         """
@@ -233,7 +250,7 @@ class VaspParser(BaseParser, IonicDataMixin, ElectronicDataMixin, ReciprocalData
              list
         """
         energies = []
-        for path in self._get_neb_image_paths_via_prefix(NEB_DIR_PREFIX, NEB_STD_OUT_FILE):
+        for path in self._get_neb_image_stdout_files(NEB_DIR_PREFIX, NEB_STD_OUT_FILE):
             energies.append(self.txt_parser.total_energy(self._get_file_content(path)))
         return [energies[i] - energies[0] for i in range(len(energies))]
 
@@ -241,8 +258,13 @@ class VaspParser(BaseParser, IonicDataMixin, ElectronicDataMixin, ReciprocalData
         """
         Returns reaction coordinates.
 
+        Note: it is assumed that initial and final directories contain CONTCAR file.
+
         Returns:
              list
         """
-        # TODO: calculate the reaction coordinates based on initial and final structures.
-        return range(0, len(self.reaction_energies()))
+        structures = []
+        for path in self._get_neb_image_dirs():
+            with open(os.path.join(path, "CONTCAR")) as f:
+                structures.append(mg.Structure.from_str(f.read(), "poscar"))
+        return self.reaction_coordinates_from_structures(structures)

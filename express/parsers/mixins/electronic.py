@@ -1,3 +1,5 @@
+import numpy as np
+
 from abc import abstractmethod
 
 
@@ -223,3 +225,24 @@ class ElectronicDataMixin(object):
             ]
         """
         pass
+
+    def reaction_coordinates_from_structures(self, structures):
+        """
+        Returns reaction coordinates based on the given pymatgen structures.
+
+        See `NEBAnalysis` class in http://pymatgen.org/_modules/pymatgen/analysis/transition_state.html for more info.
+
+        Args:
+            structures (list): a list of pymatgen structures.
+
+        Returns:
+             list
+        """
+        prev = structures[0]
+        reaction_coordinates = [0]
+        for structure in structures[1:]:
+            dists = np.array([s2.distance(s1) for s1, s2 in zip(prev, structure)])
+            reaction_coordinates.append(np.sqrt(np.sum(dists ** 2)))
+            prev = structure
+        reaction_coordinates = np.cumsum(reaction_coordinates)
+        return ((1 / reaction_coordinates[-1]) * reaction_coordinates).tolist()
