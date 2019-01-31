@@ -1,4 +1,5 @@
 import numpy as np
+import pymatgen as mg
 
 from abc import abstractmethod
 
@@ -226,18 +227,19 @@ class ElectronicDataMixin(object):
         """
         pass
 
-    def reaction_coordinates_from_structures(self, structures):
+    def reaction_coordinates_from_poscars(self, poscars):
         """
-        Returns reaction coordinates based on the given pymatgen structures.
+        Returns reaction coordinates based on the given structures.
 
         See `NEBAnalysis` class in http://pymatgen.org/_modules/pymatgen/analysis/transition_state.html for more info.
 
         Args:
-            structures (list): a list of pymatgen structures.
+            poscars (list): structures in POSCAR format.
 
         Returns:
              list
         """
+        structures = [mg.Structure.from_str(poscar, "poscar") for poscar in poscars]
         prev = structures[0]
         reaction_coordinates = [0]
         for structure in structures[1:]:

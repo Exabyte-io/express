@@ -1,6 +1,5 @@
 import os
 import numpy as np
-import pymatgen as mg
 
 from express.parsers import BaseParser
 from express.parsers.utils import find_file
@@ -266,5 +265,5 @@ class VaspParser(BaseParser, IonicDataMixin, ElectronicDataMixin, ReciprocalData
         structures = []
         for path in self._get_neb_image_dirs():
             with open(os.path.join(path, "CONTCAR")) as f:
-                structures.append(mg.Structure.from_str(f.read(), "poscar"))
-        return self.reaction_coordinates_from_structures(structures)
+                structures.append(f.read())
+        return self.reaction_coordinates_from_poscars(structures)
