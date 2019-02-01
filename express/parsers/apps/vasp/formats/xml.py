@@ -261,7 +261,7 @@ class VaspXMLParser(BaseXMLParser):
                         })
         return partial_dos_values, partial_dos_infos, electronic_states
 
-    def lattice_vectors(self):
+    def final_lattice_vectors(self):
         """
         Extracts lattice.
 
@@ -290,7 +290,7 @@ class VaspXMLParser(BaseXMLParser):
             'vectors': vectors
         }
 
-    def basis(self):
+    def final_basis(self):
         """
         Extract basis.
 
@@ -304,7 +304,7 @@ class VaspXMLParser(BaseXMLParser):
                 'coordinates': [{'id': 1, 'value': [0.0, 0.0, 0.0]}, {'id': 2, 'value': [1.11, 0.78, 1.93]}]
              }
         """
-        lattice = self.lattice_vectors()
+        lattice = self.final_lattice_vectors()
         lattice_matrix = np.array([lattice["vectors"][key] for key in ["a", "b", "c"]], dtype=np.float64).reshape(
             (3, 3))
         elements, coordinates = [], []

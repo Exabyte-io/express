@@ -10,9 +10,9 @@ class IonicDataMixin(object):
     """
 
     @abstractmethod
-    def lattice_vectors(self):
+    def initial_lattice_vectors(self):
         """
-        Returns lattice vectors.
+        Returns initial lattice vectors.
 
         Returns:
             dict
@@ -28,34 +28,44 @@ class IonicDataMixin(object):
         pass
 
     @abstractmethod
-    def lattice_bravais(self):
+    def initial_basis(self):
         """
-        Returns lattice bravais.
+        Returns initial basis.
 
         Returns:
             dict
 
         Example:
             {
-                "type": "CUB",
-                "a": 5.14,
-                "b": 5.14,
-                "c": 5.14,
-                "alpha": 90.0,
-                "beta": 90.0,
-                "gamma": 90.0,
-                "units": {
-                    "length": "angstrom",
-                    "angle": "degree"
-                }
-            }
+                'units': 'crystal',
+                'elements': [{'id': 1, 'value': 'Si'}, {'id': 2, 'value': 'Si'}],
+                'coordinates': [{'id': 1, 'value': [0.0, 0.0, 0.0]}, {'id': 2, 'value': [0.25, 0.25, 0.25]}]
+             }
         """
         pass
 
     @abstractmethod
-    def basis(self):
+    def final_lattice_vectors(self):
         """
-        Returns basis.
+        Returns final lattice vectors.
+
+        Returns:
+            dict
+
+        Example:
+            {
+                'a': [-0.561154473, -0.000000000, 0.561154473],
+                'b': [-0.000000000, 0.561154473, 0.561154473],
+                'c': [-0.561154473, 0.561154473, 0.000000000],
+                'alat': 9.44858082
+             }
+        """
+        pass
+
+    @abstractmethod
+    def final_basis(self):
+        """
+        Returns final basis.
 
         Returns:
             dict
