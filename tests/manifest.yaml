@@ -22,14 +22,6 @@ test_espresso_dos:
   workDir: data/espresso/test-002
   stdoutFile: data/espresso/test-002/projwfc.out
 
-test_espresso_basis:
-  workDir: data/espresso/test-001
-  stdoutFile: data/espresso/test-001/pw-scf.out
-
-test_espresso_lattice_vectors:
-  workDir: data/espresso/test-001
-  stdoutFile: data/espresso/test-001/pw-scf.out
-
 test_espresso_convergence_electronic:
   workDir: data/espresso/test-001
   stdoutFile: data/espresso/test-001/pw-scf.out
@@ -89,14 +81,6 @@ test_vasp_ibz_k_points:
 test_vasp_dos:
   workDir: data/vasp/test-002
   stdoutFile: data/vasp/test-001/chgcar.out
-
-test_vasp_basis:
-  workDir: data/vasp/test-001
-  stdoutFile: data/vasp/test-001/vasp.out
-
-test_vasp_lattice_vectors:
-  workDir: data/vasp/test-001
-  stdoutFile: data/vasp/test-001/vasp.out
 
 test_vasp_convergence_electronic:
   workDir: data/vasp/test-001

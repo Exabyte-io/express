@@ -29,12 +29,6 @@ class TestEspressoParser(IntegrationTestBase):
     def test_espresso_dos(self):
         self.assertDeepAlmostEqual(self.parser.dos(), DOS, places=2)
 
-    def test_espresso_basis(self):
-        self.assertDeepAlmostEqual(self.parser.basis(), BASIS, places=2)
-
-    def test_espresso_lattice_vectors(self):
-        self.assertDeepAlmostEqual(self.parser.lattice_vectors(), LATTICE, places=2)
-
     def test_espresso_convergence_electronic(self):
         self.assertDeepAlmostEqual(self.parser.convergence_electronic(), CONVERGENCE_ELECTRONIC, places=2)
 

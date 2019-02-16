@@ -29,12 +29,6 @@ class TestVaspParser(IntegrationTestBase):
     def test_vasp_dos(self):
         self.assertDeepAlmostEqual(self.parser.dos(), DOS)
 
-    def test_vasp_basis(self):
-        self.assertDeepAlmostEqual(self.parser.basis(), BASIS, places=2)
-
-    def test_vasp_lattice_vectors(self):
-        self.assertDeepAlmostEqual(self.parser.lattice_vectors(), LATTICE, places=2)
-
     def test_vasp_convergence_electronic(self):
         self.assertDeepAlmostEqual(self.parser.convergence_electronic(), CONVERGENCE_ELECTRONIC, places=2)
 
