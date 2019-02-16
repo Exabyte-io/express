@@ -60,7 +60,7 @@ done
 cd ${SRC}
 
 source ${PYTHON_ENV}/bin/activate
-pip install --process-dependency-links -r ${SRC}/requirements.txt
+pip install -r ${SRC}/requirements.txt
 
 export PYTHONPATH=${SRC}:${PYTHONPATH}
 python -m unittest discover -v -c -s ${SRC}/tests/${TEST_TYPE}
