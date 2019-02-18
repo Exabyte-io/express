@@ -8,14 +8,13 @@ class BaseProperty(object):
 
     Args:
         name (str): property name.
-        raw_data (dict): raw data used to calculate the property.
+        parser (express.parsers.BaseParser): an instance of parser class.
         args (list): property-specific args.
         kwargs (dict): property-specific kwargs.
     """
 
-    def __init__(self, name, raw_data, *args, **kwargs):
-        self.name = name
-        self.raw_data = raw_data
+    def __init__(self, name, parser, *args, **kwargs):
+        self.name, self.parser = name, parser
         self.args, self.kwargs = args, kwargs
         self.esse = ESSE()
         self.manifest = self.esse.get_property_manifest(self.name)
