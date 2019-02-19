@@ -1,6 +1,22 @@
 # ExPreSS
 
-Exabyte Property Ex(ss)tractor, Sourcer, Serializer class.
+Exabyte Property Extractor, Sourcer, Serializer (ExPreSS) is a Python package to extract material- and simulation-related properties and serialize them according to the Exabyte data convention defined in [ESSE](https://github.com/Exabyte-io/exabyte-esse). 
+
+## Functionality
+
+- Extract material and workflow properties from Quantum Espresso calculation and serialize them according to Exabyte data convention
+
+- Extract material and workflow properties from VASP calculation and serialize them according to Exabyte data convention
+
+- Parse the structure configs in string format (Poscar, PWScf input) and return material in JSON representation
+
+- Parse data on disk and extract material and workflow properties and insert them into the database
+
+## Architecture
+
+The following shows ExPreSS architecture.
+
+![ExPreSS](https://user-images.githubusercontent.com/10528238/53045569-d0f95d80-3442-11e9-9cde-a005fb598c0c.png)
 
 ## Installation
 
@@ -21,6 +37,10 @@ export GIT_LFS_SKIP_SMUDGE=1
 pip install -e PATH_TO_EXPRESS_REPOSITORY
 ```
 
+## Parsers
+
+## Properties
+
 ## Tests
 
 There are two types of tests in ExPreSS, unit and integration, implemented in [Python Unit Testing Framework](https://docs.python.org/2/library/unittest.html).
@@ -40,3 +60,7 @@ Run the following command to run the tests.
 ```bash
 sh run-tests.sh
 ```
+
+## Contribution
+
+## Links
