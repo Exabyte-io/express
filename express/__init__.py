@@ -16,7 +16,7 @@ class ExPrESS(object):
                 stdout_file (str): path to the stdout file.
             pymatgen parser specific keys:
                 structure_string (str): structure string.
-                structure_format (str): structure format.
+                structure_format (str): structure format, poscar or espresso-in.
     """
 
     def __init__(self, parser_name=None, *args, **kwargs):

@@ -13,7 +13,8 @@ setup(
         "bunch==1.0.1",
         "numpy==1.14.3",
         "xmltodict==0.9.2",
-        "pymatgen==2018.5.3"
+        "pymatgen==2018.5.3",
+        "ase==3.17.0",
     ],
     classifiers=[
         'Programming Language :: Python',
