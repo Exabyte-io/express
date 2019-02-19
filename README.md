@@ -30,7 +30,7 @@ ExPreSS properties classes are responsible to form the properties based on the r
 
 ## Installation
 
-ExPreSS can be install as a Python package either via PyPi or the repository as below.
+ExPreSS can be installed as a Python package either via PyPi or the repository as below.
 
 #### PyPi
 
