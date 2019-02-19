@@ -20,7 +20,7 @@ class ExPrESS(object):
     """
 
     def __init__(self, parser_name=None, *args, **kwargs):
-        if parser_name: self.parser = self.get_parser_class(parser_name)(*args, **kwargs)
+        self.parser = self.get_parser_class(parser_name)(*args, **kwargs) if parser_name else None
 
     def get_parser_class(self, parser_name):
         """
