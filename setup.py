@@ -1,7 +1,7 @@
 from setuptools import setup
 
 setup(
-    name='ExPreSS',
+    name='express',
     version='0.1.0',
     description='Exabyte Property Ex(ss)tractor, Sourcer, Serializer class.',
     url='https://github.com/Exabyte-io/exabyte-express',

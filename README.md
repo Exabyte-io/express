@@ -2,6 +2,24 @@
 
 Exabyte Property Ex(ss)tractor, Sourcer, Serializer class.
 
+## Installation
+
+ExPreSS can be install as a Python package either via PyPi or the repository as below.
+
+#### PyPi
+
+```bash
+pip install express
+```
+
+#### Repository
+
+```bash
+virtualenv .venv
+source .venv/bin/activate
+export GIT_LFS_SKIP_SMUDGE=1
+pip install -e PATH_TO_EXPRESS_REPOSITORY
+```
 
 ## Tests
 
