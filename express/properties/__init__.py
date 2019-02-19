@@ -8,7 +8,7 @@ class BaseProperty(object):
 
     Args:
         name (str): property name.
-        parser (express.parsers.BaseParser): an instance of parser class.
+        parser: an instance of parser class.
         args (list): property-specific args.
         kwargs (dict): property-specific kwargs.
     """

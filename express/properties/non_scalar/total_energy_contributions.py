@@ -6,14 +6,13 @@ class TotalEnergyContributions(NonScalarProperty):
     Total energy contribution factors.
     """
 
-    def __init__(self, name, raw_data, *args, **kwargs):
-        super(TotalEnergyContributions, self).__init__(name, raw_data, *args, **kwargs)
-        self.total_energy_contributions = self.raw_data["total_energy_contributions"]
+    def __init__(self, name, parser, *args, **kwargs):
+        super(TotalEnergyContributions, self).__init__(name, parser, *args, **kwargs)
 
     def _serialize(self):
         data = {
             'name': self.name,
             'units': self.manifest["defaults"]["units"]
         }
-        data.update(self.total_energy_contributions)
+        data.update(self.parser.total_energy_contributions())
         return data

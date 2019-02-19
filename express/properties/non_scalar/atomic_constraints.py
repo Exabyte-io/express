@@ -1,3 +1,4 @@
+from express.properties.utils import to_array_with_ids
 from express.properties.non_scalar import NonScalarProperty
 
 
@@ -6,12 +7,11 @@ class AtomicConstraints(NonScalarProperty):
     Atomic constraints property class.
     """
 
-    def __init__(self, name, raw_data, *args, **kwargs):
-        super(AtomicConstraints, self).__init__(name, raw_data, *args, **kwargs)
-        self.atomic_constraints = self.raw_data["atomic_constraints"]
+    def __init__(self, name, parser, *args, **kwargs):
+        super(AtomicConstraints, self).__init__(name, parser, *args, **kwargs)
 
     def _serialize(self):
         return {
             'name': self.name,
-            "values": [{"id": index + 1, "value": value} for index, value in enumerate(self.atomic_constraints)]
+            "values": to_array_with_ids(self.parser.atomic_constraints())
         }
