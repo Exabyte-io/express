@@ -1,5 +1,5 @@
 from tests.unit import UnitTestBase
-from tests.data.raw_data import PHONON_DOS_RAW_DATA
+from tests.fixtures.data import PHONON_DOS_RAW_DATA
 from express.properties.non_scalar.two_dimensional_plot.phonon_dos import PhononDOS
 
 PHONON_DOS = {
@@ -37,5 +37,6 @@ class PhononDOSTest(UnitTestBase):
         super(PhononDOSTest, self).setUp()
 
     def test_phonon_dos(self):
-        property_ = PhononDOS("phonon_dos", raw_data=PHONON_DOS_RAW_DATA)
+        parser = self.get_mocked_parser("phonon_dos", PHONON_DOS_RAW_DATA)
+        property_ = PhononDOS("phonon_dos", parser)
         self.assertDeepAlmostEqual(property_.serialize_and_validate(), PHONON_DOS)

@@ -1,6 +1,8 @@
 from __future__ import absolute_import
 
+import cStringIO
 import pymatgen as mg
+from ase.io import read, write
 
 from express.parsers import BaseParser
 from express.parsers.mixins.ionic import IonicDataMixin
@@ -14,12 +16,23 @@ STRUCTURE_MAP = {
 class PyMatGenParser(BaseParser, IonicDataMixin):
     """
     Pymatgen parser class.
+
+    Args:
+        args (list): args passed to the parser.
+        kwargs (dict): kwargs passed to the parser.
+            structure_string (str): structure string.
+            structure_format (str): structure format, poscar or espresso-in.
     """
 
     def __init__(self, *args, **kwargs):
         super(PyMatGenParser, self).__init__(*args, **kwargs)
         self.structure_string = kwargs.get("structure_string")
         self.structure_format = kwargs.get("structure_format")
+
+        # convert espresso input into poscar
+        if self.structure_format == "espresso-in":
+            self.structure_format = "poscar"
+            self.structure_string = self.espresso_input_to_poscar(self.structure_string)
 
         # cell is either original, primitive or conventional
         self.cell = kwargs["cell"]
@@ -210,3 +223,25 @@ class PyMatGenParser(BaseParser, IonicDataMixin):
             func: express.parsers.mixins.ionic.IonicDataMixin.atomic_constraints
         """
         return self.structure.site_properties.get("selective_dynamics")
+
+    # TODO: remove the dependency on ASE
+    def espresso_input_to_poscar(self, espresso_input):
+        """
+        Extracts structure from espresso input file and returns in poscar format.
+
+        Args:
+            espresso_input (str): input file content
+
+        Returns:
+            str: poscar
+        """
+        input_ = cStringIO.StringIO()
+        input_.write(espresso_input)
+        input_.seek(0)
+        atoms = read(input_, format="espresso-in")
+        output_ = cStringIO.StringIO()
+        write(output_, atoms, format="vasp", vasp5=True)
+        content = output_.getvalue()
+        input_.close()
+        output_.close()
+        return content

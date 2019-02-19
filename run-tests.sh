@@ -12,58 +12,20 @@
 #                                                            #
 # ---------------------------------------------------------- #
 
-TEST_TYPE="unit"
-PYTHON_ENV="/tmp/express"
-SRC="/stack/lib/express"
-
-# ------------------------------------------------------------- #
-#                         SETUP                                 #
-# ------------------------------------------------------------- #
-
-
-usage () {
-    echo "run-tests.sh -t=TEST_TYPE"
-    exit 1
-}
-
-check_args () {
-    for i in "$@"
-    do
-        case $i in
-            -t=*|--test-type=*)
-                TEST_TYPE="${i#*=}"
-            ;;
-            -s=*|--source=*)
-                SRC="${i#*=}"
-            ;;
-            *)
-                usage
-            ;;
-        esac
-    done
-}
-
-# ------------------------------------------------------------- #
-#                       MAIN BODY                               #
-# ------------------------------------------------------------- #
-
-check_args $@
-
-rm -rf ${PYTHON_ENV}
-virtualenv ${PYTHON_ENV}
+SOURCE="${BASH_SOURCE[0]}"
+DIR="$( cd -P "$( dirname "$SOURCE" )" && pwd )"
 
 for LIB in esse; do
     cd /stack/lib/${LIB}
     git checkout dev
     git pull --all
+    cd -
 done
-cd ${SRC}
 
-source ${PYTHON_ENV}/bin/activate
-pip install -r ${SRC}/requirements.txt
+virtualenv ${DIR}/venv
+source ${DIR}/venv/bin/activate
+pip install -r ${DIR}/requirements.txt
 
-export PYTHONPATH=${SRC}:${PYTHONPATH}
-python -m unittest discover -v -c -s ${SRC}/tests/${TEST_TYPE}
-if [ $? -ne 0 ]; then
-    exit 1
-fi
+export PYTHONPATH=${DIR}:${PYTHONPATH}
+CMD="python -m unittest discover -v -c -s"
+${CMD} ${DIR}/tests/unit && ${CMD} ${DIR}/tests/integration

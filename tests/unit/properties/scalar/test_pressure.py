@@ -16,5 +16,6 @@ class PressureTest(UnitTestBase):
         super(PressureTest, self).setUp()
 
     def test_pressure(self):
-        property_ = Pressure("pressure", raw_data={"pressure": 1})
+        parser = self.get_mocked_parser("pressure", 1)
+        property_ = Pressure("pressure", parser)
         self.assertDeepAlmostEqual(property_.serialize_and_validate(), PRESSURE)

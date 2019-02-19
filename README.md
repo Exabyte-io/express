@@ -1,36 +1,42 @@
-# exabyte-express
-ExPreSS: Exabyte Property Ex(ss)tractor, Sourcer, Serializer class.
+# ExPreSS
 
+Exabyte Property Ex(ss)tractor, Sourcer, Serializer class.
 
-## Run tests
-Follow the below steps to run ExPrESS tests:
+## Installation
 
-1. Download `express-tests-data.tgz` and extract it:
+ExPreSS can be install as a Python package either via PyPi or the repository as below.
 
-```bash
-cd tests
-wget http://files.exabyte.io:18/uploads/express-tests-data.tgz
-tar zxvf express-tests-data.tgz
-``` 
-
-2. Setup Python environment according to the attached screenshot:
-
-![python-environment](https://user-images.githubusercontent.com/10528238/29536164-956525fe-8671-11e7-91ec-f0e9c71621ad.png)
-
-3. Configure PyCharm according to the attached screenshots to run unit and integration tests:
-
-![unit-tests](https://user-images.githubusercontent.com/10528238/29536187-adfb0656-8671-11e7-8ba0-b6e7e7fca42c.png)
-
-![integration-tests](https://user-images.githubusercontent.com/10528238/29536163-955f839c-8671-11e7-90e0-b4003e4b4273.png)
-
-
-## Re-generate input data
-In order to re-generate input data for tests you should go to each test directory located and run `sh run.sh` command. 
-Please note that the command needs to be executed on master node where module files and applications are installed. 
-After re-running the tests you should create a new `express-tests-data.tgz` file and push to file server:
+#### PyPi
 
 ```bash
-cd tests
-tar zcvf express-tests-data.tgz data
-sh {EXABYTE_STACK_REPO_PATH}/vagrant/scripts/upload-file.sh express-tests-data.tgz
+pip install express
+```
+
+#### Repository
+
+```bash
+virtualenv .venv
+source .venv/bin/activate
+export GIT_LFS_SKIP_SMUDGE=1
+pip install -e PATH_TO_EXPRESS_REPOSITORY
+```
+
+## Tests
+
+There are two types of tests in ExPreSS, unit and integration, implemented in [Python Unit Testing Framework](https://docs.python.org/2/library/unittest.html).
+
+### Unit Tests
+
+Unit tests are used to assert properties are serialized according to Exabyte Data Convention. Properties classes are initialized with mocked parser data and then are serialized to assert functionality.
+
+### Integration Tests
+
+Parsers functionality is tested through integration tests. The parsers are initialized with the configuration specified in the [Tests Manifest](./tests/manifest.yaml) and then the functionality is asserted.
+
+### Run Tests
+
+Run the following command to run the tests.
+
+```bash
+sh run-tests.sh
 ```

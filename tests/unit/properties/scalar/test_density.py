@@ -16,5 +16,6 @@ class DensityTest(UnitTestBase):
         super(DensityTest, self).setUp()
 
     def test_density(self):
-        property_ = Density("density", raw_data={"density": 1})
+        parser = self.get_mocked_parser("density", 1)
+        property_ = Density("density", parser)
         self.assertDeepAlmostEqual(property_.serialize_and_validate(), DENSITY)

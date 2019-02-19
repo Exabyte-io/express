@@ -1,5 +1,5 @@
 from tests.unit import UnitTestBase
-from tests.data.raw_data import DOS_RAW_DATA
+from tests.fixtures.data import DOS_RAW_DATA
 from express.properties.non_scalar.two_dimensional_plot.density_of_states import DensityOfStates
 
 DOS = {
@@ -61,5 +61,6 @@ class DensityOfStatesTest(UnitTestBase):
         super(DensityOfStatesTest, self).setUp()
 
     def test_dos(self):
-        property_ = DensityOfStates("density_of_states", raw_data=DOS_RAW_DATA)
+        parser = self.get_mocked_parser("dos", DOS_RAW_DATA)
+        property_ = DensityOfStates("density_of_states", parser)
         self.assertDeepAlmostEqual(property_.serialize_and_validate(), DOS)

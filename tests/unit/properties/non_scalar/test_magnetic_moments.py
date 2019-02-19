@@ -1,5 +1,5 @@
 from tests.unit import UnitTestBase
-from tests.data.raw_data import MAGNETIC_MOMENTS_RAW_DATA
+from tests.fixtures.data import MAGNETIC_MOMENTS_RAW_DATA
 from express.properties.non_scalar.magnetic_moments import MagneticMoments
 
 MAGNETIC_MOMENTS = {
@@ -34,5 +34,6 @@ class MagneticMomentsTest(UnitTestBase):
         super(MagneticMomentsTest, self).setUp()
 
     def test_atomic_forces(self):
-        property_ = MagneticMoments("magnetic_moments", raw_data=MAGNETIC_MOMENTS_RAW_DATA)
+        parser = self.get_mocked_parser("magnetic_moments", MAGNETIC_MOMENTS_RAW_DATA)
+        property_ = MagneticMoments("magnetic_moments", parser)
         self.assertDeepAlmostEqual(property_.serialize_and_validate(), MAGNETIC_MOMENTS)

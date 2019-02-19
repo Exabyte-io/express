@@ -16,5 +16,6 @@ class VolumeTest(UnitTestBase):
         super(VolumeTest, self).setUp()
 
     def test_volume(self):
-        property_ = Volume("volume", raw_data={"volume": 1})
+        parser = self.get_mocked_parser("volume", 1)
+        property_ = Volume("volume", parser)
         self.assertDeepAlmostEqual(property_.serialize_and_validate(), VOLUME)

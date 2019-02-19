@@ -1,5 +1,5 @@
 from tests.unit import UnitTestBase
-from tests.data.raw_data import TOTAL_ENERGY_CONTRIBUTIONS_RAW_DATA
+from tests.fixtures.data import TOTAL_ENERGY_CONTRIBUTIONS_RAW_DATA
 from express.properties.non_scalar.total_energy_contributions import TotalEnergyContributions
 
 TOTAL_ENERGY_CONTRIBUTIONS = {
@@ -28,5 +28,6 @@ class TotalEnergyContributionsTest(UnitTestBase):
         super(TotalEnergyContributionsTest, self).setUp()
 
     def test_total_energy_contributions(self):
-        property_ = TotalEnergyContributions("total_energy_contributions", raw_data=TOTAL_ENERGY_CONTRIBUTIONS_RAW_DATA)
+        parser = self.get_mocked_parser("total_energy_contributions", TOTAL_ENERGY_CONTRIBUTIONS_RAW_DATA)
+        property_ = TotalEnergyContributions("total_energy_contributions", parser)
         self.assertDeepAlmostEqual(property_.serialize_and_validate(), TOTAL_ENERGY_CONTRIBUTIONS)

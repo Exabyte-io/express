@@ -15,14 +15,14 @@ class BandGaps(NonScalarProperty):
     either using 'mesh' or 'path'.
     """
 
-    def __init__(self, name, raw_data, *args, **kwargs):
-        super(BandGaps, self).__init__(name, raw_data, *args, **kwargs)
-        self.nspins = self.raw_data["nspins"]
-        self.ibz_k_points = self.raw_data["ibz_k_points"]
-        self.fermi_energy = self.raw_data["fermi_energy"]
-        self.band_gaps_direct = self.raw_data["band_gaps_direct"]
-        self.band_gaps_indirect = self.raw_data["band_gaps_indirect"]
-        self.eigenvalues_at_kpoints = self.raw_data["eigenvalues_at_kpoints"]
+    def __init__(self, name, parser, *args, **kwargs):
+        super(BandGaps, self).__init__(name, parser, *args, **kwargs)
+        self.nspins = self.parser.nspins()
+        self.ibz_k_points = self.parser.ibz_k_points()
+        self.fermi_energy = self.parser.fermi_energy()
+        self.band_gaps_direct = self.parser.band_gaps_direct()
+        self.band_gaps_indirect = self.parser.band_gaps_indirect()
+        self.eigenvalues_at_kpoints = self.parser.eigenvalues_at_kpoints()
 
         self.values = None
         if self.band_gaps_direct is not None and self.band_gaps_indirect is not None:

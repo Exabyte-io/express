@@ -16,5 +16,6 @@ class TotalEnergyTest(UnitTestBase):
         super(TotalEnergyTest, self).setUp()
 
     def test_total_energy(self):
-        property_ = TotalEnergy("total_energy", raw_data={"total_energy": 1})
+        parser = self.get_mocked_parser("total_energy", 1)
+        property_ = TotalEnergy("total_energy", parser)
         self.assertDeepAlmostEqual(property_.serialize_and_validate(), TOTAL_ENERGY)

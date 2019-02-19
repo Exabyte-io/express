@@ -1,6 +1,6 @@
 from tests.unit import UnitTestBase
 from express.properties.scalar.p_norm import PNorm
-from tests.data.raw_data import ELEMENTAL_RATIOS_RAW_DATA
+from tests.fixtures.data import ELEMENTAL_RATIOS_RAW_DATA
 
 P_NORM = {
     "degree": 0,
@@ -17,5 +17,6 @@ class PNormTest(UnitTestBase):
         super(PNormTest, self).setUp()
 
     def test_p_norm(self):
-        property_ = PNorm("p-norm", raw_data=ELEMENTAL_RATIOS_RAW_DATA, degree=0)
+        parser = self.get_mocked_parser("elemental_ratios", ELEMENTAL_RATIOS_RAW_DATA)
+        property_ = PNorm("p-norm", parser, degree=0)
         self.assertDeepAlmostEqual(property_.serialize_and_validate(), P_NORM)

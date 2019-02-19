@@ -1,172 +1,90 @@
 SCALAR_PROPERTIES_MANIFEST = {
     'total_energy': {
-        'reference': 'express.properties.scalar.total_energy.TotalEnergy',
-        'mixins': [
-            'express.parsers.mixins.electronic.ElectronicDataMixin',
-        ]
+        'reference': 'express.properties.scalar.total_energy.TotalEnergy'
     },
     'fermi_energy': {
-        'reference': 'express.properties.scalar.fermi_energy.FermiEnergy',
-        'mixins': [
-            'express.parsers.mixins.electronic.ElectronicDataMixin',
-        ]
+        'reference': 'express.properties.scalar.fermi_energy.FermiEnergy'
     },
     'pressure': {
-        'reference': 'express.properties.scalar.pressure.Pressure',
-        'mixins': [
-            'express.parsers.mixins.ionic.IonicDataMixin',
-        ]
+        'reference': 'express.properties.scalar.pressure.Pressure'
     },
     'total_force': {
-        'reference': 'express.properties.scalar.total_force.TotalForce',
-        'mixins': [
-            'express.parsers.mixins.ionic.IonicDataMixin',
-        ]
+        'reference': 'express.properties.scalar.total_force.TotalForce'
     },
     'volume': {
-        'reference': 'express.properties.scalar.volume.Volume',
-        'mixins': [
-            'express.parsers.mixins.ionic.IonicDataMixin',
-        ]
+        'reference': 'express.properties.scalar.volume.Volume'
     },
     'density': {
-        'reference': 'express.properties.scalar.density.Density',
-        'mixins': [
-            'express.parsers.mixins.ionic.IonicDataMixin',
-        ]
+        'reference': 'express.properties.scalar.density.Density'
     },
     'elemental_ratio': {
-        'reference': 'express.properties.scalar.elemental_ratio.ElementalRatio',
-        'mixins': [
-            'express.parsers.mixins.ionic.IonicDataMixin',
-        ]
+        'reference': 'express.properties.scalar.elemental_ratio.ElementalRatio'
     },
     'p-norm': {
-        'reference': 'express.properties.scalar.p_norm.PNorm',
-        'mixins': [
-            'express.parsers.mixins.ionic.IonicDataMixin',
-        ]
+        'reference': 'express.properties.scalar.p_norm.PNorm'
     },
     'zero_point_energy': {
-        'reference': 'express.properties.scalar.zero_point_energy.ZeroPointEnergy',
-        'mixins': [
-            'express.parsers.mixins.ionic.IonicDataMixin',
-        ]
+        'reference': 'express.properties.scalar.zero_point_energy.ZeroPointEnergy'
     },
     'surface_energy': {
-        'reference': 'express.properties.scalar.surface_energy.SurfaceEnergy',
-        'mixins': []
+        'reference': 'express.properties.scalar.surface_energy.SurfaceEnergy'
     },
     'reaction_energy_barrier': {
-        'reference': 'express.properties.scalar.reaction_energy_barrier.ReactionEnergyBarrier',
-        'mixins': [
-            'express.parsers.mixins.electronic.ElectronicDataMixin',
-        ]
+        'reference': 'express.properties.scalar.reaction_energy_barrier.ReactionEnergyBarrier'
     },
 }
 
 NON_SCALAR_PROPERTIES_MANIFEST = {
     'band_gaps': {
-        'reference': 'express.properties.non_scalar.bandgaps.BandGaps',
-        'mixins': [
-            'express.parsers.mixins.electronic.ElectronicDataMixin',
-            'express.parsers.mixins.reciprocal.ReciprocalDataMixin',
-            'express.parsers.mixins.exabyteml.ExabyteMLDataMixin',
-        ]
+        'reference': 'express.properties.non_scalar.bandgaps.BandGaps'
     },
     'density_of_states': {
-        'reference': 'express.properties.non_scalar.two_dimensional_plot.density_of_states.DensityOfStates',
-        'mixins': [
-            'express.parsers.mixins.electronic.ElectronicDataMixin',
-        ]
+        'reference': 'express.properties.non_scalar.two_dimensional_plot.density_of_states.DensityOfStates'
     },
     'band_structure': {
-        'reference': 'express.properties.non_scalar.two_dimensional_plot.band_structure.BandStructure',
-        'mixins': [
-            'express.parsers.mixins.electronic.ElectronicDataMixin',
-            'express.parsers.mixins.reciprocal.ReciprocalDataMixin',
-        ]
+        'reference': 'express.properties.non_scalar.two_dimensional_plot.band_structure.BandStructure'
     },
     'stress_tensor': {
-        'reference': 'express.properties.non_scalar.stress_tensor.StressTensor',
-        'mixins': [
-            'express.parsers.mixins.ionic.IonicDataMixin',
-        ]
+        'reference': 'express.properties.non_scalar.stress_tensor.StressTensor'
     },
     'atomic_forces': {
-        'reference': 'express.properties.non_scalar.atomic_forces.AtomicForces',
-        'mixins': [
-            'express.parsers.mixins.ionic.IonicDataMixin',
-        ]
+        'reference': 'express.properties.non_scalar.atomic_forces.AtomicForces'
     },
     'atomic_constraints': {
-        'reference': 'express.properties.non_scalar.atomic_constraints.AtomicConstraints',
-        'mixins': [
-            'express.parsers.mixins.ionic.IonicDataMixin',
-        ]
+        'reference': 'express.properties.non_scalar.atomic_constraints.AtomicConstraints'
     },
     'total_energy_contributions': {
-        'reference': 'express.properties.non_scalar.total_energy_contributions.TotalEnergyContributions',
-        'mixins': [
-            'express.parsers.mixins.electronic.ElectronicDataMixin',
-        ]
+        'reference': 'express.properties.non_scalar.total_energy_contributions.TotalEnergyContributions'
     },
     'material': {
-        'reference': 'express.properties.material.Material',
-        'mixins': [
-            'express.parsers.mixins.ionic.IonicDataMixin',
-        ]
+        'reference': 'express.properties.material.Material'
     },
     'symmetry': {
-        'reference': 'express.properties.non_scalar.symmetry.Symmetry',
-        'mixins': [
-            'express.parsers.mixins.ionic.IonicDataMixin',
-        ]
+        'reference': 'express.properties.non_scalar.symmetry.Symmetry'
     },
     'workflow:ml_predict': {
-        'reference': 'express.properties.workflow.ExabyteMLPredictWorkflow',
-        'mixins': [
-            'express.parsers.mixins.exabyteml.ExabyteMLDataMixin',
-        ]
+        'reference': 'express.properties.workflow.ExabyteMLPredictWorkflow'
     },
     'phonon_dos': {
-        'reference': 'express.properties.non_scalar.two_dimensional_plot.phonon_dos.PhononDOS',
-        'mixins': [
-            'express.parsers.mixins.ionic.IonicDataMixin',
-        ]
+        'reference': 'express.properties.non_scalar.two_dimensional_plot.phonon_dos.PhononDOS'
     },
     'phonon_dispersions': {
-        'reference': 'express.properties.non_scalar.two_dimensional_plot.phonon_dispersions.PhononDispersions',
-        'mixins': [
-            'express.parsers.mixins.ionic.IonicDataMixin',
-        ]
+        'reference': 'express.properties.non_scalar.two_dimensional_plot.phonon_dispersions.PhononDispersions'
     },
     'magnetic_moments': {
-        'reference': 'express.properties.non_scalar.magnetic_moments.MagneticMoments',
-        'mixins': [
-            'express.parsers.mixins.ionic.IonicDataMixin',
-        ]
+        'reference': 'express.properties.non_scalar.magnetic_moments.MagneticMoments'
     },
     'reaction_energy_profile': {
-        'reference': 'express.properties.non_scalar.two_dimensional_plot.reaction_energy_profile.ReactionEnergyProfile',
-        'mixins': [
-            'express.parsers.mixins.electronic.ElectronicDataMixin',
-        ]
+        'reference': 'express.properties.non_scalar.two_dimensional_plot.reaction_energy_profile.ReactionEnergyProfile'
     },
 }
 
 CONVERGENCE_PROPERTIES = {
     'convergence_electronic': {
-        'reference': 'express.properties.convergence.electronic.ConvergenceElectronic',
-        'mixins': [
-            'express.parsers.mixins.electronic.ElectronicDataMixin',
-        ]
+        'reference': 'express.properties.convergence.electronic.ConvergenceElectronic'
     },
     'convergence_ionic': {
-        'reference': 'express.properties.convergence.ionic.ConvergenceIonic',
-        'mixins': [
-            'express.parsers.mixins.ionic.IonicDataMixin',
-        ]
+        'reference': 'express.properties.convergence.ionic.ConvergenceIonic'
     }
 }
 

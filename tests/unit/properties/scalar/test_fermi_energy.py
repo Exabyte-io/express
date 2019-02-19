@@ -16,5 +16,6 @@ class FermiEnergyTest(UnitTestBase):
         super(FermiEnergyTest, self).setUp()
 
     def test_fermi_energy(self):
-        property_ = FermiEnergy("fermi_energy", raw_data={"fermi_energy": 1})
+        parser = self.get_mocked_parser("fermi_energy", 1)
+        property_ = FermiEnergy("fermi_energy", parser)
         self.assertDeepAlmostEqual(property_.serialize_and_validate(), FERMI_ENERGY)

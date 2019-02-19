@@ -6,9 +6,9 @@ class ElementalRatio(ScalarProperty):
     Elemental ratio property class.
     """
 
-    def __init__(self, name, raw_data, *args, **kwargs):
-        super(ElementalRatio, self).__init__(name, raw_data, *args, **kwargs)
-        self.value = self.raw_data["elemental_ratios"][kwargs["element"]]
+    def __init__(self, name, parser, *args, **kwargs):
+        super(ElementalRatio, self).__init__(name, parser, *args, **kwargs)
+        self.value = self.parser.elemental_ratios()[kwargs["element"]]
 
     def _serialize(self):
         return {

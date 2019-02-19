@@ -4,19 +4,14 @@ from express.properties import BaseProperty
 class ExabyteMLPredictWorkflow(BaseProperty):
     """
     Exabyte ML predict Workflow property class.
-
-    Args:
-        raw_data (dict): raw data used to form the material.
-        args (list): material-specific args.
-        kwargs (dict): material-specific kwargs.
     """
 
-    def __init__(self, name, raw_data, *args, **kwargs):
-        super(ExabyteMLPredictWorkflow, self).__init__(name, raw_data, *args, **kwargs)
+    def __init__(self, name, parser, *args, **kwargs):
+        super(ExabyteMLPredictWorkflow, self).__init__(name, parser, *args, **kwargs)
         self.name = name
-        self.data_per_property = self.raw_data["data_per_property"]
-        self.precision_per_property = self.raw_data["precision_per_property"]
-        self.scaling_params_per_feature = self.raw_data["scaling_params_per_feature"]
+        self.data_per_property = self.parser.data_per_property()
+        self.precision_per_property = self.parser.precision_per_property()
+        self.scaling_params_per_feature = self.parser.scaling_params_per_feature()
         self.targets = [p["name"] for p in self.data_per_property]
         self.features = [f["name"] for f in self.scaling_params_per_feature]
 
