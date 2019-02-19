@@ -1,5 +1,5 @@
 from tests.unit import UnitTestBase
-from tests.data.raw_data import PHONON_DOS_RAW_DATA
+from tests.fixtures.data import PHONON_DOS_RAW_DATA
 from express.properties.non_scalar.two_dimensional_plot.phonon_dos import PhononDOS
 
 PHONON_DOS = {

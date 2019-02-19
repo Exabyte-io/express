@@ -2,7 +2,7 @@ from mock import MagicMock
 
 from tests.unit import UnitTestBase
 from express.properties.non_scalar.two_dimensional_plot.band_structure import BandStructure
-from tests.data.raw_data import BAND_STRUCTURE, HSE_EIGENVALUES_AT_KPOINTS, HSE_BAND_STRUCTURE, EIGENVALUES_AT_KPOINTS
+from tests.fixtures.data import BAND_STRUCTURE, HSE_EIGENVALUES_AT_KPOINTS, HSE_BAND_STRUCTURE, EIGENVALUES_AT_KPOINTS
 
 
 class BandStructureTest(UnitTestBase):

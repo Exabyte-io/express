@@ -1,4 +1,4 @@
-from tests.data.espresso.references import *
+from tests.fixtures.espresso.references import *
 from tests.integration import IntegrationTestBase
 from express.parsers.apps.espresso.parser import EspressoParser
 

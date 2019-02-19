@@ -10,8 +10,14 @@ class IntegrationTestBase(TestBase):
 
     def setUp(self):
         super(IntegrationTestBase, self).setUp()
-        self.workDir = os.path.join(self.rootDir, self.getManifest()["workDir"])
-        self.stdoutFile = os.path.join(self.rootDir, self.getManifest()["stdoutFile"])
 
     def tearDown(self):
         super(IntegrationTestBase, self).setUp()
+
+    @property
+    def workDir(self):
+        return os.path.join(self.rootDir, self.getManifest()["workDir"])
+
+    @property
+    def stdoutFile(self):
+        return os.path.join(self.rootDir, self.getManifest()["stdoutFile"])

@@ -1,5 +1,5 @@
 from tests.unit import UnitTestBase
-from tests.data.raw_data import ATOMIC_FORCES_RAW_DATA
+from tests.fixtures.data import ATOMIC_FORCES_RAW_DATA
 from express.properties.non_scalar.atomic_forces import AtomicForces
 
 ATOMIC_FORCES = {

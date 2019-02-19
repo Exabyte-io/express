@@ -1,4 +1,4 @@
-from tests.data.vasp.references import *
+from tests.fixtures.vasp.references import *
 from tests.integration import IntegrationTestBase
 from express.parsers.apps.vasp.parser import VaspParser
 

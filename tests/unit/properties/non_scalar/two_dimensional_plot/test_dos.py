@@ -1,5 +1,5 @@
 from tests.unit import UnitTestBase
-from tests.data.raw_data import DOS_RAW_DATA
+from tests.fixtures.data import DOS_RAW_DATA
 from express.properties.non_scalar.two_dimensional_plot.density_of_states import DensityOfStates
 
 DOS = {
