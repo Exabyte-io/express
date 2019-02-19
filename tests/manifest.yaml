@@ -113,3 +113,17 @@ test_vasp_total_energy_contributions:
 test_vasp_magnetic_moments:
   workDir: fixtures/vasp/test-004
   stdoutFile: fixtures/vasp/test-004/vasp.out
+
+test_pymatgen_espresso_basis:
+  structurePath: fixtures/espresso/test-001/pw-scf.in
+  structureFormat: espresso-in
+
+test_pymatgen_espresso_lattice_bravais:
+  structurePath: fixtures/espresso/test-001/pw-scf.in
+  structureFormat: espresso-in
+
+test_pymatgen_vasp_basis:
+  structurePath: fixtures/vasp/test-001/POSCAR
+
+test_pymatgen_vasp_lattice_bravais:
+  structurePath: fixtures/vasp/test-001/POSCAR

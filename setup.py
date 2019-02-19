@@ -1,7 +1,7 @@
 from setuptools import setup
 
 setup(
-    name='ExPreSS',
+    name='express',
     version='0.1.0',
     description='Exabyte Property Ex(ss)tractor, Sourcer, Serializer class.',
     url='https://github.com/Exabyte-io/exabyte-express',
@@ -13,7 +13,8 @@ setup(
         "bunch==1.0.1",
         "numpy==1.14.3",
         "xmltodict==0.9.2",
-        "pymatgen==2018.5.3"
+        "pymatgen==2018.5.3",
+        "ase==3.17.0",
     ],
     classifiers=[
         'Programming Language :: Python',
