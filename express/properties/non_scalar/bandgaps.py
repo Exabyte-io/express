@@ -17,14 +17,15 @@ class BandGaps(NonScalarProperty):
 
     def __init__(self, name, parser, *args, **kwargs):
         super(BandGaps, self).__init__(name, parser, *args, **kwargs)
-        self.nspins = self.parser.nspins()
-        self.ibz_k_points = self.parser.ibz_k_points()
-        self.fermi_energy = self.parser.fermi_energy()
-        self.band_gaps_direct = self.parser.band_gaps_direct()
-        self.band_gaps_indirect = self.parser.band_gaps_indirect()
-        self.eigenvalues_at_kpoints = self.parser.eigenvalues_at_kpoints()
 
         self.values = None
+        self.nspins = self.safely_invoke_parser_method("nspins")
+        self.ibz_k_points = self.safely_invoke_parser_method("ibz_k_points")
+        self.fermi_energy = self.safely_invoke_parser_method("fermi_energy")
+        self.band_gaps_direct = self.safely_invoke_parser_method("band_gaps_direct")
+        self.band_gaps_indirect = self.safely_invoke_parser_method("band_gaps_indirect")
+        self.eigenvalues_at_kpoints = self.safely_invoke_parser_method("eigenvalues_at_kpoints")
+
         if self.band_gaps_direct is not None and self.band_gaps_indirect is not None:
             self.values = [
                 self._serialize_band_gaps(self.band_gaps_direct, "direct"),
