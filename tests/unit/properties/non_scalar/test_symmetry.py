@@ -1,5 +1,5 @@
 from tests.unit import UnitTestBase
-from tests.data.raw_data import SYMMETRY_RAW_DATA
+from tests.data.raw_data import SPACE_GROUP_SYMBOL
 from express.properties.non_scalar.symmetry import Symmetry
 
 SYMMETRY = {
@@ -20,5 +20,6 @@ class SymmetryTest(UnitTestBase):
         super(SymmetryTest, self).setUp()
 
     def test_symmetry(self):
-        property_ = Symmetry("symmetry", raw_data=SYMMETRY_RAW_DATA)
+        parser = self.get_mocked_parser("space_group_symbol", SPACE_GROUP_SYMBOL)
+        property_ = Symmetry("symmetry", parser)
         self.assertDeepAlmostEqual(property_.serialize_and_validate(), SYMMETRY)

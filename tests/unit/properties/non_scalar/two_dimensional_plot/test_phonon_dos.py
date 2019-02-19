@@ -37,5 +37,6 @@ class PhononDOSTest(UnitTestBase):
         super(PhononDOSTest, self).setUp()
 
     def test_phonon_dos(self):
-        property_ = PhononDOS("phonon_dos", raw_data=PHONON_DOS_RAW_DATA)
+        parser = self.get_mocked_parser("phonon_dos", PHONON_DOS_RAW_DATA)
+        property_ = PhononDOS("phonon_dos", parser)
         self.assertDeepAlmostEqual(property_.serialize_and_validate(), PHONON_DOS)

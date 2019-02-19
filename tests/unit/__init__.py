@@ -1,3 +1,5 @@
+from mock import MagicMock
+
 from tests import TestBase
 
 
@@ -11,3 +13,8 @@ class UnitTestBase(TestBase):
 
     def tearDown(self):
         super(UnitTestBase, self).setUp()
+
+    def get_mocked_parser(self, method_name, return_value):
+        parser = MagicMock()
+        parser.attach_mock(MagicMock(return_value=return_value), method_name)
+        return parser

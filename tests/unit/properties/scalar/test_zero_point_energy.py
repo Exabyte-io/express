@@ -16,5 +16,6 @@ class TotalZeroPointTest(UnitTestBase):
         super(TotalZeroPointTest, self).setUp()
 
     def test_zero_point_energy(self):
-        property_ = ZeroPointEnergy("zero_point_energy", raw_data={"zero_point_energy": 1})
+        parser = self.get_mocked_parser("zero_point_energy", 1)
+        property_ = ZeroPointEnergy("zero_point_energy", parser)
         self.assertDeepAlmostEqual(property_.serialize_and_validate(), ZERO_POINT_ENERGY)

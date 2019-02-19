@@ -1,6 +1,8 @@
+from mock import MagicMock
+
 from tests.unit import UnitTestBase
-from tests.data.raw_data import BAND_RAW_DATA
 from express.properties.non_scalar.bandgaps import BandGaps
+from tests.data.raw_data import EIGENVALUES_AT_KPOINTS, IBZ_K_POINTS
 
 BAND_GAPS = {
     "eigenvalues": [
@@ -199,5 +201,12 @@ class BandGapsTest(UnitTestBase):
         super(BandGapsTest, self).setUp()
 
     def test_band_gaps(self):
-        property_ = BandGaps("band_gaps", raw_data=BAND_RAW_DATA)
+        parser = MagicMock()
+        parser.attach_mock(MagicMock(return_value=1), "nspins")
+        parser.attach_mock(MagicMock(return_value=6.6), "fermi_energy")
+        parser.attach_mock(MagicMock(return_value=None), "band_gaps_direct")
+        parser.attach_mock(MagicMock(return_value=None), "band_gaps_indirect")
+        parser.attach_mock(MagicMock(return_value=IBZ_K_POINTS), "ibz_k_points")
+        parser.attach_mock(MagicMock(return_value=EIGENVALUES_AT_KPOINTS), "eigenvalues_at_kpoints")
+        property_ = BandGaps("band_gaps", parser)
         self.assertDeepAlmostEqual(property_.serialize_and_validate(), BAND_GAPS)

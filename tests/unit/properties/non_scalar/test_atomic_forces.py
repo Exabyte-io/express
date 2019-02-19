@@ -34,5 +34,6 @@ class AtomicForcesTest(UnitTestBase):
         super(AtomicForcesTest, self).setUp()
 
     def test_atomic_forces(self):
-        property_ = AtomicForces("atomic_forces", raw_data=ATOMIC_FORCES_RAW_DATA)
+        parser = self.get_mocked_parser("atomic_forces", ATOMIC_FORCES_RAW_DATA)
+        property_ = AtomicForces("atomic_forces", parser)
         self.assertDeepAlmostEqual(property_.serialize_and_validate(), ATOMIC_FORCES)
