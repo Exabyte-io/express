@@ -6,7 +6,7 @@ Exabyte Property Extractor, Sourcer, Serializer (ExPreSS) is a Python package to
 
 The package provides the below functionality:
 
-- Extract material and workflow properties from Quantum Espresso calculation and serialize them according to Exabyte data convention
+- Extract material and workflow properties from Quantum ESPRESSO calculation and serialize them according to Exabyte data convention
 
 - Extract material and workflow properties from VASP calculation and serialize them according to Exabyte data convention
 
@@ -47,9 +47,27 @@ export GIT_LFS_SKIP_SMUDGE=1
 pip install -e PATH_TO_EXPRESS_REPOSITORY
 ```
 
+## Usage
+
+```python
+
+import json
+from express import ExPrESS
+
+kwargs = {
+    "work_dir": "./tests/fixtures/espresso/test-001",
+    "stdout_file": "./tests/fixtures/espresso/test-001/pw-scf.out"
+
+}
+
+exp = ExPrESS("espresso", **kwargs)
+print json.dumps(exp.property("total_energy"), indent=4)
+
+```
+
 ## Tests
 
-There are two types of tests in ExPreSS, unit and integration, implemented in [Python Unit Testing Framework](#links).
+There are two types of tests in ExPreSS, unit and integration, implemented in Python Unit Testing Framework<sup>[1](#links)</sup>.
 
 ### Unit Tests
 
@@ -69,7 +87,7 @@ sh run-tests.sh
 
 ## Contribution
 
-We welcome feedback and contributions for other not-yet covered cases. We suggest forking this repository and introducing the adjustments there, the changes in the fork can further be considered for merging into this repository as it is commonly done on Github [#links](1).
+We welcome feedback and contributions for other not-yet covered cases. We suggest forking this repository and introducing the adjustments there, the changes in the fork can further be considered for merging into this repository as it is commonly done on Github<sup>[2](#links)</sup>.
 
 ## Links
 
