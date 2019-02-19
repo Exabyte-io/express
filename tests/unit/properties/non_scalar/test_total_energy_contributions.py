@@ -1,5 +1,5 @@
 from tests.unit import UnitTestBase
-from tests.data.raw_data import TOTAL_ENERGY_CONTRIBUTIONS_RAW_DATA
+from tests.fixtures.data import TOTAL_ENERGY_CONTRIBUTIONS_RAW_DATA
 from express.properties.non_scalar.total_energy_contributions import TotalEnergyContributions
 
 TOTAL_ENERGY_CONTRIBUTIONS = {

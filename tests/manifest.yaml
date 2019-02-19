@@ -1,115 +1,115 @@
 test_espresso_total_energy:
-  workDir: data/espresso/test-001
-  stdoutFile: data/espresso/test-001/pw-scf.out
+  workDir: fixtures/espresso/test-001
+  stdoutFile: fixtures/espresso/test-001/pw-scf.out
 
 test_espresso_fermi_energy:
-  workDir: data/espresso/test-001
-  stdoutFile: data/espresso/test-001/pw-scf.out
+  workDir: fixtures/espresso/test-001
+  stdoutFile: fixtures/espresso/test-001/pw-scf.out
 
 test_espresso_nspins:
-  workDir: data/espresso/test-001
-  stdoutFile: data/espresso/test-001/pw-scf.out
+  workDir: fixtures/espresso/test-001
+  stdoutFile: fixtures/espresso/test-001/pw-scf.out
 
 test_espresso_eigenvalues_at_kpoints:
-  workDir: data/espresso/test-001
-  stdoutFile: data/espresso/test-001/pw-scf.out
+  workDir: fixtures/espresso/test-001
+  stdoutFile: fixtures/espresso/test-001/pw-scf.out
 
 test_espresso_ibz_k_points:
-  workDir: data/espresso/test-001
-  stdoutFile: data/espresso/test-001/pw-scf.out
+  workDir: fixtures/espresso/test-001
+  stdoutFile: fixtures/espresso/test-001/pw-scf.out
 
 test_espresso_dos:
-  workDir: data/espresso/test-002
-  stdoutFile: data/espresso/test-002/projwfc.out
+  workDir: fixtures/espresso/test-002
+  stdoutFile: fixtures/espresso/test-002/projwfc.out
 
 test_espresso_convergence_electronic:
-  workDir: data/espresso/test-001
-  stdoutFile: data/espresso/test-001/pw-scf.out
+  workDir: fixtures/espresso/test-001
+  stdoutFile: fixtures/espresso/test-001/pw-scf.out
 
 test_espresso_convergence_ionic:
-  workDir: data/espresso/test-001
-  stdoutFile: data/espresso/test-001/pw-scf.out
+  workDir: fixtures/espresso/test-001
+  stdoutFile: fixtures/espresso/test-001/pw-scf.out
 
 test_espresso_stress_tensor:
-  workDir: data/espresso/test-001
-  stdoutFile: data/espresso/test-001/pw-scf.out
+  workDir: fixtures/espresso/test-001
+  stdoutFile: fixtures/espresso/test-001/pw-scf.out
 
 test_espresso_pressure:
-  workDir: data/espresso/test-001
-  stdoutFile: data/espresso/test-001/pw-scf.out
+  workDir: fixtures/espresso/test-001
+  stdoutFile: fixtures/espresso/test-001/pw-scf.out
 
 test_espresso_total_force:
-  workDir: data/espresso/test-001
-  stdoutFile: data/espresso/test-001/pw-scf.out
+  workDir: fixtures/espresso/test-001
+  stdoutFile: fixtures/espresso/test-001/pw-scf.out
 
 test_espresso_atomic_forces:
-  workDir: data/espresso/test-001
-  stdoutFile: data/espresso/test-001/pw-scf.out
+  workDir: fixtures/espresso/test-001
+  stdoutFile: fixtures/espresso/test-001/pw-scf.out
 
 test_espresso_total_energy_contributions:
-  workDir: data/espresso/test-001
-  stdoutFile: data/espresso/test-001/pw-scf.out
+  workDir: fixtures/espresso/test-001
+  stdoutFile: fixtures/espresso/test-001/pw-scf.out
 
 test_espresso_phonon_dos:
-  workDir: data/espresso/test-003
-  stdoutFile: data/espresso/test-003/phonon_dos.out
+  workDir: fixtures/espresso/test-003
+  stdoutFile: fixtures/espresso/test-003/phonon_dos.out
 
 test_espresso_phonon_dispersion:
-  workDir: data/espresso/test-003
-  stdoutFile: data/espresso/test-003/normal_modes.out
+  workDir: fixtures/espresso/test-003
+  stdoutFile: fixtures/espresso/test-003/normal_modes.out
 
 test_vasp_total_energy:
-  workDir: data/vasp/test-001
-  stdoutFile: data/vasp/test-001/vasp.out
+  workDir: fixtures/vasp/test-001
+  stdoutFile: fixtures/vasp/test-001/vasp.out
 
 test_vasp_fermi_energy:
-  workDir: data/vasp/test-001
-  stdoutFile: data/vasp/test-001/vasp.out
+  workDir: fixtures/vasp/test-001
+  stdoutFile: fixtures/vasp/test-001/vasp.out
 
 test_vasp_nspins:
-  workDir: data/vasp/test-001
-  stdoutFile: data/vasp/test-001/vasp.out
+  workDir: fixtures/vasp/test-001
+  stdoutFile: fixtures/vasp/test-001/vasp.out
 
 test_vasp_eigenvalues_at_kpoints:
-  workDir: data/vasp/test-001
-  stdoutFile: data/vasp/test-001/vasp.out
+  workDir: fixtures/vasp/test-001
+  stdoutFile: fixtures/vasp/test-001/vasp.out
 
 test_vasp_ibz_k_points:
-  workDir: data/vasp/test-001
-  stdoutFile: data/vasp/test-001/vasp.out
+  workDir: fixtures/vasp/test-001
+  stdoutFile: fixtures/vasp/test-001/vasp.out
 
 test_vasp_dos:
-  workDir: data/vasp/test-002
-  stdoutFile: data/vasp/test-001/chgcar.out
+  workDir: fixtures/vasp/test-002
+  stdoutFile: fixtures/vasp/test-001/chgcar.out
 
 test_vasp_convergence_electronic:
-  workDir: data/vasp/test-001
-  stdoutFile: data/vasp/test-001/vasp.out
+  workDir: fixtures/vasp/test-001
+  stdoutFile: fixtures/vasp/test-001/vasp.out
 
 test_vasp_convergence_ionic:
-  workDir: data/vasp/test-001
-  stdoutFile: data/vasp/test-001/vasp.out
+  workDir: fixtures/vasp/test-001
+  stdoutFile: fixtures/vasp/test-001/vasp.out
 
 test_vasp_stress_tensor:
-  workDir: data/vasp/test-001
-  stdoutFile: data/vasp/test-001/vasp.out
+  workDir: fixtures/vasp/test-001
+  stdoutFile: fixtures/vasp/test-001/vasp.out
 
 test_vasp_pressure:
-  workDir: data/vasp/test-001
-  stdoutFile: data/vasp/test-001/vasp.out
+  workDir: fixtures/vasp/test-001
+  stdoutFile: fixtures/vasp/test-001/vasp.out
 
 test_vasp_total_force:
-  workDir: data/vasp/test-001
-  stdoutFile: data/vasp/test-001/vasp.out
+  workDir: fixtures/vasp/test-001
+  stdoutFile: fixtures/vasp/test-001/vasp.out
 
 test_vasp_atomic_forces:
-  workDir: data/vasp/test-001
-  stdoutFile: data/vasp/test-001/vasp.out
+  workDir: fixtures/vasp/test-001
+  stdoutFile: fixtures/vasp/test-001/vasp.out
 
 test_vasp_total_energy_contributions:
-  workDir: data/vasp/test-001
-  stdoutFile: data/vasp/test-001/vasp.out
+  workDir: fixtures/vasp/test-001
+  stdoutFile: fixtures/vasp/test-001/vasp.out
 
 test_vasp_magnetic_moments:
-  workDir: data/vasp/test-004
-  stdoutFile: data/vasp/test-004/vasp.out
+  workDir: fixtures/vasp/test-004
+  stdoutFile: fixtures/vasp/test-004/vasp.out

@@ -2,7 +2,7 @@ from mock import MagicMock
 
 from tests.unit import UnitTestBase
 from express.properties.non_scalar.bandgaps import BandGaps
-from tests.data.raw_data import EIGENVALUES_AT_KPOINTS, IBZ_K_POINTS
+from tests.fixtures.data import EIGENVALUES_AT_KPOINTS, IBZ_K_POINTS
 
 BAND_GAPS = {
     "eigenvalues": [

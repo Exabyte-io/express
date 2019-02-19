@@ -1,5 +1,5 @@
 from tests.unit import UnitTestBase
-from tests.data.raw_data import MAGNETIC_MOMENTS_RAW_DATA
+from tests.fixtures.data import MAGNETIC_MOMENTS_RAW_DATA
 from express.properties.non_scalar.magnetic_moments import MagneticMoments
 
 MAGNETIC_MOMENTS = {

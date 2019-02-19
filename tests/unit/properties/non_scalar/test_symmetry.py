@@ -1,5 +1,5 @@
 from tests.unit import UnitTestBase
-from tests.data.raw_data import SPACE_GROUP_SYMBOL
+from tests.fixtures.data import SPACE_GROUP_SYMBOL
 from express.properties.non_scalar.symmetry import Symmetry
 
 SYMMETRY = {

@@ -1,5 +1,5 @@
 from tests.unit import UnitTestBase
-from tests.data.raw_data import STRESS_TENSOR_RAW_DATA
+from tests.fixtures.data import STRESS_TENSOR_RAW_DATA
 from express.properties.non_scalar.stress_tensor import StressTensor
 
 STRESS_TENSOR = {
