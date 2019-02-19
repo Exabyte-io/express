@@ -37,3 +37,7 @@ class BaseProperty(object):
         instance = self._serialize()
         self.esse.validate(instance, self.schema)
         return instance
+
+    def safely_invoke_parser_method(self, method_name, *args, **kwargs):
+        if hasattr(self.parser, method_name):
+            return getattr(self.parser, method_name)(*args, **kwargs)
