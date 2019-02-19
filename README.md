@@ -49,6 +49,8 @@ pip install -e PATH_TO_EXPRESS_REPOSITORY
 
 ## Usage
 
+The following example demonstrates how to initialize an ExPreSS class instance, extract and serialize total energy.
+
 ```python
 
 import json
