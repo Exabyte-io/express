@@ -20,9 +20,9 @@ class ExPrESS(object):
     """
 
     def __init__(self, parser_name=None, *args, **kwargs):
-        self.parser = self.get_parser_class(parser_name)(*args, **kwargs) if parser_name else None
+        self.parser = self._get_parser_class(parser_name)(*args, **kwargs) if parser_name else None
 
-    def get_parser_class(self, parser_name):
+    def _get_parser_class(self, parser_name):
         """
         Returns parser class for a given parser name.
 
@@ -32,10 +32,24 @@ class ExPrESS(object):
         Returns:
 
         """
-        path = settings.PARSERS_REGISTRY[parser_name]
-        return getattr(importlib.import_module('.'.join(path.split('.')[:-1])), path.split('.')[-1])
+        reference = settings.PARSERS_REGISTRY[parser_name]
+        return self._get_class_by_reference(reference)
 
-    def get_property_class(self, property_name):
+    def _get_class_by_reference(self, reference):
+        """
+        Returns class by reference.
+
+        Args:
+            reference (str): reference, e.g. express.parsers.apps.vasp.parser.VaspParser
+
+        Returns:
+             class
+        """
+        class_name = reference.split('.')[-1]
+        module_name = '.'.join(reference.split('.')[:-1])
+        return getattr(importlib.import_module(module_name), class_name)
+
+    def _get_property_class(self, property_name):
         """
         Returns property class for a given property name.
 
@@ -43,12 +57,10 @@ class ExPrESS(object):
             property_name (str): property name.
 
         Returns:
-
+            class
         """
         reference = settings.PROPERTIES_MANIFEST[property_name]["reference"]
-        cls_name = reference.split('.')[-1]
-        mod_name = '.'.join(reference.split('.')[:-1])
-        return getattr(importlib.import_module(mod_name), cls_name)
+        return self._get_class_by_reference(reference)
 
     def property(self, property_name, *args, **kwargs):
         """
@@ -62,5 +74,5 @@ class ExPrESS(object):
         Returns:
              dict
         """
-        property_instance = self.get_property_class(property_name)(property_name, self.parser, *args, **kwargs)
+        property_instance = self._get_property_class(property_name)(property_name, self.parser, *args, **kwargs)
         return property_instance.serialize_and_validate()
