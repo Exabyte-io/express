@@ -84,18 +84,81 @@ class IonicDataMixin(object):
         """
         Extracts convergence ionic.
 
+        Energy Units: eV
+
         Returns:
-             list[float]
+             list[dict]
 
         Example:
             [
-                1.4018213061907816,
-                0.5939946985677435,
-                0.007003124785903934,
-                0.0010198831091687887,
-                0.000042041606287774244,
-                0.000007619190783544846
-              ]
+                {
+                    "electronic": {
+                        "data": [
+                            0.10304755,
+                            0.04365706,
+                            0.00051533,
+                            0.00007517,
+                            0.00000294,
+                            6.7E-7
+                        ],
+                        "units": "eV"
+                    },
+                    "energy": -258.629394472941,
+                    "structure": {
+                        "basis": {
+                            "coordinates": [
+                                {
+                                    "id": 0,
+                                    "value": [
+                                        0,
+                                        0,
+                                        0
+                                    ]
+                                },
+                                {
+                                    "id": 1,
+                                    "value": [
+                                        1.11631153838261,
+                                        0.789351104951054,
+                                        1.93350786347877
+                                    ]
+                                }
+                            ],
+                            "elements": [
+                                {
+                                    "id": 0,
+                                    "value": "Si"
+                                },
+                                {
+                                    "id": 1,
+                                    "value": "Si"
+                                }
+                            ],
+                            "units": "angstrom"
+                        },
+                        "lattice": {
+                            "vectors": {
+                                "a": [
+                                    3.34893229493841,
+                                    0,
+                                    1.93350786347877
+                                ],
+                                "alat": 1,
+                                "b": [
+                                    1.11631076497947,
+                                    3.15740674001365,
+                                    1.93350786347877
+                                ],
+                                "c": [
+                                    0,
+                                    0,
+                                    3.86701572695754
+                                ]
+                            }
+                        }
+                    }
+                }
+            ]
         """
         pass
 
@@ -103,6 +166,8 @@ class IonicDataMixin(object):
     def stress_tensor(self):
         """
         Returns stress tensor.
+
+        Units: kbar
 
         Returns:
             list
@@ -133,6 +198,8 @@ class IonicDataMixin(object):
         """
         Returns pressure.
 
+        Units: kbar
+
         Returns:
             float
 
@@ -146,6 +213,8 @@ class IonicDataMixin(object):
         """
         Returns total force.
 
+        Units: eV/angstrom
+
         Returns:
             float
 
@@ -158,6 +227,8 @@ class IonicDataMixin(object):
     def atomic_forces(self):
         """
         Returns forces that is exerted on each atom by its surroundings.
+
+        Units: eV/angstrom
 
         Returns:
             list
@@ -249,6 +320,8 @@ class IonicDataMixin(object):
         """
         Returns volume.
 
+        Units: angstrom^3
+
         Returns:
              float
 
@@ -278,6 +351,8 @@ class IonicDataMixin(object):
         """
         Returns density.
 
+        Units: g/cm^3
+
         Returns:
              float
 
@@ -290,6 +365,8 @@ class IonicDataMixin(object):
     def zero_point_energy(self):
         """
         Returns zero point energy.
+
+        Units: eV
 
         Returns:
              float
@@ -336,6 +413,8 @@ class IonicDataMixin(object):
     def magnetic_moments(self):
         """
         Returns magnetic moments.
+
+        Units: uB
 
         Returns:
             list
