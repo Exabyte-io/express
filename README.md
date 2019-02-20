@@ -64,7 +64,9 @@ pip install express
     pip install -e PATH_TO_EXPRESS_REPOSITORY
     ```
 
-## Examples
+## Usage
+
+### Extract Total Energy
 
 The following example demonstrates how to initialize an ExPreSS class instance, to extract and serialize total energy produced in a Quantum ESPRESSO calculation.
 
@@ -84,6 +86,8 @@ print json.dumps(express_.property("total_energy"), indent=4)
 
 ```
 
+### Extract Relaxed Structure
+
 In this example the final structure of a VASP calculation is extracted and is serialized to a material.
 
 ```python
@@ -101,6 +105,8 @@ express_ = ExPrESS("vasp", **kwargs)
 print json.dumps(express_.property("material", is_final_structure=True), indent=4)
 
 ```
+
+### Extract Structure from Input
 
 One can use [StructureParser](express/parsers/structure.py) to extract materials from POSCAR or PW input files.
 
