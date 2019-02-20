@@ -14,7 +14,7 @@ class ExPrESS(object):
             espresso and vasp parsers specific keys:
                 work_dir (str): path to the working directory.
                 stdout_file (str): path to the stdout file.
-            pymatgen parser specific keys:
+            structure parser specific keys:
                 structure_string (str): structure string.
                 structure_format (str): structure format, poscar or espresso-in.
     """
