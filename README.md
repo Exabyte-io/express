@@ -18,7 +18,7 @@ The package provides the below functionality:
 
 The following diagram presents ExPreSS architecture. The package consists of two main components, properties and parsers.
 
-![ExPreSS](https://user-images.githubusercontent.com/10528238/53059542-023a5380-346c-11e9-8f42-5ab018b4f293.png)
+![ExPreSS](https://user-images.githubusercontent.com/10528238/53114392-86d2b380-34f8-11e9-8d88-79196782fa7e.png)
 
 ### Parsers
 
