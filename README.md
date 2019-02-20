@@ -1,14 +1,14 @@
 # ExPreSS
 
-Exabyte Property Extractor, Sourcer, Serializer (ExPreSS) is a Python package to extract material- and simulation-related properties and serialize them according to the Exabyte data convention outlined in [Exabyte Source of Schemas and Examples (ESSE)](https://github.com/Exabyte-io/exabyte-esse). 
+Exabyte Property Extractor, Sourcer, Serializer (ExPreSS) is a Python package to extract material- and simulation-related properties and serialize them according to the Exabyte Data Convention (EDC) outlined in [Exabyte Source of Schemas and Examples (ESSE)](https://github.com/Exabyte-io/exabyte-esse). 
 
 ## Functionality
 
 The package provides the below functionality:
 
-- Extract material and workflow properties from Quantum ESPRESSO calculation and serialize them according to Exabyte data convention
+- Extract material and workflow properties from Quantum ESPRESSO calculation and serialize them according to EDC
 
-- Extract material and workflow properties from VASP calculation and serialize them according to Exabyte data convention
+- Extract material and workflow properties from VASP calculation and serialize them according to EDC
 
 - Parse the structure configs in string format (Poscar, PWScf input) and return material in JSON representation
 
@@ -16,7 +16,7 @@ The package provides the below functionality:
 
 ## Architecture
 
-The following diagram presents ExPreSS architecture. The package consists of two main components, properties and parsers.
+The following diagram presents ExPreSS architecture. The package provides an [interface](express/__init__.py) to extract properties in EDC format. Inside the interface `Property` classes are initialized with a `Parser` (Vasp, Espresso, or Structure) depending on the given parameters through the parser factory. Each `Property` class implements required calls to `Parser` functions listed in these [Mixins Classes](express/parsers/mixins) to extract raw data either from the textual files, XML files or input files in string format and implements a serializer to form the final property according to the EDC format.
 
 ![ExPreSS](https://user-images.githubusercontent.com/10528238/53114392-86d2b380-34f8-11e9-8d88-79196782fa7e.png)
 
@@ -26,7 +26,7 @@ ExPreSS parsers are responsible for extracting raw data from available sources s
 
 ### Properties
 
-ExPreSS properties classes are responsible to form the properties based on the raw data provided by the parsers and serialize the property according to Exabyte Data Convention outlined in [Exabyte Source of Schemas and Examples (ESSE)](https://github.com/Exabyte-io/exabyte-esse). 
+ExPreSS properties classes are responsible to form the properties based on the raw data provided by the parsers and serialize the property according to EDC outlined in [ESSE](https://github.com/Exabyte-io/exabyte-esse). A list of supported properties are available in [here](express/settings.py).
 
 ## Installation
 
@@ -68,7 +68,7 @@ pip install express
 
 ### Extract Total Energy
 
-The following example demonstrates how to initialize an ExPreSS class instance, to extract and serialize total energy produced in a Quantum ESPRESSO calculation.
+The following example demonstrates how to initialize an ExPreSS class instance, to extract and serialize total energy produced in a Quantum ESPRESSO calculation. The full path to the calculation directory (`work_dir`) and the file containing standard output (`stdout_file`) are required to be passed as arguments to the underlying Espresso parser.
 
 ```python
 
@@ -88,7 +88,7 @@ print json.dumps(express_.property("total_energy"), indent=4)
 
 ### Extract Relaxed Structure
 
-In this example the final structure of a VASP calculation is extracted and is serialized to a material.
+In this example the final structure of a VASP calculation is extracted and is serialized to a material. The final structure is extracted from the `CONTCAR` file located in the calculation directory (`work_dir`). `is_final_structure=True` argument should be passed to the [Material Property](express/properties/material.py) class to let it know to extract final structure.
 
 ```python
 
@@ -108,7 +108,7 @@ print json.dumps(express_.property("material", is_final_structure=True), indent=
 
 ### Extract Structure from Input
 
-One can use [StructureParser](express/parsers/structure.py) to extract materials from POSCAR or PW input files.
+One can use [StructureParser](express/parsers/structure.py) to extract materials from POSCAR or PW input files. Please note that `StructureParser` class only works with strings and not files and therefore the input files should be read first and then passed to the parser.
 
 ```python
 
@@ -145,7 +145,7 @@ There are two types of tests in ExPreSS, unit and integration, implemented in [P
 
 ### Unit Tests
 
-Unit tests are used to assert properties are serialized according to Exabyte Data Convention. Properties classes are initialized with mocked parser data and then are serialized to assert functionality.
+Unit tests are used to assert properties are serialized according to EDC. Properties classes are initialized with mocked parser data and then are serialized to assert functionality.
 
 ### Integration Tests
 
