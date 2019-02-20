@@ -18,7 +18,7 @@ The package provides the below functionality:
 
 The following diagram presents ExPreSS architecture. The package provides an [interface](express/__init__.py) to extract properties in EDC format. Inside the interface `Property` classes are initialized with a `Parser` (Vasp, Espresso, or Structure) depending on the given parameters through the parser factory. Each `Property` class implements required calls to `Parser` functions listed in these [Mixins Classes](express/parsers/mixins) to extract raw data either from the textual files, XML files or input files in string format and implements a serializer to form the final property according to the EDC format.
 
-![ExPreSS](https://user-images.githubusercontent.com/10528238/53114392-86d2b380-34f8-11e9-8d88-79196782fa7e.png)
+![ExPreSS](https://user-images.githubusercontent.com/10528238/53124591-9958e700-3510-11e9-9222-3aedacfd7943.png)
 
 ### Parsers
 
@@ -161,4 +161,4 @@ sh run-tests.sh
 
 ## Contribution
 
-We welcome feedback and contributions for other not-yet covered cases. We suggest forking this repository and introducing the adjustments there, the changes in the fork can further be considered for merging into this repository as explained in [GitHub Standard Fork and Pull Request Workflow](https://gist.github.com/Chaser324/ce0505fbed06b947d962).
+This repository is an [open-source](LICENSE.md) work-in-progress and we welcome contributions. We suggest forking this repository and introducing the adjustments there, the changes in the fork can further be considered for merging into this repository as explained in [GitHub Standard Fork and Pull Request Workflow](https://gist.github.com/Chaser324/ce0505fbed06b947d962).
