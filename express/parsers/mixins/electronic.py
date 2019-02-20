@@ -62,7 +62,7 @@ class ElectronicDataMixin(object):
 
         Units:
             energy: eV
-            kpoint coordinate: angstrom
+            kpoint coordinate: crystal
 
         Returns:
              list[dict]
