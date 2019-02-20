@@ -2,10 +2,10 @@ import os
 
 from tests.fixtures.data import SI
 from tests.integration import IntegrationTestBase
-from express.parsers.pymatgen import PyMatGenParser
+from express.parsers.structure import StructureParser
 
 
-class TestPymatgenParser(IntegrationTestBase):
+class TestStructureParser(IntegrationTestBase):
 
     def setUp(self):
         super(IntegrationTestBase, self).setUp()
@@ -22,16 +22,16 @@ class TestPymatgenParser(IntegrationTestBase):
                 "cell": manifest.get("cell", "original"),
                 "structure_format": manifest.get("structureFormat", "poscar")
             }
-            return PyMatGenParser(**kwargs)
+            return StructureParser(**kwargs)
 
-    def test_pymatgen_espresso_basis(self):
+    def test_structure_espresso_basis(self):
         self.assertDeepAlmostEqual(self.parser.basis(), SI["basis"], places=2)
 
-    def test_pymatgen_espresso_lattice_bravais(self):
+    def test_structure_espresso_lattice_bravais(self):
         self.assertDeepAlmostEqual(self.parser.lattice_bravais(), SI["lattice"], places=2)
 
-    def test_pymatgen_vasp_basis(self):
+    def test_structure_vasp_basis(self):
         self.assertDeepAlmostEqual(self.parser.basis(), SI["basis"], places=2)
 
-    def test_pymatgen_vasp_lattice_bravais(self):
+    def test_structure_vasp_lattice_bravais(self):
         self.assertDeepAlmostEqual(self.parser.lattice_bravais(), SI["lattice"], places=2)
