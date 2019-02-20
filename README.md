@@ -22,11 +22,11 @@ The following diagram presents ExPreSS architecture. The package provides an [in
 
 ### Parsers
 
-ExPreSS parsers are responsible for extracting raw data from available sources such as data on the disk and provide the data to properties classes. In order to make sure all parsers implement the same interfaces and abstract properties classes from the parsers implementations, a set a [Mixin](express/parsers/mixins) classes are provided which should be mixed with the parsers. The parsers must implement Mixins' abstract methods at the time of inheritance.
+As explained above, ExPreSS parsers are responsible for extracting raw data from different sources such as data on the disk and provide the raw data to properties classes. In order to make sure all parsers implement the same interfaces and abstract properties classes from the parsers implementations, a set a [Mixin Classes](express/parsers/mixins) are provided which should be mixed with the parsers. The parsers must implement Mixins' abstract methods at the time of inheritance.
 
 ### Properties
 
-ExPreSS properties classes are responsible to form the properties based on the raw data provided by the parsers and serialize the property according to EDC outlined in [ESSE](https://github.com/Exabyte-io/exabyte-esse). A list of supported properties are available in [here](express/settings.py).
+ExPreSS properties classes are responsible to form the properties based on the raw data provided by the parsers and serialize the property according to EDC. A list of supported properties are available in [here](express/settings.py).
 
 ## Installation
 
