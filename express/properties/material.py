@@ -1,7 +1,7 @@
 from express.properties import BaseProperty
 from express.properties.scalar.p_norm import PNorm
 from express.properties.scalar.volume import Volume
-from express.parsers.pymatgen import PyMatGenParser
+from express.parsers.structure import StructureParser
 from express.properties.scalar.density import Density
 from express.properties.non_scalar.symmetry import Symmetry
 from express.properties.scalar.elemental_ratio import ElementalRatio
@@ -32,23 +32,24 @@ class Material(BaseProperty):
                 lattice = self.parser.final_lattice_vectors()
                 structure_string = self._to_poscar(lattice, basis)
 
-        self.pymatgen = PyMatGenParser(structure_string=structure_string, structure_format=structure_format, cell=cell)
+        # override parser to use StructureParser from now on
+        self.parser = StructureParser(structure_string=structure_string, structure_format=structure_format, cell=cell)
 
     @property
     def formula(self):
-        return self.pymatgen.reduced_formula()
+        return self.parser.reduced_formula()
 
     @property
     def unitCellFormula(self):
-        return self.pymatgen.formula()
+        return self.parser.formula()
 
     @property
     def derived_properties(self):
         derived_properties = []
         try:
-            volume = Volume("volume", self.pymatgen).serialize_and_validate()
-            density = Density("density", self.pymatgen).serialize_and_validate()
-            symmetry = Symmetry("symmetry", self.pymatgen).serialize_and_validate()
+            volume = Volume("volume", self.parser).serialize_and_validate()
+            density = Density("density", self.parser).serialize_and_validate()
+            symmetry = Symmetry("symmetry", self.parser).serialize_and_validate()
             derived_properties = [volume, density, symmetry]
             derived_properties.extend(self._elemental_ratios())
             derived_properties.extend(self._p_norms())
@@ -58,11 +59,11 @@ class Material(BaseProperty):
 
     @property
     def basis(self):
-        return self.pymatgen.basis()
+        return self.parser.basis()
 
     @property
     def lattice(self):
-        return self.pymatgen.lattice_bravais()
+        return self.parser.lattice_bravais()
 
     def _serialize(self):
         """
@@ -102,8 +103,8 @@ class Material(BaseProperty):
              list
         """
         elemental_ratios = []
-        for element in self.pymatgen.elemental_ratios().keys():
-            elemental_ratio = ElementalRatio("elemental_ratio", self.pymatgen, element=element).serialize_and_validate()
+        for element in self.parser.elemental_ratios().keys():
+            elemental_ratio = ElementalRatio("elemental_ratio", self.parser, element=element).serialize_and_validate()
             elemental_ratios.append(elemental_ratio)
         return elemental_ratios
 
@@ -119,7 +120,7 @@ class Material(BaseProperty):
         """
         p_norms = []
         for degree in [0, 2, 3, 5, 7, 10]:
-            p_norms.append(PNorm("p-norm", self.pymatgen, degree=degree).serialize_and_validate())
+            p_norms.append(PNorm("p-norm", self.parser, degree=degree).serialize_and_validate())
         return p_norms
 
     def _get_unique_elements(self, basis):

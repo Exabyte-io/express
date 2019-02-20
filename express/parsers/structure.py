@@ -13,9 +13,9 @@ STRUCTURE_MAP = {
 }
 
 
-class PyMatGenParser(BaseParser, IonicDataMixin):
+class StructureParser(BaseParser, IonicDataMixin):
     """
-    Pymatgen parser class.
+    Structure parser class.
 
     Args:
         args (list): args passed to the parser.
@@ -25,7 +25,7 @@ class PyMatGenParser(BaseParser, IonicDataMixin):
     """
 
     def __init__(self, *args, **kwargs):
-        super(PyMatGenParser, self).__init__(*args, **kwargs)
+        super(StructureParser, self).__init__(*args, **kwargs)
         self.structure_string = kwargs.get("structure_string")
         self.structure_format = kwargs.get("structure_format")
 
@@ -224,7 +224,6 @@ class PyMatGenParser(BaseParser, IonicDataMixin):
         """
         return self.structure.site_properties.get("selective_dynamics")
 
-    # TODO: remove the dependency on ASE
     def espresso_input_to_poscar(self, espresso_input):
         """
         Extracts structure from espresso input file and returns in poscar format.

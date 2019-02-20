@@ -17,6 +17,8 @@ class ElectronicDataMixin(object):
         """
         Returns total energy.
 
+        Units: eV
+
         Returns:
              float
 
@@ -29,6 +31,8 @@ class ElectronicDataMixin(object):
     def fermi_energy(self):
         """
         Returns fermi energy.
+
+        Units: eV
 
         Returns:
              float
@@ -56,6 +60,10 @@ class ElectronicDataMixin(object):
         """
         Returns eigenvalues for all kpoints.
 
+        Units:
+            energy: eV
+            kpoint coordinate: crystal
+
         Returns:
              list[dict]
 
@@ -81,6 +89,11 @@ class ElectronicDataMixin(object):
     def dos(self):
         """
         Returns density of states.
+
+        Units:
+            energy: eV
+            partial: eV
+            total: eV
 
         Returns:
             dict
@@ -151,6 +164,9 @@ class ElectronicDataMixin(object):
         """
         Extracts total energy contributions.
 
+        Units:
+            energy: eV
+
         Returns:
             dict
 
@@ -189,6 +205,8 @@ class ElectronicDataMixin(object):
     def reaction_energies(self):
         """
         Returns reaction energies.
+
+        Units: eV
 
         Returns:
              list[float]
