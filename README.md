@@ -6,19 +6,18 @@ Exabyte Property Extractor, Sourcer, Serializer (ExPreSS) is a Python package to
 
 As below:
 
-- Extract material and workflow properties from Quantum ESPRESSO calculation and serialize them according to EDC
+- Extract structural information, material properties and from simulation data
+- Serialize extracted information according to ESSE/EDC
+- Support for multiple simulation engines, including:
+  - [VASP](#links)
+  - [Quantum ESPRESSO](#links)
+  - others, to be added
 
-- Extract material and workflow properties from VASP calculation and serialize them according to EDC
-
-- Parse the structure configs in string format (Poscar, PWScf input) and return material in JSON representation
-
-- Parse data on disk and extract material and workflow properties and insert them into the database
-
-The package is written in a modular way easy to extend. Contributions can be in the form of additional [functionality](#todo-list) and [bug/issue reports](https://help.github.com/articles/creating-an-issue/).
+The package is written in a modular way easy to extend for additional applications and properties of interest. Contributions can be in the form of additional [functionality](#todo-list) and [bug/issue reports](https://help.github.com/articles/creating-an-issue/).
 
 ## Architecture
 
-The following diagram presents ExPreSS architecture. The package provides an [interface](express/__init__.py) to extract properties in EDC format. Inside the interface `Property` classes are initialized with a `Parser` (Vasp, Espresso, or Structure) depending on the given parameters through the parser factory. Each `Property` class implements required calls to `Parser` functions listed in these [Mixins Classes](express/parsers/mixins) to extract raw data either from the textual files, XML files or input files in string format and implements a serializer to form the final property according to the EDC format.
+The following diagram presents the package architecture. The package provides an [interface](express/__init__.py) to extract properties in EDC format. Inside the interface `Property` classes are initialized with a `Parser` (Vasp, Espresso, or Structure) depending on the given parameters through the parser factory. Each `Property` class implements required calls to `Parser` functions listed in these [Mixins Classes](express/parsers/mixins) to extract raw data either from the textual files, XML files or input files in string format and implements a serializer to form the final property according to the EDC format.
 
 ![ExPreSS](https://user-images.githubusercontent.com/10528238/53124591-9958e700-3510-11e9-9222-3aedacfd7943.png)
 
@@ -176,3 +175,9 @@ Desirable features for implementation:
 - Add support for other properties
 - Add support for other types of applications, parsers and extractors
 - other (TBA)
+
+## Links
+
+1. [Exabyte Source of Schemas and Examples (ESSE), Github Repository](https://github.com/exabyte-io/exabyte-esse)
+1. [Vienna Ab-initio Simulation Package (VASP), official website](https://cms.mpi.univie.ac.at/vasp/)
+1. [Quantum ESPRESSO, Official Website](https://www.quantum-espresso.org/)
