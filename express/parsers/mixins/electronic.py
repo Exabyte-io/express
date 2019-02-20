@@ -60,7 +60,9 @@ class ElectronicDataMixin(object):
         """
         Returns eigenvalues for all kpoints.
 
-        Energy Units: eV
+        Units:
+            energy: eV
+            kpoint coordinate: angstrom
 
         Returns:
              list[dict]
@@ -88,7 +90,10 @@ class ElectronicDataMixin(object):
         """
         Returns density of states.
 
-        Energy Units: eV
+        Units:
+            energy: eV
+            partial: eV
+            total: eV
 
         Returns:
             dict
@@ -159,7 +164,8 @@ class ElectronicDataMixin(object):
         """
         Extracts total energy contributions.
 
-        Energy Units: eV
+        Units:
+            energy: eV
 
         Returns:
             dict

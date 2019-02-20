@@ -14,6 +14,8 @@ class IonicDataMixin(object):
         """
         Returns initial lattice vectors.
 
+        Units: angstrom
+
         Returns:
             dict
 
@@ -32,6 +34,8 @@ class IonicDataMixin(object):
         """
         Returns initial basis.
 
+        Units: crystal
+
         Returns:
             dict
 
@@ -48,6 +52,8 @@ class IonicDataMixin(object):
     def final_lattice_vectors(self):
         """
         Returns final lattice vectors.
+
+        Units: angstrom
 
         Returns:
             dict
@@ -67,6 +73,8 @@ class IonicDataMixin(object):
         """
         Returns final basis.
 
+        Units: crystal
+
         Returns:
             dict
 
@@ -84,7 +92,8 @@ class IonicDataMixin(object):
         """
         Extracts convergence ionic.
 
-        Energy Units: eV
+        Units:
+            energy: eV
 
         Returns:
              list[dict]
