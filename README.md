@@ -4,7 +4,7 @@ Exabyte Property Extractor, Sourcer, Serializer (ExPreSS) is a Python package to
 
 ## Functionality
 
-The package provides the below functionality:
+As below:
 
 - Extract material and workflow properties from Quantum ESPRESSO calculation and serialize them according to EDC
 
@@ -13,6 +13,8 @@ The package provides the below functionality:
 - Parse the structure configs in string format (Poscar, PWScf input) and return material in JSON representation
 
 - Parse data on disk and extract material and workflow properties and insert them into the database
+
+The package is written in a modular way easy to extend. Contributions can be in the form of additional [functionality](#todo-list) and [bug/issue reports](https://help.github.com/articles/creating-an-issue/).
 
 ## Architecture
 
@@ -27,6 +29,10 @@ As explained above, ExPreSS parsers are responsible for extracting raw data from
 ### Properties
 
 ExPreSS properties classes are responsible to form the properties based on the raw data provided by the parsers and serialize the property according to EDC. A list of supported properties are available in [here](express/settings.py).
+
+### Extractors
+
+Extractors are classes that are composed with the parsers to extract raw data from the corresponding sources such as text or XML.
 
 ## Installation
 
@@ -162,3 +168,11 @@ sh run-tests.sh
 ## Contribution
 
 This repository is an [open-source](LICENSE.md) work-in-progress and we welcome contributions. We suggest forking this repository and introducing the adjustments there, the changes in the fork can further be considered for merging into this repository as explained in [GitHub Standard Fork and Pull Request Workflow](https://gist.github.com/Chaser324/ce0505fbed06b947d962).
+
+## TODO list
+
+Desirable features for implementation:
+
+- Add support for other properties
+- Add support for other types of applications, parsers and extractors
+- other (TBA)
