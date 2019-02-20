@@ -18,7 +18,7 @@ The package provides the below functionality:
 
 The following diagram presents ExPreSS architecture. The package consists of two main components, properties and parsers.
 
-![ExPreSS](https://user-images.githubusercontent.com/10528238/53045569-d0f95d80-3442-11e9-9cde-a005fb598c0c.png)
+![ExPreSS](https://user-images.githubusercontent.com/10528238/53059542-023a5380-346c-11e9-8f42-5ab018b4f293.png)
 
 ### Parsers
 
@@ -40,16 +40,33 @@ pip install express
 
 #### Repository
 
-```bash
-virtualenv .venv
-source .venv/bin/activate
-export GIT_LFS_SKIP_SMUDGE=1
-pip install -e PATH_TO_EXPRESS_REPOSITORY
-```
+0. Install [git-lfs](https://help.github.com/articles/installing-git-large-file-storage/) in order to pull the files stored on Git LFS.
 
-## Usage
+1. Clone repository:
+    
+    ```bash
+    git clone git@github.com:Exabyte-io/exabyte-express.git
+    ```
 
-The following example demonstrates how to initialize an ExPreSS class instance, extract and serialize total energy.
+2. Install [virtualenv](https://virtualenv.pypa.io/en/stable/) using [pip](https://pip.pypa.io/en/stable/) if not already present:
+
+    ```bash
+    pip install virtualenv
+    ```
+
+3. Create virtual environment and install required packages:
+
+    ```bash
+    cd exabyte-express
+    virtualenv venv
+    source venv/bin/activate
+    export GIT_LFS_SKIP_SMUDGE=1
+    pip install -e PATH_TO_EXPRESS_REPOSITORY
+    ```
+
+## Examples
+
+The following example demonstrates how to initialize an ExPreSS class instance, to extract and serialize total energy produced in a Quantum ESPRESSO calculation.
 
 ```python
 
@@ -62,14 +79,63 @@ kwargs = {
 
 }
 
-exp = ExPrESS("espresso", **kwargs)
-print json.dumps(exp.property("total_energy"), indent=4)
+express_ = ExPrESS("espresso", **kwargs)
+print json.dumps(express_.property("total_energy"), indent=4)
+
+```
+
+In this example the final structure of a VASP calculation is extracted and is serialized to a material.
+
+```python
+
+import json
+from express import ExPrESS
+
+kwargs = {
+    "work_dir": "./tests/fixtures/vasp/test-001",
+    "stdout_file": "./tests/fixtures/vasp/test-001/vasp.out"
+
+}
+
+express_ = ExPrESS("vasp", **kwargs)
+print json.dumps(express_.property("material", is_final_structure=True), indent=4)
+
+```
+
+One can use [StructureParser](express/parsers/structure.py) to extract materials from POSCAR or PW input files.
+
+```python
+
+import json
+from express import ExPrESS
+
+with open("./tests/fixtures/vasp/test-001/POSCAR") as f:
+    poscar = f.read()
+
+kwargs = {
+    "structure_string": poscar,
+    "structure_format": "poscar"
+}
+
+express_ = ExPrESS("structure", **kwargs)
+print json.dumps(express_.property("material"), indent=4)
+
+with open("./tests/fixtures/espresso/test-001/pw-scf.in") as f:
+    pwscf_input = f.read()
+
+kwargs = {
+    "structure_string": pwscf_input,
+    "structure_format": "espresso-in"
+}
+
+express_ = ExPrESS("structure", **kwargs)
+print json.dumps(express_.property("material"), indent=4)
 
 ```
 
 ## Tests
 
-There are two types of tests in ExPreSS, unit and integration, implemented in Python Unit Testing Framework<sup>[1](#links)</sup>.
+There are two types of tests in ExPreSS, unit and integration, implemented in [Python Unit Testing Framework](https://docs.python.org/2/library/unittest.html).
 
 ### Unit Tests
 
@@ -89,10 +155,4 @@ sh run-tests.sh
 
 ## Contribution
 
-We welcome feedback and contributions for other not-yet covered cases. We suggest forking this repository and introducing the adjustments there, the changes in the fork can further be considered for merging into this repository as it is commonly done on Github<sup>[2](#links)</sup>.
-
-## Links
-
-1: [Python Unit Testing Framework](https://docs.python.org/2/library/unittest.html)
-
-2: [GitHub Standard Fork & Pull Request Workflow](https://gist.github.com/Chaser324/ce0505fbed06b947d962)
+We welcome feedback and contributions for other not-yet covered cases. We suggest forking this repository and introducing the adjustments there, the changes in the fork can further be considered for merging into this repository as explained in [GitHub Standard Fork and Pull Request Workflow](https://gist.github.com/Chaser324/ce0505fbed06b947d962).
