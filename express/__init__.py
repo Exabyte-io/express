@@ -1,6 +1,10 @@
+import warnings
 import importlib
 
 from express import settings
+
+# disable pymatgen warnings
+warnings.filterwarnings("ignore")
 
 
 class ExPrESS(object):
