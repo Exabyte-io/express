@@ -1,8 +1,11 @@
+import os
+
 from express.properties import BaseProperty
 from express.properties.scalar.p_norm import PNorm
 from express.properties.scalar.volume import Volume
 from express.parsers.structure import StructureParser
 from express.properties.scalar.density import Density
+from express.parsers.apps.vasp.parser import VaspParser
 from express.properties.non_scalar.symmetry import Symmetry
 from express.properties.scalar.elemental_ratio import ElementalRatio
 
@@ -20,17 +23,23 @@ class Material(BaseProperty):
         structure_format = kwargs.get("structure_format", "poscar")
 
         if not structure_string:
-            is_initial_structure = kwargs.get("is_initial_structure")
-            if is_initial_structure:
-                basis = self.parser.initial_basis()
-                lattice = self.parser.initial_lattice_vectors()
-                structure_string = self._to_poscar(lattice, basis)
+            if kwargs.get("is_initial_structure"):
+                if isinstance(self.parser, VaspParser):
+                    with open(os.path.join(self.parser.work_dir, "POSCAR")) as f:
+                        structure_string = f.read()
+                else:
+                    basis = self.parser.initial_basis()
+                    lattice = self.parser.initial_lattice_vectors()
+                    structure_string = self._to_poscar(lattice, basis)
 
-            is_final_structure = kwargs.get("is_final_structure")
-            if is_final_structure:
-                basis = self.parser.final_basis()
-                lattice = self.parser.final_lattice_vectors()
-                structure_string = self._to_poscar(lattice, basis)
+            if kwargs.get("is_final_structure"):
+                if isinstance(self.parser, VaspParser):
+                    with open(os.path.join(self.parser.work_dir, "CONTCAR")) as f:
+                        structure_string = f.read()
+                else:
+                    basis = self.parser.final_basis()
+                    lattice = self.parser.final_lattice_vectors()
+                    structure_string = self._to_poscar(lattice, basis)
 
         # override parser to use StructureParser from now on
         self.parser = StructureParser(structure_string=structure_string, structure_format=structure_format, cell=cell)
