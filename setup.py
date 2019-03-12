@@ -1,13 +1,13 @@
-from setuptools import setup
+from setuptools import setup, find_packages
 
 setup(
-    name='express',
+    name='express-py',
     version='1.0.0',
     description='Exabyte Property Ex(ss)tractor, Sourcer, Serializer class.',
     url='https://github.com/Exabyte-io/exabyte-express',
     author='Exabyte Inc.',
     author_email='info@exabyte.io',
-    packages=["express"],
+    packages=find_packages(exclude=["tests.*", "tests"]),
     install_requires=[
         "mock==1.3.0",
         "bunch==1.0.1",
@@ -21,6 +21,7 @@ setup(
         'Programming Language :: Python',
         'Development Status :: 3 - Alpha',
         'Intended Audience :: Developers',
-        'Topic :: Software Development'
+        'Topic :: Software Development',
+        'License :: OSI Approved :: Apache Software License'
     ]
 )
