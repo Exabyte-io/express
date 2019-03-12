@@ -15,13 +15,6 @@
 SOURCE="${BASH_SOURCE[0]}"
 DIR="$( cd -P "$( dirname "$SOURCE" )" && pwd )"
 
-for LIB in esse; do
-    cd /stack/lib/${LIB}
-    git checkout dev
-    git pull --all
-    cd -
-done
-
 virtualenv ${DIR}/venv
 source ${DIR}/venv/bin/activate
 pip install -r ${DIR}/requirements.txt
