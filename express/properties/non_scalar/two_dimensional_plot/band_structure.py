@@ -1,6 +1,7 @@
 import numpy as np
 
 from express.properties.utils import eigenvalues
+from express.settings import ZERO_WEIGHT_KPOINT_THRESHOLD
 from express.properties.non_scalar.two_dimensional_plot import TwoDimensionalPlotProperty
 
 
@@ -19,7 +20,7 @@ class BandStructure(TwoDimensionalPlotProperty):
 
         self.eigenvalues_at_kpoints = self.parser.eigenvalues_at_kpoints()
         if kwargs.get("remove_non_zero_weight_kpoints", False):
-            self.eigenvalues_at_kpoints = [e for e in self.eigenvalues_at_kpoints if e['weight'] == 0]
+            self.eigenvalues_at_kpoints = [e for e in self.eigenvalues_at_kpoints if e['weight'] <= ZERO_WEIGHT_KPOINT_THRESHOLD]
 
         self.nkpoints = len(self.eigenvalues_at_kpoints)
         self.bands = self._get_band()

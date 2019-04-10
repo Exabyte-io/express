@@ -1,3 +1,5 @@
+ZERO_WEIGHT_KPOINT_THRESHOLD = 1e-7
+
 SCALAR_PROPERTIES_MANIFEST = {
     'total_energy': {
         'reference': 'express.properties.scalar.total_energy.TotalEnergy'
