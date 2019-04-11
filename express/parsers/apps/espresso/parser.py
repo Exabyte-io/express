@@ -227,3 +227,12 @@ class EspressoParser(BaseParser, IonicDataMixin, ElectronicDataMixin, Reciprocal
         """
         neb_dat_file = os.path.join(self.work_dir, NEB_DAT_FILE)
         return self.txt_parser.reaction_energies(self._get_file_content(neb_dat_file))
+
+    def _get_esm_file(self):
+        return find_file(".esm1", self.work_dir)
+
+    def potential_profile(self):
+        return self.txt_parser.potential_profile(self._get_file_content(self._get_esm_file()))
+
+    def charge_density_profile(self):
+        return self.txt_parser.charge_density_profile(self._get_file_content(self._get_esm_file()))
