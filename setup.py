@@ -15,7 +15,7 @@ setup(
         "xmltodict==0.9.2",
         "pymatgen==2018.5.3",
         "ase==3.17.0",
-        "esse==1.0.2",
+        "esse==2.0.0",
     ],
     classifiers=[
         'Programming Language :: Python',
