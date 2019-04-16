@@ -675,3 +675,49 @@ class EspressoTXTParser(BaseTXTParser):
             list[float]
         """
         return self._general_output_parser(text, **settings.REGEX["reaction_energies"])
+
+    def potential_profile(self, text):
+        """
+        Extracts potential (hartree, local, hartree+local) along z.
+
+        Example input:
+            #z (A)  Tot chg (e/A)  Avg v_hartree (eV)  Avg v_local (eV)  Avg v_hart+v_loc (eV)
+             -4.89        2.3697          -6.5847438         6.4872255        -0.0975183
+             -4.78        2.1422          -7.0900648         8.2828137         1.1927490
+             -4.67        2.0006          -7.5601238        10.1322914         2.5721676
+             -4.56        1.8954          -7.9743444        11.9417738         3.9674294
+             -4.44        1.7923          -8.3174980        13.6185904         5.3010924
+             -4.33        1.6879          -8.5750414        15.0903496         6.5153082
+             -4.22        1.5891          -8.7323531        16.2665057         7.5341527
+             -4.11        1.5036          -8.7756094        17.0759068         8.3002974
+             -4.00        1.4383          -8.6928512        17.5243394         8.8314882
+             -3.89        1.3984          -8.4749404        17.6353196         9.1603792
+
+        Returns:
+            list[list[float]]
+        """
+        data = self._general_output_parser(text, **settings.REGEX["potential_profile"])
+        return [[e[i] for e in data] for i in range(4)]
+
+    def charge_density_profile(self, text):
+        """
+        Extracts total charge density along z.
+
+        Example input:
+            #z (A)  Tot chg (e/A)  Avg v_hartree (eV)  Avg v_local (eV)  Avg v_hart+v_loc (eV)
+             -4.89        2.3697          -6.5847438         6.4872255        -0.0975183
+             -4.78        2.1422          -7.0900648         8.2828137         1.1927490
+             -4.67        2.0006          -7.5601238        10.1322914         2.5721676
+             -4.56        1.8954          -7.9743444        11.9417738         3.9674294
+             -4.44        1.7923          -8.3174980        13.6185904         5.3010924
+             -4.33        1.6879          -8.5750414        15.0903496         6.5153082
+             -4.22        1.5891          -8.7323531        16.2665057         7.5341527
+             -4.11        1.5036          -8.7756094        17.0759068         8.3002974
+             -4.00        1.4383          -8.6928512        17.5243394         8.8314882
+             -3.89        1.3984          -8.4749404        17.6353196         9.1603792
+
+        Returns:
+            list[list[float]]
+        """
+        data = self._general_output_parser(text, **settings.REGEX["charge_density_profile"])
+        return [[e[i] for e in data] for i in range(2)]

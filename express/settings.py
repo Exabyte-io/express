@@ -79,6 +79,12 @@ NON_SCALAR_PROPERTIES_MANIFEST = {
     'reaction_energy_profile': {
         'reference': 'express.properties.non_scalar.two_dimensional_plot.reaction_energy_profile.ReactionEnergyProfile'
     },
+    'potential_profile': {
+        'reference': 'express.properties.non_scalar.two_dimensional_plot.potential_profile.PotentialProfile'
+    },
+    'charge_density_profile': {
+        'reference': 'express.properties.non_scalar.two_dimensional_plot.charge_density_profile.ChargeDensityProfile'
+    },
 }
 
 CONVERGENCE_PROPERTIES = {
