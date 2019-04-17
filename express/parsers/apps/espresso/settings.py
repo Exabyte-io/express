@@ -125,7 +125,17 @@ REGEX = {
         "output_type": "float",
         "match_groups": [1, 2]
     },
-
+    "gw_kpoint": {
+        "regex": r"^\s+GWKpoint cryst:\s+({0})\s+({0})\s+({0})".format(DOUBLE_REGEX),
+        "occurrences": 0,
+        "output_type": "float",
+        "match_groups": [1, 2, 3]
+    },
+    "gw_eigenvalues": {
+        "regex": r"^\s+GW qp energy \(eV\)(.*)",
+        "occurrences": 0,
+        "output_type": "str",
+    },
 }
 
 TOTAL_ENERGY_CONTRIBUTIONS = {

@@ -721,3 +721,38 @@ class EspressoTXTParser(BaseTXTParser):
         """
         data = self._general_output_parser(text, **settings.REGEX["charge_density_profile"])
         return [[e[i] for e in data] for i in range(2)]
+
+    def eigenvalues_at_kpoints_from_gw_stdout(self, text):
+        """
+        Extracts eigenvalues for all kpoints from GW stdout file
+
+        Example input:
+
+            LDA eigenval (eV)   -5.60    6.25    6.25    6.25    8.69    8.69    8.69    9.37
+
+            GWKpoint cart :   0.0000   0.0000   0.0000
+
+            GWKpoint cryst:   0.0000   0.0000   0.0000
+            GW qp energy (eV)   -7.08    5.34    5.34    5.34   10.15   10.15   10.15   10.82
+            Vxc expt val (eV)  -10.09  -10.20  -10.20  -10.20   -9.85   -9.85   -9.85  -10.34
+            Sigma_ex val (eV)  -16.04  -15.82  -15.82  -15.82   -3.54   -3.54   -3.54   -4.03
+            QP renorm            1.00    1.00    1.00    1.00    1.00    1.00    1.00    1.00
+
+        Returns:
+            list[]
+        """
+        kpoints = self._general_output_parser(text, **settings.REGEX["gw_kpoint"])
+        eigenvalues = self._general_output_parser(text, **settings.REGEX["gw_eigenvalues"])
+        eigenvalues = [map(float, re.sub(' +', ' ', e).strip(" ").split(" ")) for e in eigenvalues]
+        return [
+            {
+                'kpoint': point,
+                'weight': 1 / len(kpoints),
+                'eigenvalues': [
+                    {
+                        'energies': eigenvalues[index],
+                        'occupations': [],
+                        'spin': 0.5
+                    }
+                ]
+            } for index, point in enumerate(kpoints)]

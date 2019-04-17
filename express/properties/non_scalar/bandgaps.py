@@ -143,6 +143,11 @@ class BandGaps(NonScalarProperty):
             for eigens_at_spin in eigens_at_kpoint["eigenvalues"]:
                 eigens_at_spin["energies"] = self._round(eigens_at_spin["energies"])
                 eigens_at_spin["occupations"] = self._round(eigens_at_spin["occupations"])
+                # occupations are empty in case of QE GW, hence sending all values.
+                if len(eigens_at_spin["occupations"]) == 0:
+                    eigens_at_spin["energies"] = eigens_at_spin["energies"]
+                    eigens_at_spin["occupations"] = eigens_at_spin["occupations"]
+                    continue
                 start = max(0, len(eigens_at_spin["occupations"]) - eigens_at_spin["occupations"][::-1].index(1.0) - 2)
                 end = min(len(eigens_at_spin["occupations"]), eigens_at_spin["occupations"].index(0.0) + 2)
                 eigens_at_spin["energies"] = eigens_at_spin["energies"][start:end]

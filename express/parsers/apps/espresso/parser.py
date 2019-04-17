@@ -51,14 +51,34 @@ class EspressoParser(BaseParser, IonicDataMixin, ElectronicDataMixin, Reciprocal
         """
         return self.xml_parser.nspins()
 
+    def _is_gw_calculation(self):
+        """
+        Checks whether this is a GW calculation.
+
+        NOTE: DO NOT READ THE WHOLE FILE INTO MEMORY.
+
+        Returns:
+             bool
+        """
+        with open(self.stdout_file, "r") as f:
+            for index, line in enumerate(f):
+                if index > 50: return False
+                if "SternheimerGW" in line:
+                    return True
+
     def eigenvalues_at_kpoints(self):
         """
         Returns eigenvalues for all kpoints.
 
+        NOTE: eigenvalues are extracted from GW stdout file if this is a GW calculation.
+
         Reference:
             func: express.parsers.mixins.electronic.ElectronicDataMixin.eigenvalues_at_kpoints
         """
-        return self.xml_parser.eigenvalues_at_kpoints()
+        if self._is_gw_calculation():
+            return self.txt_parser.eigenvalues_at_kpoints_from_gw_stdout(self._get_file_content(self.stdout_file))
+        else:
+            return self.xml_parser.eigenvalues_at_kpoints()
 
     def ibz_k_points(self):
         """
