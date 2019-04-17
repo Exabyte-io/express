@@ -747,7 +747,7 @@ class EspressoTXTParser(BaseTXTParser):
         return [
             {
                 'kpoint': point,
-                'weight': 1 / len(kpoints),
+                'weight': 1.0 / len(kpoints),
                 'eigenvalues': [
                     {
                         'energies': eigenvalues[index],
