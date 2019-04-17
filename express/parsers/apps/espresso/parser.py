@@ -22,7 +22,20 @@ class EspressoParser(BaseParser, IonicDataMixin, ElectronicDataMixin, Reciprocal
         self.work_dir = self.kwargs["work_dir"]
         self.stdout_file = self.kwargs["stdout_file"]
         self.txt_parser = EspressoTXTParser(self.work_dir)
-        self.xml_parser = EspressoXMLParser(find_file(settings.XML_DATA_FILE, self.work_dir))
+        self.xml_parser = EspressoXMLParser(self.find_xml_file())
+
+    def find_xml_file(self):
+        """
+        Finds XML file. GW XML file is returned if this a GW calculation.
+
+        Returns:
+            str
+        """
+        _is_gw_calculation = self._is_gw_calculation()
+        for root, dirs, files in os.walk(self.work_dir, followlinks=True):
+            for file_ in [f for f in files if settings.XML_DATA_FILE == f]:
+                file_path = os.path.join(root, file_)
+                if not _is_gw_calculation or (_is_gw_calculation and "/_gw0/" in file_path): return file_path
 
     def total_energy(self):
         """
