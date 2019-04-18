@@ -31,11 +31,12 @@ class EspressoParser(BaseParser, IonicDataMixin, ElectronicDataMixin, Reciprocal
         Returns:
             str
         """
-        _is_gw_calculation = self._is_gw_calculation()
+        is_sternheimer_gw = self._is_sternheimer_gw_calculation()
         for root, dirs, files in os.walk(self.work_dir, followlinks=True):
             for file_ in [f for f in files if settings.XML_DATA_FILE == f]:
                 file_path = os.path.join(root, file_)
-                if not _is_gw_calculation or (_is_gw_calculation and "/_gw0/" in file_path): return file_path
+                if not is_sternheimer_gw or (is_sternheimer_gw and settings.STERNHEIMER_GW_DIR_PATTERN in file_path):
+                    return file_path
 
     def total_energy(self):
         """
@@ -64,11 +65,13 @@ class EspressoParser(BaseParser, IonicDataMixin, ElectronicDataMixin, Reciprocal
         """
         return self.xml_parser.nspins()
 
-    def _is_gw_calculation(self):
+    def _is_sternheimer_gw_calculation(self):
         """
-        Checks whether this is a GW calculation.
+        Checks whether this is a Sternheimer GW calculation.
 
-        NOTE: DO NOT READ THE WHOLE FILE INTO MEMORY.
+        The calculation is considered Sternheimer GW if "SternheimerGW" is written on top of the stdout file.
+
+        NOTE: DO NOT READ THE WHOLE FILE INTO MEMORY AS IT IS BIG.
 
         Returns:
              bool
@@ -76,20 +79,23 @@ class EspressoParser(BaseParser, IonicDataMixin, ElectronicDataMixin, Reciprocal
         with open(self.stdout_file, "r") as f:
             for index, line in enumerate(f):
                 if index > 50: return False
-                if "SternheimerGW" in line:
+                if settings.STERNHEIMER_GW_TITLE in line:
                     return True
 
     def eigenvalues_at_kpoints(self):
         """
         Returns eigenvalues for all kpoints.
 
-        NOTE: eigenvalues are extracted from GW stdout file if this is a GW calculation.
+        NOTE: eigenvalues are extracted from Sternheimer GW stdout file if this is a Sternheimer GW calculation.
 
         Reference:
             func: express.parsers.mixins.electronic.ElectronicDataMixin.eigenvalues_at_kpoints
         """
-        if self._is_gw_calculation():
-            return self.txt_parser.eigenvalues_at_kpoints_from_gw_stdout(self._get_file_content(self.stdout_file))
+        if self._is_sternheimer_gw_calculation():
+            text = self._get_file_content(self.stdout_file)
+            inverse_reciprocal_lattice_vectors = self.xml_parser.get_inverse_reciprocal_lattice_vectors()
+            return self.txt_parser.eigenvalues_at_kpoints_from_sternheimer_gw_stdout(text,
+                                                                                     inverse_reciprocal_lattice_vectors)
         else:
             return self.xml_parser.eigenvalues_at_kpoints()
 

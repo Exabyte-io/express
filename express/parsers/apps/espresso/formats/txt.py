@@ -722,9 +722,9 @@ class EspressoTXTParser(BaseTXTParser):
         data = self._general_output_parser(text, **settings.REGEX["charge_density_profile"])
         return [[e[i] for e in data] for i in range(2)]
 
-    def eigenvalues_at_kpoints_from_gw_stdout(self, text):
+    def eigenvalues_at_kpoints_from_sternheimer_gw_stdout(self, text, inverse_reciprocal_lattice_vectors):
         """
-        Extracts eigenvalues for all kpoints from GW stdout file
+        Extracts eigenvalues for all kpoints from Sternheimer GW stdout file.
 
         Example input:
 
@@ -741,18 +741,18 @@ class EspressoTXTParser(BaseTXTParser):
         Returns:
             list[]
         """
-        kpoints = self._general_output_parser(text, **settings.REGEX["gw_kpoint"])
-        eigenvalues = self._general_output_parser(text, **settings.REGEX["gw_eigenvalues"])
+        kpoints = self._general_output_parser(text, **settings.REGEX["sternheimer_gw_kpoint"])
+        eigenvalues = self._general_output_parser(text, **settings.REGEX["sternheimer_gw_eigenvalues"])
         eigenvalues = [map(float, re.sub(' +', ' ', e).strip(" ").split(" ")) for e in eigenvalues]
         return [
             {
-                'kpoint': point,
-                'weight': 1.0 / len(kpoints),
+                'kpoint': np.dot(point, inverse_reciprocal_lattice_vectors).tolist(),
+                'weight': 1.0 / len(kpoints),  # uniformly set the weights as they are not extractable.
                 'eigenvalues': [
                     {
                         'energies': eigenvalues[index],
-                        'occupations': [],
-                        'spin': 0.5
+                        'occupations': [],  # set occupations empty as they are not extractable.
+                        'spin': 0.5  # spin-polarized calculation is not supported yet, hence 0.5
                     }
                 ]
             } for index, point in enumerate(kpoints)]
