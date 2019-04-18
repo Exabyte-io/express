@@ -135,10 +135,10 @@ class EspressoXMLParser(BaseXMLParser):
         lattice_array = []
         for i in ['a', 'b', 'c']:
             lattice_array.append(reciprocal_lattice['vectors'][i])
-        reciprocal_lattice = np.linalg.inv(np.array(lattice_array))
+        reciprocal_lattice_inv = np.linalg.inv(np.array(lattice_array))
         eigenvalues_at_kpoints = []
         for eigenvalue_tag in self.root.find("EIGENVALUES"):
-            kpoint = np.dot(self._get_xml_tag_value(eigenvalue_tag.find("K-POINT_COORDS"))[0], reciprocal_lattice)
+            kpoint = np.dot(self._get_xml_tag_value(eigenvalue_tag.find("K-POINT_COORDS"))[0], reciprocal_lattice_inv)
             eigenvalues_at_kpoint = {
                 "kpoint": kpoint.tolist(),
                 "weight": self._get_xml_tag_value(eigenvalue_tag.find("WEIGHT")),
