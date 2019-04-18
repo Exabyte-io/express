@@ -9,6 +9,9 @@ PHONON_MODES_FILE = "normal_modes.out"
 COMMON_REGEX = r"{0}\s+[=:<>]\s*([-+]?\d*\.?\d*([Ee][+-]?\d+)?)"
 DOUBLE_REGEX = GENERAL_REGEX.double_number
 
+STERNHEIMER_GW0_DIR_PATTERN = "/_gw0/"
+STERNHEIMER_GW_TITLE = "SternheimerGW"
+
 REGEX = {
     "total_energy": {
         "regex": COMMON_REGEX.format("total energy"),
@@ -125,7 +128,17 @@ REGEX = {
         "output_type": "float",
         "match_groups": [1, 2]
     },
-
+    "sternheimer_gw_kpoint": {
+        "regex": r"^\s+GWKpoint cart :\s+({0})\s+({0})\s+({0})".format(DOUBLE_REGEX),
+        "occurrences": 0,
+        "output_type": "float",
+        "match_groups": [1, 2, 3]
+    },
+    "sternheimer_gw_eigenvalues": {
+        "regex": r"^\s+GW qp energy \(eV\)(.*)",
+        "occurrences": 0,
+        "output_type": "str",
+    },
 }
 
 TOTAL_ENERGY_CONTRIBUTIONS = {

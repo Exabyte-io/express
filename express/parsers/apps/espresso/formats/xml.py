@@ -108,6 +108,14 @@ class EspressoXMLParser(BaseXMLParser):
         vectors.update({'alat': 1.0})
         return {'vectors': vectors, 'units': 'angstrom'} if not reciprocal else {'vectors': vectors}
 
+    def get_inverse_reciprocal_lattice_vectors(self):
+        """
+        Returns inverse reciprocal lattice vectors to convert cartesian (2pi/a) point to crystal.
+        """
+        reciprocal_lattice = self.final_lattice_vectors(reciprocal=True)
+        lattice_array = [reciprocal_lattice['vectors'][i] for i in ['a', 'b', 'c']]
+        return np.linalg.inv(np.array(lattice_array))
+
     def eigenvalues_at_kpoints(self):
         """
         Returns eigenvalues for all kpoints.
@@ -131,16 +139,12 @@ class EspressoXMLParser(BaseXMLParser):
                 ...
             ]
         """
-        reciprocal_lattice = self.final_lattice_vectors(reciprocal=True)
-        lattice_array = []
-        for i in ['a', 'b', 'c']:
-            lattice_array.append(reciprocal_lattice['vectors'][i])
-        reciprocal_lattice = np.linalg.inv(np.array(lattice_array))
         eigenvalues_at_kpoints = []
         for eigenvalue_tag in self.root.find("EIGENVALUES"):
-            kpoint = np.dot(self._get_xml_tag_value(eigenvalue_tag.find("K-POINT_COORDS"))[0], reciprocal_lattice)
+            cartesianKPoint = self._get_xml_tag_value(eigenvalue_tag.find("K-POINT_COORDS"))[0]
+            crystalKPoint = np.dot(cartesianKPoint, self.get_inverse_reciprocal_lattice_vectors())
             eigenvalues_at_kpoint = {
-                "kpoint": kpoint.tolist(),
+                "kpoint": crystalKPoint.tolist(),
                 "weight": self._get_xml_tag_value(eigenvalue_tag.find("WEIGHT")),
                 "eigenvalues": []
             }
