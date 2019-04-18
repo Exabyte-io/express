@@ -26,7 +26,9 @@ class EspressoParser(BaseParser, IonicDataMixin, ElectronicDataMixin, Reciprocal
 
     def find_xml_file(self):
         """
-        Finds XML file. GW XML file is returned if this a GW calculation.
+        Finds XML file.
+
+        Note: Sternheimer GW XML file of the first process (gw0) is returned if this a Sternheimer GW calculation.
 
         Returns:
             str
@@ -35,7 +37,7 @@ class EspressoParser(BaseParser, IonicDataMixin, ElectronicDataMixin, Reciprocal
         for root, dirs, files in os.walk(self.work_dir, followlinks=True):
             for file_ in [f for f in files if settings.XML_DATA_FILE == f]:
                 file_path = os.path.join(root, file_)
-                if not is_sternheimer_gw or (is_sternheimer_gw and settings.STERNHEIMER_GW_DIR_PATTERN in file_path):
+                if not is_sternheimer_gw or (is_sternheimer_gw and settings.STERNHEIMER_GW0_DIR_PATTERN in file_path):
                     return file_path
 
     def total_energy(self):

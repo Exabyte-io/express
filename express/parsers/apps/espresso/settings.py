@@ -9,7 +9,7 @@ PHONON_MODES_FILE = "normal_modes.out"
 COMMON_REGEX = r"{0}\s+[=:<>]\s*([-+]?\d*\.?\d*([Ee][+-]?\d+)?)"
 DOUBLE_REGEX = GENERAL_REGEX.double_number
 
-STERNHEIMER_GW_DIR_PATTERN = "/_gw0/"
+STERNHEIMER_GW0_DIR_PATTERN = "/_gw0/"
 STERNHEIMER_GW_TITLE = "SternheimerGW"
 
 REGEX = {
