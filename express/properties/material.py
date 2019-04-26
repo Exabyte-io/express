@@ -132,21 +132,35 @@ class Material(BaseProperty):
             p_norms.append(PNorm("p-norm", self.parser, degree=degree).serialize_and_validate())
         return p_norms
 
-    def _get_unique_elements(self, basis):
-        return list(set([e["value"] for e in basis["elements"]]))
-
-    def _get_element_count(self, el, basis):
-        return len([x for x in basis["elements"] if x["value"] == el])
+    def _get_element_counts(self, basis):
+        """
+        Returns chemical elements with their count wrt their original order in the basis.
+        Note: entries for the same element separated by another element are considered separately.
+        [{"count":1, "value":"Zr"}, {"count":23, "value":"H"}, {"count":11, "value":"Zr"}, {"count":1, "value":"H"}]
+        """
+        element_counts = []
+        previous_element = None
+        for index, element in enumerate(basis["elements"]):
+            if previous_element and previous_element["value"] == element["value"]:
+                element_counts[-1]["count"] += 1
+            else:
+                element_counts.append({
+                    "count": 1,
+                    "value": element["value"]
+                })
+            previous_element = basis["elements"][index]
+        return element_counts
 
     def _to_poscar(self, lattice, basis):
+        element_counts = self._get_element_counts(basis)
         return "\n".join([
             "material",
             "1.0",
             "\t".join(["{0:14.9f}".format(x) for x in lattice["vectors"]["a"]]),
             "\t".join(["{0:14.9f}".format(x) for x in lattice["vectors"]["b"]]),
             "\t".join(["{0:14.9f}".format(x) for x in lattice["vectors"]["c"]]),
-            " ".join(self._get_unique_elements(basis)),
-            " ".join([str(self._get_element_count(el, basis)) for el in self._get_unique_elements(basis)]),
+            " ".join((e["value"] for e in element_counts)),
+            " ".join((str(e["count"]) for e in element_counts)),
             "cartesian",
             "\n".join([" ".join(["{0:14.9f}".format(v) for v in x["value"]]) for x in basis["coordinates"]])
         ])
