@@ -271,7 +271,7 @@ class VaspTXTParser(BaseTXTParser):
              float
         """
         data = self._general_output_parser(text, **settings.REGEX['zero_point_energy'])
-        return sum(data) / 2 / 1000
+        if len(data): return sum(data) / 2 / 1000
 
     def magnetic_moments(self, outcar):
         """
