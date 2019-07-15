@@ -541,7 +541,7 @@ class EspressoTXTParser(BaseTXTParser):
              float
         """
         data = self._general_output_parser(text, **settings.REGEX['zero_point_energy'])
-        return (sum(data) / 2) * Constant.cm_inv_to_ev
+        if len(data): return (sum(data) / 2) * Constant.cm_inv_to_ev
 
     def phonon_dos(self):
         """
