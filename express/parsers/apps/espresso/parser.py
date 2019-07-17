@@ -78,11 +78,12 @@ class EspressoParser(BaseParser, IonicDataMixin, ElectronicDataMixin, Reciprocal
         Returns:
              bool
         """
-        with open(self.stdout_file, "r") as f:
-            for index, line in enumerate(f):
-                if index > 50: return False
-                if settings.STERNHEIMER_GW_TITLE in line:
-                    return True
+        if os.path.exists(self.stdout_file):
+            with open(self.stdout_file, "r") as f:
+                for index, line in enumerate(f):
+                    if index > 50: return False
+                    if settings.STERNHEIMER_GW_TITLE in line:
+                        return True
 
     def eigenvalues_at_kpoints(self):
         """
