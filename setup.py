@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     name='express-py',
-    version='2.3.4',
+    version='2.4.0',
     description='Exabyte Property Ex(ss)tractor, Sourcer, Serializer class.',
     url='https://github.com/Exabyte-io/exabyte-express',
     author='Exabyte Inc.',
@@ -15,7 +15,7 @@ setup(
         "xmltodict==0.9.2",
         "pymatgen==2018.5.3",
         "ase==3.17.0",
-        "esse==2.1.0",
+        "esse==2.2.0",
     ],
     classifiers=[
         'Programming Language :: Python',
