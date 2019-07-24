@@ -1,5 +1,6 @@
 import os
 
+from express.parsers.utils import to_poscar
 from express.properties import BaseProperty
 from express.properties.scalar.p_norm import PNorm
 from express.properties.scalar.volume import Volume
@@ -30,7 +31,7 @@ class Material(BaseProperty):
                 else:
                     basis = self.parser.initial_basis()
                     lattice = self.parser.initial_lattice_vectors()
-                    structure_string = self._to_poscar(lattice, basis)
+                    structure_string = to_poscar(lattice, basis)
 
             if kwargs.get("is_final_structure"):
                 if isinstance(self.parser, VaspParser):
@@ -39,7 +40,7 @@ class Material(BaseProperty):
                 else:
                     basis = self.parser.final_basis()
                     lattice = self.parser.final_lattice_vectors()
-                    structure_string = self._to_poscar(lattice, basis)
+                    structure_string = to_poscar(lattice, basis)
 
         # override parser to use StructureParser from now on
         self.parser = StructureParser(structure_string=structure_string, structure_format=structure_format, cell=cell)
@@ -131,36 +132,3 @@ class Material(BaseProperty):
         for degree in [0, 2, 3, 5, 7, 10]:
             p_norms.append(PNorm("p-norm", self.parser, degree=degree).serialize_and_validate())
         return p_norms
-
-    def _get_element_counts(self, basis):
-        """
-        Returns chemical elements with their count wrt their original order in the basis.
-        Note: entries for the same element separated by another element are considered separately.
-        [{"count":1, "value":"Zr"}, {"count":23, "value":"H"}, {"count":11, "value":"Zr"}, {"count":1, "value":"H"}]
-        """
-        element_counts = []
-        previous_element = None
-        for index, element in enumerate(basis["elements"]):
-            if previous_element and previous_element["value"] == element["value"]:
-                element_counts[-1]["count"] += 1
-            else:
-                element_counts.append({
-                    "count": 1,
-                    "value": element["value"]
-                })
-            previous_element = basis["elements"][index]
-        return element_counts
-
-    def _to_poscar(self, lattice, basis):
-        element_counts = self._get_element_counts(basis)
-        return "\n".join([
-            "material",
-            "1.0",
-            "\t".join(["{0:14.9f}".format(x) for x in lattice["vectors"]["a"]]),
-            "\t".join(["{0:14.9f}".format(x) for x in lattice["vectors"]["b"]]),
-            "\t".join(["{0:14.9f}".format(x) for x in lattice["vectors"]["c"]]),
-            " ".join((e["value"] for e in element_counts)),
-            " ".join((str(e["count"]) for e in element_counts)),
-            "cartesian",
-            "\n".join([" ".join(["{0:14.9f}".format(v) for v in x["value"]]) for x in basis["coordinates"]])
-        ])
