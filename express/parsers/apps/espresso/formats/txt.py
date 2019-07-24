@@ -285,6 +285,23 @@ class EspressoTXTParser(BaseTXTParser):
             lattice["vectors"][key] = [e * lattice_alat * Constant.BOHR for e in lattice["vectors"][key]]
         return lattice
 
+    def _extract_basis(self, text, lattice_alat, number_of_atoms):
+        basis = {"units": "angstrom", "elements": [], "coordinates": []}
+        matches = self._general_output_parser(text, **settings.REGEX["basis_alat"](number_of_atoms))
+        for idx, match in enumerate(matches):
+            basis["elements"].append({"id": idx, "value": match[0]})
+            coordinate = [float(match[1]), float(match[2]), float(match[3])]
+            coordinate = map(lambda x: x * lattice_alat * Constant.BOHR, coordinate)  # alat to angstrom
+            basis["coordinates"].append({"id": idx, "value": coordinate})
+
+        return basis
+
+    def _lattice_alat(self, text):
+        return self._general_output_parser(text, **settings.REGEX["lattice_parameter_alat"])[0]
+
+    def _number_of_atoms(self, text):
+        return self._general_output_parser(text, **settings.REGEX["number_of_atoms"])[0]
+
     def initial_basis(self, text):
         """
         Extracts initial basis from a given text. The initial basis is in alat format and needs to be converted.
@@ -307,17 +324,9 @@ class EspressoTXTParser(BaseTXTParser):
                 'coordinates': [{'id': 1, 'value': [0.0, 0.0, 0.0]}, {'id': 2, 'value': [2.1095228, 1.49165, 3.6538]}]
              }
         """
-        lattice_alat = self._general_output_parser(text, **settings.REGEX["lattice_parameter_alat"])[0]
-        number_of_atoms = self._general_output_parser(text, **settings.REGEX["number_of_atoms"])[0]
-        basis = {"units": "angstrom", "elements": [], "coordinates": []}
-        matches = self._general_output_parser(text, **settings.REGEX["basis_alat"](number_of_atoms))
-        for idx, match in enumerate(matches):
-            basis["elements"].append({"id": idx, "value": match[0]})
-            coordinate = [float(match[1]), float(match[2]), float(match[3])]
-            coordinate = map(lambda x: x * lattice_alat * Constant.BOHR, coordinate)  # alat to angstrom
-            basis["coordinates"].append({"id": idx, "value": coordinate})
-
-        return basis
+        lattice_alat = self._lattice_alat(text)
+        number_of_atoms = self._number_of_atoms(text)
+        return self._extract_basis(text[text.find("positions (alat units)"):], lattice_alat, number_of_atoms)
 
     def _lattice_convergence(self, text):
         """
@@ -370,7 +379,7 @@ class EspressoTXTParser(BaseTXTParser):
             results.append(func(block))
         return results
 
-    def _extract_lattice(self, text, last_value=False, regex="lattice"):
+    def _extract_lattice(self, text, regex="lattice"):
         """
         Extracts lattice.
 
@@ -390,7 +399,6 @@ class EspressoTXTParser(BaseTXTParser):
                 }
             }
         """
-        text = text[text.find('Begin final coordinates'):] if last_value else text
         match = re.search(settings.REGEX[regex]["regex"], text)
         if match:
             lattice = [float(_) for _ in match.groups(1)]
@@ -428,9 +436,9 @@ class EspressoTXTParser(BaseTXTParser):
                  }
             ]
         """
-        return self._extract_data_from_bfgs_blocks(text, self._extract_basis)
+        return self._extract_data_from_bfgs_blocks(text, self._extract_basis_from_bfgs_blocks)
 
-    def _extract_basis(self, text, last_value=False):
+    def _extract_basis_from_bfgs_blocks(self, text):
         """
         Extracts basis data.
 
@@ -447,7 +455,6 @@ class EspressoTXTParser(BaseTXTParser):
                 'coordinates': [{'id': 1, 'value': [0.0, 0.0, 0.0]}, {'id': 2, 'value': [0.0, 0.0, 0.0]}]
              }
         """
-        text = text[text.find("Begin final coordinates"):] if last_value else text
         basis = {
             "units": "crystal",
             "elements": [],
@@ -756,3 +763,15 @@ class EspressoTXTParser(BaseTXTParser):
                     }
                 ]
             } for index, point in enumerate(kpoints)]
+
+    def final_basis(self, text):
+        atomic_position_last_index = text.rfind("ATOMIC_POSITIONS (crystal)")
+        if atomic_position_last_index < 0: return self.initial_basis(text)
+        lattice_alat = self._lattice_alat(text)
+        number_of_atoms = self._number_of_atoms(text)
+        return self._extract_basis(text[atomic_position_last_index:], lattice_alat, number_of_atoms)
+
+    def final_lattice_vectors(self, text):
+        cell_parameters_last_index = text.rfind("CELL_PARAMETERS (angstrom)")
+        if cell_parameters_last_index < 0: return self.initial_lattice_vectors(text)
+        return self._extract_lattice(text[cell_parameters_last_index:])
