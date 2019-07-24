@@ -23,7 +23,7 @@ def find_files(name, path):
     for root, dirs, files in os.walk(path, followlinks=True):
         for file_ in files:
             if name in file_:
-                matches.append(os.path.join(root, file))
+                matches.append(os.path.join(root, file_))
     return matches
 
 
