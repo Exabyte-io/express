@@ -9,11 +9,10 @@ class ExabyteMLPredictWorkflow(BaseProperty):
     def __init__(self, name, parser, *args, **kwargs):
         super(ExabyteMLPredictWorkflow, self).__init__(name, parser, *args, **kwargs)
         self.name = name
-        self.data_per_property = self.parser.data_per_property()
-        self.precision_per_property = self.parser.precision_per_property()
-        self.scaling_params_per_feature = self.parser.scaling_params_per_feature()
-        self.targets = [p["name"] for p in self.data_per_property]
-        self.features = [f["name"] for f in self.scaling_params_per_feature]
+        self.model = self.parser.model
+        self.targets = self.parser.targets
+        self.features = self.parser.features
+        self.scaling_params_per_feature = self.parser.scaling_params_per_feature
 
     def _serialize(self):
         """
@@ -171,20 +170,7 @@ class ExabyteMLPredictWorkflow(BaseProperty):
                             ]
                         }
                     ],
-                    "model": {
-                        "type": "ml",
-                        "subtype": "re",
-                        "method": {
-                            "subtype": "least_squares",
-                            "type": "linear",
-                            "precision": {
-                                "perProperty": self.precision_per_property
-                            },
-                            "data": {
-                                "perProperty": self.data_per_property
-                            }
-                        }
-                    },
+                    "model": self.model,
                     "_id": "LCthJ6E2QabYCZqf4",
                     "properties": self.targets
                 }
