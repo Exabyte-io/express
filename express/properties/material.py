@@ -1,12 +1,12 @@
 import os
 
-from express.parsers.utils import to_poscar
 from express.properties import BaseProperty
 from express.properties.scalar.p_norm import PNorm
 from express.properties.scalar.volume import Volume
 from express.parsers.structure import StructureParser
 from express.properties.scalar.density import Density
 from express.parsers.apps.vasp.parser import VaspParser
+from express.parsers.utils import lattice_basis_to_poscar
 from express.properties.non_scalar.symmetry import Symmetry
 from express.properties.scalar.elemental_ratio import ElementalRatio
 
@@ -31,7 +31,7 @@ class Material(BaseProperty):
                 else:
                     basis = self.parser.initial_basis()
                     lattice = self.parser.initial_lattice_vectors()
-                    structure_string = to_poscar(lattice, basis)
+                    structure_string = lattice_basis_to_poscar(lattice, basis)
 
             if kwargs.get("is_final_structure"):
                 if isinstance(self.parser, VaspParser):
@@ -40,7 +40,7 @@ class Material(BaseProperty):
                 else:
                     basis = self.parser.final_basis()
                     lattice = self.parser.final_lattice_vectors()
-                    structure_string = to_poscar(lattice, basis)
+                    structure_string = lattice_basis_to_poscar(lattice, basis)
 
         # override parser to use StructureParser from now on
         self.parser = StructureParser(structure_string=structure_string, structure_format=structure_format, cell=cell)

@@ -255,7 +255,10 @@ class EspressoTXTParser(BaseTXTParser):
 
     def initial_lattice_vectors(self, text):
         """
-        Extracts initial lattice from a given text. The initial lattice is in alat format and needs to be converted.
+        Extracts initial lattice from a given text.
+
+        Note: The initial lattice is in alat format and hence it needs to be converted to angstrom.
+
         The text looks like the following:
 
             crystal axes: (cart. coord. in units of alat)
@@ -275,25 +278,29 @@ class EspressoTXTParser(BaseTXTParser):
                     'a': [-0.561154473, -0.000000000, 0.561154473],
                     'b': [-0.000000000, 0.561154473, 0.561154473],
                     'c': [-0.561154473, 0.561154473, 0.000000000],
-                    'alat': 9.44858082
+                    'alat': 1
                 }
             }
         """
+        lattice_alat = self._lattice_alat(text)
         lattice = self._extract_lattice(text, regex="lattice_alat")
-        lattice_alat = self._general_output_parser(text, **settings.REGEX["lattice_parameter_alat"])[0]
         for key in ["a", "b", "c"]:
             lattice["vectors"][key] = [e * lattice_alat * Constant.BOHR for e in lattice["vectors"][key]]
         return lattice
 
-    def _extract_basis(self, text, lattice_alat, number_of_atoms):
+    def _extract_basis(self, text, number_of_atoms):
+        """
+        Extracts the basis from the given text.
+
+        Note: no units conversion is done in here.
+
+        """
         basis = {"units": "angstrom", "elements": [], "coordinates": []}
         matches = self._general_output_parser(text, **settings.REGEX["basis_alat"](number_of_atoms))
         for idx, match in enumerate(matches):
             basis["elements"].append({"id": idx, "value": match[0]})
             coordinate = [float(match[1]), float(match[2]), float(match[3])]
-            coordinate = map(lambda x: x * lattice_alat * Constant.BOHR, coordinate)  # alat to angstrom
             basis["coordinates"].append({"id": idx, "value": coordinate})
-
         return basis
 
     def _lattice_alat(self, text):
@@ -304,7 +311,10 @@ class EspressoTXTParser(BaseTXTParser):
 
     def initial_basis(self, text):
         """
-        Extracts initial basis from a given text. The initial basis is in alat format and needs to be converted.
+        Extracts initial basis from a given text.
+
+        Note: The initial basis is in alat format and hence it needs to be converted to angstrom.
+
         The text looks like the following:
 
              site n.     atom                  positions (alat units)
@@ -326,11 +336,14 @@ class EspressoTXTParser(BaseTXTParser):
         """
         lattice_alat = self._lattice_alat(text)
         number_of_atoms = self._number_of_atoms(text)
-        return self._extract_basis(text[text.find("positions (alat units)"):], lattice_alat, number_of_atoms)
+        basis = self._extract_basis(text[text.find("positions (alat units)"):], number_of_atoms)
+        for coordinate in basis["coordinates"]:
+            coordinate["value"] = [x * lattice_alat * Constant.BOHR for x in coordinate["value"]]
+        return basis
 
     def _lattice_convergence(self, text):
         """
-        Extracts lattice convergence values computed in each BFGS step.
+        Extracts lattice convergence values in angstrom units computed in each BFGS step.
 
         Args:
             text (str): text to extract data from.
@@ -345,7 +358,7 @@ class EspressoTXTParser(BaseTXTParser):
                         'a': [-0.561154473, -0.000000000, 0.561154473],
                         'b': [-0.000000000, 0.561154473, 0.561154473],
                         'c': [-0.561154473, 0.561154473, 0.000000000],
-                        'alat': 9.44858082
+                        'alat': 1
                     }
                  },
                 ...
@@ -354,7 +367,7 @@ class EspressoTXTParser(BaseTXTParser):
                         'a': [-0.561154473, -0.000000000, 0.561154473],
                         'b': [-0.000000000, 0.561154473, 0.561154473],
                         'c': [-0.561154473, 0.561154473, 0.000000000],
-                        'alat': 9.44858082
+                        'alat': 1
                     }
                  }
              ]
@@ -383,6 +396,8 @@ class EspressoTXTParser(BaseTXTParser):
         """
         Extracts lattice.
 
+        Note: no units conversion is done in here.
+
         Args:
             text (str): text to extract data from.
 
@@ -395,7 +410,7 @@ class EspressoTXTParser(BaseTXTParser):
                     'a': [-0.561154473, -0.000000000, 0.561154473],
                     'b': [-0.000000000, 0.561154473, 0.561154473],
                     'c': [-0.561154473, 0.561154473, 0.000000000],
-                    'alat': 9.44858082
+                    'alat': 1
                 }
             }
         """
@@ -440,7 +455,7 @@ class EspressoTXTParser(BaseTXTParser):
 
     def _extract_basis_from_bfgs_blocks(self, text):
         """
-        Extracts basis data.
+        Extracts basis data in crystal units.
 
         Args:
             text (str): text to extract data from.
@@ -765,13 +780,26 @@ class EspressoTXTParser(BaseTXTParser):
             } for index, point in enumerate(kpoints)]
 
     def final_basis(self, text):
+        """
+        Extracts final basis in angstrom units.
+        """
         atomic_position_last_index = text.rfind("ATOMIC_POSITIONS (crystal)")
         if atomic_position_last_index < 0: return self.initial_basis(text)
-        lattice_alat = self._lattice_alat(text)
         number_of_atoms = self._number_of_atoms(text)
-        return self._extract_basis(text[atomic_position_last_index:], lattice_alat, number_of_atoms)
+        basis = self._extract_basis(text[atomic_position_last_index:], number_of_atoms)
+
+        # final basis is in crystal units, hence it needs to be converted into angstrom.
+        final_lattice_vectors = self.final_lattice_vectors(text)
+        lattice_matrix = np.array([final_lattice_vectors["vectors"][key] for key in ["a", "b", "c"]]).reshape((3, 3))
+        for coordinate in basis["coordinates"]:
+            coordinate["value"] = np.dot(coordinate["value"], lattice_matrix).tolist()
+
+        return basis
 
     def final_lattice_vectors(self, text):
+        """
+        Extracts final lattice in angstrom units.
+        """
         cell_parameters_last_index = text.rfind("CELL_PARAMETERS (angstrom)")
         if cell_parameters_last_index < 0: return self.initial_lattice_vectors(text)
         return self._extract_lattice(text[cell_parameters_last_index:])

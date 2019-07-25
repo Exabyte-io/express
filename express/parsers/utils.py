@@ -47,7 +47,7 @@ def get_element_counts(basis):
     return element_counts
 
 
-def to_poscar(lattice, basis):
+def lattice_basis_to_poscar(lattice, basis, basis_units="cartesian"):
     element_counts = get_element_counts(basis)
     return "\n".join([
         "material",
@@ -57,6 +57,6 @@ def to_poscar(lattice, basis):
         "\t".join(["{0:14.9f}".format(x) for x in lattice["vectors"]["c"]]),
         " ".join((e["value"] for e in element_counts)),
         " ".join((str(e["count"]) for e in element_counts)),
-        "cartesian",
+        basis_units,
         "\n".join([" ".join(["{0:14.9f}".format(v) for v in x["value"]]) for x in basis["coordinates"]])
     ])
