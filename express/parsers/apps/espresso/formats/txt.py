@@ -282,11 +282,11 @@ class EspressoTXTParser(BaseTXTParser):
                 }
             }
         """
-        lattice_alat = self._lattice_alat(text)
-        lattice = self._extract_lattice(text, regex="lattice_alat")
+        alat = self._get_alat(text)
+        lattice_in_alat_units = self._extract_lattice(text, regex="lattice_alat")
         for key in ["a", "b", "c"]:
-            lattice["vectors"][key] = [e * lattice_alat * Constant.BOHR for e in lattice["vectors"][key]]
-        return lattice
+            lattice_in_alat_units["vectors"][key] = [e * alat * Constant.BOHR for e in lattice_in_alat_units["vectors"][key]]
+        return lattice_in_alat_units
 
     def _extract_basis(self, text, number_of_atoms):
         """
@@ -303,7 +303,7 @@ class EspressoTXTParser(BaseTXTParser):
             basis["coordinates"].append({"id": idx, "value": coordinate})
         return basis
 
-    def _lattice_alat(self, text):
+    def _get_alat(self, text):
         return self._general_output_parser(text, **settings.REGEX["lattice_parameter_alat"])[0]
 
     def _number_of_atoms(self, text):
@@ -313,7 +313,7 @@ class EspressoTXTParser(BaseTXTParser):
         """
         Extracts initial basis from a given text.
 
-        Note: The initial basis is in alat format and hence it needs to be converted to angstrom.
+        Units: angstrom
 
         The text looks like the following:
 
@@ -334,12 +334,12 @@ class EspressoTXTParser(BaseTXTParser):
                 'coordinates': [{'id': 1, 'value': [0.0, 0.0, 0.0]}, {'id': 2, 'value': [2.1095228, 1.49165, 3.6538]}]
              }
         """
-        lattice_alat = self._lattice_alat(text)
+        alat = self._get_alat(text)
         number_of_atoms = self._number_of_atoms(text)
-        basis = self._extract_basis(text[text.find("positions (alat units)"):], number_of_atoms)
-        for coordinate in basis["coordinates"]:
-            coordinate["value"] = [x * lattice_alat * Constant.BOHR for x in coordinate["value"]]
-        return basis
+        basis_in_alat_units = self._extract_basis(text[text.find("positions (alat units)"):], number_of_atoms)
+        for coordinate in basis_in_alat_units["coordinates"]:
+            coordinate["value"] = [x * alat * Constant.BOHR for x in coordinate["value"]]
+        return basis_in_alat_units
 
     def _lattice_convergence(self, text):
         """
