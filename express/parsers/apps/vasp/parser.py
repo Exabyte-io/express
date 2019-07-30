@@ -2,13 +2,13 @@ import os
 import numpy as np
 
 from express.parsers import BaseParser
-from express.parsers.utils import find_file
 from express.parsers.apps.vasp import settings
 from express.parsers.mixins.ionic import IonicDataMixin
 from express.parsers.apps.vasp.formats.txt import VaspTXTParser
 from express.parsers.apps.vasp.formats.xml import VaspXMLParser
 from express.parsers.mixins.reciprocal import ReciprocalDataMixin
 from express.parsers.mixins.electronic import ElectronicDataMixin
+from express.parsers.utils import find_file, find_fines_by_name_substring
 from express.parsers.apps.vasp.settings import NEB_DIR_PREFIX, NEB_STD_OUT_FILE
 
 
@@ -267,3 +267,17 @@ class VaspParser(BaseParser, IonicDataMixin, ElectronicDataMixin, ReciprocalData
             with open(os.path.join(path, "CONTCAR")) as f:
                 structures.append(f.read())
         return self.reaction_coordinates_from_poscars(structures)
+
+    def initial_structure_strings(self):
+        structures = []
+        for poscar in find_fines_by_name_substring("POSCAR", self.work_dir):
+            with open(poscar) as f:
+                structures.append(f.read())
+        return structures
+
+    def final_structure_strings(self):
+        structures = []
+        for poscar in find_fines_by_name_substring("CONTCAR", self.work_dir):
+            with open(poscar) as f:
+                structures.append(f.read())
+        return structures

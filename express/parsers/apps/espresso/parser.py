@@ -2,12 +2,12 @@ import os
 import numpy as np
 
 from express.parsers import BaseParser
-from express.parsers.utils import find_file
 from express.parsers.apps.espresso import settings
 from express.parsers.mixins.ionic import IonicDataMixin
-from express.parsers.apps.espresso.settings import NEB_DAT_FILE
 from express.parsers.mixins.reciprocal import ReciprocalDataMixin
 from express.parsers.mixins.electronic import ElectronicDataMixin
+from express.parsers.utils import find_file, lattice_basis_to_poscar
+from express.parsers.apps.espresso.settings import NEB_PATH_FILE_SUFFIX
 from express.parsers.apps.espresso.formats.txt import EspressoTXTParser
 from express.parsers.apps.espresso.formats.xml import EspressoXMLParser
 
@@ -250,6 +250,10 @@ class EspressoParser(BaseParser, IonicDataMixin, ElectronicDataMixin, Reciprocal
         """
         return self.txt_parser.phonon_dispersions()
 
+    def _find_neb_dat_file(self):
+        neb_path_file = find_file(NEB_PATH_FILE_SUFFIX, self.work_dir)
+        if neb_path_file: return "{}.dat".format(neb_path_file[:neb_path_file.rfind(".")])
+
     def reaction_coordinates(self):
         """
         Returns reaction coordinates.
@@ -257,7 +261,7 @@ class EspressoParser(BaseParser, IonicDataMixin, ElectronicDataMixin, Reciprocal
         Returns:
              list
         """
-        neb_dat_file = os.path.join(self.work_dir, NEB_DAT_FILE)
+        neb_dat_file = self._find_neb_dat_file()
         return self.txt_parser.reaction_coordinates(self._get_file_content(neb_dat_file))
 
     def reaction_energies(self):
@@ -267,7 +271,7 @@ class EspressoParser(BaseParser, IonicDataMixin, ElectronicDataMixin, Reciprocal
         Returns:
              list
         """
-        neb_dat_file = os.path.join(self.work_dir, NEB_DAT_FILE)
+        neb_dat_file = self._find_neb_dat_file()
         return self.txt_parser.reaction_energies(self._get_file_content(neb_dat_file))
 
     def _get_esm_file(self):
@@ -278,3 +282,52 @@ class EspressoParser(BaseParser, IonicDataMixin, ElectronicDataMixin, Reciprocal
 
     def charge_density_profile(self):
         return self.txt_parser.charge_density_profile(self._get_file_content(self._get_esm_file()))
+
+    def _is_pw_scf_output_file(self, path):
+        """
+        Checks whether the given file is PWSCF output file.
+
+        The file is considered PWSCF output file if "Program PWSCF" is written on top of the file.
+
+        NOTE: DO NOT READ THE WHOLE FILE INTO MEMORY AS IT COULD BE BIG.
+
+        Returns:
+             bool
+        """
+        if os.path.exists(path):
+            with open(path, "r") as f:
+                for index, line in enumerate(f):
+                    if index > 50: return False
+                    if settings.PWSCF_OUTPUT_FILE_REGEX in line:
+                        return True
+
+    def _find_pw_scf_output_files(self):
+        pw_scf_output_files = []
+        for root, dirs, files in os.walk(self.work_dir, followlinks=True):
+            for file in files:
+                path = os.path.join(root, file)
+                if self._is_pw_scf_output_file(path):
+                    pw_scf_output_files.append(path)
+        return pw_scf_output_files
+
+    def initial_structure_strings(self):
+        structures = []
+        for pw_scf_output_file in self._find_pw_scf_output_files():
+            try:
+                basis = self.txt_parser.initial_basis(self._get_file_content(pw_scf_output_file))
+                lattice = self.txt_parser.initial_lattice_vectors(self._get_file_content(pw_scf_output_file))
+                structures.append(lattice_basis_to_poscar(lattice, basis))
+            except:
+                raise
+        return structures
+
+    def final_structure_strings(self):
+        structures = []
+        for pw_scf_output_file in self._find_pw_scf_output_files():
+            try:
+                basis = self.txt_parser.final_basis(self._get_file_content(pw_scf_output_file))
+                lattice = self.txt_parser.final_lattice_vectors(self._get_file_content(pw_scf_output_file))
+                structures.append(lattice_basis_to_poscar(lattice, basis))
+            except:
+                pass
+        return structures

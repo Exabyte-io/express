@@ -1,8 +1,8 @@
 from express.parsers.settings import GENERAL_REGEX
 
 PDOS_TOT_FILE = "pdos_tot"
+NEB_PATH_FILE_SUFFIX = ".path"
 XML_DATA_FILE = "data-file.xml"
-NEB_DAT_FILE = "__prefix__.dat"
 PHONON_DOS_FILE = "phonon_dos.out"
 PHONON_MODES_FILE = "normal_modes.out"
 
@@ -11,6 +11,7 @@ DOUBLE_REGEX = GENERAL_REGEX.double_number
 
 STERNHEIMER_GW0_DIR_PATTERN = "/_gw0/"
 STERNHEIMER_GW_TITLE = "SternheimerGW"
+PWSCF_OUTPUT_FILE_REGEX = "Program PWSCF"
 
 REGEX = {
     "total_energy": {
@@ -63,7 +64,6 @@ REGEX = {
     },
     "basis_alat": lambda number_of_atoms: {
         "regex": r".+?\d\s+([A-Z][a-z]?).+?({0})\s+({0})\s+({0}).+?\n".format(DOUBLE_REGEX),
-        "start_flag": "positions (alat units)",
         "occurrences": number_of_atoms,
         "output_type": "str",
         "match_groups": [1, 2, 3, 4]
