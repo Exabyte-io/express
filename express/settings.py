@@ -105,7 +105,8 @@ PARSERS_REGISTRY = {
     'espresso': 'express.parsers.apps.espresso.parser.EspressoParser',
     'vasp': 'express.parsers.apps.vasp.parser.VaspParser',
     'structure': 'express.parsers.structure.StructureParser',
-    'exabyteml': 'express.parsers.exabyteml.ExabyteMLParser'
+    'exabyteml': 'express.parsers.exabyteml.ExabyteMLParser',
+    'aiida-archive': 'express.parsers.apps.aiida.parser.AiidaArchiveParser',
 }
 
 PRECISION = 4
