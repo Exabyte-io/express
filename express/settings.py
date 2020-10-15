@@ -112,7 +112,8 @@ PARSERS_REGISTRY = {
     'vasp': 'express.parsers.apps.vasp.parser.VaspParser',
     'nwchem': 'express.parsers.apps.nwchem.parser.NwchemParser',
     'structure': 'express.parsers.structure.StructureParser',
-    'exabyteml': 'express.parsers.exabyteml.ExabyteMLParser'
+    'exabyteml': 'express.parsers.exabyteml.ExabyteMLParser',
+    'aiida-archive': 'express.parsers.apps.aiida.parser.AiidaArchiveParser',
 }
 
 PRECISION = 4
