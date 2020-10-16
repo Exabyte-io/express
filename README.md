@@ -158,10 +158,11 @@ Parsers functionality is tested through integration tests. The parsers are initi
 
 ### Run Tests
 
-Run the following command to run the tests.
+Run the following commands to run the tests.
 
 ```bash
-sh run-tests.sh
+sh run-tests.sh -t=unit
+sh run-tests.sh -t=integration
 ```
 
 ## Contribution
