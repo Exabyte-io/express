@@ -20,7 +20,9 @@ setup(
     ],
     extras_require={
         "test": [
-            "mock==1.3.0"
+            "mock==1.3.0",
+            "bunch==1.0.1",
+            "ase==3.17.0",
         ],
     },
     python_requires=">=3.6",
