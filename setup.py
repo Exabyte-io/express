@@ -1,9 +1,14 @@
 from setuptools import setup, find_packages
 
+with open('./README.md', 'r') as f:
+    long_description = f.read()
+
 setup(
     name='express-py',
     version='2.6.0',
     description='Exabyte Property Ex(ss)tractor, Sourcer, Serializer class.',
+    long_description=long_description,
+    long_description_content_type='text/markdown',
     url='https://github.com/Exabyte-io/exabyte-express',
     author='Exabyte Inc.',
     author_email='info@exabyte.io',
@@ -17,6 +22,7 @@ setup(
         "ase==3.17.0",
         "esse==2.3.0",
     ],
+    python_requires=">=2.7,<3",
     classifiers=[
         'Programming Language :: Python',
         'Development Status :: 3 - Alpha',
