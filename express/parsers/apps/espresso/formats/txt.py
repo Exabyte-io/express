@@ -1,6 +1,6 @@
 import os
 import re
-import StringIO
+import io
 import numpy as np
 
 from express.parsers.utils import find_file
@@ -95,7 +95,7 @@ class EspressoTXTParser(BaseTXTParser):
                        ([-25.226, -25.216, -25.206], [0.512E-03, 0.637E-03, 0.791E-03])
         """
         if os.path.isfile(dos_tot_file):
-            trimmed_dos_file = StringIO.StringIO(self._trim_dos_file(dos_tot_file))
+            trimmed_dos_file = io.StringIO(self._trim_dos_file(dos_tot_file))
             dos_tot = np.genfromtxt(trimmed_dos_file, dtype=np.float32, usecols=(0, 1))
             energy_levels = dos_tot[:, 0]
             dos_tot = dos_tot[:, 1]
@@ -156,7 +156,7 @@ class EspressoTXTParser(BaseTXTParser):
             numpy.ndarray
         """
         if os.path.isfile(pdos_file):
-            trimmed_pdos_file = StringIO.StringIO(self._trim_dos_file(pdos_file))
+            trimmed_pdos_file = io.StringIO(self._trim_dos_file(pdos_file))
             target_columns = range(2, 2 + orbit_num)
             columns = np.genfromtxt(trimmed_pdos_file, dtype=np.float32, usecols=range(2, 2 + orbit_num))
             return columns if len(target_columns) > 1 else np.array([columns])

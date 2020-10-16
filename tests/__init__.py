@@ -42,13 +42,13 @@ class TestBase(unittest.TestCase):
         is_root = '__trace' not in kwargs
         trace = kwargs.pop('__trace', 'ROOT')
         try:
-            if isinstance(expected, (int, float, long, complex)):
+            if isinstance(expected, (int, float, complex)):
                 self.assertAlmostEqual(expected, actual, *args, **kwargs)
             elif isinstance(expected, (str)):
                 self.assertEqual(expected, actual)
             elif isinstance(expected, (list, tuple, np.ndarray)):
                 self.assertEqual(len(expected), len(actual))
-                for index in xrange(len(expected)):
+                for index in range(len(expected)):
                     v1, v2 = expected[index], actual[index]
                     self.assertDeepAlmostEqual(v1, v2, __trace=repr(index), *args, **kwargs)
             elif isinstance(expected, dict):

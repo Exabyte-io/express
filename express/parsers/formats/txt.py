@@ -1,5 +1,5 @@
 import re
-import __builtin__
+import builtins
 
 
 class BaseTXTParser(object):
