@@ -35,7 +35,7 @@ class BaseTXTParser(object):
         """
         start_index = text.rfind(start_flag) if start_flag else 0
         pattern = re.compile(regex, re.I | re.MULTILINE)
-        cast = getattr(__builtin__, output_type)
+        cast = getattr(builtins, output_type)
         # output type depends on the number of values required. List or single number.
         result = [] if len(match_groups) > 1 or abs(occurrences) > 1 or occurrences == 0 else None
 
