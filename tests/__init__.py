@@ -59,5 +59,5 @@ class TestBase(unittest.TestCase):
             exc.__dict__.setdefault('traces', []).append(trace)
             if is_root:
                 trace = ' -> '.join(reversed(exc.traces))
-                exc = AssertionError("%s\nTRACE: %s" % (exc.message, trace))
+                exc = AssertionError("%s\nTRACE: %s" % (str(exc), trace))
             raise exc
