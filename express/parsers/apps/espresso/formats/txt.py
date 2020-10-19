@@ -765,7 +765,7 @@ class EspressoTXTParser(BaseTXTParser):
         """
         kpoints = self._general_output_parser(text, **settings.REGEX["sternheimer_gw_kpoint"])
         eigenvalues = self._general_output_parser(text, **settings.REGEX["sternheimer_gw_eigenvalues"])
-        eigenvalues = [map(float, re.sub(' +', ' ', e).strip(" ").split(" ")) for e in eigenvalues]
+        eigenvalues = [[float(x) for x in re.sub(' +', ' ', e).strip(" ").split(" ")] for e in eigenvalues]
         return [
             {
                 'kpoint': np.dot(point, inverse_reciprocal_lattice_vectors).tolist(),
