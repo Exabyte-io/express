@@ -127,7 +127,7 @@ class EspressoTXTParser(BaseTXTParser):
                     ]
         """
         pdos = {}
-        for file_name in os.listdir(self.work_dir):
+        for file_name in sorted(os.listdir(self.work_dir)):
             file_path = os.path.join(self.work_dir, file_name)
             match = re.compile(settings.REGEX['pdos_file']['regex']).match(file_name)
             if match:
