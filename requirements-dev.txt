@@ -6,7 +6,7 @@ click==7.0
 cycler==0.10.0
 decorator==4.4.2
 esse==2.3.0
-exabyte-json-include==2.0.0
+exabyte-json-include==2020.10.19
 flask==1.0.2
 idna==2.7
 itsdangerous==1.1.0
