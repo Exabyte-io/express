@@ -127,6 +127,12 @@ class EspressoTXTParser(BaseTXTParser):
                     ]
         """
         pdos = {}
+        # Because os.listdir() has an undefined order specified, we'll sort the file list in order to have a
+        # reproducible result.  The sort order will be the normal alphanumeric comparison.
+        # For example:
+        # >>> x = ['a', 'B', 'c', 'D']
+        # >>> sorted(x)
+        # ['B', 'D', 'a', 'c']
         for file_name in sorted(os.listdir(self.work_dir)):
             file_path = os.path.join(self.work_dir, file_name)
             match = re.compile(settings.REGEX['pdos_file']['regex']).match(file_name)
