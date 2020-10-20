@@ -16,7 +16,7 @@ setup(
     install_requires=[
         "numpy==1.17.3",
         "pymatgen==2020.4.29",
-        "esse==2.3.0",
+        "esse>=2020.10.19",
     ],
     extras_require={
         "test": [
