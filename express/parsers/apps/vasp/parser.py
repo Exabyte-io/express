@@ -126,7 +126,7 @@ class VaspParser(BaseParser, IonicDataMixin, ElectronicDataMixin, ReciprocalData
         try:
             atom_names = self.xml_parser.atom_names()
         except:
-            print "atom_names can not be extracted"
+            print("atom_names can not be extracted")
             atom_names = []
         return self.txt_parser.convergence_electronic(outcar, stdout, atom_names)
 
@@ -220,7 +220,7 @@ class VaspParser(BaseParser, IonicDataMixin, ElectronicDataMixin, ReciprocalData
                 path = os.path.join(root, dir_)
                 paths.append({"path": path, "index": int(dir_)})
             break
-        return map(lambda p: p["path"], sorted(paths, key=lambda p: p["index"]))
+        return [p["path"] for p in sorted(paths, key=lambda p: p["index"])]
 
     def _get_neb_image_stdout_files(self, prefix="0", output_file="stdout"):
         """

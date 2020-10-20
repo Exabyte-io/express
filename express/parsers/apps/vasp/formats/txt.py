@@ -38,7 +38,7 @@ class VaspTXTParser(BaseTXTParser):
         start_index = text.find(text_range[space]['start'])
         end_index = text.find(text_range[space]['end'])
         ibz_kpts = re.findall(settings.REGEX["ibz_kpoints"]["regex"], text[start_index:end_index])
-        ibz_kpts = [map(float, kp) for kp in ibz_kpts]
+        ibz_kpts = [[float(x) for x in kp] for kp in ibz_kpts]
         return np.array(ibz_kpts)
 
     def total_energy(self, text):
@@ -134,7 +134,7 @@ class VaspTXTParser(BaseTXTParser):
                 results.append({
                     "units": "angstrom",
                     "elements": [{"id": idx, "value": atom_names[idx]} for idx in range(len(ions))],
-                    "coordinates": [{"id": idx, "value": map(float, ion)} for idx, ion in enumerate(ions)]
+                    "coordinates": [{"id": idx, "value": [float(x) for x in ion]} for idx, ion in enumerate(ions)]
                 })
             return results
 

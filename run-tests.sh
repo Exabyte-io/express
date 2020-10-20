@@ -1,24 +1,43 @@
-#!/bin/bash
+#!/usr/bin/env bash
+set -e
 
-# ---------------------------------------------------------- #
-#  Written @ Exabyte.io                                      #
-# ---------------------------------------------------------- #
-#                                                            #
-#  Wrapper script to run repo-specific tests.                #
-#  Non-zero exit code is returned on test failure.           #
-#                                                            #
-#    0. Set necessary environment variables                  #
-#    1. Run tests through python unittests module            #
-#                                                            #
-# ---------------------------------------------------------- #
+TEST_TYPE="unit"
+PYTHON_BIN="python3"
+THIS_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" > /dev/null 2>&1 && pwd)"
 
-SOURCE="${BASH_SOURCE[0]}"
-DIR="$( cd -P "$( dirname "$SOURCE" )" && pwd )"
+usage() {
+    echo "run-tests.sh -p=PYTHON_BIN -t=TEST_TYPE"
+    exit 1
+}
 
-virtualenv ${DIR}/venv
-source ${DIR}/venv/bin/activate
-pip install -r ${DIR}/requirements.txt
+check_args() {
+    for i in "$@"; do
+        case $i in
+            -t=* | --test-type=*)
+                TEST_TYPE="${i#*=}"
+                ;;
+            -p=* | --python-bin=*)
+                PYTHON_BIN="${i#*=}"
+                ;;
+            *)
+                usage
+                ;;
+        esac
+    done
+}
 
-export PYTHONPATH=${DIR}:${PYTHONPATH}
-CMD="python -m unittest discover -v -c -s"
-${CMD} ${DIR}/tests/unit && ${CMD} ${DIR}/tests/integration
+check_args $@
+
+# Prepare the execution virtualenv
+virtualenv --python ${PYTHON_BIN} ${THIS_DIR}/venv
+source ${THIS_DIR}/venv/bin/activate
+trap "deactivate" EXIT
+if [ -f ${THIS_DIR}/requirements-dev.txt ]; then
+    pip install -r ${THIS_DIR}/requirements-dev.txt --no-deps
+fi
+
+# Execute the specified test suite
+python -m unittest discover --verbose --catch --start-directory ${THIS_DIR}/tests/${TEST_TYPE}
+if [ $? -ne 0 ]; then
+    exit 1
+fi
