@@ -1,6 +1,4 @@
-from __future__ import absolute_import
-
-import cStringIO
+import io
 import pymatgen as mg
 from ase.io import read, write
 
@@ -234,11 +232,11 @@ class StructureParser(BaseParser, IonicDataMixin):
         Returns:
             str: poscar
         """
-        input_ = cStringIO.StringIO()
+        input_ = io.StringIO()
         input_.write(espresso_input)
         input_.seek(0)
         atoms = read(input_, format="espresso-in")
-        output_ = cStringIO.StringIO()
+        output_ = io.StringIO()
         write(output_, atoms, format="vasp", vasp5=True)
         content = output_.getvalue()
         input_.close()

@@ -60,7 +60,7 @@ class VaspXMLParser(BaseXMLParser):
         eigenvalues_at_kpoints = []
         for kp_id, (kpoint, weight) in enumerate(zip(kpoints_list, kpoints_weight)):
             eigenvalues_at_kpoint = {
-                "kpoint": map(float, kpoint.text.split()),
+                "kpoint": [float(x) for x in kpoint.text.split()],
                 "weight": float(weight.text),
                 "eigenvalues": []
             }
@@ -89,7 +89,7 @@ class VaspXMLParser(BaseXMLParser):
             occupations[id_spin] = {}
             for id_kpt, eigen_kpt in enumerate(eigen_spin):
                 # TODO: strip out the non-numeric values (*) for all kpoints instead of replacing them with last number.
-                kpt_data = [list(map(float, _.text.split())) for _ in eigen_kpt if "*" not in _.text]
+                kpt_data = [[float(x) for x in _.text.split()] for _ in eigen_kpt if "*" not in _.text]
                 kpt_data.extend([kpt_data[-1] for i in range(len(eigen_kpt) - len(kpt_data))])
                 # eigenvalues mayn't be sorted properly.
                 kpt_data = np.array(sorted(sorted(kpt_data, key=itemgetter(0)), key=itemgetter(1), reverse=True))
@@ -186,7 +186,8 @@ class VaspXMLParser(BaseXMLParser):
         total_dos = []
         total_dos_root = dos_root.find('total/array/set')
         for index, spin in enumerate(total_dos_root):
-            tdos_spin = np.array([map(float, tdos.text.split()) for tdos in spin.findall('r')])
+            tdos_spin_as_float = [[float(x) for x in tdos.text.split()] for tdos in spin.findall('r')]
+            tdos_spin = np.array(tdos_spin_as_float)
             total_dos.append({
                 "spin": index + 1,
                 "energy": tdos_spin[:, 0],
@@ -242,7 +243,7 @@ class VaspXMLParser(BaseXMLParser):
                 for spin_id, spin in enumerate(atom):
                     # extract partial dos only for the first spin in case of non-collinear calculation
                     if spin_id > 0 and len(atom) == 4 and not EXTRACT_PARTIAL_DOS_FOR_ALL_SPINS: continue
-                    pdos_spin = np.array([map(float, pdos.text.split()[1:]) for pdos in spin.findall('r')])
+                    pdos_spin = np.array([[float(x) for x in pdos.text.split()[1:]] for pdos in spin.findall('r')])
                     for column_id, column in enumerate(pdos_spin.T):
                         elec_state = orbit_symbols[column_id - 1]
                         if len(atom) == 2:

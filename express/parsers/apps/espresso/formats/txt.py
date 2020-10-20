@@ -1,6 +1,6 @@
 import os
 import re
-import StringIO
+import io
 import numpy as np
 
 from express.parsers.utils import find_file
@@ -95,7 +95,7 @@ class EspressoTXTParser(BaseTXTParser):
                        ([-25.226, -25.216, -25.206], [0.512E-03, 0.637E-03, 0.791E-03])
         """
         if os.path.isfile(dos_tot_file):
-            trimmed_dos_file = StringIO.StringIO(self._trim_dos_file(dos_tot_file))
+            trimmed_dos_file = io.StringIO(self._trim_dos_file(dos_tot_file))
             dos_tot = np.genfromtxt(trimmed_dos_file, dtype=np.float32, usecols=(0, 1))
             energy_levels = dos_tot[:, 0]
             dos_tot = dos_tot[:, 1]
@@ -127,7 +127,13 @@ class EspressoTXTParser(BaseTXTParser):
                     ]
         """
         pdos = {}
-        for file_name in os.listdir(self.work_dir):
+        # Because os.listdir() has an undefined order specified, we'll sort the file list in order to have a
+        # reproducible result.  The sort order will be the normal alphanumeric comparison.
+        # For example:
+        # >>> x = ['a', 'B', 'c', 'D']
+        # >>> sorted(x)
+        # ['B', 'D', 'a', 'c']
+        for file_name in sorted(os.listdir(self.work_dir)):
             file_path = os.path.join(self.work_dir, file_name)
             match = re.compile(settings.REGEX['pdos_file']['regex']).match(file_name)
             if match:
@@ -156,7 +162,7 @@ class EspressoTXTParser(BaseTXTParser):
             numpy.ndarray
         """
         if os.path.isfile(pdos_file):
-            trimmed_pdos_file = StringIO.StringIO(self._trim_dos_file(pdos_file))
+            trimmed_pdos_file = io.StringIO(self._trim_dos_file(pdos_file))
             target_columns = range(2, 2 + orbit_num)
             columns = np.genfromtxt(trimmed_pdos_file, dtype=np.float32, usecols=range(2, 2 + orbit_num))
             return columns if len(target_columns) > 1 else np.array([columns])
@@ -657,7 +663,7 @@ class EspressoTXTParser(BaseTXTParser):
             text = f.read()
         qpoints = np.array(re.compile(settings.REGEX["qpoints"]["regex"]).findall(text), dtype=np.float)
         frequencies = np.array(re.compile(settings.REGEX["phonon_frequencies"]["regex"]).findall(text), dtype=np.float)
-        frequencies = np.transpose(frequencies.reshape(qpoints.shape[0], frequencies.shape[0] / qpoints.shape[0]))
+        frequencies = np.transpose(frequencies.reshape(qpoints.shape[0], frequencies.shape[0] // qpoints.shape[0]))
         return qpoints, frequencies
 
     def reaction_coordinates(self, text):
@@ -765,7 +771,7 @@ class EspressoTXTParser(BaseTXTParser):
         """
         kpoints = self._general_output_parser(text, **settings.REGEX["sternheimer_gw_kpoint"])
         eigenvalues = self._general_output_parser(text, **settings.REGEX["sternheimer_gw_eigenvalues"])
-        eigenvalues = [map(float, re.sub(' +', ' ', e).strip(" ").split(" ")) for e in eigenvalues]
+        eigenvalues = [[float(x) for x in re.sub(' +', ' ', e).strip(" ").split(" ")] for e in eigenvalues]
         return [
             {
                 'kpoint': np.dot(point, inverse_reciprocal_lattice_vectors).tolist(),
