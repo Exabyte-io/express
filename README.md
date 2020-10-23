@@ -1,4 +1,5 @@
 [![PyPI version](https://badge.fury.io/py/express-py.svg)](https://badge.fury.io/py/express-py)
+[![License: Apache](https://img.shields.io/badge/License-Apache-blue.svg)](https://www.apache.org/licenses/LICENSE-2.0)
 
 # ExPreSS
 
