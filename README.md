@@ -1,3 +1,5 @@
+[![PyPI version](https://badge.fury.io/py/express-py.svg)](https://badge.fury.io/py/express-py)
+
 # ExPreSS
 
 Exabyte Property Extractor, Sourcer, Serializer (ExPreSS) is a Python package to extract material- and simulation-related properties and serialize them according to the Exabyte Data Convention (EDC) outlined in [Exabyte Source of Schemas and Examples (ESSE)](https://github.com/Exabyte-io/exabyte-esse). 
