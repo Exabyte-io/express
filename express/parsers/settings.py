@@ -1,5 +1,5 @@
 from math import pi
-from bunch import Bunch
+from munch import Munch
 
 
 class Constant(object):
@@ -30,7 +30,7 @@ class Constant(object):
     ry_bohr_to_eV_A = 25.71104309541616  # or RYDBERG / BOHR
 
 
-GENERAL_REGEX = Bunch()
+GENERAL_REGEX = Munch()
 GENERAL_REGEX.update({
     'double_number': r'[-+]?\d*\.\d+(?:[eE][-+]?\d+)?',
     'int_number': r'[+-]?\d+'

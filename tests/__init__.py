@@ -24,7 +24,7 @@ class TestBase(unittest.TestCase):
             dict
         """
         with open(os.path.join(self.rootDir, "manifest.yaml")) as f:
-            return yaml.load(f.read())[self._testMethodName]
+            return yaml.load(f.read(), Loader=yaml.FullLoader)[self._testMethodName]
 
     def assertDeepAlmostEqual(self, expected, actual, *args, **kwargs):
         """
