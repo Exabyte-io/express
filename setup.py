@@ -23,6 +23,7 @@ setup(
     extras_require={
         "test": [
             "mock==1.3.0",
+            "pyyaml>=4.2b1,<6",
         ],
     },
     python_requires=">=3.6",
