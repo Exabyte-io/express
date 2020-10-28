@@ -14,7 +14,7 @@ setup(
     author_email='info@exabyte.io',
     packages=find_packages(exclude=["tests.*", "tests"]),
     install_requires=[
-        "bunch==1.0.1",
+        "munch==2.5.0",
         "numpy==1.17.3",
         "pymatgen==2020.4.29",
         "ase==3.17.0",
