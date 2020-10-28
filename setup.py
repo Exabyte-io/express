@@ -5,7 +5,7 @@ with open('./README.md', 'r') as f:
 
 setup(
     name='express-py',
-    version='2020.10.19.1',
+    version='2020.10.19.2',
     description='Exabyte Property Ex(ss)tractor, Sourcer, Serializer class.',
     long_description=long_description,
     long_description_content_type='text/markdown',
