@@ -16,7 +16,7 @@ REGEX = {
 }
 TOTAL_ENERGY_CONTRIBUTIONS = {
     "one_electron": {
-        "regex": COMMON_REGEX.format("One electron energy")
+        "regex": COMMON_REGEX.format("One electron energy"),
         "start_flag": "!",
         "occurrences": -1,
         "output_type": "float"
