@@ -21,7 +21,7 @@ class NwchemParser(BaseParser, IonicDataMixin, ElectronicDataMixin, ReciprocalDa
         self.stdout_file = self.kwargs["stdout_file"]
         self.txt_parser = NwchemTXTParser(self.work_dir)
 
-    def total_dft_energy(self):
+    def total_energy(self):
         """
         Returns total energy.
 

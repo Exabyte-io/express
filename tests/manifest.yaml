@@ -1,4 +1,4 @@
-test_nwchem_total_dft_energy:
+test_nwchem_total_energy:
   workDir: fixtures/nwchem/test-001
   stdoutFile: fixtures/nwchem/test-001/nwchem.log
 

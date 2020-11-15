@@ -7,7 +7,7 @@ COMMON_REGEX = r"{0}\s+[=:<>]\s*([-+]?\d*\.?\d*([Ee][+-]?\d+)?)"
 DOUBLE_REGEX = GENERAL_REGEX.double_number
 
 REGEX = {
-    "total_dft_energy": {
+    "total_energy": {
         "regex": COMMON_REGEX.format("total DFT energy"),
         "start_flag": "!",
         "occurrences": -1,
