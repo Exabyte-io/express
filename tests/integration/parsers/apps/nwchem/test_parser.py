@@ -11,11 +11,8 @@ class TestNwchemParser(IntegrationTestBase):
     def tearDown(self):
         super(TestNwchemParser, self).setUp()
 
-    def test_nwchem_total_energy(self):
+    def test_nwchem_total_dft_energy(self):
         self.assertAlmostEqual(self.parser.total_energy(), TOTAL_ENERGY, places=2)
-
-    def test_nwchem_spin_multiplicity(self):
-        self.assertEqual(self.parser.spin_multiplicity(), )
 
     def test_nwchem_basis(self):
         self.assertDeepAlmostEqual(self.parser.basis(), BASIS, places=2)

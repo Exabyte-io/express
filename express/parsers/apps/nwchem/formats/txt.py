@@ -27,9 +27,7 @@ class NwchemTXTParser(BaseTXTParser):
         Returns:
              float
         """
-        hartrees =  self._general_output_parser(text, **settings.REGEX["total_dft_energy"])
-        total_dft_energy =  float(hartrees) * 27.2114
-        return total_dft_energy
+        return self._general_output_parser(text, **settings.REGEX["total_dft_energy"])
 
     # NEED TO CHECK MATH/UNITS ON TOTAL ENERGY CONTRIBUTION
     def total_energy_contributions(self, text):

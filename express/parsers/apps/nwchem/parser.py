@@ -28,7 +28,9 @@ class NwchemParser(BaseParser, IonicDataMixin, ElectronicDataMixin, ReciprocalDa
         Reference:
             func: express.parsers.mixins.electronic.ElectronicDataMixin.total_energy
         """
-        return self.txt_parser.total_energy(self._get_file_content(self.stdout_file))
+        hartrees = self.txt_parser.total_energy(self._get_file_content(self.stdout_file))
+        total_dft_energy = 27.2114
+        return total_dft_energy 
 
     def total_energy_contributions(self):
         """
