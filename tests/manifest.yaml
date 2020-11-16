@@ -7,7 +7,7 @@ test_nwchem_total_energy_contributions:
   stdoutFile: fixtures/nwchem/test-001/nwchem.log
 
 test_structure_nwchem_basis:
-  structurePath: fixtures/vasp/test-001/nwchem.inp
+  structurePath: fixtures/nwchem/test-001/nwchem.inp
 
 test_espresso_total_energy:
   workDir: fixtures/espresso/test-001
