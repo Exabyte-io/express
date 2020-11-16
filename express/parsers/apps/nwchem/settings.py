@@ -9,7 +9,6 @@ DOUBLE_REGEX = GENERAL_REGEX.double_number
 REGEX = {
     "total_energy": {
         "regex": COMMON_REGEX.format("Total DFT energy ="),
-        "start_flag": "!",
         "occurrences": -1,
         "output_type": "float"
     }
