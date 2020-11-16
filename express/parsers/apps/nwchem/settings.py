@@ -22,7 +22,7 @@ TOTAL_ENERGY_CONTRIBUTIONS = {
         "output_type": "float"
     },
     "coulomb": {
-        "regex": COMMON_REGEX.format("Coulomb Energy")
+        "regex": COMMON_REGEX.format("Coulomb Energy"),
         "start_flag": "!",
         "occurrences": -1,
         "output_type": "float"
