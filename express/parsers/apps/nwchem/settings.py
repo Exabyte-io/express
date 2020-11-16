@@ -1,4 +1,4 @@
-from nwchem.parsers.settings import GENERAL_REGEX
+from express.parsers.settings import GENERAL_REGEX
 
 NWCHEM_OUT_FILE_SUFFIX = ".log"
 
