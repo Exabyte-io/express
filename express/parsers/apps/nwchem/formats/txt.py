@@ -27,8 +27,8 @@ class NwchemTXTParser(BaseTXTParser):
         Returns:
              float
         """
-        print(self._general_output_parser(text, **settings.regex["total_energy"]))
-        return self._general_output_parser(text, **settings.regex["total_energy"])
+        print(self._general_output_parser(text, **settings.REGEX["total_energy"]))
+        return self._general_output_parser(text, **settings.REGEX["total_energy"])
 
     # NEED TO CHECK MATH/UNITS ON TOTAL ENERGY CONTRIBUTION
     def total_energy_contributions(self, text):
