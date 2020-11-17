@@ -14,25 +14,21 @@ REGEX = {
 TOTAL_ENERGY_CONTRIBUTIONS = {
     "one_electron": {
         "regex": COMMON_REGEX.format("One electron energy"),
-        "start_flag": "!",
         "occurrences": -1,
         "output_type": "float"
     },
     "coulomb": {
         "regex": COMMON_REGEX.format("Coulomb Energy"),
-        "start_flag": "!",
         "occurrences": -1,
         "output_type": "float"
     },
     "exchange_correlation": {
         "regex": COMMON_REGEX.format("Exchange-Corr. energy"),
-        "start_flag": "!",
         "occurrences": -1,
         "output_type": "float"
     },
     "nuclear_repulsion": {
         "regex": COMMON_REGEX.format("Nuclear repulsion energy"),
-        "start_flag": "!",
         "occurrences": -1,
         "output_type": "float"
     }
