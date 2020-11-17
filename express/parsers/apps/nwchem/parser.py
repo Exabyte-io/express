@@ -31,7 +31,8 @@ class NwchemParser(BaseParser, IonicDataMixin, ElectronicDataMixin, ReciprocalDa
         """
         print("self.stdout_file={}".format(self.stdout_file))
         total_dft_energy = self.txt_parser.total_energy(self._get_file_content(self.stdout_file))
-        #total_dft_energy = 27.2114 * hartrees
+        # total_dft_energy = self.txt_parser.total_energy(self._get_file_content(self.stdout_file))
+        # total_dft_energy = 27.2114 * hartrees
         return total_dft_energy 
 
     def total_energy_contributions(self):
