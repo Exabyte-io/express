@@ -52,6 +52,8 @@ class TestBase(unittest.TestCase):
                     v1, v2 = expected[index], actual[index]
                     self.assertDeepAlmostEqual(v1, v2, __trace=repr(index), *args, **kwargs)
             elif isinstance(expected, dict):
+                print("expected: {}".format(set(expected)))
+                print("actual: {}".format(set(actual)))
                 self.assertEqual(set(expected), set(actual))
                 for key in expected:
                     self.assertDeepAlmostEqual(expected[key], actual[key], __trace=repr(key), *args, **kwargs)
