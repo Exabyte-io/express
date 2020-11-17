@@ -33,7 +33,6 @@ class BaseTXTParser(object):
         Return:
             any
         """
-        print(text)
         start_index = text.rfind(start_flag) if start_flag else 0
         pattern = re.compile(regex, re.I | re.MULTILINE)
         cast = getattr(builtins, output_type)
