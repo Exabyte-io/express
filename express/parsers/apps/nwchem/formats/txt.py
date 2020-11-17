@@ -43,9 +43,9 @@ class NwchemTXTParser(BaseTXTParser):
         energy_contributions = {}
         for contribution in settings.TOTAL_ENERGY_CONTRIBUTIONS:
             value = self._general_output_parser(text, **settings.TOTAL_ENERGY_CONTRIBUTIONS[contribution])
-            if value:
+            if value is not None:
                 energy_contributions.update({contribution: {
                     'name': contribution,
-                    'value': np.sum(value)
+                    'value': value
                 }})
         return energy_contributions
