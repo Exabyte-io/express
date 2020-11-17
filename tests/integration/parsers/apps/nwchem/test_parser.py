@@ -12,7 +12,7 @@ class TestNwchemParser(IntegrationTestBase):
         super(TestNwchemParser, self).setUp()
 
     def test_nwchem_total_energy(self):
-        fi = open("log.log", a")
+        fi = open("log.log", 'a')
         fi.write(self.parser.total_energy())
         fi.close
         self.assertAlmostEqual(self.parser.total_energy(), TOTAL_ENERGY, places=2)
