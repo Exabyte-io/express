@@ -1,7 +1,5 @@
 from express.parsers.settings import GENERAL_REGEX
 
-NWCHEM_OUT_FILE_SUFFIX = ".log"
-
 # regex = regular expression
 COMMON_REGEX =r"{}\s+[=:<>]\s*([-+]?\d*\.?\d*([Ee][+-]?\d+)?)"
 DOUBLE_REGEX = GENERAL_REGEX.double_number
