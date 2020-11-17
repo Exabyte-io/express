@@ -4,9 +4,10 @@ import numpy as np
 from express.parsers import BaseParser
 from express.parsers.apps.nwchem import settings
 from express.parsers.mixins.ionic import IonicDataMixin
-from express.parsers.apps.nwchem.formats.txt import NwchemTXTParser
 from express.parsers.mixins.reciprocal import ReciprocalDataMixin
 from express.parsers.mixins.electronic import ElectronicDataMixin
+from express.parsers.utils import find_file
+from express.parsers.apps.nwchem.formats.txt import NwchemTXTParser
 from express.parsers.utils import find_file, find_fines_by_name_substring
 
 
