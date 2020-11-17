@@ -6,7 +6,6 @@ from express.parsers.apps.nwchem.parser import NwchemParser
 class TestNwchemParser(IntegrationTestBase):
     def setUp(self):
         super(TestNwchemParser, self).setUp()
-        print(self.stdoutFile)
         self.parser = NwchemParser(work_dir=self.workDir, stdout_file=self.stdoutFile)
 
     def tearDown(self):
