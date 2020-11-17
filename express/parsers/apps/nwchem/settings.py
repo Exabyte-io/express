@@ -3,13 +3,14 @@ from express.parsers.settings import GENERAL_REGEX
 NWCHEM_OUT_FILE_SUFFIX = ".log"
 
 # regex = regular expression
-COMMON_REGEX = r"{0}\s+[=:<>]\s*([-+]?\d*\.?\d*([Ee][+-]?\d+)?)"
+COMMON_REGEX = "{}\s+[=:<>]\s*([-+]?\d*\.?\d*([Ee][+-]?\d+)?)"
 DOUBLE_REGEX = GENERAL_REGEX.double_number
 
 REGEX = {
     "total_energy": {
         "regex": COMMON_REGEX.format("Total DFT energy ="),
-        "output_type": "float",
+        "occurences": -1,
+        "output_type": "float"
     }
 }
 TOTAL_ENERGY_CONTRIBUTIONS = {
