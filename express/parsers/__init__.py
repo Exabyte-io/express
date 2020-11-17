@@ -22,6 +22,7 @@ class BaseParser(object):
         """
         content = ""
         print("file_path={}".format(file_path))
+        print("os.path.exist: {}".format(os.path.exists(file_path)))
         if file_path and os.path.exists(file_path):
             with open(file_path) as f:
                 content = f.read()
