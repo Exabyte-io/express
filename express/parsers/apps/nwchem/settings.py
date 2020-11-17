@@ -8,7 +8,7 @@ DOUBLE_REGEX = GENERAL_REGEX.double_number
 
 REGEX = {
     "total_energy": {
-        "regex": "Total DFT energy\s+[=:<>]\s*([-+]?\d*\.?\d*([Ee][+-]?\d+)?)"
+        "regex": "Total DFT energy\s+[=:<>]\s*([-+]?\d*\.?\d*([Ee][+-]?\d+)?)",
         "occurrences": -1,
         "output_type": "float"
     }
