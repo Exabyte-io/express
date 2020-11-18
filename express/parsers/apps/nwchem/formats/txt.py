@@ -46,6 +46,6 @@ class NwchemTXTParser(BaseTXTParser):
             if value is not None:
                 energy_contributions.update({contribution: {
                     'name': contribution,
-                    'value': value
+                    'value': value * 27.2114
                 }})
         return energy_contributions
