@@ -37,11 +37,11 @@ class NwchemParser(BaseParser, IonicDataMixin, ElectronicDataMixin, ReciprocalDa
             func: express.parsers.mixins.electronic.ElectronicDataMixin.total_energy_contributions
         """
         energy_contributions = self.txt_parser.total_energy_contributions(self._get_file_content(self.stdout_file))
-        for key1 in energy_contributions.keys():
-            print(key1)
-            for key2, value in key1.items():
-                print(key2, value)
-                key1[key2] = value * Constant.ha_to_eV
+        for key1, value1 in energy_contributions.items():
+            print(key1, value1)
+            for key2, value2 in value2.items():
+                print(key2, value2)
+                value1[key2] = value2 * Constant.ha_to_eV
         return energy_contributions
 
     def _is_nwchem_output_file(self, path):
