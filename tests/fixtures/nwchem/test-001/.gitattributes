@@ -1,3 +1,9 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:9b6eacfcce35ef7804521e386c1c02726de23aad8b273c009709375ed8722348
-size 427
+nwchem.c filter=lfs diff=lfs merge=lfs -text
+nwchem.db filter=lfs diff=lfs merge=lfs -text
+nwchem.gridpts.0 filter=lfs diff=lfs merge=lfs -text
+nwchem.movecs filter=lfs diff=lfs merge=lfs -text
+nwchem.p filter=lfs diff=lfs merge=lfs -text
+nwchem.zmat filter=lfs diff=lfs merge=lfs -text
+nwchem.b filter=lfs diff=lfs merge=lfs -text
+nwchem.b^-1 filter=lfs diff=lfs merge=lfs -text
+nwchem.log filter=lfs diff=lfs merge=lfs -text

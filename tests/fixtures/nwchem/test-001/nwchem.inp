@@ -1,3 +1,17 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:54b99a78278f9086c6cfb73b9675e869f0d0750f136f2fedb33ef81c025ccfde
-size 349
+ start nwchem
+ title "DFT single point energy for water using B3LYP/6-31G*"
+ charge 0
+
+ geometry units au noautosym
+   O      0.00000000    0.00000000    0.00000000  
+   H      0.00000000    1.43042809   -1.10715266  
+   H      0.00000000   -1.43042809   -1.10715266
+ end
+ basis
+   * library 6-31G*
+ end
+ dft
+ xc B3LYP
+ mult 1
+ end
+ task dft energy
