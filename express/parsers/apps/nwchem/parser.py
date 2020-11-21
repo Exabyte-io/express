@@ -41,7 +41,8 @@ class NwchemParser(BaseParser, IonicDataMixin, ElectronicDataMixin, ReciprocalDa
             print(key1, value1)
             for key2, value2 in value1.items():
                 print(key2, value2)
-                value1[key2] = value2 * Constant.ha_to_eV
+                if type(value2) == float:
+                    value1[key2] = value2 * Constant.ha_to_eV
         return energy_contributions
 
     def _is_nwchem_output_file(self, path):
