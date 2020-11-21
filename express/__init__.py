@@ -15,12 +15,12 @@ class ExPrESS(object):
         parser_name (str): parser name.
         args (list): args passed to the parser.
         kwargs (dict): kwargs passed to the parser.
-            espresso and vasp parsers specific keys:
+            espresso, nwchem and vasp parsers specific keys:
                 work_dir (str): path to the working directory.
                 stdout_file (str): path to the stdout file.
             structure parser specific keys:
                 structure_string (str): structure string.
-                structure_format (str): structure format, poscar or espresso-in.
+                structure_format (str): structure format, poscar or espresso-in or nwchem-in
     """
 
     def __init__(self, parser_name=None, *args, **kwargs):

@@ -5,7 +5,7 @@ with open('./README.md', 'r') as f:
 
 setup(
     name='express-py',
-    version='2020.10.19.1',
+    version='2020.12.14',
     description='Exabyte Property Ex(ss)tractor, Sourcer, Serializer class.',
     long_description=long_description,
     long_description_content_type='text/markdown',
@@ -14,7 +14,7 @@ setup(
     author_email='info@exabyte.io',
     packages=find_packages(exclude=["tests.*", "tests"]),
     install_requires=[
-        "bunch==1.0.1",
+        "Munch==2.5.0",
         "numpy==1.17.3",
         "pymatgen==2020.4.29",
         "ase==3.17.0",
@@ -22,7 +22,8 @@ setup(
     ],
     extras_require={
         "test": [
-            "mock==1.3.0",
+            "mock>=1.3.0",
+            "pyyaml>=4.2b1,<6"
         ],
     },
     python_requires=">=3.6",
