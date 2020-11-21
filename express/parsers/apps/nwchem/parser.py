@@ -39,7 +39,7 @@ class NwchemParser(BaseParser, IonicDataMixin, ElectronicDataMixin, ReciprocalDa
         energy_contributions = self.txt_parser.total_energy_contributions(self._get_file_content(self.stdout_file))
         for key1 in energy_contributions.keys():
             print(key1)
-            for key2, value in key1.items()
+            for key2, value in key1.items():
                 print(key2, value)
                 key1[key2] = value * Constant.ha_to_eV
         return energy_contributions
