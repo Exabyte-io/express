@@ -1,14 +1,11 @@
 import os
-import numpy as np
-
+from express.parsers.settings import Constant
 from express.parsers import BaseParser
-from express.parsers.apps.nwchem import settings
 from express.parsers.mixins.ionic import IonicDataMixin
 from express.parsers.mixins.reciprocal import ReciprocalDataMixin
 from express.parsers.mixins.electronic import ElectronicDataMixin
-from express.parsers.utils import find_file
 from express.parsers.apps.nwchem.formats.txt import NwchemTXTParser
-from express.parsers.utils import find_file, find_fines_by_name_substring
+from express.parsers.apps.nwchem import settings
 
 
 class NwchemParser(BaseParser, IonicDataMixin, ElectronicDataMixin, ReciprocalDataMixin):
@@ -29,7 +26,7 @@ class NwchemParser(BaseParser, IonicDataMixin, ElectronicDataMixin, ReciprocalDa
         Reference:
             func: express.parsers.mixins.electronic.ElectronicDataMixin.total_energy
         """
-        total_dft_energy = 27.2114 * self.txt_parser.total_energy(self._get_file_content(self.stdout_file))
+        total_dft_energy = Constant.ha_to_eV * self.txt_parser.total_energy(self._get_file_content(self.stdout_file))
         return total_dft_energy 
 
     def total_energy_contributions(self):
@@ -39,7 +36,31 @@ class NwchemParser(BaseParser, IonicDataMixin, ElectronicDataMixin, ReciprocalDa
         Reference:
             func: express.parsers.mixins.electronic.ElectronicDataMixin.total_energy_contributions
         """
-        return self.txt_parser.total_energy_contributions(self._get_file_content(self.stdout_file))
+        energy_contributions = self.txt_parser.total_energy_contributions(self._get_file_content(self.stdout_file))
+        energy_contributions.update({contribution: {
+            'name': contribution,
+            'value': value * Constant.ha_to_eV
+        }})
+        return energy_contributions
+
+    def _is_nwchem_output_file(self, path):
+        """
+        Checks whether the given file is nwchem output file.
+
+        The file is considered nwchem output if it says 'Northwest Computational Chemistry Package' at the top.
+
+        NOTE: DO NOT READ THE WHOLE FILE INTO MEMORY AS IT COULD BE BIG.
+
+        Returns:
+             bool
+        """
+        if os.path.exists(path):
+            with open(path, "r") as f:
+                for index, line in enumerate(f):
+                    if index > 25:
+                        return False
+                    if settings.NWCHEM_OUTPUT_FILE_REGEX in line:
+                        return True
 
     def _find_nwchem_output_files(self):
         nwchem_output_files = []

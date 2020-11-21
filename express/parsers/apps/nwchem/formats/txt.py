@@ -1,9 +1,3 @@
-import os
-import io
-import re
-import numpy as np
-
-from express.parsers.utils import find_file
 from express.parsers.settings import Constant
 from express.parsers.apps.nwchem import settings
 from express.parsers.formats.txt import BaseTXTParser
@@ -29,7 +23,6 @@ class NwchemTXTParser(BaseTXTParser):
         """
         return self._general_output_parser(text, **settings.REGEX["total_energy"])
 
-    # NEED TO CHECK MATH/UNITS ON TOTAL ENERGY CONTRIBUTION
     def total_energy_contributions(self, text):
         """
         Extracts total energy contributions.
@@ -46,6 +39,6 @@ class NwchemTXTParser(BaseTXTParser):
             if value is not None:
                 energy_contributions.update({contribution: {
                     'name': contribution,
-                    'value': value * 27.2114
+                    'value': value
                 }})
         return energy_contributions
