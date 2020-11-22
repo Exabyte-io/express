@@ -25,6 +25,7 @@ class NwchemParser(BaseParser, IonicDataMixin, ElectronicDataMixin, ReciprocalDa
 
         Reference:
             func: express.parsers.mixins.electronic.ElectronicDataMixin.total_energy
+            NWChem energies are defaulted to hartrees and are converted to eV in this method
         """
         total_dft_energy = Constant.ha_to_eV * self.txt_parser.total_energy(self._get_file_content(self.stdout_file))
         return total_dft_energy 
@@ -35,12 +36,11 @@ class NwchemParser(BaseParser, IonicDataMixin, ElectronicDataMixin, ReciprocalDa
 
         Reference:
             func: express.parsers.mixins.electronic.ElectronicDataMixin.total_energy_contributions
+            NWChem energies are defaulted to hartrees and are converted to eV in this method.
         """
         energy_contributions = self.txt_parser.total_energy_contributions(self._get_file_content(self.stdout_file))
         for key1, value1 in energy_contributions.items():
-            print(key1, value1)
             for key2, value2 in value1.items():
-                print(key2, value2)
                 if type(value2) == float:
                     value1[key2] = value2 * Constant.ha_to_eV
         return energy_contributions
