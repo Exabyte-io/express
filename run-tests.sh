@@ -2,7 +2,7 @@
 set -e
 
 TEST_TYPE="unit"
-PYTHON_BIN="/usr/bin/python3"
+PYTHON_BIN="python3"
 THIS_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" > /dev/null 2>&1 && pwd)"
 
 usage() {
