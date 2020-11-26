@@ -31,7 +31,6 @@ class Constant(object):
     ha_to_eV = 27.2114  # hartrees to eV
 
 
-
 GENERAL_REGEX = Munch()
 GENERAL_REGEX.update({
     'double_number': r'[-+]?\d*\.\d+(?:[eE][-+]?\d+)?',
