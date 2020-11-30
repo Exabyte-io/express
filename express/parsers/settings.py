@@ -28,7 +28,6 @@ class Constant(object):
     kcal = 4.184 * kJ
     cm_inv_to_ev = 0.00012398  # cm^-1 to eV
     ry_bohr_to_eV_A = 25.71104309541616  # or RYDBERG / BOHR
-    ha_to_eV = 27.2114  # hartrees to eV
 
 
 GENERAL_REGEX = Munch()
