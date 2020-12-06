@@ -18,7 +18,7 @@ def find_file(name, path):
                 return os.path.join(root, file)
 
 
-def find_fines_by_name_substring(name, path):
+def find_files_by_name_substring(name, path):
     matches = []
     for root, dirs, files in os.walk(path, followlinks=True):
         for file_ in files:
