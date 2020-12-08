@@ -135,3 +135,9 @@ test_structure_vasp_basis:
 
 test_structure_vasp_lattice_bravais:
   structurePath: fixtures/vasp/test-001/POSCAR
+
+test_aiida_num_structures:
+  workDir: fixtures/aiida-archive/test-001/
+
+test_aiida_expected_keys:
+  workDir: fixtures/aiida-archive/test-001/

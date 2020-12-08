@@ -21,3 +21,7 @@ class IntegrationTestBase(TestBase):
     @property
     def stdoutFile(self):
         return os.path.join(self.rootDir, self.getManifest()["stdoutFile"])
+
+    @property
+    def path(self):
+        return os.path.join(self.rootDir, self.getManifest()["path"])
