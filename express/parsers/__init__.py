@@ -13,8 +13,10 @@ class BaseParser(object):
     def _get_file_content(self, file_path):
         """
         Returns the content of a given file.
+
         Args:
             file_path (str): file path.
+
         Returns:
              str
         """

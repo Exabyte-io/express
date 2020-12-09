@@ -28,8 +28,10 @@ class ExPrESS(object):
     def _get_parser_class(self, parser_name):
         """
         Returns parser class for a given parser name.
+
         Args:
             parser_name (str): parser name.
+
         Returns:
             class
         """
@@ -39,8 +41,10 @@ class ExPrESS(object):
     def _get_class_by_reference(self, reference):
         """
         Returns class by reference.
+
         Args:
             reference (str): reference, e.g. express.parsers.apps.vasp.parser.VaspParser
+
         Returns:
              class
         """
@@ -51,8 +55,10 @@ class ExPrESS(object):
     def _get_property_class(self, property_name):
         """
         Returns property class for a given property name.
+
         Args:
             property_name (str): property name.
+
         Returns:
             class
         """
@@ -62,10 +68,12 @@ class ExPrESS(object):
     def property(self, property_name, *args, **kwargs):
         """
         Extracts a given property and validates it against its schema.
+
         Args:
             property_name (str): property name.
             args (list): args passed to the underlying property method.
             kwargs (dict): kwargs passed to the underlying property method.
+
         Returns:
              dict
         """
