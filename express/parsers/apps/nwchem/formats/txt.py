@@ -14,8 +14,10 @@ class NwchemTXTParser(BaseTXTParser):
     def total_energy(self, text):
         """
         Extracts total energy.
+
         Args:
             text (str): text to extract data from.
+
         Returns:
              float
         """
@@ -24,8 +26,10 @@ class NwchemTXTParser(BaseTXTParser):
     def total_energy_contributions(self, text):
         """
         Extracts total energy contributions.
+
         Args:
             text (str): text to extract data from.
+
         Returns:
             dict
         """

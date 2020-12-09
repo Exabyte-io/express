@@ -22,6 +22,7 @@ class NwchemParser(BaseParser, IonicDataMixin, ElectronicDataMixin, ReciprocalDa
     def total_energy(self):
         """
         Returns total energy.
+
         Reference:
             func: express.parsers.mixins.electronic.ElectronicDataMixin.total_energy
             NWChem energies are defaulted to hartrees and are converted to eV in this method
@@ -32,6 +33,7 @@ class NwchemParser(BaseParser, IonicDataMixin, ElectronicDataMixin, ReciprocalDa
     def total_energy_contributions(self):
         """
         Extracts total energy contributions.
+
         Reference:
             func: express.parsers.mixins.electronic.ElectronicDataMixin.total_energy_contributions
             NWChem energies are defaulted to hartrees and are converted to eV in this method.
@@ -47,7 +49,9 @@ class NwchemParser(BaseParser, IonicDataMixin, ElectronicDataMixin, ReciprocalDa
         """
         Checks whether the given file is nwchem output file.
         The file is considered nwchem output if it says 'Northwest Computational Chemistry Package' at the top.
+
         NOTE: DO NOT READ THE WHOLE FILE INTO MEMORY AS IT COULD BE BIG.
+
         Returns:
              bool
         """
