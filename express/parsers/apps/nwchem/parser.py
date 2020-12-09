@@ -27,7 +27,7 @@ class NwchemParser(BaseParser, IonicDataMixin, ElectronicDataMixin, ReciprocalDa
             NWChem energies are defaulted to hartrees and are converted to eV in this method
         """
         total_dft_energy = Constant.HARTREE * self.txt_parser.total_energy(self._get_file_content(self.stdout_file))
-        return total_dft_energy 
+        return total_dft_energy
 
     def total_energy_contributions(self):
         """
@@ -61,6 +61,12 @@ class NwchemParser(BaseParser, IonicDataMixin, ElectronicDataMixin, ReciprocalDa
                 return False
 
     def _find_nwchem_output_files(self):
+        """
+        Identifies the nwchem output files for parsing.
+
+        Returns:
+            str
+        """
         nwchem_output_files = []
         for root, dirs, files in os.walk(self.work_dir, followlinks=True):
             for file in files:

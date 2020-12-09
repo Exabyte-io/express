@@ -31,6 +31,7 @@ class ExPrESS(object):
         Args:
             parser_name (str): parser name.
         Returns:
+            class
         """
         reference = settings.PARSERS_REGISTRY[parser_name]
         return self._get_class_by_reference(reference)

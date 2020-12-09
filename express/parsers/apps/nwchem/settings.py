@@ -4,7 +4,6 @@ COMMON_REGEX = r"{}\s+[=:<>]\s*([-+]?\d*\.?\d*([Ee][+-]?\d+)?)"
 DOUBLE_REGEX = GENERAL_REGEX.double_number
 NWCHEM_OUTPUT_FILE_REGEX = "Northwest Computational Chemistry Package"
 
-
 REGEX = {
     "total_energy": {
         "regex": COMMON_REGEX.format("Total DFT energy"),

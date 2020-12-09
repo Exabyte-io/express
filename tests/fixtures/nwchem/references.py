@@ -1,6 +1,8 @@
-# Reference energies are in units of eV.
-# NWChem returns energies in hartrees, ExPrESS converts to eV
-# Reference energies are all in eV
+"""
+Reference values for the nwchem test calculations within ExPrESS
+All nwchem output values are in hartrees. ExPrESS converts units to eV.
+All reference energies are in eV.
+"""
 TOTAL_ENERGY = -2079.18666382721904
 
 TOTAL_ENERGY_CONTRIBUTION = {
