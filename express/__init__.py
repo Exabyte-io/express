@@ -10,7 +10,7 @@ warnings.filterwarnings("ignore")
 class ExPrESS(object):
     """
     Exabyte Property Ex(ss)tractor, Sourcer, Serializer class.
-    
+
     Args:
         parser_name (str): parser name.
         args (list): args passed to the parser.
