@@ -5,7 +5,7 @@ with open('./README.md', 'r') as f:
 
 setup(
     name='express-py',
-    version='2020.10.19.2',
+    version='2020.10.19.3',
     description='Exabyte Property Ex(ss)tractor, Sourcer, Serializer class.',
     long_description=long_description,
     long_description_content_type='text/markdown',
@@ -22,7 +22,7 @@ setup(
     ],
     extras_require={
         "test": [
-            "mock==1.3.0",
+            "mock>=1.3.0",
             "pyyaml>=4.2b1,<6",
         ],
     },
