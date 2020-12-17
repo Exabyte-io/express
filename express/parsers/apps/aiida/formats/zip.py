@@ -2,10 +2,8 @@ import esse
 
 from express.parsers.formats.zip import BaseZipParser
 from express.parsers.formats.jsonfile import BaseJSONParser
+from express.parsers.apps.aiida.settings import SUPPORTED_AIIDA_ARCHIVE_VERSION, SUPPORTED_AIIDA_VERSION
 
-
-SUPPORTED_ARCHIVE_VERSION = '0.9'
-SUPPORTED_AIIDA_VERSION = '1.4.2'
 
 ES = esse.ESSE()
 SCHEMA_MATERIAL = ES.get_schema_by_id('material')
@@ -26,7 +24,7 @@ class AiidaZipParser(BaseZipParser):
 
             # version check
             assert metadata['aiida_version'] == SUPPORTED_AIIDA_VERSION
-            assert metadata['export_version'] == SUPPORTED_ARCHIVE_VERSION
+            assert metadata['export_version'] == SUPPORTED_AIIDA_ARCHIVE_VERSION
 
             # gather structure nodes
             nodes = data['export_data']['Node']
