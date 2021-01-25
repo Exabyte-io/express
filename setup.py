@@ -1,11 +1,13 @@
 from setuptools import setup, find_packages
+import versioneer
 
 with open('./README.md', 'r') as f:
     long_description = f.read()
 
 setup(
     name='express-py',
-    version='2020.10.19.3',
+    version=versioneer.get_version(),
+    cmdclass=versioneer.get_cmdclass(),
     description='Exabyte Property Ex(ss)tractor, Sourcer, Serializer class.',
     long_description=long_description,
     long_description_content_type='text/markdown',

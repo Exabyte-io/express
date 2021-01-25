@@ -80,3 +80,7 @@ class ExPrESS(object):
         """
         property_instance = self._get_property_class(property_name)(property_name, self.parser, *args, **kwargs)
         return property_instance.serialize_and_validate()
+
+from ._version import get_versions
+__version__ = get_versions()['version']
+del get_versions
