@@ -26,31 +26,62 @@ class AiidaZipParser(BaseZipParser):
             list
         """
 
-        structures = []
-
         with self.zip_file as source:
+
+            # check that versions are supported (raises RuntimeError)
             metadata = self.json_parser.loads(source.read('metadata.json'))
+            self._check_supported_versions(metadata)
+
+            # gather structure nodes into list and return
             data = self.json_parser.loads(source.read('data.json'))
+            return list(self._gather_structures(data))
 
-            # version check
-            assert metadata['aiida_version'] == SUPPORTED_AIIDA_VERSION
-            assert metadata['export_version'] == SUPPORTED_AIIDA_ARCHIVE_VERSION
+    def _check_supported_versions(self, metadata):
+        """
+        Check whether the versions of the exported archive file are supported.
 
-            # gather structure nodes
-            nodes = data['export_data']['Node']
-            structure_nodes = {pk: node for (pk, node) in nodes.items()
-                               if node['node_type'] == 'data.structure.StructureData.'}
+        Args:
+            metadata (dict): deserialized metadata.json object
 
-            for pk in structure_nodes:
-                export_data = data['export_data']['Node'][pk]
-                node_attributes = data['node_attributes'][pk]
-                structures.append(self._parse_structure_node_attributes(export_data, node_attributes))
+        Raises:
+            RuntimeError
+        """
+        if metadata['aiida_version'] != SUPPORTED_AIIDA_VERSION:
+            raise RuntimeError(
+                f"aiida_version ({metadata['aiida_version']}) not supported. "
+                f"Supported: {SUPPORTED_AIIDA_VERSION}")
 
-        return structures
+        if metadata['export_version'] != SUPPORTED_AIIDA_ARCHIVE_VERSION:
+            raise RuntimeError(
+                f"archive export_version ({metadata['export_version']}) not supported. "
+                f"Supported: {SUPPORTED_AIIDA_ARCHIVE_VERSION}")
+
+
+    def _gather_structures(self, data):
+        """
+        Yield parsed structure objects from nodes within AiiDA archive.
+
+        Args:
+            data (dict): deserialized data.json object
+        Yields:
+            dict
+        """
+
+        nodes = data['export_data']['Node']
+        structure_nodes = {pk: node for (pk, node) in nodes.items()
+                           if node['node_type'] == 'data.structure.StructureData.'}
+
+        for pk in structure_nodes:
+            export_data = data['export_data']['Node'][pk]
+            node_attributes = data['node_attributes'][pk]
+            yield self._parse_structure_node_attributes(export_data, node_attributes)
 
     @staticmethod
     def _parse_structure_node_attributes(export_data, attributes):
-        """Parse an AiiDA StructureData node."""
+        """
+        Parse an AiiDA StructureData node.
+        """
+
         # Prepare mapping
         assert export_data['node_type'] == 'data.structure.StructureData.'
 
