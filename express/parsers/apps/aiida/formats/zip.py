@@ -10,12 +10,22 @@ SCHEMA_MATERIAL = ES.get_schema_by_id('material')
 
 
 class AiidaZipParser(BaseZipParser):
+    """
+    Parser for AiiDA archive zip files.
+    """
 
     def __init__(self, *args, **kwargs):
         self.json_parser = BaseJSONParser
         super(AiidaZipParser, self).__init__(*args, **kwargs)
 
     def structures(self):
+        """
+        Extract all structures from compatible AiiDA archive zip files.
+
+        Returns:
+            list
+        """
+
         structures = []
 
         with self.zip_file as source:
