@@ -17,6 +17,5 @@ class BaseZipParser(object):
             try:
                 self.zip_dir_name = os.path.dirname(self.zip_path)
                 self.zip_file = zipfile.ZipFile(self.zip_path)
-            except:
-                # safely ignore broken zip file
-                pass
+            except Exception as error:
+                print(f"Failed to parse {self.zip_path}: {error!s}")
