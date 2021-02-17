@@ -1,0 +1,19 @@
+{
+    "schemaVersion":  "0.2.0",
+    "_id": "",
+    "exabyteId": "",
+    "hash": "",
+
+    "creator": "CREATOR",
+    "owner": "OWNER",
+
+    "created_at": "",
+
+    "lattice": {
+        "vectors": {}
+    },
+    "basis": {
+        "elements": [],
+        "coordinates": []
+    }
+}

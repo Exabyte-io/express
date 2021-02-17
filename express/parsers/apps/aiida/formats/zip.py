@@ -3,7 +3,9 @@ import zipfile
 
 import esse
 
-from express.parsers.apps.aiida.settings import SUPPORTED_AIIDA_ARCHIVE_VERSION, SUPPORTED_AIIDA_VERSION
+from express.parsers.apps.aiida.settings import SUPPORTED_AIIDA_ARCHIVE_VERSION
+from express.parsers.apps.aiida.settings import SUPPORTED_AIIDA_VERSION
+from express.parsers.apps.aiida.settings import TEMPLATES_MATERIALS_PATH
 
 
 ES = esse.ESSE()
@@ -89,22 +91,10 @@ class AiidaZipParser:
         kinds = {kind['name']: kind for kind in attributes['kinds']}
         assert all(len(kind['symbols']) == 1 for kind in kinds.values())
 
-        instance = {
-            'schemaVersion':  '0.2.0',
-
-            # TODO: THE FOLLOWING VARIABLES ARE PLACEHOLDERS!
+        instance = json.loads(TEMPLATES_MATERIALS_PATH.read_text())
+        instance.update({
             '_id': export_data['uuid'],
-            'exabyteId': 'PLACEHOLDER',
-            'hash': 'PLACEHOLDER',
-
-            # TODO: Gather from export data?
-            'creator': 'CREATOR',
-            'owner': 'OWNER',
-
-            # THE FOLLOWING ATTRIBUTES SHOULD BE IMPROVED:
-            'created_at': export_data['ctime'],  # TODO: or maybe mtime?
-
-            # Actual materials-related data
+            'created_at': export_data['ctime'],
             'lattice': {
                 'vectors': {
                     'a': attributes['cell'][0],
@@ -115,8 +105,8 @@ class AiidaZipParser:
             'basis': {
                 'elements': [{'id': _id, 'value': kinds[site['kind_name']]['name']} for _id, site in sites],
                 'coordinates': [{'id': _id, 'value': site['position']} for _id, site in sites],
-            },
-        }
+            }
+        })
 
         # Validate result and return
         ES.validate(instance, schema=SCHEMA_MATERIAL)
