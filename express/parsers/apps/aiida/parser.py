@@ -34,9 +34,8 @@ class AiidaArchiveParser(BaseParser):
             list
         """
 
-        self.zip_parser = AiidaZipParser(self.path)
         structures = []
-        for zip_file in self.find_zip_files():
-            zip_parser = AiidaZipParser(zip_file)
+        for zip_file_path in self.find_zip_files():
+            zip_parser = AiidaZipParser(zip_file_path)
             structures.extend(zip_parser.structures())
         return structures

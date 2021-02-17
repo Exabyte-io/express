@@ -1,6 +1,7 @@
+import zipfile
+
 import esse
 
-from express.parsers.formats.zip import BaseZipParser
 from express.parsers.formats.jsonfile import BaseJSONParser
 from express.parsers.apps.aiida.settings import SUPPORTED_AIIDA_ARCHIVE_VERSION, SUPPORTED_AIIDA_VERSION
 
@@ -9,14 +10,15 @@ ES = esse.ESSE()
 SCHEMA_MATERIAL = ES.get_schema_by_id('material')
 
 
-class AiidaZipParser(BaseZipParser):
+class AiidaZipParser:
     """
     Parser for AiiDA archive zip files.
     """
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, zip_file_path):
+        self.zip_file = zipfile.ZipFile(zip_file_path)
+
         self.json_parser = BaseJSONParser
-        super(AiidaZipParser, self).__init__(*args, **kwargs)
 
     def structures(self):
         """
