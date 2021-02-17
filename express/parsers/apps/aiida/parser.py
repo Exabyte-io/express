@@ -1,5 +1,8 @@
 from express.parsers import BaseParser
+from express.parsers.apps.aiida.formats.zip import AiidaArchiveFileParseError
 from express.parsers.apps.aiida.formats.zip import AiidaZipParser
+from express.parsers.apps.aiida.formats.zip import BadAiidaArchiveZipFile
+from express.parsers.apps.aiida.formats.zip import BadZipFile
 
 from express.parsers.utils import find_files_by_name_substring
 
@@ -36,6 +39,14 @@ class AiidaArchiveParser(BaseParser):
 
         structures = []
         for zip_file_path in self.find_zip_files():
-            zip_parser = AiidaZipParser(zip_file_path)
-            structures.extend(zip_parser.structures())
+            try:
+                zip_parser = AiidaZipParser(zip_file_path)
+            except BadZipFile as error:
+                print(f"Unable to open zip-file '{zip_file_path}': {error}")
+            except BadAiidaArchiveZipFile:
+                continue  # assume this zip-file is not actually an AiiDA archive file
+            except AiidaArchiveFileParseError as error:
+                print(f"Failed to read AiiDA archive zip-file '{error.path}': {error.reason}")
+            else:
+                structures.extend(zip_parser.structures())
         return structures
