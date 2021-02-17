@@ -1,8 +1,8 @@
+import json
 import zipfile
 
 import esse
 
-from express.parsers.formats.jsonfile import BaseJSONParser
 from express.parsers.apps.aiida.settings import SUPPORTED_AIIDA_ARCHIVE_VERSION, SUPPORTED_AIIDA_VERSION
 
 
@@ -18,8 +18,6 @@ class AiidaZipParser:
     def __init__(self, zip_file_path):
         self.zip_file = zipfile.ZipFile(zip_file_path)
 
-        self.json_parser = BaseJSONParser
-
     def structures(self):
         """
         Extract all structures from compatible AiiDA archive zip files.
@@ -31,11 +29,11 @@ class AiidaZipParser:
         with self.zip_file as source:
 
             # check that versions are supported (raises RuntimeError)
-            metadata = self.json_parser.loads(source.read('metadata.json'))
+            metadata = json.loads(source.read('metadata.json'))
             self._check_supported_versions(metadata)
 
             # gather structure nodes into list and return
-            data = self.json_parser.loads(source.read('data.json'))
+            data = json.loads(source.read('data.json'))
             return list(self._gather_structures(data))
 
     def _check_supported_versions(self, metadata):
