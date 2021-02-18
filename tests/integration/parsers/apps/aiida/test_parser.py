@@ -16,17 +16,4 @@ class TestAiidaArchiveParser(IntegrationTestBase):
         structures should match that number.
         """
 
-        self.assertEqual(len(self.parser.structures()), 39)
-
-    def test_aiida_expected_keys(self):
-        """
-        Test that all structures parsed from fixture have expected keys.
-
-        All structures parsed from the fixture should contain at least
-        a unit cell definition via 'basis' and 'lattice' vectors.
-        """
-
-        structures = self.parser.structures()
-        for structure in self.parser.structures():
-            for key in ('basis', 'lattice'):
-                self.assertIn(key, structure)
+        self.assertEqual(len(self.parser.initial_structure_strings()), 39)
