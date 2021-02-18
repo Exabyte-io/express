@@ -6,7 +6,7 @@ class TestAiidaArchiveParser(IntegrationTestBase):
 
     def setUp(self):
         super(TestAiidaArchiveParser, self).setUp()
-        self.parser = AiidaArchiveParser(workDir=self.workDir)
+        self.parser = AiidaArchiveParser(work_dir=self.workDir)
 
     def test_aiida_num_structures(self):
         """

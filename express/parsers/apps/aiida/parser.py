@@ -16,7 +16,7 @@ class AiidaArchiveParser(BaseParser):
         """
 
         super(AiidaArchiveParser, self).__init__(*args, **kwargs)
-        self.path = self.kwargs["workDir"]
+        self.path = self.kwargs["work_dir"]
 
     def find_zip_files(self):
         """
