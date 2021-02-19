@@ -16,6 +16,7 @@ setup(
     install_requires=[
         "munch==2.5.0",
         "numpy==1.17.3",
+        # other people use "numpy==1.8.4"
         "pymatgen==2020.4.29",
         "ase==3.17.0",
         "esse>=2020.10.19",
