@@ -28,6 +28,7 @@ class MLQuickImplementation(BaseProperty):
     def __process_subworkflow(subworkflow: dict) -> dict:
         return subworkflow
 
+    @property
     def _serialize(self):
         """
         Creates the actual ML Predict workflow that will be output from a job. Intended for the quick implementation.
@@ -43,13 +44,14 @@ class MLQuickImplementation(BaseProperty):
         4) DrawPlots
             Saves any plots that may have been generated during the job.
         """
+        # A note on variable naming conventions, since this code intersects two different conventions.
+        # In the Python code, we're sticking with snake_case for variables.
+        # In our JSON (e.g. things we define in ESSE), we stick with CamelCase for variable names.
         valid_subworkflow_names = ["SetupJob", "PreProcessData", "TrainModel", "DrawPlots"]
         subworkflows: list = self.workflow["subworkflows"]
         valid_subworkflows = filter(lambda subworkflow: True if subworkflow["name"] in valid_subworkflow_names else False,
                                     subworkflows)
         processed_subworkflows = map(self.__process_subworkflow, valid_subworkflows)
-
-        # Esse - CamelCase
 
         # Create the workflow
         workflow = {
@@ -57,13 +59,15 @@ class MLQuickImplementation(BaseProperty):
             "units": [
                 {
                     # Per the 2/24 morning standup, it looks like _id should be fine this way, as long as
-                    # bei
-                    "_id": "SetupJob",
-                    "name": "SetupJob",
+                    # we only refer to it internally in this workflow. The problem of unique ID's becomes a bigger deal
+                    # when we store the workflow in MongoDB. For this reason, we're leaving the top-level
+                    # workflow["_id"] field as the empty string.
+                    "_id": "SetupJob",  # Some unique ID (internally) for the subworkflow
+                    "name": "SetupJob",  # Friendly, human-readable name for the subworkflow
                     "type": "subworkflow",
-                    "flowchartId": "SetupJob",
-                    "head": True,
-                    "next": "PreProcessData"
+                    "flowchartId": "SetupJob",  # How to refer to this subworkflow in the "next" key
+                    "head": True, # Whether this is the first subworkflow to be used
+                    "next": "PreProcessData" # The flowchartId of the next subworkflow in the series
                 },
                 {
                     "_id": "PreProcessData",
@@ -89,22 +93,22 @@ class MLQuickImplementation(BaseProperty):
                     "head": False
                 }
             ],
-            "subworkflows": list(processed_subworkflows),
-            "name": self.name,
-            "creator": {
+            "subworkflows": list(processed_subworkflows), # Units which make up each subworkflow are found here
+            "name": self.name, # Friendly name for the workflow
+            "creator": { # Information about the account that created this workflow ("" for automatic filling)
                 "_id": "",
                 "cls": "User",
                 "slug": ""
             },
-            "owner": {
+            "owner": { # Information about the account that currently owns this workflow ("" for automatic filling)
                 "_id": "",
                 "cls": "Account",
                 "slug": ""
             },
-            "schemaVersion": "0.2.0",
-            "exabyteId": "",
-            "hash": "",
-            "_id": "",
+            "schemaVersion": "0.2.0", # Version of this schema to use in ESSE
+            "exabyteId": "", # ID for the corresponding bank workflow. Leave as the empty string.
+            "hash": "", # Hash used to compare workflows for uniqueness. Leave as the empty string.
+            "_id": "", # ID for MongoDB; needs to be blank. Leave as the empty string.
         }
         return workflow
 
