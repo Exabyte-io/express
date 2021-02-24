@@ -25,35 +25,40 @@ class MLQuickImplementation(BaseProperty):
         return self.esse.get_schema_by_id("workflow")
 
     @staticmethod
-    def process_subworkflow(subworkflow: dict) -> dict:
+    def __process_subworkflow(subworkflow: dict) -> dict:
         return subworkflow
 
     def _serialize(self):
         """
-        Creates the actual ML Predict workflow that will be output frmo a job. Intended for the quick implementation.
+        Creates the actual ML Predict workflow that will be output from a job. Intended for the quick implementation.
 
         We assume that all predict workflows in this implementation will contain the following subworkflows:
         1) SetupJob
             Contains directives which set up the job. Configuration, copying data, installing packages, etc.
         2) PreProcessData
             First unit is IO to load data. Subsequent units include things like normalization, standardization, etc.
-        3) Predict
+        3) TrainModel
             We deliberately skip the "hyperparameter optimization" step, since we already have a trained model
+            This will get re-named to "Predict" by process_subworkflow
         4) DrawPlots
             Saves any plots that may have been generated during the job.
         """
-        valid_subworkflow_names = ["SetupJob", "PreProcessData", "Predict", "DrawPlots"]
+        valid_subworkflow_names = ["SetupJob", "PreProcessData", "TrainModel", "DrawPlots"]
         subworkflows: list = self.workflow["subworkflows"]
         valid_subworkflows = filter(lambda subworkflow: True if subworkflow["name"] in valid_subworkflow_names else False,
                                     subworkflows)
-        processed_subworkflows = map(self.process_subworkflow, valid_subworkflows)
+        processed_subworkflows = map(self.__process_subworkflow, valid_subworkflows)
+
+        # Esse - CamelCase
 
         # Create the workflow
         workflow = {
             # These "
             "units": [
                 {
-                    "_id": "SetupJob",  # Todo: Proper way to set ID? Can this be an empty string as below?
+                    # Per the 2/24 morning standup, it looks like _id should be fine this way, as long as
+                    # bei
+                    "_id": "SetupJob",
                     "name": "SetupJob",
                     "type": "subworkflow",
                     "flowchartId": "SetupJob",
@@ -87,7 +92,7 @@ class MLQuickImplementation(BaseProperty):
             "subworkflows": list(processed_subworkflows),
             "name": self.name,
             "creator": {
-                "_id": "",  # Todo: Isn't this required information?
+                "_id": "",
                 "cls": "User",
                 "slug": ""
             },
