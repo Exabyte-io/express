@@ -1,4 +1,5 @@
 from express.properties import BaseProperty
+import copy
 
 
 # Todo: This is the quick implementation of ExabyteML, and will be depreciated eventually
@@ -18,14 +19,45 @@ class MLQuickImplementation(BaseProperty):
         """
         super(MLQuickImplementation, self).__init__(name, parser, *args, **kwargs)
         self.name = name
-        self.workflow = workflow
+        self.workflow = copy.deepcopy(workflow)
 
     @property
     def schema(self):
         return self.esse.get_schema_by_id("workflow")
 
-    @staticmethod
-    def __process_subworkflow(subworkflow: dict) -> dict:
+    # Todo: Implement this
+    def __process_unit(self, unit: dict) -> dict:
+        """
+        Takes a workflow unit from a train workflow, and converts it to the corresponding predict workflow unit.
+        Args:
+            unit (dict): The unit to be converted
+
+        Returns:
+            A dictionary of the predict workflow unit
+        """
+        unit = copy.deepcopy(unit)
+        return unit
+
+    def __process_subworkflow(self, subworkflow: dict) -> dict:
+        """
+        Takes a train workflow and converts it to a predict workflow.
+
+        Args:
+            subworkflow (dict): The subworkflow to be converted
+
+        Returns:
+            A dictionary of the predict subworkflow
+        """
+        subworkflow = copy.deepcopy(subworkflow)
+        # Mapping of the form {TrainWorkflowName : PredictWorkflowName}
+        name_mapping = {"SetupJob" : "SetupJob",
+                        "PreProcessData" : "PreProcessData",
+                        "TrainModel" : "Predict",
+                        "DrawPlots" : "DrawPlots"}
+        name = subworkflow["name"]
+        subworkflow["name"] = name_mapping[name]
+        new_units = map(self.__process_unit, subworkflow["units"])
+        subworkflow["units"] = list(new_units)
         return subworkflow
 
     @property
@@ -52,7 +84,6 @@ class MLQuickImplementation(BaseProperty):
         valid_subworkflows = filter(lambda subworkflow: True if subworkflow["name"] in valid_subworkflow_names else False,
                                     subworkflows)
         processed_subworkflows = map(self.__process_subworkflow, valid_subworkflows)
-
         # Create the workflow
         workflow = {
             # These "
