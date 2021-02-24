@@ -26,7 +26,7 @@ class MLQuickImplementation(BaseProperty):
         return self.esse.get_schema_by_id("workflow")
 
     # Todo: Implement this
-    def __process_unit(self, unit: dict) -> dict:
+    def _process_unit(self, unit: dict) -> dict:
         """
         Takes a workflow unit from a train workflow, and converts it to the corresponding predict workflow unit.
         Args:
@@ -38,7 +38,7 @@ class MLQuickImplementation(BaseProperty):
         unit = copy.deepcopy(unit)
         return unit
 
-    def __process_subworkflow(self, subworkflow: dict) -> dict:
+    def _process_subworkflow(self, subworkflow: dict) -> dict:
         """
         Takes a train workflow and converts it to a predict workflow.
 
@@ -49,14 +49,18 @@ class MLQuickImplementation(BaseProperty):
             A dictionary of the predict subworkflow
         """
         subworkflow = copy.deepcopy(subworkflow)
+
+        # Rename the subworkflow units
         # Mapping of the form {TrainWorkflowName : PredictWorkflowName}
-        name_mapping = {"SetupJob" : "SetupJob",
-                        "PreProcessData" : "PreProcessData",
-                        "TrainModel" : "Predict",
-                        "DrawPlots" : "DrawPlots"}
+        name_mapping = {"SetupJob": "SetupJob",
+                        "PreProcessData": "PreProcessData",
+                        "TrainModel": "Predict",
+                        "DrawPlots": "DrawPlots"}
         name = subworkflow["name"]
         subworkflow["name"] = name_mapping[name]
-        new_units = map(self.__process_unit, subworkflow["units"])
+
+        # Change the subworkflow units
+        new_units = map(self._process_unit, subworkflow["units"])
         subworkflow["units"] = list(new_units)
         return subworkflow
 
@@ -83,7 +87,7 @@ class MLQuickImplementation(BaseProperty):
         subworkflows: list = self.workflow["subworkflows"]
         valid_subworkflows = filter(lambda subworkflow: True if subworkflow["name"] in valid_subworkflow_names else False,
                                     subworkflows)
-        processed_subworkflows = map(self.__process_subworkflow, valid_subworkflows)
+        processed_subworkflows = map(self._process_subworkflow, valid_subworkflows)
         # Create the workflow
         workflow = {
             # These "
@@ -97,8 +101,8 @@ class MLQuickImplementation(BaseProperty):
                     "name": "SetupJob",  # Friendly, human-readable name for the subworkflow
                     "type": "subworkflow",
                     "flowchartId": "SetupJob",  # How to refer to this subworkflow in the "next" key
-                    "head": True, # Whether this is the first subworkflow to be used
-                    "next": "PreProcessData" # The flowchartId of the next subworkflow in the series
+                    "head": True,  # Whether this is the first subworkflow to be used
+                    "next": "PreProcessData"  # The flowchartId of the next subworkflow in the series
                 },
                 {
                     "_id": "PreProcessData",
@@ -124,22 +128,22 @@ class MLQuickImplementation(BaseProperty):
                     "head": False
                 }
             ],
-            "subworkflows": list(processed_subworkflows), # Units which make up each subworkflow are found here
-            "name": self.name, # Friendly name for the workflow
-            "creator": { # Information about the account that created this workflow ("" for automatic filling)
+            "subworkflows": list(processed_subworkflows),  # Units which make up each subworkflow are found here
+            "name": self.name,  # Friendly name for the workflow
+            "creator": {  # Information about the account that created this workflow ("" for automatic filling)
                 "_id": "",
                 "cls": "User",
                 "slug": ""
             },
-            "owner": { # Information about the account that currently owns this workflow ("" for automatic filling)
+            "owner": {  # Information about the account that currently owns this workflow ("" for automatic filling)
                 "_id": "",
                 "cls": "Account",
                 "slug": ""
             },
-            "schemaVersion": "0.2.0", # Version of this schema to use in ESSE
-            "exabyteId": "", # ID for the corresponding bank workflow. Leave as the empty string.
-            "hash": "", # Hash used to compare workflows for uniqueness. Leave as the empty string.
-            "_id": "", # ID for MongoDB; needs to be blank. Leave as the empty string.
+            "schemaVersion": "0.2.0",  # Version of this schema to use in ESSE
+            "exabyteId": "",  # ID for the corresponding bank workflow. Leave as the empty string.
+            "hash": "",  # Hash used to compare workflows for uniqueness. Leave as the empty string.
+            "_id": "",  # ID for MongoDB; needs to be blank. Leave as the empty string.
         }
         return workflow
 
