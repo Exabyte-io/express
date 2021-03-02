@@ -20,7 +20,7 @@ class MLQuickImplementation(BaseProperty):
             parser (str): Parser to use with this workflow
             workflow (dict): JSON containing the workflow itself
         """
-        super(MLQuickImplementation, self).__init__(name, parser, *args, **kwargs)
+        super().__init__(name, parser, *args, **kwargs)
         self.name = name
         self.workflow = copy.deepcopy(workflow)
 
