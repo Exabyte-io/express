@@ -2,6 +2,9 @@ from express.properties import BaseProperty
 import copy
 
 
+# Note for naming convention: code uses snake_case, JSON uses camelCase
+
+
 # Todo: This is the quick implementation of ExabyteML, and will be depreciated eventually
 class MLQuickImplementation(BaseProperty):
     """
@@ -23,112 +26,61 @@ class MLQuickImplementation(BaseProperty):
 
     @property
     def schema(self):
+        # Shadows the schema property in BaseProperty
+        # Not entirely sure why this is done in the old one, but the net effect is this avoids a call to
+        #   self.esse.get_property_manifest(self.name)
         return self.esse.get_schema_by_id("workflow")
 
-    # Todo: Implement this
-    def _process_unit(self, unit: dict) -> dict:
+    def _construct_predict_subworkflows(self, train_subworkflows: list) -> list:
         """
-        Takes a workflow unit from a train workflow, and converts it to the corresponding predict workflow unit.
-        Args:
-            unit (dict): The unit to be converted
-
-        Returns:
-            A dictionary of the predict workflow unit
-        """
-        unit = copy.deepcopy(unit)
-        return unit
-
-    def _process_subworkflow(self, subworkflow: dict) -> dict:
-        """
-        Takes a train workflow and converts it to a predict workflow.
+        Given the set of training subworkflows, converts to the subworkflows defining the predict workflow.
 
         Args:
-            subworkflow (dict): The subworkflow to be converted
+            train_subworkflows: "subworkflows" defined in the original workflow
 
         Returns:
-            A dictionary of the predict subworkflow
+            A list of subworkflows, which define the resultant predict workflow.
+
         """
-        subworkflow = copy.deepcopy(subworkflow)
+        # Todo: Implement the way we'll construct the predict subworkflow below
+        return train_subworkflows
 
-        # Rename the subworkflow units
-        # Mapping of the form {TrainWorkflowName : PredictWorkflowName}
-        name_mapping = {"SetupJob": "SetupJob",
-                        "PreProcessData": "PreProcessData",
-                        "TrainModel": "Predict",
-                        "DrawPlots": "DrawPlots"}
-        name = subworkflow["name"]
-        subworkflow["name"] = name_mapping[name]
+    def _construct_predict_subworkflow_units(self, train_subworkflow_units: list) -> list:
+        """
+        Constructs the predict subworkflow units, for use in the generated predict workflow.
+        Here, and only here, "units" is intended to mean "subworkflows," because that's what the Workflows object
+        uses to define the subworkflow graph.
 
-        # Change the subworkflow units
-        new_units = map(self._process_unit, subworkflow["units"])
-        subworkflow["units"] = list(new_units)
-        return subworkflow
+        Args:
+            train_subworkflow_units: "Units" defined in the original workflow.
+
+        Returns:
+            A list describing the order in which subworkflows will be executed.
+        """
+        # Todo: Implement the way we'll construct the subworkflow units below
+        return train_subworkflow_units
 
     @property
     def _serialize(self):
         """
         Creates the actual ML Predict workflow that will be output from a job. Intended for the quick implementation.
-
-        We assume that all predict workflows in this implementation will contain the following subworkflows:
-        1) SetupJob
-            Contains directives which set up the job. Configuration, copying data, installing packages, etc.
-        2) PreProcessData
-            First unit is IO to load data. Subsequent units include things like normalization, standardization, etc.
-        3) TrainModel
-            We deliberately skip the "hyperparameter optimization" step, since we already have a trained model
-            This will get re-named to "Predict" by process_subworkflow
-        4) DrawPlots
-            Saves any plots that may have been generated during the job.
         """
-        # A note on variable naming conventions, since this code intersects two different conventions.
-        # In the Python code, we're sticking with snake_case for variables.
-        # In our JSON (e.g. things we define in ESSE), we stick with CamelCase for variable names.
-        valid_subworkflow_names = ["SetupJob", "PreProcessData", "TrainModel", "DrawPlots"]
-        subworkflows: list = self.workflow["subworkflows"]
-        valid_subworkflows = filter(lambda subworkflow: True if subworkflow["name"] in valid_subworkflow_names else False,
-                                    subworkflows)
-        processed_subworkflows = map(self._process_subworkflow, valid_subworkflows)
+        # Defines the "units" key inside the workflow. Here (and only here), "units" actually means "subworkflows,"
+        # because that's what the key is called inside "workflow"
+        train_subworkflow_units: list = self.workflow["units"]
+        predict_subworkflow_units = self._construct_predict_subworkflow_units(train_subworkflow_units)
+
+        # Defines the "subworkflows" key inside the workflow
+        train_subworkflows: list = self.workflow["subworkflows"]
+        predict_subworkflows = self._construct_predict_subworkflows(train_subworkflows)
+
         # Create the workflow
         workflow = {
-            # These "
-            "units": [
-                {
-                    # Per the 2/24 morning standup, it looks like _id should be fine this way, as long as
-                    # we only refer to it internally in this workflow. The problem of unique ID's becomes a bigger deal
-                    # when we store the workflow in MongoDB. For this reason, we're leaving the top-level
-                    # workflow["_id"] field as the empty string.
-                    "_id": "SetupJob",  # Some unique ID (internally) for the subworkflow
-                    "name": "SetupJob",  # Friendly, human-readable name for the subworkflow
-                    "type": "subworkflow",
-                    "flowchartId": "SetupJob",  # How to refer to this subworkflow in the "next" key
-                    "head": True,  # Whether this is the first subworkflow to be used
-                    "next": "PreProcessData"  # The flowchartId of the next subworkflow in the series
-                },
-                {
-                    "_id": "PreProcessData",
-                    "name": "PreProcessData",
-                    "type": "subworkflow",
-                    "flowchartId": "PreProcessData",
-                    "head": False,
-                    "next": "Predict"
-                },
-                {
-                    "_id": "Predict",
-                    "name": "Predict",
-                    "type": "subworkflow",
-                    "flowchartId": "Predict",
-                    "head": False,
-                    "next": "DrawPlots"
-                },
-                {
-                    "_id": "DrawPlots",
-                    "name": "DrawPlots",
-                    "type": "subworkflow",
-                    "flowchartId": "Predict",
-                    "head": False
-                }
-            ],
-            "subworkflows": list(processed_subworkflows),  # Units which make up each subworkflow are found here
+            # Contents of the workflow:
+            "units": predict_subworkflow_units,
+            "subworkflows": predict_subworkflows,  # Units which make up each subworkflow are found here
+
+            # Metadata describing the workflow
             "name": self.name,  # Friendly name for the workflow
             "creator": {  # Information about the account that created this workflow ("" for automatic filling)
                 "_id": "",
@@ -145,6 +97,7 @@ class MLQuickImplementation(BaseProperty):
             "hash": "",  # Hash used to compare workflows for uniqueness. Leave as the empty string.
             "_id": "",  # ID for MongoDB; needs to be blank. Leave as the empty string.
         }
+
         return workflow
 
 
