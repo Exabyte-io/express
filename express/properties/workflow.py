@@ -1,4 +1,5 @@
 from express.properties import BaseProperty
+import os
 import copy
 
 
@@ -22,6 +23,10 @@ class MLQuickImplementation(BaseProperty):
         """
         super().__init__(name, parser, *args, **kwargs)
         self.name = name
+        self.work_dir = self.kwargs["work_dir"]
+        self.obj_storage_container = self.kwargs["OBJ_STORAGE_CONTAINER"]
+        self.obj_storage_container_region = self.kwargs["OBJ_STORAGE_REGION"]
+        self.obj_storage_container_platform = self.kwargs["CONTAINER_PLATFORM"]
         self.workflow = copy.deepcopy(workflow)
 
     @property
@@ -31,8 +36,7 @@ class MLQuickImplementation(BaseProperty):
         #   self.esse.get_property_manifest(self.name)
         return self.esse.get_schema_by_id("workflow")
 
-    def _create_download_from_object_storage(self, filename: str, container: str, source_path: str, provider: str,
-                                             region: str, nextUnit: str, overwrite: bool = False) -> dict:
+    def _create_download_from_object_storage(self, filename: str, nextUnit: str) -> dict:
         """
         Constructs the download_from_object_storage unit for use in the workflow
 
@@ -49,11 +53,11 @@ class MLQuickImplementation(BaseProperty):
 
         """
         unit = {"filename": filename,
-                "overwrite": overwrite,
-                "objectData": {"CONTAINER": container,
-                               "NAME": source_path,
-                               "PROVIDER": provider,
-                               "REGION": region
+                "overwrite": False,
+                "objectData": {"CONTAINER": self.obj_storage_container,
+                               "NAME": os.path.join(self.work_dir, filename),
+                               "PROVIDER": self.obj_storage_container_platform,
+                               "REGION": self.obj_storage_container_region
                                },
                 "flowchartID": "download-files-from-object-storage",
                 "head": True,
@@ -115,15 +119,11 @@ class MLQuickImplementation(BaseProperty):
                         unit["next"] = "download-files-from-object-storage"
 
                 # Create the download_from_object_storage unit
+                # Todo: Determine which files to copy (do we do this from settings.py?)
                 download_unit = self._create_download_from_object_storage(filename=self.filename,
-                                                                          container = self.container,
-                                                                          source_path = self.source_path,
-                                                                          provider = self.provider,
-                                                                          region = self.region,
-                                                                          nextUnit = head_unit_flowchart_id,
-                                                                          overwrite = self.overwrite)
+                                                                          nextUnit=head_unit_flowchart_id)
                 # Add the download unit to the current set of units
-                subworkflow["units"] : list
+                subworkflow["units"]: list
                 subworkflow["units"].append(download_unit)
 
         return predict_subworkflows
