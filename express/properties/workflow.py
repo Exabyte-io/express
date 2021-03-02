@@ -63,19 +63,70 @@ class MLQuickImplementation(BaseProperty):
                 }
         return unit
 
-    def _construct_predict_subworkflows(self, train_subworkflows: list) -> list:
+    @staticmethod
+    def _find_head_flowchart_id(units: list) -> str:
+        """
+        Given a set of subworkflows or units, will find the head unit.
+
+        Args:
+            units: Either a subworkflow or a unit
+
+        Returns:
+            A string representing the flowchartID of the head subworkflow
+
+        """
+        # Not sure yet of the type of subworkflow_units["head"]
+        # ToDo: Figure out which we expect, and remove this if/else
+        if isinstance(str, units[0]["head"]):
+            head_test = lambda unit: unit["head"].lower() == "true"
+        else:
+            head_test = lambda unit: unit["head"] == True
+        # Check for the head unit where "next" is true
+        head_unit = next(filter(head_test, units))
+        head_unit_flowchartID = head_unit["flowchartID"]
+        return head_unit_flowchartID
+
+    def _construct_predict_subworkflows(self, train_subworkflows: list, head_subworkflow_flowchart_id: str) -> list:
         """
         Given the set of training subworkflows, converts to the subworkflows defining the predict workflow.
 
         Args:
             train_subworkflows: "subworkflows" defined in the original workflow
+            head: Which subworkflow unit is the head unit
 
         Returns:
             A list of subworkflows, which define the resultant predict workflow.
 
         """
-        # Todo: Implement the way we'll construct the predict subworkflow below
-        return train_subworkflows
+        # Need to deepcopy to avoid changing the original subworkflow
+        predict_subworkflows = copy.deepcopy(train_subworkflows)
+
+        # Iterate over subworkflows
+        for subworkflow in predict_subworkflows:
+            # Modify the head subworkflow, placing download_from_object_storage at the head
+            if subworkflow["flowchartID"] == head_subworkflow_flowchart_id:
+                # Find the head unit
+                head_unit_flowchart_id = self._find_head_flowchart_id(subworkflow["units"])
+
+                # Modify the previous head unit to point to the new download unit
+                for unit in subworkflow["units"]:
+                    if unit["flowchartID"] == head_unit_flowchart_id:
+                        unit["head"] = False
+                        unit["next"] = "download-files-from-object-storage"
+
+                # Create the download_from_object_storage unit
+                download_unit = self._create_download_from_object_storage(filename=self.filename,
+                                                                          container = self.container,
+                                                                          source_path = self.source_path,
+                                                                          provider = self.provider,
+                                                                          region = self.region,
+                                                                          nextUnit = head_unit_flowchart_id,
+                                                                          overwrite = self.overwrite)
+                # Add the download unit to the current set of units
+                subworkflow["units"] : list
+                subworkflow["units"].append(download_unit)
+
+        return predict_subworkflows
 
     def _construct_predict_subworkflow_units(self, train_subworkflow_units: list) -> list:
         """
@@ -97,14 +148,18 @@ class MLQuickImplementation(BaseProperty):
         """
         Creates the actual ML Predict workflow that will be output from a job. Intended for the quick implementation.
         """
-        # Defines the "units" key inside the workflow. Here (and only here), "units" actually means "subworkflows,"
+        # Construct the "units" key inside the workflow. Here (and only here), "units" actually means "subworkflows,"
         # because that's what the key is called inside "workflow"
         train_subworkflow_units: list = self.workflow["units"]
         predict_subworkflow_units = self._construct_predict_subworkflow_units(train_subworkflow_units)
 
-        # Defines the "subworkflows" key inside the workflow
+        # Determine which subworkflow is currently at the head
+        head_subworkflow_flowchartid = self._find_head_flowchart_id(train_subworkflow_units)
+
+        # Construct the "subworkflows" key inside the workflow
         train_subworkflows: list = self.workflow["subworkflows"]
-        predict_subworkflows = self._construct_predict_subworkflows(train_subworkflows)
+        predict_subworkflows = self._construct_predict_subworkflows(train_subworkflows,
+                                                                    head_subworkflow_flowchart_id=head_subworkflow_flowchartid)
 
         # Create the workflow
         workflow = {
