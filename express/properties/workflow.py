@@ -31,6 +31,38 @@ class MLQuickImplementation(BaseProperty):
         #   self.esse.get_property_manifest(self.name)
         return self.esse.get_schema_by_id("workflow")
 
+    def _create_download_from_object_storage(self, filename: str, container: str, source_path: str, provider: str,
+                                             region: str, nextUnit: str, overwrite: bool = False) -> dict:
+        """
+        Constructs the download_from_object_storage unit for use in the workflow
+
+        Args:
+            filename: Name to be given to the file when it is downloaded.
+            container: Container that ran the job that resulted in the file
+            source_path: Path to where the job put the file
+            provider: Cloud compute provider
+            region: Region of the cloud provider's server
+            overwrite: If a file with the same name already exists in the destination directory, whether to replace it
+
+        Returns:
+            A download_from_object_storage workflow unit.
+
+        """
+        unit = {"filename": filename,
+                "overwrite": overwrite,
+                "objectData": {"CONTAINER": container,
+                               "NAME": source_path,
+                               "PROVIDER": provider,
+                               "REGION": region
+                               },
+                "flowchartID": "download-files-from-object-storage",
+                "head": True,
+                "name": "download_files",
+                "type": "download_from_object_storage",
+                "next": nextUnit
+                }
+        return unit
+
     def _construct_predict_subworkflows(self, train_subworkflows: list) -> list:
         """
         Given the set of training subworkflows, converts to the subworkflows defining the predict workflow.
