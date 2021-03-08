@@ -1,0 +1,9 @@
+nwchem.b filter=lfs diff=lfs merge=lfs -text
+nwchem.b^-1 filter=lfs diff=lfs merge=lfs -text
+nwchem.c filter=lfs diff=lfs merge=lfs -text
+nwchem.db filter=lfs diff=lfs merge=lfs -text
+nwchem.gridpts.0 filter=lfs diff=lfs merge=lfs -text
+nwchem-total-energy.log filter=lfs diff=lfs merge=lfs -text
+nwchem.movecs filter=lfs diff=lfs merge=lfs -text
+nwchem.p filter=lfs diff=lfs merge=lfs -text
+nwchem.zmat filter=lfs diff=lfs merge=lfs -text

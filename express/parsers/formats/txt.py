@@ -5,7 +5,6 @@ import builtins
 class BaseTXTParser(object):
     """
     Base text parser class.
-
     Args:
         work_dir (str): path to the working directory.
     """
@@ -18,7 +17,6 @@ class BaseTXTParser(object):
         General function for extracting data from a text output. It extracts basic values using regex patterns. Based
         on the input regex pattern, this function uses re.findall method to find every instance of the pattern inside
         the text.
-
         Args:
             text (str): text to search
             regex (str): regex pattern.
@@ -29,7 +27,6 @@ class BaseTXTParser(object):
                                 - N = 0: extract all of of the occurred instances and forms a list.
                                 - N > 0: extract the first N instance(s). Forms a list if |N| > 1
             match_groups (list): list of match groups to be used for the regex.
-
         Return:
             any
         """
