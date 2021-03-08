@@ -2,7 +2,6 @@ import warnings
 import importlib
 
 from express import settings
-from properties import BaseProperty
 
 # disable pymatgen warnings
 warnings.filterwarnings("ignore")
@@ -80,5 +79,6 @@ class ExPrESS(object):
              dict
         """
         Property_Class = self._get_property_class(property_name)
-        property_instance : BaseProperty = Property_Class(property_name, self.parser, *args, **kwargs)
+        # This is an instance or child of BaseProperty
+        property_instance = Property_Class(property_name, self.parser, *args, **kwargs)
         return property_instance.serialize_and_validate()
