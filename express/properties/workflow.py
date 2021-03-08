@@ -12,14 +12,13 @@ class MLQuickImplementation(BaseProperty):
     Quick implementation of the new version of ExabyteML
     """
 
-    def __init__(self, name, parser, workflow, *args, **kwargs):
+    def __init__(self, name, parser, *args, **kwargs):
         """
         Constructor for MLQuickImplementation
 
         Args:
             name (str): Name of the workflow
             parser (str): Parser to use with this workflow
-            workflow (dict): JSON containing the workflow itself
         """
         super().__init__(name, parser, *args, **kwargs)
         self.name = name
