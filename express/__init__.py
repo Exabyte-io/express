@@ -24,7 +24,13 @@ class ExPrESS(object):
     """
 
     def __init__(self, parser_name=None, *args, **kwargs):
-        self.parser = self._get_parser_class(parser_name)(*args, **kwargs) if parser_name else None
+        parser_class = self._get_parser_class(parser_name) if parser_name else None
+
+        # Look up the parser class, if it exists
+        if parser_class is not None:
+            self.parser = parser_class(parser_name)(*args, **kwargs)
+        else:
+            self.parser = None
 
     def _get_parser_class(self, parser_name: str):
         """
@@ -36,8 +42,14 @@ class ExPrESS(object):
         Returns:
 
         """
-        reference = settings.PARSERS_REGISTRY[parser_name]
-        return self._get_class_by_reference(reference)
+        # If-statement will return None for parser class if the parser is missing from the registry
+        if parser_name in settings.PARSERS_REGISTRY:
+            reference = settings.PARSERS_REGISTRY[parser_name]
+            parser_class = self._get_class_by_reference(reference)
+        else:
+            parser_class = None
+
+        return parser_class
 
     def _get_class_by_reference(self, reference: str):
         """
