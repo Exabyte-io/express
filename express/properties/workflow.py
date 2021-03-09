@@ -55,12 +55,19 @@ class MLQuickImplementation(BaseProperty):
         if isinstance(filenames, str):
             # Ensure we have a list of strings
             filenames = [filenames]
+
         for filename in filenames:
+            # If ml_cache_dir is defined (e.g. we're not just pickling to the job's root dir), make sure it's in the path
+            if self.ml_cache_dir:
+                path_names = (self.work_dir, self.ml_cache_dir, filename)
+            else:
+                path_names = (self.work_dir, filename)
+
             inputs.append({"basename": filename,
                            "pathname": self.ml_cache_dir,
                            "overwrite": False,
                            "objectData": {"CONTAINER": self.obj_storage_container,
-                                          "NAME": os.path.join(self.work_dir, filename),
+                                          "NAME": os.path.join(*path_names),
                                           "PROVIDER": self.obj_storage_container_provider,
                                           "REGION": self.obj_storage_container_region
                                           }
