@@ -85,6 +85,9 @@ NON_SCALAR_PROPERTIES_MANIFEST = {
     'charge_density_profile': {
         'reference': 'express.properties.non_scalar.two_dimensional_plot.charge_density_profile.ChargeDensityProfile'
     },
+    'file_content': {
+        'reference': 'express.properties.non_scalar.file_content.FileContent'
+    },
 }
 
 CONVERGENCE_PROPERTIES = {
