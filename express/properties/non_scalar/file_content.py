@@ -14,7 +14,6 @@ class FileContent(NonScalarProperty):
         self.basename = str(kwargs['basename'])
         self.filetype = str(kwargs['filetype'])
         self.work_dir = str(kwargs['work_dir'])
-        self.stdout_file = str(kwargs['stdout_file'])
         self.object_storage_data: Dict[str, str] = kwargs['object_storage_data']
 
     def _serialize(self):
