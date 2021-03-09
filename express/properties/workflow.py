@@ -23,10 +23,13 @@ class MLQuickImplementation(BaseProperty):
         super().__init__(name, parser, *args, **kwargs)
         self.name = name
         self.work_dir = self.kwargs["work_dir"]
-        self.obj_storage_container = self.kwargs["OBJ_STORAGE_CONTAINER"]
-        self.obj_storage_container_region = self.kwargs["OBJ_STORAGE_REGION"]
-        self.obj_storage_container_platform = self.kwargs["CONTAINER_PLATFORM"]
-        self.workflow = copy.deepcopy(workflow)
+
+        object_storage_data = self.kwargs["object_storage_data"]
+        self.obj_storage_container = object_storage_data["CONTAINER"]
+        self.obj_storage_container_region = object_storage_data["REGION"]
+        self.obj_storage_container_provider = object_storage_data["PROVIDER"]
+
+        self.workflow = copy.deepcopy(self.kwargs["workflow"])
 
     @property
     def schema(self):
@@ -55,7 +58,7 @@ class MLQuickImplementation(BaseProperty):
                 "overwrite": False,
                 "objectData": {"CONTAINER": self.obj_storage_container,
                                "NAME": os.path.join(self.work_dir, filename),
-                               "PROVIDER": self.obj_storage_container_platform,
+                               "PROVIDER": self.obj_storage_container_provider,
                                "REGION": self.obj_storage_container_region
                                },
                 "flowchartID": "download-files-from-object-storage",
@@ -66,36 +69,12 @@ class MLQuickImplementation(BaseProperty):
                 }
         return unit
 
-    @staticmethod
-    def _find_head_flowchart_id(units: list) -> str:
-        """
-        Given a set of subworkflows or units, will find the head unit.
-
-        Args:
-            units: Either a subworkflow or a unit
-
-        Returns:
-            A string representing the flowchartID of the head subworkflow
-
-        """
-        # Not sure yet of the type of subworkflow_units["head"]
-        # ToDo: Figure out which we expect, and remove this if/else
-        if isinstance(str, units[0]["head"]):
-            head_test = lambda unit: unit["head"].lower() == "true"
-        else:
-            head_test = lambda unit: unit["head"] == True
-        # Check for the head unit where "next" is true
-        head_unit = next(filter(head_test, units))
-        head_unit_flowchartID = head_unit["flowchartID"]
-        return head_unit_flowchartID
-
-    def _construct_predict_subworkflows(self, train_subworkflows: list, head_subworkflow_flowchart_id: str) -> list:
+    def _construct_predict_subworkflows(self, train_subworkflows: list) -> list:
         """
         Given the set of training subworkflows, converts to the subworkflows defining the predict workflow.
 
         Args:
             train_subworkflows: "subworkflows" defined in the original workflow
-            head: Which subworkflow unit is the head unit
 
         Returns:
             A list of subworkflows, which define the resultant predict workflow.
@@ -104,26 +83,12 @@ class MLQuickImplementation(BaseProperty):
         # Need to deepcopy to avoid changing the original subworkflow
         predict_subworkflows = copy.deepcopy(train_subworkflows)
 
-        # Iterate over subworkflows
+        # Tiers need to present to make it through ESSE validations
+        tiers = {"tier1": "statistical",
+                 "tier2": "deterministic",
+                 "tier3": "machine_learning"}
         for subworkflow in predict_subworkflows:
-            # Modify the head subworkflow, placing download_from_object_storage at the head
-            if subworkflow["flowchartID"] == head_subworkflow_flowchart_id:
-                # Find the head unit
-                head_unit_flowchart_id = self._find_head_flowchart_id(subworkflow["units"])
-
-                # Modify the previous head unit to point to the new download unit
-                for unit in subworkflow["units"]:
-                    if unit["flowchartID"] == head_unit_flowchart_id:
-                        unit["head"] = False
-                        unit["next"] = "download-files-from-object-storage"
-
-                # Create the download_from_object_storage unit
-                # Todo: Determine which files to copy (do we do this from settings.py?)
-                download_unit = self._create_download_from_object_storage(filename=self.filename,
-                                                                          nextUnit=head_unit_flowchart_id)
-                # Add the download unit to the current set of units
-                subworkflow["units"]: list
-                subworkflow["units"].append(download_unit)
+            subworkflow["model"].update(tiers)
 
         return predict_subworkflows
 
@@ -142,7 +107,6 @@ class MLQuickImplementation(BaseProperty):
         # Todo: Implement the way we'll construct the subworkflow units below
         return train_subworkflow_units
 
-    @property
     def _serialize(self):
         """
         Creates the actual ML Predict workflow that will be output from a job. Intended for the quick implementation.
@@ -152,13 +116,9 @@ class MLQuickImplementation(BaseProperty):
         train_subworkflow_units: list = self.workflow["units"]
         predict_subworkflow_units = self._construct_predict_subworkflow_units(train_subworkflow_units)
 
-        # Determine which subworkflow is currently at the head
-        head_subworkflow_flowchartid = self._find_head_flowchart_id(train_subworkflow_units)
-
         # Construct the "subworkflows" key inside the workflow
         train_subworkflows: list = self.workflow["subworkflows"]
-        predict_subworkflows = self._construct_predict_subworkflows(train_subworkflows,
-                                                                    head_subworkflow_flowchart_id=head_subworkflow_flowchartid)
+        predict_subworkflows = self._construct_predict_subworkflows(train_subworkflows)
 
         # Create the workflow
         workflow = {
