@@ -1,6 +1,7 @@
 from express.properties import BaseProperty
 import os
 import copy
+from typing import List
 
 
 # Note for naming convention: code uses snake_case, JSON uses camelCase
@@ -28,7 +29,7 @@ class MLQuickImplementation(BaseProperty):
         self.obj_storage_container = object_storage_data["CONTAINER"]
         self.obj_storage_container_region = object_storage_data["REGION"]
         self.obj_storage_container_provider = object_storage_data["PROVIDER"]
-
+        self.ml_cache_dir = ".mlcache"
         self.workflow = copy.deepcopy(self.kwargs["workflow"])
 
     @property
@@ -38,36 +39,33 @@ class MLQuickImplementation(BaseProperty):
         #   self.esse.get_property_manifest(self.name)
         return self.esse.get_schema_by_id("workflow")
 
-    def _create_download_from_object_storage(self, filename: str, nextUnit: str) -> dict:
+    def _create_download_from_object_storage_inputs(self, filenames: List[str]) -> list:
         """
         Constructs the download_from_object_storage unit for use in the workflow
 
         Args:
-            filename: Name to be given to the file when it is downloaded.
-            container: Container that ran the job that resulted in the file
-            source_path: Path to where the job put the file
-            provider: Cloud compute provider
-            region: Region of the cloud provider's server
-            overwrite: If a file with the same name already exists in the destination directory, whether to replace it
+            filenames: List of filenames to copy in
+            ml_cache_dir: Where the pickles are being stored
 
         Returns:
             A download_from_object_storage workflow unit.
 
         """
-        unit = {"filename": filename,
-                "overwrite": False,
-                "objectData": {"CONTAINER": self.obj_storage_container,
-                               "NAME": os.path.join(self.work_dir, filename),
-                               "PROVIDER": self.obj_storage_container_provider,
-                               "REGION": self.obj_storage_container_region
-                               },
-                "flowchartID": "download-files-from-object-storage",
-                "head": True,
-                "name": "download_files",
-                "type": "download_from_object_storage",
-                "next": nextUnit
-                }
-        return unit
+        inputs = []
+        if isinstance(filenames, str):
+            # Ensure we have a list of strings
+            filenames = [filenames]
+        for filename in filenames:
+            inputs.append({"basename": filename,
+                           "pathname": self.ml_cache_dir,
+                           "overwrite": False,
+                           "objectData": {"CONTAINER": self.obj_storage_container,
+                                          "NAME": os.path.join(self.work_dir, filename),
+                                          "PROVIDER": self.obj_storage_container_provider,
+                                          "REGION": self.obj_storage_container_region
+                                          }
+                           })
+        return inputs
 
     def _construct_predict_subworkflows(self, train_subworkflows: list) -> list:
         """
@@ -89,6 +87,26 @@ class MLQuickImplementation(BaseProperty):
                  "tier3": "machine_learning"}
         for subworkflow in predict_subworkflows:
             subworkflow["model"].update(tiers)
+
+            for unit in subworkflow["units"]:
+                # Set download-from-object-storage units
+                if unit["flowchartId"] == "head-fetch-trained-model":
+                    # Update with the pickles to copy
+                    filenames = os.listdir(self.ml_cache_dir)
+                    download_inputs = self._create_download_from_object_storage_inputs(filenames)
+                    unit["input"] = download_inputs
+
+                # Set predict status
+                elif unit["flowchartId"] == "head-set-predict-status":
+                    # Set IS_PREDICT to True
+                    # Needs to be string True, otherwise this gets converted to "true" in the JSON, and will fail
+                    # in SimpleEval when Rupy runs the unit again later
+                    unit["value"] = "True"
+
+                # Remove workflow property, so predict runs don't return another workflow
+                elif {"name": "workflow:pyml_predict"} in unit["results"]:
+                    unit["results"].remove({"name": "workflow:pyml_predict"})
+
 
         return predict_subworkflows
 
