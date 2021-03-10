@@ -6,7 +6,17 @@ from . import NonScalarProperty
 
 class FileContent(NonScalarProperty):
     """
-    file_content property class.
+    file_content property.
+    Args:
+        **kwargs: required fields are:
+                    - basename (str): the file name, without the path
+                    - filetype (str): text or image
+                    - work_dir (str): the working directory where the job file exists
+                    - object_storage_data (dict): describes the object in the bucket, with keys:
+                        - CONTAINER (str): the name of the object store bucket
+                        - NAME (str): the object name in the container
+                        - PROVIDER (str): the cloud provider where the container exists
+                        - REGION (str): the cloud provider region in which the container exists
     """
 
     def __init__(self, name, parser, *args, **kwargs):
