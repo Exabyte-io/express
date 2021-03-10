@@ -28,7 +28,7 @@ class ExPrESS(object):
 
         # Look up the parser class, if it exists
         if parser_class is not None:
-            self.parser = parser_class(parser_name)(*args, **kwargs)
+            self.parser = parser_class(*args, **kwargs)
         else:
             self.parser = None
 
