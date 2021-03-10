@@ -6,7 +6,7 @@ from . import NonScalarProperty
 
 class FileContent(NonScalarProperty):
     """
-    p-norm property class.
+    file_content property class.
     """
 
     def __init__(self, name, parser, *args, **kwargs):
