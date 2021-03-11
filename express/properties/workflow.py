@@ -47,14 +47,14 @@ class WorkflowProperty(BaseProperty):
 
 
 # Todo: This is the quick implementation of ExabyteML, and will be depreciated eventually
-class MLQuickImplementation(WorkflowProperty):
+class PyMLTrainAndPredictWorkflow(WorkflowProperty):
     """
     Quick implementation of the new version of ExabyteML
     """
 
     def __init__(self, name, parser, *args, **kwargs):
         """
-        Constructor for MLQuickImplementation
+        Constructor for PyMLTrainAndPredictWorkflow
 
         Args:
             name (str): Name of the workflow
