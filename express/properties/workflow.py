@@ -9,6 +9,7 @@ class WorkflowProperty(BaseProperty):
     """
     Base class for workflow properties extracted in Express
     """
+
     def __init__(self, name, parser, *args, **kwargs):
         """
         Constructor for PyMLTrainAndPredictWorkflow
@@ -143,7 +144,8 @@ class PyMLTrainAndPredictWorkflow(WorkflowProperty):
         Returns:
             None
         """
-        basenames_to_copy = os.listdir(self.context_dir_relative_path)
+        context_dir_absolute_path = os.path.join(self.work_dir, self.context_dir_relative_path)
+        basenames_to_copy = os.listdir(context_dir_absolute_path)
         io_unit_inputs = map(self._create_download_from_object_storage_input, basenames_to_copy)
         unit["input"] = list(io_unit_inputs)
 
@@ -164,18 +166,19 @@ class PyMLTrainAndPredictWorkflow(WorkflowProperty):
         # What the predict property was named
         predict_property_result = {"name": "workflow:pyml_predict"}
 
-        for unit in [subworkflow["units"] for subworkflow in predict_subworkflows]:
-            # Set predict status
-            if unit["flowchartId"] == "head-set-predict-status":
-                unit["value"] = "True"
+        for subworkflow in predict_subworkflows:
+            for unit in subworkflow["units"]:
+                # Set predict status
+                if unit["flowchartId"] == "head-set-predict-status":
+                    unit["value"] = "True"
 
-            # Set download-from-object-storage units
-            elif unit["flowchartId"] == "head-fetch-trained-model":
-                self.set_io_unit_filenames(unit)
+                # Set download-from-object-storage units
+                elif unit["flowchartId"] == "head-fetch-trained-model":
+                    self.set_io_unit_filenames(unit)
 
-            # Remove workflow property, so predict runs don't return another workflow
-            elif predict_property_result in unit["results"]:
-                unit["results"].remove(predict_property_result)
+                # Remove workflow property, so predict runs don't return another workflow
+                elif predict_property_result in unit["results"]:
+                    unit["results"].remove(predict_property_result)
 
         return predict_subworkflows
 
