@@ -2,13 +2,52 @@ from express.properties import BaseProperty
 import os
 import copy
 from typing import List
+from abc import abstractmethod
 
 
 # Note for naming convention: code uses snake_case, JSON uses camelCase
 
+class WorkflowProperty(BaseProperty):
+    def __init__(self, name, parser, *args, **kwargs):
+        super().__init__(name, parser, *args, **kwargs)
+        self.name: str = name
+
+    @property
+    def schema(self):
+        return self.esse.get_schema_by_id("workflow")
+
+    @abstractmethod
+    def get_workflow_specific_config(self) -> dict:
+        return {}
+
+    def get_common_config(self) -> dict:
+        config = {
+            "name": self.name,
+            "creator": {
+                "_id": "",
+                "cls": "User",
+                "slug": ""
+            },
+            "owner": {
+                "_id": "",
+                "cls": "Account",
+                "slug": ""
+            },
+            "schemaVersion": "0.2.0",
+            "exabyteId": "",
+            "hash": "",
+            "_id": "",
+        }
+        return config
+
+    def _serialize(self) -> dict:
+        config = self.get_common_config()
+        config.update(self.get_workflow_specific_config())
+        return config
+
 
 # Todo: This is the quick implementation of ExabyteML, and will be depreciated eventually
-class MLQuickImplementation(BaseProperty):
+class MLQuickImplementation(WorkflowProperty):
     """
     Quick implementation of the new version of ExabyteML
     """
@@ -22,64 +61,59 @@ class MLQuickImplementation(BaseProperty):
             parser (str): Parser to use with this workflow
         """
         super().__init__(name, parser, *args, **kwargs)
-        self.name = name
-        self.work_dir = self.kwargs["work_dir"]
+        self.work_dir: str = self.kwargs["work_dir"]
+        self.object_storage_data: dict = self.kwargs["object_storage_data"]
+        self.context_dir_relative_path: str = self.kwargs["context_dir_relative_path"]
+        self.workflow: dict = copy.deepcopy(self.kwargs["workflow"])
 
-        object_storage_data = self.kwargs["object_storage_data"]
-        self.obj_storage_container = object_storage_data["CONTAINER"]
-        self.obj_storage_container_region = object_storage_data["REGION"]
-        self.obj_storage_container_provider = object_storage_data["PROVIDER"]
-        self.ml_cache_dir = ".mlcache"
-        self.workflow = copy.deepcopy(self.kwargs["workflow"])
-
-    @property
-    def schema(self):
-        # Shadows the schema property in BaseProperty
-        # Not entirely sure why this is done in the old one, but the net effect is this avoids a call to
-        #   self.esse.get_property_manifest(self.name)
-        return self.esse.get_schema_by_id("workflow")
-
-    def _create_download_from_object_storage_inputs(self, filenames: List[str]) -> list:
+    def _create_download_from_object_storage_input(self, basename: str) -> dict:
         """
-        Constructs the download_from_object_storage unit for use in the workflow
+        Generates an input for a download-from-object-storage unit
 
         Args:
-            filenames: List of filenames to copy in
-            ml_cache_dir: Where the pickles are being stored
+            basename (str): The basename to copy
 
         Returns:
-            A download_from_object_storage workflow unit.
+            The input for a download-from-object-storage io unit
 
         """
-        inputs = []
-        if isinstance(filenames, str):
-            # Ensure we have a list of strings
-            filenames = [filenames]
+        object_storage_data = copy.deepcopy(self.object_storage_data)
 
-        for filename in filenames:
-            # If ml_cache_dir is defined (e.g. we're not just pickling to the job's root dir), make sure it's in the path
-            if self.ml_cache_dir:
-                path_names = (self.work_dir, self.ml_cache_dir, filename)
-            else:
-                path_names = (self.work_dir, filename)
+        # Create path name based on whether files have a relative path
+        if self.context_dir_relative_path:
+            path_name = (self.work_dir, self.context_dir_relative_path, basename)
+        else:
+            path_name = (self.work_dir, basename)
+        object_storage_data.update({"NAME": os.path.join(*path_name)})
 
-            inputs.append({"basename": filename,
-                           "pathname": self.ml_cache_dir,
-                           "overwrite": False,
-                           "objectData": {"CONTAINER": self.obj_storage_container,
-                                          "NAME": os.path.join(*path_names),
-                                          "PROVIDER": self.obj_storage_container_provider,
-                                          "REGION": self.obj_storage_container_region
-                                          }
-                           })
-        return inputs
+        io_unit_input = {
+            "basename": basename,
+            "pathname": self.context_dir_relative_path,
+            "overwrite": False,
+            "objectData": object_storage_data
+        }
+        return io_unit_input
+
+    def set_io_unit_filenames(self, unit: dict) -> None:
+        """
+        Sets the filenames to copy inside of IO units
+
+        Args:
+            unit (dict): The IO unit to update
+
+        Returns:
+            None
+        """
+        basenames_to_copy = os.listdir(self.context_dir_relative_path)
+        io_unit_inputs = map(self._create_download_from_object_storage_input, basenames_to_copy)
+        unit["input"] = list(io_unit_inputs)
 
     def _construct_predict_subworkflows(self, train_subworkflows: list) -> list:
         """
         Given the set of training subworkflows, converts to the subworkflows defining the predict workflow.
 
         Args:
-            train_subworkflows: "subworkflows" defined in the original workflow
+            train_subworkflows (list): "subworkflows" defined in the original workflow
 
         Returns:
             A list of subworkflows, which define the resultant predict workflow.
@@ -88,112 +122,71 @@ class MLQuickImplementation(BaseProperty):
         # Need to deepcopy to avoid changing the original subworkflow
         predict_subworkflows = copy.deepcopy(train_subworkflows)
 
-        # Tiers need to present to make it through ESSE validations
-        tiers = {"tier1": "statistical",
-                 "tier2": "deterministic",
-                 "tier3": "machine_learning"}
-        for subworkflow in predict_subworkflows:
-            subworkflow["model"].update(tiers)
+        # What the predict property was named
+        predict_property_result = {"name": "workflow:pyml_predict"}
 
-            for unit in subworkflow["units"]:
-                # Set download-from-object-storage units
-                if unit["flowchartId"] == "head-fetch-trained-model":
-                    # Update with the pickles to copy
-                    filenames = os.listdir(self.ml_cache_dir)
-                    download_inputs = self._create_download_from_object_storage_inputs(filenames)
-                    unit["input"] = download_inputs
+        for unit in [subworkflow["units"] for subworkflow in predict_subworkflows]:
+            # Set predict status
+            if unit["flowchartId"] == "head-set-predict-status":
+                unit["value"] = "True"
 
-                # Set predict status
-                elif unit["flowchartId"] == "head-set-predict-status":
-                    # Set IS_PREDICT to True
-                    # Needs to be string True, otherwise this gets converted to "true" in the JSON, and will fail
-                    # in SimpleEval when Rupy runs the unit again later
-                    unit["value"] = "True"
+            # Set download-from-object-storage units
+            elif unit["flowchartId"] == "head-fetch-trained-model":
+                self.set_io_unit_filenames(unit)
 
-                # Remove workflow property, so predict runs don't return another workflow
-                elif {"name": "workflow:pyml_predict"} in unit["results"]:
-                    unit["results"].remove({"name": "workflow:pyml_predict"})
-
+            # Remove workflow property, so predict runs don't return another workflow
+            elif predict_property_result in unit["results"]:
+                unit["results"].remove(predict_property_result)
 
         return predict_subworkflows
 
-    def _construct_predict_subworkflow_units(self, train_subworkflow_units: list) -> list:
+    def get_workflow_specific_config(self) -> dict:
         """
-        Constructs the predict subworkflow units, for use in the generated predict workflow.
-        Here, and only here, "units" is intended to mean "subworkflows," because that's what the Workflows object
-        uses to define the subworkflow graph.
-
-        Args:
-            train_subworkflow_units: "Units" defined in the original workflow.
+        Generates the specific config for the new implementation of ExabyteML. The remainder of the config is
+        generated inside of the parent Workflow class.
 
         Returns:
-            A list describing the order in which subworkflows will be executed.
-        """
-        # Todo: Implement the way we'll construct the subworkflow units below
-        return train_subworkflow_units
-
-    def _serialize(self):
-        """
-        Creates the actual ML Predict workflow that will be output from a job. Intended for the quick implementation.
+             dict
         """
         # Construct the "units" key inside the workflow. Here (and only here), "units" actually means "subworkflows,"
         # because that's what the key is called inside "workflow"
         train_subworkflow_units: list = self.workflow["units"]
-        predict_subworkflow_units = self._construct_predict_subworkflow_units(train_subworkflow_units)
 
         # Construct the "subworkflows" key inside the workflow
         train_subworkflows: list = self.workflow["subworkflows"]
         predict_subworkflows = self._construct_predict_subworkflows(train_subworkflows)
 
-        # Create the workflow
-        workflow = {
-            # Contents of the workflow:
-            "units": predict_subworkflow_units,
-            "subworkflows": predict_subworkflows,  # Units which make up each subworkflow are found here
-
-            # Metadata describing the workflow
-            "name": self.name,  # Friendly name for the workflow
-            "creator": {  # Information about the account that created this workflow ("" for automatic filling)
-                "_id": "",
-                "cls": "User",
-                "slug": ""
-            },
-            "owner": {  # Information about the account that currently owns this workflow ("" for automatic filling)
-                "_id": "",
-                "cls": "Account",
-                "slug": ""
-            },
-            "schemaVersion": "0.2.0",  # Version of this schema to use in ESSE
-            "exabyteId": "",  # ID for the corresponding bank workflow. Leave as the empty string.
-            "hash": "",  # Hash used to compare workflows for uniqueness. Leave as the empty string.
-            "_id": "",  # ID for MongoDB; needs to be blank. Leave as the empty string.
+        specific_config = {
+            "units": train_subworkflow_units,
+            "subworkflows": predict_subworkflows,
         }
 
-        return workflow
+        return specific_config
 
 
 # Todo: This is the old implementation of ExabyteML
-class ExabyteMLPredictWorkflow(BaseProperty):
+class ExabyteMLPredictWorkflow(WorkflowProperty):
     """
-    Exabyte ML predict Workflow property class.
+    Legacy implementation of Exabyte ML's predict Workflow property class.
     """
 
     def __init__(self, name, parser, *args, **kwargs):
-        super(ExabyteMLPredictWorkflow, self).__init__(name, parser, *args, **kwargs)
-        self.name = name
+        super().__init__(name, parser, *args, **kwargs)
+
         self.model = self.parser.model
         self.targets = self.parser.targets
         self.features = self.parser.features
         self.scaling_params_per_feature = self.parser.scaling_params_per_feature
 
-    def _serialize(self):
+    def get_workflow_specific_config(self) -> dict:
         """
-        Serialize a ML predict workflow.
+        Generates the specific config for a legacy ExabyteML workflow. The remainder of the config is generated
+        inside of the parent Worfklow class.
 
         Returns:
              dict
         """
-        return {
+        specific_config = {
             "units": [
                 {
                     "_id": "LCthJ6E2QabYCZqf4",
@@ -347,24 +340,6 @@ class ExabyteMLPredictWorkflow(BaseProperty):
                     "properties": self.targets
                 }
             ],
-            "name": self.name,
-            "properties": self.targets,
-            "creator": {
-                "_id": "",
-                "cls": "User",
-                "slug": ""
-            },
-            "owner": {
-                "_id": "",
-                "cls": "Account",
-                "slug": ""
-            },
-            "schemaVersion": "0.2.0",
-            "exabyteId": "",
-            "hash": "",
-            "_id": "",
+            "properties": self.targets
         }
-
-    @property
-    def schema(self):
-        return self.esse.get_schema_by_id("workflow")
+        return specific_config
