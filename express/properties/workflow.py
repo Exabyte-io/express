@@ -60,13 +60,14 @@ class PyMLTrainAndPredictWorkflow(WorkflowProperty):
 
     Workflow_Head_Subworkflow - Contains various units which prepare an ML job. For example, we may have the following
     units present.
-        - An Assignment unit specifying whether the workflow is in Train or Predict mode
+        - An Assignment unit specifying whether the workflow is in Train or Predict mode (head-set-predict-status)
         - A Conditional unit that specifies whether the train or predict setup is to be used
         - Training setup: An assignment unit to specify the training data to be included
         - Training setup: An IO unit to copy the training data into the current working directory
         - Predict setup: An assignment unit to specify the data to perform a prediction on
         - Predict setup: An IO unit to copy in the predict data to the current working directory
         - Predict setup: An IO unit to copy in any files necessary for the predict workflow to function
+                        (head-fetch-trained-model)
 
     The final IO unit in the predict setup that we discuss, which copies in files needed for the workflow to function,
     is populated by this class's _create_download_from_object_storage_input function. It obtains a list of files
