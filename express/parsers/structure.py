@@ -27,6 +27,22 @@ class StructureParser(BaseParser, IonicDataMixin):
         self.structure_string = kwargs.get("structure_string")
         self.structure_format = kwargs.get("structure_format")
 
+        # TODO: NEED TO ACCOUNT FOR IF NON-PERIODIC
+        # convert espresso input into cartesian coordinates
+        if self.structure_format == "espresso-in"
+            self.structure_format == "cartesian"
+            self.structure_string = self.espresso_input_to_cartesian(self.structure_string)
+
+        # convert vasp poscar into cartesian coordinates
+        if self.structure_format == "poscar":
+            self.structure_format = "cartesian"
+            self.structure_string = self.vasp_poscar_to_cartesian(self.structure_string)
+
+        # convert cartesian to zmat
+        if self.structure_format == "cartesian":
+            self.structure_format == "zmat"
+            self.structure_string = self.cartesian_to_zmat(self.structure_string)
+
         # convert espresso input into poscar
         if self.structure_format == "espresso-in":
             self.structure_format = "poscar"
@@ -221,6 +237,53 @@ class StructureParser(BaseParser, IonicDataMixin):
             func: express.parsers.mixins.ionic.IonicDataMixin.atomic_constraints
         """
         return self.structure.site_properties.get("selective_dynamics")
+
+    def vasp_poscar_to_cartesian(self, vasp_poscar):
+        """
+        Extracts structure from vasp poscar input file and returns in cartesian format
+
+        Args:
+            vasp_poscar (str): input file content
+
+        Returns:
+            str: cartesian coordinates
+        """
+        vasp_fi = ase.io.write("poscar", vasp_poscar, format="vasp")
+        vasp_in = ase.io.read(vasp_fi)
+        cartesian_fi = ase.io.write("cartesian-in", vasp_in, format="xyz")
+        return cartesian_fi
+
+    def espresso_input_to_cartesian(self, espresso_input):
+        """
+        Extracts structure from espresso input file and returns in cartesian format
+
+        Args:
+            espresso_input (str): input file content
+
+        Returns:
+            str: cartesian coordinates
+        """
+        espresso_fi = ase.io.write("espresso-in", espresso_input, format="espresso-in")
+        espresso_in = ase.io.read(espresso_fi)
+        cartesian_fi = ase.io.write("cartesian-in", espresso_in, format="xyz")
+        return cartesian_fi
+
+    def cartesian_to_zmat(self, cartesian_input):
+        """
+        Converts xyz formatted structure to zmatrix formatted structure
+
+        Args:
+            cartesian_input (str): input file structure
+
+        Returns:
+            str: zmatrix formatted structure
+        """
+        ase.io.write("input.xyz", cartesian_input, format="xyz")
+        cartesian_structure = mg.Molecule.from_file("input.xyz")
+        # TODO: change 0, 1 for charge, multiplicity
+        zmat_input = mg.io.gaussian.GaussianInput(cartesian_structure, 0, 1)
+        zmat = zmat_input.get_zmatrix()
+        return zmat
 
     def espresso_input_to_poscar(self, espresso_input):
         """
