@@ -56,7 +56,32 @@ class WorkflowProperty(BaseProperty):
 
 class PyMLTrainAndPredictWorkflow(WorkflowProperty):
     """
-    Quick implementation of the new version of ExabyteML
+    Quick implementation of the new version of ExabyteML. We expect workflows to have a format as follows:
+
+    Workflow_Head_Subworkflow - Contains various units which prepare an ML job. For example, we may have the following
+    units present.
+        - An Assignment unit specifying whether the workflow is in Train or Predict mode
+        - A Conditional unit that specifies whether the train or predict setup is to be used
+        - Training setup: An assignment unit to specify the training data to be included
+        - Training setup: An IO unit to copy the training data into the current working directory
+        - Predict setup: An assignment unit to specify the data to perform a prediction on
+        - Predict setup: An IO unit to copy in the predict data to the current working directory
+        - Predict setup: An IO unit to copy in any files necessary for the predict workflow to function
+
+    The final IO unit in the predict setup that we discuss, which copies in files needed for the workflow to function,
+    is populated by this class's _create_download_from_object_storage_input function. It obtains a list of files
+    the user has deemed important-enough to save in the workflow, and ensures they're around for the predict job.
+
+    Workflow_Tail_Subworkflow - Contains the actual ML that the user wants to perform. The intention is that this is
+    the more user-modifiable part of the ML feature. We might contain the following units here:
+        - pyml:setup_variables_packages: A setup file that helps the user communicate the files needed in subsequent
+                                         predict runs
+        - pyml:data_input:read_csv:pandas: Uses Pandas to read in a CSV for use in further ML
+        - pyml:pre_processing:standardization:sklearn: Scales the data such that it has mean=0 and variance=1, then
+                                                       saves the scaler for use in predict workflows
+        - pyml:model:multilayer_perceptron:sklearn: A multilayer perceptron being fit to a regression problem. Saves
+                                                    the model to be used again in predict workflows
+        - pyml:post_processing:parity_plot:matplotlib: Creates a parity plot if the workflow is in "Training" mode.
     """
 
     def __init__(self, name, parser, *args, **kwargs):
