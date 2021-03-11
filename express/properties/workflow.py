@@ -5,8 +5,6 @@ from typing import List
 from abc import abstractmethod
 
 
-# Note for naming convention: code uses snake_case, JSON uses camelCase
-
 class WorkflowProperty(BaseProperty):
     def __init__(self, name, parser, *args, **kwargs):
         super().__init__(name, parser, *args, **kwargs)
@@ -46,7 +44,6 @@ class WorkflowProperty(BaseProperty):
         return config
 
 
-# Todo: This is the quick implementation of ExabyteML, and will be depreciated eventually
 class PyMLTrainAndPredictWorkflow(WorkflowProperty):
     """
     Quick implementation of the new version of ExabyteML
