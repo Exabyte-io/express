@@ -102,6 +102,7 @@ class PyMLTrainAndPredictWorkflow(WorkflowProperty):
         """
         super().__init__(name, parser, *args, **kwargs)
         self.work_dir: str = self.kwargs["work_dir"]
+        self.upload_dir: str = self.kwargs["upload_dir"]
         self.object_storage_data: dict = self.kwargs["object_storage_data"]
         self.context_dir_relative_path: str = self.kwargs["context_dir_relative_path"]
         self.workflow: dict = copy.deepcopy(self.kwargs["workflow"])
@@ -121,9 +122,9 @@ class PyMLTrainAndPredictWorkflow(WorkflowProperty):
 
         # Create path name based on whether files have a relative path
         if self.context_dir_relative_path:
-            path_name = (self.work_dir, self.context_dir_relative_path, basename)
+            path_name = (self.upload_dir, self.context_dir_relative_path, basename)
         else:
-            path_name = (self.work_dir, basename)
+            path_name = (self.upload_dir, basename)
         object_storage_data.update({"NAME": os.path.join(*path_name)})
 
         io_unit_input = {
@@ -144,7 +145,7 @@ class PyMLTrainAndPredictWorkflow(WorkflowProperty):
         Returns:
             None
         """
-        context_dir_absolute_path = os.path.join(self.work_dir, self.context_dir_relative_path)
+        context_dir_absolute_path = os.path.join(self.upload_dir, self.context_dir_relative_path)
         basenames_to_copy = os.listdir(context_dir_absolute_path)
         io_unit_inputs = map(self._create_download_from_object_storage_input, basenames_to_copy)
         unit["input"] = list(io_unit_inputs)
