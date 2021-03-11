@@ -6,7 +6,17 @@ from abc import abstractmethod
 
 
 class WorkflowProperty(BaseProperty):
+    """
+    Base class for workflow properties extracted in Express
+    """
     def __init__(self, name, parser, *args, **kwargs):
+        """
+        Constructor for PyMLTrainAndPredictWorkflow
+
+        Args:
+            name (str): Name of the workflow
+            parser (str): Parser to use with this workflow
+        """
         super().__init__(name, parser, *args, **kwargs)
         self.name: str = name
 
@@ -56,6 +66,12 @@ class PyMLTrainAndPredictWorkflow(WorkflowProperty):
         Args:
             name (str): Name of the workflow
             parser (str): Parser to use with this workflow
+
+        Keyword Args:
+            work_dir (str): The working directory for the job calling Express
+            context_dir_relative_path (str): Relative path, from the job's working dir, to the context directory
+            object_storage_daga (dict): Information about the object storage provider being usec for file I/O
+            workflow (dict): The workflow used to run the job
         """
         super().__init__(name, parser, *args, **kwargs)
         self.work_dir: str = self.kwargs["work_dir"]
