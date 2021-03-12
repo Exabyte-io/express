@@ -67,6 +67,9 @@ NON_SCALAR_PROPERTIES_MANIFEST = {
     'workflow:ml_predict': {
         'reference': 'express.properties.workflow.ExabyteMLPredictWorkflow'
     },
+    'workflow:pyml_predict': {
+       'reference': 'express.properties.workflow.PyMLTrainAndPredictWorkflow'
+    },
     'phonon_dos': {
         'reference': 'express.properties.non_scalar.two_dimensional_plot.phonon_dos.PhononDOS'
     },
