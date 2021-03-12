@@ -25,7 +25,6 @@ class WorkflowProperty(BaseProperty):
     def schema(self):
         return self.esse.get_schema_by_id("workflow")
 
-    @abstractmethod
     def get_workflow_specific_config(self) -> dict:
         return {}
 
