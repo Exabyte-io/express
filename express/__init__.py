@@ -2,6 +2,8 @@ import warnings
 import importlib
 
 from express import settings
+from express.properties import BaseProperty
+from typing import Type, Union
 
 # disable pymatgen warnings
 warnings.filterwarnings("ignore")
@@ -32,7 +34,7 @@ class ExPrESS(object):
         else:
             self.parser = None
 
-    def _get_parser_class(self, parser_name: str):
+    def _get_parser_class(self, parser_name: str) -> Union[Type[BaseProperty], None]:
         """
         Returns parser class for a given parser name.
 
@@ -51,7 +53,7 @@ class ExPrESS(object):
 
         return parser_class
 
-    def _get_class_by_reference(self, reference: str):
+    def _get_class_by_reference(self, reference: str) -> Type[BaseProperty]:
         """
         Returns class by reference.
 
@@ -65,7 +67,7 @@ class ExPrESS(object):
         module_name = '.'.join(reference.split('.')[:-1])
         return getattr(importlib.import_module(module_name), class_name)
 
-    def _get_property_class(self, property_name: str):
+    def _get_property_class(self, property_name: str) -> Type[BaseProperty]:
         """
         Returns property class for a given property name.
 
@@ -75,7 +77,7 @@ class ExPrESS(object):
         Returns:
             class
         """
-        reference = settings.PROPERTIES_MANIFEST[property_name]["reference"]
+        reference: str = settings.PROPERTIES_MANIFEST[property_name]["reference"]
         return self._get_class_by_reference(reference)
 
     def property(self, property_name: str, *args, **kwargs) -> dict:
@@ -90,7 +92,6 @@ class ExPrESS(object):
         Returns:
              dict
         """
-        Property_Class = self._get_property_class(property_name)
-        # This is an instance or child of BaseProperty
-        property_instance = Property_Class(property_name, self.parser, *args, **kwargs)
+        Property_Class: Type[BaseProperty] = self._get_property_class(property_name)
+        property_instance: BaseProperty = Property_Class(property_name, self.parser, *args, **kwargs)
         return property_instance.serialize_and_validate()
