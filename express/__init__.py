@@ -3,7 +3,7 @@ import importlib
 
 from express import settings
 from express.properties import BaseProperty
-from typing import Type, Union
+from typing import Type, Optional
 
 # disable pymatgen warnings
 warnings.filterwarnings("ignore")
@@ -34,7 +34,7 @@ class ExPrESS(object):
         else:
             self.parser = None
 
-    def _get_parser_class(self, parser_name: str) -> Union[Type[BaseProperty], None]:
+    def _get_parser_class(self, parser_name: str) -> Optional[Type[BaseProperty]]:
         """
         Returns parser class for a given parser name.
 
@@ -92,6 +92,6 @@ class ExPrESS(object):
         Returns:
              dict
         """
-        Property_Class: Type[BaseProperty] = self._get_property_class(property_name)
-        property_instance: BaseProperty = Property_Class(property_name, self.parser, *args, **kwargs)
+        Property_Class = self._get_property_class(property_name)
+        property_instance = Property_Class(property_name, self.parser, *args, **kwargs)
         return property_instance.serialize_and_validate()
