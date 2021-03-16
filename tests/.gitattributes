@@ -1,1 +1,6 @@
-fixtures/** filter=lfs diff=lfs merge=lfs -text
+fixtures/espresso/* filter=lfs diff=lfs merge=lfs -text
+fixtures/vasp/* filter=lfs diff=lfs merge=lfs -text
+fixtures/espresso/** filter=lfs diff=lfs merge=lfs -text
+fixtures/vasp/** filter=lfs diff=lfs merge=lfs -text
+pyML/test-001/workflow_predict_after_conversion.JSON filter=lfs diff=lfs merge=lfs -text
+pyML/test-001/workflow_train.JSON filter=lfs diff=lfs merge=lfs -text

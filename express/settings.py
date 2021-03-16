@@ -67,6 +67,9 @@ NON_SCALAR_PROPERTIES_MANIFEST = {
     'workflow:ml_predict': {
         'reference': 'express.properties.workflow.ExabyteMLPredictWorkflow'
     },
+    'workflow:pyml_predict': {
+       'reference': 'express.properties.workflow.PyMLTrainAndPredictWorkflow'
+    },
     'phonon_dos': {
         'reference': 'express.properties.non_scalar.two_dimensional_plot.phonon_dos.PhononDOS'
     },
@@ -84,6 +87,9 @@ NON_SCALAR_PROPERTIES_MANIFEST = {
     },
     'charge_density_profile': {
         'reference': 'express.properties.non_scalar.two_dimensional_plot.charge_density_profile.ChargeDensityProfile'
+    },
+    'file_content': {
+        'reference': 'express.properties.non_scalar.file_content.FileContent'
     },
 }
 
@@ -104,6 +110,7 @@ PROPERTIES_MANIFEST.update(NON_SCALAR_PROPERTIES_MANIFEST)
 PARSERS_REGISTRY = {
     'espresso': 'express.parsers.apps.espresso.parser.EspressoParser',
     'vasp': 'express.parsers.apps.vasp.parser.VaspParser',
+    'nwchem': 'express.parsers.apps.nwchem.parser.NwchemParser',
     'structure': 'express.parsers.structure.StructureParser',
     'exabyteml': 'express.parsers.exabyteml.ExabyteMLParser'
 }

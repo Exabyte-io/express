@@ -1,0 +1,17 @@
+ start nwchem
+ title "DFT single point energy for water using B3LYP/6-31G*, units returned in hartrees"
+ charge 0
+
+ geometry units au noautosym 
+   O      0.00000000    0.00000000    0.00000000  
+   H      0.00000000    1.43042809   -1.10715266  
+   H      0.00000000   -1.43042809   -1.10715266
+ end
+ basis
+   * library 6-31G*
+ end
+ dft
+ xc B3LYP
+ mult 1
+ end
+ task dft energy
