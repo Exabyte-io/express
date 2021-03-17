@@ -8,7 +8,7 @@ from express.parsers.mixins.ionic import IonicDataMixin
 STRUCTURE_MAP = {
     "primitive": lambda s: mg.symmetry.analyzer.SpacegroupAnalyzer(s).get_primitive_standard_structure(),
     "conventional": lambda s: mg.symmetry.analyzer.SpacegroupAnalyzer(s).get_conventional_standard_structure(),
-    "zmatrix" self.zmatrix
+    "zmatrix": self.zmatrix
 }
 
 
