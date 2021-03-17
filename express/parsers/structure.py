@@ -7,7 +7,8 @@ from express.parsers.mixins.ionic import IonicDataMixin
 
 STRUCTURE_MAP = {
     "primitive": lambda s: mg.symmetry.analyzer.SpacegroupAnalyzer(s).get_primitive_standard_structure(),
-    "conventional": lambda s: mg.symmetry.analyzer.SpacegroupAnalyzer(s).get_conventional_standard_structure()
+    "conventional": lambda s: mg.symmetry.analyzer.SpacegroupAnalyzer(s).get_conventional_standard_structure(),
+    "zmatrix" self.zmatrix
 }
 
 
@@ -29,26 +30,27 @@ class StructureParser(BaseParser, IonicDataMixin):
 
         # TODO: NEED TO ACCOUNT FOR IF NON-PERIODIC
         # convert espresso input into cartesian coordinates
-        if self.structure_format == "espresso-in"
-            self.structure_format == "cartesian"
-            self.structure_string = self.espresso_input_to_cartesian(self.structure_string)
+        if self.structure_format == "espresso-in":
+            self.cartesian_coord = self.espresso_input_to_cartesian(self.structure_string)
 
         # convert vasp poscar into cartesian coordinates
         if self.structure_format == "poscar":
-            self.structure_format = "cartesian"
-            self.structure_string = self.vasp_poscar_to_cartesian(self.structure_string)
+            self.cartesian_coord  = self.vasp_poscar_to_cartesian(self.structure_string)
 
-        # convert cartesian to zmat
+        # convert cartesian to zmat & assign bonds, angles, dihedrals
         if self.structure_format == "cartesian":
-            self.structure_format == "zmat"
-            self.structure_string = self.cartesian_to_zmat(self.structure_string)
+            self.zmat_coord = self.cartesian_to_zmat(self.cartesian_coord)
+            self.zmat_bonds = self.get_zmat_bonds(self.zmat_coord)
+            self.zmat_angles = self.get_zmat_angles(self.zmat_coord)
+            self.zmat_dihedrals = self.get_zmat_dihedrals(self.zmat_coord)
+            self.zmatrix = [self.zmat_bonds, self.zmat_angles, self.zmat_dihedrals]
+
 
         # convert espresso input into poscar
         if self.structure_format == "espresso-in":
-            self.structure_format = "poscar"
-            self.structure_string = self.espresso_input_to_poscar(self.structure_string)
+            self.zmat_coord = self.espresso_input_to_poscar(self.cartesian_coord)
 
-        # cell is either original, primitive or conventional
+        # cell is either original, primitive, conventional or zmatrix
         self.cell = kwargs["cell"]
         self.structure = mg.Structure.from_str(self.structure_string, self.structure_format)
         if self.cell != "original": self.structure = STRUCTURE_MAP[self.cell](self.structure)
@@ -284,6 +286,36 @@ class StructureParser(BaseParser, IonicDataMixin):
         zmat_input = mg.io.gaussian.GaussianInput(cartesian_structure, 0, 1)
         zmat = zmat_input.get_zmatrix()
         return zmat
+
+    def get_zmat_bonds(self, zmat):
+        bonds = []
+        lines = zmat.split('\n')
+        for line in lines:
+            if '=' in line:
+                if "B" in line:
+                    bond_info = line.split('=')
+                    bonds.append(bond_info[1])
+        return bonds
+
+    def get_zmat_angles(self, zmat):
+        angles = []
+        lines = zmat.split('\n')
+        for line in lines:
+            if '=' in line:
+                if "A" in line:
+                    angle_info = line.split('=')
+                    angles.append(angle_info[1])
+        return angles
+
+    def get_zmat_dihedrals(self, zmat):
+        dihedrals = []
+        lines = zmat.split('\n')
+        for line in lines:
+            if '=' in line:
+                if "D" in line:
+                    dihedral_info = line.split('=')
+                    dihedrals.append(dihedral_info[1])
+        return dihedrals
 
     def espresso_input_to_poscar(self, espresso_input):
         """
