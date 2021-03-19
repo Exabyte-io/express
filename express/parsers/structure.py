@@ -1,5 +1,6 @@
 import io
 import pymatgen as mg
+import ase
 from ase.io import read, write
 
 from express.parsers import BaseParser
@@ -8,7 +9,6 @@ from express.parsers.mixins.ionic import IonicDataMixin
 STRUCTURE_MAP = {
     "primitive": lambda s: mg.symmetry.analyzer.SpacegroupAnalyzer(s).get_primitive_standard_structure(),
     "conventional": lambda s: mg.symmetry.analyzer.SpacegroupAnalyzer(s).get_conventional_standard_structure(),
-    "zmatrix": self.zmatrix
 }
 
 
@@ -48,7 +48,8 @@ class StructureParser(BaseParser, IonicDataMixin):
 
         # convert espresso input into poscar
         if self.structure_format == "espresso-in":
-            self.zmat_coord = self.espresso_input_to_poscar(self.cartesian_coord)
+            self.structure_format = "poscar"
+            self.structure_string = self.espresso_input_to_poscar(self.structure_string)
 
         # cell is either original, primitive, conventional or zmatrix
         self.cell = kwargs["cell"]
@@ -250,9 +251,12 @@ class StructureParser(BaseParser, IonicDataMixin):
         Returns:
             str: cartesian coordinates
         """
-        vasp_fi = ase.io.write("poscar", vasp_poscar, format="vasp")
-        vasp_in = ase.io.read(vasp_fi)
-        cartesian_fi = ase.io.write("cartesian-in", vasp_in, format="xyz")
+        vasp_fi = open("poscar", "w")
+        vasp_fi.write(vasp_poscar)
+        vasp_fi.close()
+        vasp_fi_read = open("poscar", 'r')
+        vasp_in = read(vasp_fi_read, format='vasp')
+        cartesian_fi = write("cartesian-in", vasp_in, format="xyz")
         return cartesian_fi
 
     def espresso_input_to_cartesian(self, espresso_input):
@@ -265,9 +269,12 @@ class StructureParser(BaseParser, IonicDataMixin):
         Returns:
             str: cartesian coordinates
         """
-        espresso_fi = ase.io.write("espresso-in", espresso_input, format="espresso-in")
-        espresso_in = ase.io.read(espresso_fi)
-        cartesian_fi = ase.io.write("cartesian-in", espresso_in, format="xyz")
+        espresso_fi = open("espresso.in", 'w')
+        espresso_fi.write(espresso_input)
+        espresso_fi.close()
+        espresso_fi_read = open("espresso.in", 'r')
+        espresso_in = read(espresso_fi_read, format='espresso-in')
+        cartesian_fi = write("cartesian-in", espresso_in, format="xyz")
         return cartesian_fi
 
     def cartesian_to_zmat(self, cartesian_input):
