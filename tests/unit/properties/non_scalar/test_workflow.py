@@ -17,7 +17,6 @@ class WorkflowTest(UnitTestBase):
 
     @mock.patch('express.properties.workflow.os')
     def test_pyml_workflow(self, mock_os):
-        # We've got some basenames to copy
         mock_os.listdir.return_value = MOCK_BASENAMES
 
         name = NAME
@@ -30,5 +29,6 @@ class WorkflowTest(UnitTestBase):
             "context_dir_relative_path": CONTEXT_DIR_RELATIVE_PATH,
             "workflow": WORKFLOW_TRAIN
         }
+
         property_ = PyMLTrainAndPredictWorkflow(name, parser, *args, **kwargs)
         self.assertDeepAlmostEqual(property_.serialize_and_validate(), WORKFLOW_PREDICT)
