@@ -3,8 +3,7 @@ import os
 
 from tests.unit import UnitTestBase
 from express.properties.workflow import PyMLTrainAndPredictWorkflow
-from tests.fixtures.pyML.data import WORKFLOW_TRAIN, WORKFLOW_PREDICT, NAME, PARSER, ARGS, WORK_DIR, UPLOAD_DIR
-from tests.fixtures.pyML.data import CONTEXT_DIR_RELATIVE_PATH, OBJECT_STORAGE_DATA, MOCK_BASENAMES
+from tests.fixtures.pyML.data import WORKFLOW_TEST_DATA
 import json
 
 
@@ -17,18 +16,18 @@ class WorkflowTest(UnitTestBase):
 
     @mock.patch('express.properties.workflow.os')
     def test_pyml_workflow(self, mock_os):
-        mock_os.listdir.return_value = MOCK_BASENAMES
+        mock_os.listdir.return_value = WORKFLOW_TEST_DATA.mock_basenames
 
-        name = NAME
-        parser = PARSER
-        args = ARGS
+        name = WORKFLOW_TEST_DATA.name
+        parser = WORKFLOW_TEST_DATA.parser
+        args = WORKFLOW_TEST_DATA.args
         kwargs = {
-            "work_dir": WORK_DIR,
-            "upload_dir": UPLOAD_DIR,
-            "object_storage_data": OBJECT_STORAGE_DATA,
-            "context_dir_relative_path": CONTEXT_DIR_RELATIVE_PATH,
-            "workflow": WORKFLOW_TRAIN
+            "work_dir": WORKFLOW_TEST_DATA.work_dir,
+            "upload_dir": WORKFLOW_TEST_DATA.upload_dir,
+            "object_storage_data": WORKFLOW_TEST_DATA.object_storage_data,
+            "context_dir_relative_path": WORKFLOW_TEST_DATA.context_dir_relative_path,
+            "workflow": WORKFLOW_TEST_DATA.workflow_train
         }
 
         property_ = PyMLTrainAndPredictWorkflow(name, parser, *args, **kwargs)
-        self.assertDeepAlmostEqual(property_.serialize_and_validate(), WORKFLOW_PREDICT)
+        self.assertDeepAlmostEqual(property_.serialize_and_validate(), WORKFLOW_TEST_DATA.workflow_predict)
