@@ -1,29 +1,10 @@
 import json
 import os
-from typing import Dict, List
-from dataclasses import dataclass
 
 current_path = os.path.dirname(__file__)
 path = os.path.join(current_path, "test-001")
 predict_workflow = "workflow_predict_after_conversion.JSON"
 train_workflow = "workflow_train.JSON"
-
-@dataclass
-class Workflow_test_data:
-    """
-    Dataclass used cut down on the imports in the workflow test
-    """
-    name: str
-    parser: None
-    args: list
-    context_dir_relative_path: str
-    work_dir: str
-    upload_dir: str
-    mock_basenames: List[str]
-    object_storage_data: Dict[str, str]
-    workflow_train: Dict
-    workflow_predict: Dict
-
 
 # Get both workflows
 with open(os.path.join(path, train_workflow), "r") as file_pointer:
@@ -60,7 +41,3 @@ OBJECT_STORAGE_DATA = {
     "PROVIDER": _object_storage_provider,
     "REGION": _object_storage_region
 }
-
-WORKFLOW_TEST_DATA = Workflow_test_data(NAME, PARSER, ARGS, CONTEXT_DIR_RELATIVE_PATH,
-                                        WORK_DIR, UPLOAD_DIR, MOCK_BASENAMES, OBJECT_STORAGE_DATA,
-                                        WORKFLOW_TRAIN, WORKFLOW_PREDICT)
