@@ -168,11 +168,11 @@ class PyMLTrainAndPredictWorkflow(WorkflowProperty):
                 tags = unit["tags"]
 
                 # Set predict status
-                if "is-workflow-running-to-predict-setter" in tags:
+                if "pyml:workflow-type-setter" in tags:
                     unit["value"] = "True"
 
                 # Set download-from-object-storage units
-                elif 'trained-model-getter' in tags:
+                elif 'set-io-unit-filenames' in tags:
                     self.set_io_unit_filenames(unit)
 
                 # Remove properties if needed
