@@ -1,7 +1,7 @@
 from express.properties import BaseProperty
 import os
 import copy
-from typing import List
+from typing import Dict
 from abc import abstractmethod
 
 
@@ -163,22 +163,21 @@ class PyMLTrainAndPredictWorkflow(WorkflowProperty):
         # Need to deepcopy to avoid changing the original subworkflow
         predict_subworkflows = copy.deepcopy(train_subworkflows)
 
-        # What the predict property was named
-        predict_property_result = {"name": "workflow:pyml_predict"}
-
         for subworkflow in predict_subworkflows:
-            for unit in subworkflow["units"]:
+            for unit in filter(lambda i: "tags" in i, subworkflow["units"]):
+                tags = unit["tags"]
+
                 # Set predict status
-                if unit["flowchartId"] == "head-set-predict-status":
+                if "pyml:workflow-type-setter" in tags:
                     unit["value"] = "True"
 
                 # Set download-from-object-storage units
-                elif unit["flowchartId"] == "head-fetch-trained-model":
+                elif 'set-io-unit-filenames' in tags:
                     self.set_io_unit_filenames(unit)
 
-                # Remove workflow property, so predict runs don't return another workflow
-                elif predict_property_result in unit["results"]:
-                    unit["results"].remove(predict_property_result)
+                # Remove properties if needed
+                if "remove-all-results" in tags:
+                    unit["results"] = []
 
         return predict_subworkflows
 
