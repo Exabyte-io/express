@@ -182,8 +182,8 @@ class PyMLTrainAndPredictWorkflow(WorkflowProperty):
                 if 'set-io-unit-filenames' in tags:
                     self.set_io_unit_filenames(unit)
 
-                # Set predictors to print their predictions to the results tab during the training phase
-                if 'is_model' in tags:
+                # Set predictors to print their predictions to the results tab during the predict phase
+                if 'creates-predictions-csv-during-predict-phase' in tags:
                     unit["results"] = [{
                         "name": "file_content",
                         "basename": "predictions.csv",  # todo: We shouldn't be hardcoding this in to the flavors
