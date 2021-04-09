@@ -187,7 +187,7 @@ class PyMLTrainAndPredictWorkflow(WorkflowProperty):
                     unit["results"] = [{
                         "name": "file_content",
                         "basename": "predictions.csv",  # todo: We shouldn't be hardcoding this in to the flavors
-                        "filetype": "text"
+                        "filetype": "csv"
                     }]
 
         return predict_subworkflows
