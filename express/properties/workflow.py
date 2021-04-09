@@ -181,6 +181,9 @@ class PyMLTrainAndPredictWorkflow(WorkflowProperty):
 
         return predict_subworkflows
 
+    def is_using_dataset(self):
+        return self.workflow.get("isUsingDataset", False)
+
     def get_workflow_specific_config(self) -> dict:
         """
         Generates the specific config for the new implementation of ExabyteML. The remainder of the config is
@@ -200,6 +203,7 @@ class PyMLTrainAndPredictWorkflow(WorkflowProperty):
         specific_config = {
             "units": train_subworkflow_units,
             "subworkflows": predict_subworkflows,
+            "isUsingDataset": self.is_using_dataset(),
         }
 
         return specific_config
