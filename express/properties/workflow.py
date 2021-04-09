@@ -167,17 +167,28 @@ class PyMLTrainAndPredictWorkflow(WorkflowProperty):
             for unit in filter(lambda i: "tags" in i, subworkflow["units"]):
                 tags = unit["tags"]
 
+                # Note: This should be the *first* thing we check for, in case we have tags that add properties.
+                # Remove properties if needed
+                if "remove-all-results" in tags:
+                    unit["results"] = []
+
+                # The following tags can be placed in any order:
+
                 # Set predict status
                 if "pyml:workflow-type-setter" in tags:
                     unit["value"] = "True"
 
                 # Set download-from-object-storage units
-                elif 'set-io-unit-filenames' in tags:
+                if 'set-io-unit-filenames' in tags:
                     self.set_io_unit_filenames(unit)
 
-                # Remove properties if needed
-                if "remove-all-results" in tags:
-                    unit["results"] = []
+                # Set predictors to print their predictions to the results tab during the training phase
+                if 'is_model' in tags:
+                    unit["results"] = [{
+                        "name": "file_content",
+                        "basename": "predictions.csv",  # todo: We shouldn't be hardcoding this in to the flavors
+                        "filetype": "text"
+                    }]
 
         return predict_subworkflows
 
