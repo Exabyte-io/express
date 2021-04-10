@@ -25,10 +25,12 @@ class WorkflowProperty(BaseProperty):
     def schema(self):
         return self.esse.get_schema_by_id("workflow")
 
-    def get_workflow_specific_config(self) -> dict:
+    @property
+    def workflow_specific_config(self) -> dict:
         return {}
 
-    def get_common_config(self) -> dict:
+    @property
+    def common_config(self) -> dict:
         config = {
             "name": self.name,
             "creator": {
@@ -49,8 +51,8 @@ class WorkflowProperty(BaseProperty):
         return config
 
     def _serialize(self) -> dict:
-        config = self.get_common_config()
-        config.update(self.get_workflow_specific_config())
+        config = self.common_config
+        config.update(self.workflow_specific_config)
         return config
 
 
@@ -192,10 +194,12 @@ class PyMLTrainAndPredictWorkflow(WorkflowProperty):
 
         return predict_subworkflows
 
+    @property
     def is_using_dataset(self):
         return self.workflow.get("isUsingDataset", False)
 
-    def get_workflow_specific_config(self) -> dict:
+    @property
+    def workflow_specific_config(self) -> dict:
         """
         Generates the specific config for the new implementation of ExabyteML. The remainder of the config is
         generated inside of the parent Workflow class.
@@ -214,7 +218,7 @@ class PyMLTrainAndPredictWorkflow(WorkflowProperty):
         specific_config = {
             "units": train_subworkflow_units,
             "subworkflows": predict_subworkflows,
-            "isUsingDataset": self.is_using_dataset(),
+            "isUsingDataset": self.is_using_dataset,
         }
 
         return specific_config
@@ -234,7 +238,8 @@ class ExabyteMLPredictWorkflow(WorkflowProperty):
         self.features = self.parser.features
         self.scaling_params_per_feature = self.parser.scaling_params_per_feature
 
-    def get_workflow_specific_config(self) -> dict:
+    @property
+    def workflow_specific_config(self) -> dict:
         """
         Generates the specific config for a legacy ExabyteML workflow. The remainder of the config is generated
         inside of the parent Worfklow class.
