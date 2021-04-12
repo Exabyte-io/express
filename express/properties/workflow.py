@@ -25,10 +25,12 @@ class WorkflowProperty(BaseProperty):
     def schema(self):
         return self.esse.get_schema_by_id("workflow")
 
-    def get_workflow_specific_config(self) -> dict:
+    @property
+    def workflow_specific_config(self) -> dict:
         return {}
 
-    def get_common_config(self) -> dict:
+    @property
+    def common_config(self) -> dict:
         config = {
             "name": self.name,
             "creator": {
@@ -49,8 +51,8 @@ class WorkflowProperty(BaseProperty):
         return config
 
     def _serialize(self) -> dict:
-        config = self.get_common_config()
-        config.update(self.get_workflow_specific_config())
+        config = self.common_config
+        config.update(self.workflow_specific_config)
         return config
 
 
@@ -167,21 +169,37 @@ class PyMLTrainAndPredictWorkflow(WorkflowProperty):
             for unit in filter(lambda i: "tags" in i, subworkflow["units"]):
                 tags = unit["tags"]
 
+                # Note: This should be the *first* thing we check for, in case we have tags that add properties.
+                # Remove properties if needed
+                if "remove-all-results" in tags:
+                    unit["results"] = []
+
+                # The following tags can be placed in any order:
+
                 # Set predict status
                 if "pyml:workflow-type-setter" in tags:
                     unit["value"] = "True"
 
                 # Set download-from-object-storage units
-                elif 'set-io-unit-filenames' in tags:
+                if 'set-io-unit-filenames' in tags:
                     self.set_io_unit_filenames(unit)
 
-                # Remove properties if needed
-                if "remove-all-results" in tags:
-                    unit["results"] = []
+                # Set predictors to print their predictions to the results tab during the predict phase
+                if 'creates-predictions-csv-during-predict-phase' in tags:
+                    unit["results"] = [{
+                        "name": "file_content",
+                        "basename": "predictions.csv",  # todo: We shouldn't be hardcoding this in to the flavors
+                        "filetype": "csv"
+                    }]
 
         return predict_subworkflows
 
-    def get_workflow_specific_config(self) -> dict:
+    @property
+    def is_using_dataset(self):
+        return self.workflow.get("isUsingDataset", False)
+
+    @property
+    def workflow_specific_config(self) -> dict:
         """
         Generates the specific config for the new implementation of ExabyteML. The remainder of the config is
         generated inside of the parent Workflow class.
@@ -200,6 +218,7 @@ class PyMLTrainAndPredictWorkflow(WorkflowProperty):
         specific_config = {
             "units": train_subworkflow_units,
             "subworkflows": predict_subworkflows,
+            "isUsingDataset": self.is_using_dataset,
         }
 
         return specific_config
@@ -219,7 +238,8 @@ class ExabyteMLPredictWorkflow(WorkflowProperty):
         self.features = self.parser.features
         self.scaling_params_per_feature = self.parser.scaling_params_per_feature
 
-    def get_workflow_specific_config(self) -> dict:
+    @property
+    def workflow_specific_config(self) -> dict:
         """
         Generates the specific config for a legacy ExabyteML workflow. The remainder of the config is generated
         inside of the parent Worfklow class.
