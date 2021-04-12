@@ -4,7 +4,7 @@ chardet==3.0.4
 click==7.0
 cycler==0.10.0
 decorator==4.4.2
-esse==2021.03.15.2
+esse==2021.04.12.1
 exabyte-json-include==2020.10.19
 flask==1.0.2
 idna==2.7
