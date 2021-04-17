@@ -1,7 +1,7 @@
 from express.properties import BaseProperty
 import os
 import copy
-from typing import Dict
+from typing import Dict, Any
 from abc import abstractmethod
 
 
@@ -10,7 +10,7 @@ class WorkflowProperty(BaseProperty):
     Base class for workflow properties extracted in Express
     """
 
-    def __init__(self, name, parser, *args, **kwargs):
+    def __init__(self, name: str, parser: Any, *args, **kwargs):
         """
         Constructor for PyMLTrainAndPredictWorkflow
 
@@ -19,7 +19,7 @@ class WorkflowProperty(BaseProperty):
             parser (str): Parser to use with this workflow
         """
         super().__init__(name, parser, *args, **kwargs)
-        self.name: str = name
+        self.name = name
 
     @property
     def schema(self):
@@ -58,18 +58,15 @@ class WorkflowProperty(BaseProperty):
 
 class PyMLTrainAndPredictWorkflow(WorkflowProperty):
     """
-    Quick implementation of the new version of ExabyteML. We expect workflows to have a format as follows:
+    Next generation of ExabyteML. We expect workflows to have a format as follows:
 
     Workflow_Head_Subworkflow - Contains various units which prepare an ML job. For example, we may have the following
     units present.
         - An Assignment unit specifying whether the workflow is in Train or Predict mode (head-set-predict-status)
+        - An IO unit to copy in the training set
         - A Conditional unit that specifies whether the train or predict setup is to be used
-        - Training setup: An assignment unit to specify the training data to be included
-        - Training setup: An IO unit to copy the training data into the current working directory
-        - Predict setup: An assignment unit to specify the data to perform a prediction on
-        - Predict setup: An IO unit to copy in the predict data to the current working directory
-        - Predict setup: An IO unit to copy in any files necessary for the predict workflow to function
-                        (head-fetch-trained-model)
+        - An IO unit to copy in the trained model if running in predict mode
+
 
     The final IO unit in the predict setup that we discuss, which copies in files needed for the workflow to function,
     is populated by this class's _create_download_from_object_storage_input function. It obtains a list of files
@@ -87,26 +84,31 @@ class PyMLTrainAndPredictWorkflow(WorkflowProperty):
         - pyml:post_processing:parity_plot:matplotlib: Creates a parity plot if the workflow is in "Training" mode.
     """
 
-    def __init__(self, name, parser, *args, **kwargs):
+    def __init__(self, name: str, parser: Any,
+                 *args,
+                 work_dir: str,
+                 upload_dir: str,
+                 object_storage_data: Dict[str, str],
+                 context_dir_relative_path: str,
+                 workflow: Dict[str, Any],
+                 **kwargs):
         """
         Constructor for PyMLTrainAndPredictWorkflow
 
         Args:
             name (str): Name of the workflow
-            parser (str): Parser to use with this workflow
-
-        Keyword Args:
+            parser (Any): Parser to use with this workflow
             work_dir (str): The working directory for the job calling Express
             context_dir_relative_path (str): Relative path, from the job's working dir, to the context directory
-            object_storage_daga (dict): Information about the object storage provider being usec for file I/O
+            object_storage_data (dict): Information about the object storage provider being usec for file I/O
             workflow (dict): The workflow used to run the job
         """
         super().__init__(name, parser, *args, **kwargs)
-        self.work_dir: str = self.kwargs["work_dir"]
-        self.upload_dir: str = self.kwargs["upload_dir"]
-        self.object_storage_data: dict = self.kwargs["object_storage_data"]
-        self.context_dir_relative_path: str = self.kwargs["context_dir_relative_path"]
-        self.workflow: dict = copy.deepcopy(self.kwargs["workflow"])
+        self.work_dir = work_dir
+        self.upload_dir = upload_dir
+        self.object_storage_data = object_storage_data
+        self.context_dir_relative_path = context_dir_relative_path
+        self.workflow = copy.deepcopy(workflow)
 
     def _create_download_from_object_storage_input(self, basename: str) -> dict:
         """
@@ -224,7 +226,6 @@ class PyMLTrainAndPredictWorkflow(WorkflowProperty):
         return specific_config
 
 
-# Todo: This is the old implementation of ExabyteML
 class ExabyteMLPredictWorkflow(WorkflowProperty):
     """
     Legacy implementation of Exabyte ML's predict Workflow property class.
