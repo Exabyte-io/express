@@ -41,7 +41,9 @@ if [ -f ${THIS_DIR}/requirements-dev.txt ]; then
 fi
 
 # Execute the specified test suite
-python -m unittest discover --verbose --catch --start-directory ${THIS_DIR}/tests/${TEST_TYPE}
-if [ $? -ne 0 ]; then
-    exit 1
-fi
+coverage run -m unittest discover --verbose --catch --start-directory ${THIS_DIR}/tests/${TEST_TYPE}
+
+# Generate the code coverage reports
+coverage report
+coverage html --directory htmlcov_${TEST_TYPE}
+coverage xml -o coverage_${TEST_TYPE}.xml
