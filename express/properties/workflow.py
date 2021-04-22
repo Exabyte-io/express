@@ -10,7 +10,7 @@ class WorkflowProperty(BaseProperty):
     Base class for workflow properties extracted in Express
     """
 
-    def __init__(self, name: str, parser: Any, *args, **kwargs):
+    def __init__(self, name: str, parser, *args, **kwargs):
         """
         Constructor for PyMLTrainAndPredictWorkflow
 
@@ -84,7 +84,7 @@ class PyMLTrainAndPredictWorkflow(WorkflowProperty):
         - pyml:post_processing:parity_plot:matplotlib: Creates a parity plot if the workflow is in "Training" mode.
     """
 
-    def __init__(self, name: str, parser: Any,
+    def __init__(self, name: str, parser,
                  *args,
                  work_dir: str,
                  upload_dir: str,
