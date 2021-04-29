@@ -1,6 +1,6 @@
 {
     "schemaVersion":  "0.2.0",
-    "_id": "{{ ID }}",
+    "_id": "{{ UUID }}",
     "exabyteId": "",
     "hash": "",
 
@@ -19,5 +19,7 @@
     "basis": {
         "elements": {{ BASIS_ELEMENTS }},
         "coordinates": {{ BASIS_COORDINATES }}
-    }
+    },
+
+    "tags": ["aiida-{{ UUID }}"]
 }

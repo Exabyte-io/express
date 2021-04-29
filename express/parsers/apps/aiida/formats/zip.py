@@ -148,7 +148,7 @@ class AiidaZipParser:
 
         template = Template(TEMPLATES_MATERIALS_PATH.read_text())
         instance = json.loads(template.render(**{
-                'ID': export_data['uuid'],
+                'UUID': export_data['uuid'],
                 'CREATED_AT': export_data['ctime'],
                 'LATTICE_VECTOR_A': json.dumps(attributes['cell'][0]),
                 'LATTICE_VECTOR_B': json.dumps(attributes['cell'][1]),
