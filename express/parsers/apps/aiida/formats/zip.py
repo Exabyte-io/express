@@ -125,13 +125,12 @@ class AiidaZipParser:
         """
 
         nodes = data['export_data']['Node']
-        structure_nodes = {pk: node for (pk, node) in nodes.items()
-                           if node['node_type'] == 'data.structure.StructureData.'}
 
-        for pk in structure_nodes:
-            export_data = data['export_data']['Node'][pk]
-            node_attributes = data['node_attributes'][pk]
-            yield cls._parse_structure_node_attributes(export_data, node_attributes)
+        for pk, node in data['export_data']['Node'].items():
+            if node['node_type'] == 'data.structure.StructureData.':
+                export_data = data['export_data']['Node'][pk]
+                node_attributes = data['node_attributes'][pk]
+                yield cls._parse_structure_node_attributes(export_data, node_attributes)
 
     @staticmethod
     def _parse_structure_node_attributes(export_data, attributes):
