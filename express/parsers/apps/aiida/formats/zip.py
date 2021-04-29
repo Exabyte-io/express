@@ -82,9 +82,6 @@ class AiidaZipParser:
         """
         Check whether the versions of the exported archive file are supported.
 
-        Args:
-            metadata (dict): deserialized metadata.json object
-
         Raises:
             RuntimeError
         """
@@ -97,13 +94,13 @@ class AiidaZipParser:
         if self.metadata['aiida_version'] != SUPPORTED_AIIDA_VERSION:
             raise AiidaArchiveFileParseError(
                 path=self.zip_file_path,
-                reason=f"aiida_version ({metadata['aiida_version']}) not supported. "
+                reason=f"aiida_version ({self.metadata['aiida_version']}) not supported. "
                 f"Supported: {SUPPORTED_AIIDA_VERSION}")
 
         if self.metadata['export_version'] != SUPPORTED_AIIDA_ARCHIVE_VERSION:
             raise AiidaArchiveFileParseError(
                 path=self.zip_file_path,
-                rason=f"archive export_version ({metadata['export_version']}) not supported. "
+                reason=f"archive export_version ({self.metadata['export_version']}) not supported. "
                 f"Supported: {SUPPORTED_AIIDA_ARCHIVE_VERSION}")
 
     def structures(self):
