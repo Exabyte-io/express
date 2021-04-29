@@ -18,7 +18,7 @@ PARSER = None
 ARGS = []
 
 # Get basenames to mock for the os.listdirs call in test
-_subworkflow_units = WORKFLOW_PREDICT["subworkflows"][0]["units"]
+_subworkflow_units = WORKFLOW_PREDICT["workflow"]["subworkflows"][0]["units"]
 _download_from_s3_unit = next(filter(lambda i: i["name"] == "Fetch Trained Model as file", _subworkflow_units))
 _download_from_s3_inputs = _download_from_s3_unit["input"]
 MOCK_BASENAMES = [item["basename"] for item in _download_from_s3_inputs]

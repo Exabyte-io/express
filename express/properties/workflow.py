@@ -51,9 +51,24 @@ class WorkflowProperty(BaseProperty):
         return config
 
     def _serialize(self) -> dict:
-        config = self.common_config
-        config.update(self.workflow_specific_config)
+        workflow_config = self.common_config
+        workflow_config.update(self.workflow_specific_config)
+        config = {
+            "name": "workflow:pyml_predict",
+            "workflow": workflow_config
+        }
         return config
+
+    def serialize_and_validate(self):
+        """
+        Serialize the property and validates it against the schema.
+
+        Returns:
+            dict
+        """
+        instance = self._serialize()
+        self.esse.validate(instance["workflow"], self.schema)
+        return instance
 
 
 class PyMLTrainAndPredictWorkflow(WorkflowProperty):
