@@ -19,6 +19,7 @@ setup(
         "pymatgen==2020.4.29",
         "ase==3.17.0",
         "esse>=2020.10.19",
+        "Jinja2==2.11.2",
     ],
     extras_require={
         "test": [

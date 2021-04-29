@@ -1,19 +1,23 @@
 {
     "schemaVersion":  "0.2.0",
-    "_id": "",
+    "_id": "{{ ID }}",
     "exabyteId": "",
     "hash": "",
 
     "creator": "CREATOR",
     "owner": "OWNER",
 
-    "created_at": "",
+    "created_at": "{{ CREATED_AT }}",
 
     "lattice": {
-        "vectors": {}
+        "vectors": {
+            "a": {{ LATTICE_VECTOR_A }},
+            "b": {{ LATTICE_VECTOR_B }},
+            "c": {{ LATTICE_VECTOR_C }}
+        }
     },
     "basis": {
-        "elements": [],
-        "coordinates": []
+        "elements": {{ BASIS_ELEMENTS }},
+        "coordinates": {{ BASIS_COORDINATES }}
     }
 }

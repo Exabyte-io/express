@@ -3,6 +3,7 @@ from zipfile import ZipFile
 from zipfile import BadZipFile
 
 import esse
+from jinja2 import Template
 
 from express.parsers.apps.aiida.settings import SUPPORTED_AIIDA_ARCHIVE_VERSION
 from express.parsers.apps.aiida.settings import SUPPORTED_AIIDA_VERSION
@@ -145,22 +146,19 @@ class AiidaZipParser:
         kinds = {kind['name']: kind for kind in attributes['kinds']}
         assert all(len(kind['symbols']) == 1 for kind in kinds.values())
 
-        instance = json.loads(TEMPLATES_MATERIALS_PATH.read_text())
-        instance.update({
-            '_id': export_data['uuid'],
-            'created_at': export_data['ctime'],
-            'lattice': {
-                'vectors': {
-                    'a': attributes['cell'][0],
-                    'b': attributes['cell'][1],
-                    'c': attributes['cell'][2],
-                }
-            },
-            'basis': {
-                'elements': [{'id': _id, 'value': kinds[site['kind_name']]['name']} for _id, site in sites],
-                'coordinates': [{'id': _id, 'value': site['position']} for _id, site in sites],
-            }
-        })
+        template = Template(TEMPLATES_MATERIALS_PATH.read_text())
+        instance = json.loads(template.render(**{
+                'ID': export_data['uuid'],
+                'CREATED_AT': export_data['ctime'],
+                'LATTICE_VECTOR_A': json.dumps(attributes['cell'][0]),
+                'LATTICE_VECTOR_B': json.dumps(attributes['cell'][1]),
+                'LATTICE_VECTOR_C': json.dumps(attributes['cell'][2]),
+                'BASIS_ELEMENTS': json.dumps(
+                    [{'id': _id, 'value': kinds[site['kind_name']]['name']} for _id, site in sites]),
+                'BASIS_COORDINATES': json.dumps(
+                    [{'id': _id, 'value': site['position']} for _id, site in sites]),
+            })
+        )
 
         # Validate result and return
         ES.validate(instance, schema=SCHEMA_MATERIAL)
