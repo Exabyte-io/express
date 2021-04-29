@@ -109,6 +109,7 @@ class PyMLTrainAndPredictWorkflow(WorkflowProperty):
         self.object_storage_data = object_storage_data
         self.context_dir_relative_path = context_dir_relative_path
         self.workflow = copy.deepcopy(workflow)
+        self.name = f"[Predict Workflow] {self.workflow['name']}"
 
     def _create_download_from_object_storage_input(self, basename: str) -> dict:
         """
