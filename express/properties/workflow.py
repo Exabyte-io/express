@@ -20,6 +20,7 @@ class WorkflowProperty(BaseProperty):
         """
         super().__init__(name, parser, *args, **kwargs)
         self.name = name
+        self.display_name = name
 
     @property
     def schema(self):
@@ -33,6 +34,7 @@ class WorkflowProperty(BaseProperty):
     def common_config(self) -> dict:
         config = {
             "name": self.name,
+            "displayName": self.display_name,
             "creator": {
                 "_id": "",
                 "cls": "User",
@@ -51,24 +53,9 @@ class WorkflowProperty(BaseProperty):
         return config
 
     def _serialize(self) -> dict:
-        workflow_config = self.common_config
-        workflow_config.update(self.workflow_specific_config)
-        config = {
-            "name": "workflow:pyml_predict",
-            "workflow": workflow_config
-        }
+        config = self.common_config
+        config.update(self.workflow_specific_config)
         return config
-
-    def serialize_and_validate(self):
-        """
-        Serialize the property and validates it against the schema.
-
-        Returns:
-            dict
-        """
-        instance = self._serialize()
-        self.esse.validate(instance["workflow"], self.schema)
-        return instance
 
 
 class PyMLTrainAndPredictWorkflow(WorkflowProperty):
@@ -124,7 +111,7 @@ class PyMLTrainAndPredictWorkflow(WorkflowProperty):
         self.object_storage_data = object_storage_data
         self.context_dir_relative_path = context_dir_relative_path
         self.workflow = copy.deepcopy(workflow)
-        self.name = f"[Predict Workflow] {self.workflow['name']}"
+        self.display_name = f"[Predict Workflow] {self.workflow['name']}"
 
     def _create_download_from_object_storage_input(self, basename: str) -> dict:
         """
