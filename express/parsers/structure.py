@@ -1,5 +1,8 @@
 import io
+import openbabel
+import pybel
 import pymatgen as mg
+from pymatgen import io.xyz as xyz
 from ase.io import read, write
 
 from express.parsers import BaseParser
@@ -40,6 +43,23 @@ class StructureParser(BaseParser, IonicDataMixin):
         # keep only one atom inside the basis in order to have the original lattice type
         self.lattice_only_structure = mg.Structure.from_str(self.structure_string, self.structure_format)  # deepcopy
         self.lattice_only_structure.remove_sites(range(1, len(self.structure.sites)))
+
+    def inchi_generator(self):
+        """
+        Generates InChI representation for structure using openbabel/pybel
+        Initial InChI is generated in the form of "InChI={inchi string}"
+
+        Returns:
+            str ({inchi string} only, wihtout "InChI=" prefix)
+        """
+        self.cartesian = mg.Structure.from_str(self.structure_string, xyz)
+        cart = xyz.from_string(self.cartesian)
+        cart.write_file("geom.xyz")
+        xyz_file = "geom.xyz"
+        inchi_read = list(pybel.readfile('xyz', xyz_file))[0]
+        self.inchi = inchi_read.write("inchi").split[0]
+        self.inchi = self.inchi.split("=")
+        return self.inchi[1]
 
     def lattice_vectors(self):
         """
