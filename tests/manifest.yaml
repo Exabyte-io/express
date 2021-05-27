@@ -135,3 +135,6 @@ test_structure_vasp_basis:
 
 test_structure_vasp_lattice_bravais:
   structurePath: fixtures/vasp/test-001/POSCAR
+
+test_inchi_generation:
+  structurePath: fixtures/h2o.xyz
