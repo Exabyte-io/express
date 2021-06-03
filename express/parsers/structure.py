@@ -1,9 +1,12 @@
 import io
+import pymatgen as mg
+from pymatgen import io as io
+from ase.io import read, write
 import openbabel
 import pybel
-import pymatgen as mg
-from pymatgen import io.xyz as xyz
-from ase.io import read, write
+import rdkit
+from pymatgen import io
+from pymatgen.io.xyz import XYZ
 
 from express.parsers import BaseParser
 from express.parsers.mixins.ionic import IonicDataMixin
@@ -44,22 +47,21 @@ class StructureParser(BaseParser, IonicDataMixin):
         self.lattice_only_structure = mg.Structure.from_str(self.structure_string, self.structure_format)  # deepcopy
         self.lattice_only_structure.remove_sites(range(1, len(self.structure.sites)))
 
-    def inchi_generator(self):
-        """
-        Generates InChI representation for structure using openbabel/pybel
-        Initial InChI is generated in the form of "InChI={inchi string}"
-
-        Returns:
-            str ({inchi string} only, wihtout "InChI=" prefix)
-        """
-        self.cartesian = mg.Structure.from_str(self.structure_string, xyz)
-        cart = xyz.from_string(self.cartesian)
+    def get_inchi(self, structure_string):
+        # InChI Generation
+        cart = XYZ.from_string(self.structure_string)
         cart.write_file("geom.xyz")
         xyz_file = "geom.xyz"
         inchi_read = list(pybel.readfile('xyz', xyz_file))[0]
-        self.inchi = inchi_read.write("inchi").split[0]
-        self.inchi = self.inchi.split("=")
-        return self.inchi[1]
+        self.inchi = inchi_read.write("inchi")
+        inchi_hash = inchi.split("=")
+        self.inchi_hash = inchi_hash[1]
+        inchi_key = rdkit.Chem.inchi.InchiToInchiKey(inchi)
+        return inchi_[1]
+
+    def get_inchi_key(self, inchi):
+        # InChI Key Generation
+        self.inchi_key = rdkit.Chem.inchi.InchiToInchiKey(self.inchi)
 
     def lattice_vectors(self):
         """
