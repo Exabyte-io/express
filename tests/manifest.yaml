@@ -135,4 +135,3 @@ test_structure_vasp_basis:
 
 test_structure_vasp_lattice_bravais:
   structurePath: fixtures/vasp/test-001/POSCAR
-

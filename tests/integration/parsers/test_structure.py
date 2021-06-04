@@ -35,4 +35,3 @@ class TestStructureParser(IntegrationTestBase):
 
     def test_structure_vasp_lattice_bravais(self):
         self.assertDeepAlmostEqual(self.parser.lattice_bravais(), SI["lattice"], places=2)
-
