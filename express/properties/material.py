@@ -46,6 +46,14 @@ class Material(BaseProperty):
         self.parser = StructureParser(structure_string=structure_string, structure_format=structure_format, cell=cell)
 
     @property
+    def inchi(self):
+        return self.parser.get_inchi()
+
+    @property
+    def inchi_key(self):
+        return self.parser.get_inchi_key(self.inchi)
+
+    @property
     def formula(self):
         return self.parser.reduced_formula()
 
@@ -86,6 +94,8 @@ class Material(BaseProperty):
             "_id": "",
             "name": self.name,
             "exabyteId": "",
+            "inchi": self.inchi,
+            "inchi_key": self.inchi_key,
             "hash": "",
             "formula": self.formula,
             "unitCellFormula": self.unitCellFormula,

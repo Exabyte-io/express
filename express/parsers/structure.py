@@ -47,7 +47,7 @@ class StructureParser(BaseParser, IonicDataMixin):
         self.lattice_only_structure = mg.Structure.from_str(self.structure_string, self.structure_format)  # deepcopy
         self.lattice_only_structure.remove_sites(range(1, len(self.structure.sites)))
 
-    def get_inchi(self, structure_string):
+    def get_inchi(self):
         # InChI Generation
         cart = XYZ.from_string(self.structure_string)
         cart.write_file("geom.xyz")
@@ -56,7 +56,6 @@ class StructureParser(BaseParser, IonicDataMixin):
         self.inchi = inchi_read.write("inchi")
         inchi_hash = inchi.split("=")
         self.inchi_hash = inchi_hash[1]
-        inchi_key = rdkit.Chem.inchi.InchiToInchiKey(inchi)
         return inchi_[1]
 
     def get_inchi_key(self, inchi):
