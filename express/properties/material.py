@@ -71,6 +71,8 @@ class Material(BaseProperty):
             derived_properties = [volume, density, symmetry]
             derived_properties.extend(self._elemental_ratios())
             derived_properties.extend(self._p_norms())
+            derived_properties.extend(self.inchi)
+            derived_properties.extend(self.inchi_key)
         except:
             pass
         return derived_properties
@@ -94,8 +96,6 @@ class Material(BaseProperty):
             "_id": "",
             "name": self.name,
             "exabyteId": "",
-            "inchi": self.inchi,
-            "inchi_key": self.inchi_key,
             "hash": "",
             "formula": self.formula,
             "unitCellFormula": self.unitCellFormula,
