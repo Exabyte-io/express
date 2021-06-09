@@ -48,7 +48,12 @@ class StructureParser(BaseParser, IonicDataMixin):
         self.lattice_only_structure.remove_sites(range(1, len(self.structure.sites)))
 
     def get_inchi(self):
-        # InChI Generation
+        """
+        Function calculates the International Chemical Identifier (InChI) string for a given structure.
+
+        Returns:
+            Str
+        """
         cart = XYZ.from_string(self.structure_string)
         cart.write_file("geom.xyz")
         xyz_file = "geom.xyz"
@@ -58,9 +63,16 @@ class StructureParser(BaseParser, IonicDataMixin):
         self.inchi_hash = inchi_hash[1]
         return inchi_[1]
 
-    def get_inchi_key(self, inchi):
-        # InChI Key Generation
-        self.inchi_key = rdkit.Chem.inchi.InchiToInchiKey(self.inchi)
+    def get_inchi_key(self):
+        """
+        Function converts a human readable InChI into a computer readable Hash string.
+
+        Returns:
+            Str
+        """
+        inchi = self.inchi
+        self.inchi_key = rdkit.Chem.inchi.InchiToInchiKey(inchi)
+        return self.inchi_key
 
     def lattice_vectors(self):
         """
