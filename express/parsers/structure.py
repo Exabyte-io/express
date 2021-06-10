@@ -1,10 +1,8 @@
 import io
 import pymatgen as mg
-
+from pymatgen.io.xyz import XYZ
 from ase.io import read, write
 import rdkit
-from pymatgen import io as io
-from pymatgen.io.xyz import XYZ
 
 from express.parsers import BaseParser
 from express.parsers.mixins.ionic import IonicDataMixin
