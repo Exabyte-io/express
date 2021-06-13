@@ -50,11 +50,13 @@ class Material(BaseProperty):
     @property
     def get_inchi(self):
         self.inchi = self.id.get_inchi()
+        print("inchi: {}".format(self.inchi))
         return self.inchi
 
     @property
     def get_inchi_key(self):
         self.inchi_key = self.id.get_inchi_key()
+        print("key: {}".format(self.inchi_key))
         return self.inchi_key
 
     @property
@@ -70,11 +72,14 @@ class Material(BaseProperty):
         derived_properties = []
         try:
             volume = Volume("volume", self.parser).serialize_and_validate()
+            print("v: {}".format(volume))
             density = Density("density", self.parser).serialize_and_validate()
+            print("d: {}".format(density))
             symmetry = Symmetry("symmetry", self.parser).serialize_and_validate()
+            print("s: {}".format(symmetry))
             inchi = self.get_inchi()
-            inchi_key = self.get_inchi_key()
-            derived_properties = [volume, density, symmetry, inchi, inchi_key]
+            print(inchi)
+            derived_properties = [volume, density, symmetry, inchi]
             derived_properties.extend(self._elemental_ratios())
             derived_properties.extend(self._p_norms())
         except:
@@ -116,7 +121,7 @@ class Material(BaseProperty):
                 "cls": "Account",
                 "slug": ""
             },
-            "schemaVersion": "0.2.0",
+            "schemaVersion": "0.2.0"
         }
 
     def _elemental_ratios(self):
