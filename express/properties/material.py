@@ -4,6 +4,7 @@ from express.properties import BaseProperty
 from express.properties.scalar.p_norm import PNorm
 from express.properties.scalar.volume import Volume
 from express.parsers.structure import StructureParser
+from express.parsers.structure_id import Identifier
 from express.properties.scalar.density import Density
 from express.parsers.apps.vasp.parser import VaspParser
 from express.parsers.utils import lattice_basis_to_poscar
@@ -44,14 +45,17 @@ class Material(BaseProperty):
 
         # override parser to use StructureParser from now on
         self.parser = StructureParser(structure_string=structure_string, structure_format=structure_format, cell=cell)
+        self.id = Identifier(structure_string, structure_format)
 
     @property
-    def inchi(self):
-        return self.parser.get_inchi()
+    def get_inchi(self):
+        self.inchi = self.id.get_inchi()
+        return self.inchi
 
     @property
-    def inchi_key(self):
-        return self.parser.get_inchi_key(self.inchi)
+    def get_inchi_key(self):
+        self.inchi_key = self.id.get_inchi_key()
+        return self.inchi_key
 
     @property
     def formula(self):
@@ -68,11 +72,11 @@ class Material(BaseProperty):
             volume = Volume("volume", self.parser).serialize_and_validate()
             density = Density("density", self.parser).serialize_and_validate()
             symmetry = Symmetry("symmetry", self.parser).serialize_and_validate()
-            derived_properties = [volume, density, symmetry]
+            inchi = self.get_inchi()
+            inchi_key = self.get_inchi_key()
+            derived_properties = [volume, density, symmetry, inchi, inchi_key]
             derived_properties.extend(self._elemental_ratios())
             derived_properties.extend(self._p_norms())
-            derived_properties.extend(self.inchi)
-            derived_properties.extend(self.inchi_key)
         except:
             pass
         return derived_properties
