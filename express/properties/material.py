@@ -72,7 +72,7 @@ class Material(BaseProperty):
             volume = Volume("volume", self.parser).serialize_and_validate()
             density = Density("density", self.parser).serialize_and_validate()
             symmetry = Symmetry("symmetry", self.parser).serialize_and_validate()
-            inchi = self.get_inchi()
+            inchi = self.id.get_inchi()
             derived_properties = [volume, density, symmetry, inchi]
             derived_properties.extend(self._elemental_ratios())
             derived_properties.extend(self._p_norms())
