@@ -52,7 +52,7 @@ class Identifier(BaseParser, IonicDataMixin):
         """
         if inchi_run == 0:
             print("inchi run: {}".format(inchi_run))
-            return ''
+            return "Not Available"
         else:
             cart = XYZ.from_string(self.structure_string)
             cart.write_file("geom.xyz")
@@ -73,7 +73,7 @@ class Identifier(BaseParser, IonicDataMixin):
         """
         if inchi_run == 0:
             print("inchi run: {}".format(inchi_run))
-            return ''
+            return "Not Available"
         else:
             inchi = self.inchi
             self.inchi_key = rdkit.Chem.inchi.InchiToInchiKey(inchi)
