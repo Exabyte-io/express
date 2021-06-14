@@ -64,7 +64,11 @@ class Identifier(BaseParser, IonicDataMixin):
             self.inchi = inchi_read.write("inchi")
             inchi_hash = inchi.split("=")
             self.inchi_hash = inchi_hash[1]
-            return self.inchi_hash
+            inchi_str = {
+                "name": "inchi",
+                "inchi": self.inchi_hash
+            }
+            return inchi_str
 
 
     def get_inchi_key(self):
