@@ -51,7 +51,10 @@ class Identifier(BaseParser, IonicDataMixin):
             Str
         """
         if inchi_run == 0:
-            inchi_str = {"name": "inchi", "molecule": "none", "inchi": "Not Available"}
+            inchi_str = {
+                "name": "inchi",
+                "inchi": "Not Available"
+            }
             return inchi_str
         else:
             cart = XYZ.from_string(self.structure_string)
