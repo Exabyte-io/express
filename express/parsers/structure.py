@@ -128,8 +128,7 @@ class StructureParser(BaseParser, IonicDataMixin):
         }
         try:
             self.delete_geom_file()
-        except Exception as e:
-            print(e)
+        except:
             pass
         return inchi_str
 
