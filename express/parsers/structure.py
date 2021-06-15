@@ -51,7 +51,6 @@ class StructureParser(BaseParser, IonicDataMixin):
     def __init__(self, *args, **kwargs):
         super(StructureParser, self).__init__(*args, **kwargs)
         self.structure_string = kwargs.get("structure_string")
-        # print("structure.py: {}".format(self.structure_string))
         self.structure_format = kwargs.get("structure_format")
 
         # convert espresso input into poscar
@@ -68,6 +67,48 @@ class StructureParser(BaseParser, IonicDataMixin):
         self.lattice_only_structure = mg.Structure.from_str(self.structure_string, self.structure_format)  # deepcopy
         self.lattice_only_structure.remove_sites(range(1, len(self.structure.sites)))
 
+    def make_cart_file(self):
+        string = self.structure_string.split('\n')
+        xyz_array = []
+        for i, item in enumerate(string):
+            if item == 'cartesian':
+                string = string[i+1::]
+                for line in string:
+                    line = line.replace('T T T ','')
+                    line = line.replace('   ','')
+                    line = line.split(' ')
+                    line = line[::-1]
+                    line = '\t'.join(line)
+                    xyz_array.append(line)
+        fi = open("geom.xyz", 'w')
+        fi.write("{}\n\n".format(len(xyz_array)))
+        for atom in xyz_array:
+            fi.write("{}\n".format(atom))
+        fi.close()
+        return len(xyz_array)
+
+    def get_inchi_run(self):
+        return inchi_run
+
+    def delete_geom_file(self):
+        geom_file = "geom.xyz"
+        os.chmod(geom_file, 0o777)
+        os.remove(geom_file)
+        return None
+
+    def get_inchi_null(self):
+        """
+        Function returns Null value for InChI when it cannot be calculated.
+
+        Returns:
+            Str
+        """
+        inchi_str = {
+            "name": "inchi",
+            "inchi": "Not Available"
+        }
+        return inchi_str
+
     def get_inchi(self):
         """
         Function calculates the International Chemical Identifier (InChI) string for a given structure.
@@ -75,30 +116,21 @@ class StructureParser(BaseParser, IonicDataMixin):
         Returns:
             Str
         """
-        print("using parser")
-        if inchi_run == 0:
-            inchi_str = {
-                "name": "inchi",
-                "inchi": "Not Available"
-            }
-            return inchi_str
-        else:
-            cart = XYZ.from_string(self.structure_string)
-            try:
-                os.chmod('geom.xyz', 0o777)
-            except Exception as e:
-                pass
-            cart.write_file("geom.xyz")
-            xyz_file = "geom.xyz"
-            inchi_read = list(pybel.readfile('xyz', xyz_file))[0]
-            self.inchi = inchi_read.write("inchi")
-            inchi_hash = inchi.split("=")
-            self.inchi_hash = inchi_hash[1]
-            inchi_str = {
-                "name": "inchi",
-                "inchi": self.inchi_hash
-            }
-            return inchi_str
+        xyz_file = "geom.xyz"
+        inchi_read = list(pybel.readfile('xyz', xyz_file))[0]
+        inchi = inchi_read.write("inchi")
+        inchi_short = inchi.split("=")
+        inchi_short = inchi_short[1]
+        inchi_str = {
+            "name": "inchi",
+            "inchi": inchi_short
+        }
+        try:
+            self.delete_geom_file()
+        except Exception as e:
+            print(e)
+            pass
+        return inchi_str
 
     def lattice_vectors(self):
         """

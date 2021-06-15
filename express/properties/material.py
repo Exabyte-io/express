@@ -46,12 +46,7 @@ class Material(BaseProperty):
         self.parser = StructureParser(structure_string=structure_string, structure_format=structure_format, cell=cell)
 
     @property
-    def get_inchi(self):
-        self.inchi = self.parser.get_inchi()
-        return self.inchi
-
-    @property
-    def get_inchi_key(self):
+    def _get_inchi_key(self):
         self.inchi_key = self.parser.get_inchi_key()
         return self.inchi_key
 
@@ -66,16 +61,18 @@ class Material(BaseProperty):
     @property
     def derived_properties(self):
         derived_properties = []
-        try:
-            volume = Volume("volume", self.parser).serialize_and_validate()
-            density = Density("density", self.parser).serialize_and_validate()
-            symmetry = Symmetry("symmetry", self.parser).serialize_and_validate()
+        inchi_run = self.parser.get_inchi_run()
+        cart = self.parser.make_cart_file()
+        if inchi_run == 0 or cart == 0:
+            inchi = self.parser.get_inchi_null()
+        else:
             inchi = self.parser.get_inchi()
-            derived_properties = [volume, density, symmetry, inchi]
-            derived_properties.extend(self._elemental_ratios())
-            derived_properties.extend(self._p_norms())
-        except:
-            pass
+        volume = Volume("volume", self.parser).serialize_and_validate()
+        density = Density("density", self.parser).serialize_and_validate()
+        symmetry = Symmetry("symmetry", self.parser).serialize_and_validate()
+        derived_properties = [volume, density, symmetry, inchi]
+        derived_properties.extend(self._elemental_ratios())
+        derived_properties.extend(self._p_norms())
         return derived_properties
 
     @property
