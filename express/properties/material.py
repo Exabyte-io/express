@@ -46,11 +46,6 @@ class Material(BaseProperty):
         self.parser = StructureParser(structure_string=structure_string, structure_format=structure_format, cell=cell)
 
     @property
-    def _get_inchi_key(self):
-        self.inchi_key = self.parser.get_inchi_key()
-        return self.inchi_key
-
-    @property
     def formula(self):
         return self.parser.reduced_formula()
 
@@ -64,13 +59,13 @@ class Material(BaseProperty):
         inchi_run = self.parser.get_inchi_run()
         cart = self.parser.make_cart_file()
         if inchi_run == 0 or cart == 0:
-            inchi = self.parser.get_inchi_null()
+            self.inchi = self.parser.get_inchi_null()
         else:
-            inchi = self.parser.get_inchi()
+            self.inchi = self.parser.get_inchi()
         volume = Volume("volume", self.parser).serialize_and_validate()
         density = Density("density", self.parser).serialize_and_validate()
         symmetry = Symmetry("symmetry", self.parser).serialize_and_validate()
-        derived_properties = [volume, density, symmetry, inchi]
+        derived_properties = [volume, density, symmetry, self.inchi]
         derived_properties.extend(self._elemental_ratios())
         derived_properties.extend(self._p_norms())
         return derived_properties

@@ -5,7 +5,8 @@ from pymatgen.io.xyz import XYZ
 from ase.io import read, write
 from express.parsers import BaseParser
 from express.parsers.mixins.ionic import IonicDataMixin
-
+import rdkit
+from rdkit import Chem
 """
     openbabel & pybel work together to generate the molecule string that
     can then be converted into an InChI string by rdkit.
@@ -98,7 +99,7 @@ class StructureParser(BaseParser, IonicDataMixin):
 
     def get_inchi_null(self):
         """
-        Function returns Null value for InChI when it cannot be calculated.
+        Function returns "Not Available" value for InChI when it cannot be calculated.
 
         Returns:
             Str
@@ -131,6 +132,34 @@ class StructureParser(BaseParser, IonicDataMixin):
             print(e)
             pass
         return inchi_str
+
+
+    def get_inchi_key_null(self):
+        """
+        Function returns "Not Available" for the non-human readable InChI Hash value when it is unavailable
+
+        Returns:
+            Str
+        """
+        inchi_key_str = {
+            "name": "inchi_key",
+            "inchi": "Not Available"
+        }
+        return inchi_key_str
+
+    def get_inchi_key(self):
+        """
+        Function calculates the non-human readable InChI Hash value.
+
+        Returns:
+            Str
+        """
+        inchi_key_val = rdkit.Chem.inchi.InchiToInchiKey(self.inchi)
+        inchi_key_str = {
+            "name": "inchi_key",
+            "inchi_key": inchi_key_val
+        }
+        return inchi_key_str
 
     def lattice_vectors(self):
         """
