@@ -104,9 +104,11 @@ class StructureParser(BaseParser, IonicDataMixin):
         Returns:
             Str
         """
+        print("string: {}".format(self.structure_string))
+        print("format: {}".format(self.structure_format))
         inchi_str = {
             "name": "inchi",
-            "inchi": "Not Available"
+            "value": "Not Available"
         }
         return inchi_str
 
@@ -124,7 +126,7 @@ class StructureParser(BaseParser, IonicDataMixin):
         inchi_short = inchi_short[1]
         inchi_str = {
             "name": "inchi",
-            "inchi": inchi_short
+            "value": inchi_short
         }
         try:
             self.delete_geom_file()
@@ -142,7 +144,7 @@ class StructureParser(BaseParser, IonicDataMixin):
         """
         inchi_key_str = {
             "name": "inchi_key",
-            "inchi": "Not Available"
+            "value": "Not Available"
         }
         return inchi_key_str
 
@@ -156,7 +158,7 @@ class StructureParser(BaseParser, IonicDataMixin):
         inchi_key_val = rdkit.Chem.inchi.InchiToInchiKey(self.inchi)
         inchi_key_str = {
             "name": "inchi_key",
-            "inchi_key": inchi_key_val
+            "value": inchi_key_val
         }
         return inchi_key_str
 
