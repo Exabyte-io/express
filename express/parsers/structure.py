@@ -68,34 +68,8 @@ class StructureParser(BaseParser, IonicDataMixin):
         self.lattice_only_structure = mg.Structure.from_str(self.structure_string, self.structure_format)  # deepcopy
         self.lattice_only_structure.remove_sites(range(1, len(self.structure.sites)))
 
-    def make_cart_file(self):
-        string = self.structure_string.split('\n')
-        xyz_array = []
-        for i, item in enumerate(string):
-            if item == 'cartesian':
-                string = string[i+1::]
-                for line in string:
-                    line = line.replace('T T T ','')
-                    line = line.replace('   ','')
-                    line = line.split(' ')
-                    line = line[::-1]
-                    line = '\t'.join(line)
-                    xyz_array.append(line)
-        fi = open("geom.xyz", 'w')
-        fi.write("{}\n\n".format(len(xyz_array)))
-        for atom in xyz_array:
-            fi.write("{}\n".format(atom))
-        fi.close()
-        return len(xyz_array)
-
     def get_inchi_run(self):
         return inchi_run
-
-    def delete_geom_file(self):
-        geom_file = "geom.xyz"
-        os.chmod(geom_file, 0o777)
-        os.remove(geom_file)
-        return None
 
     def get_inchi_null(self):
         """
@@ -108,7 +82,7 @@ class StructureParser(BaseParser, IonicDataMixin):
         print("format: {}".format(self.structure_format))
         inchi_str = {
             "name": "inchi",
-            "value": "Not Available"
+            "value": ""
         }
         return inchi_str
 
@@ -119,8 +93,7 @@ class StructureParser(BaseParser, IonicDataMixin):
         Returns:
             Str
         """
-        xyz_file = "geom.xyz"
-        inchi_read = list(pybel.readfile('xyz', xyz_file))[0]
+        inchi_read = list(pybel.readfile('POSCAR', self.structure_string))[0]
         inchi = inchi_read.write("inchi")
         inchi_short = inchi.split("=")
         inchi_short = inchi_short[1]
@@ -128,10 +101,6 @@ class StructureParser(BaseParser, IonicDataMixin):
             "name": "inchi",
             "value": inchi_short
         }
-        try:
-            self.delete_geom_file()
-        except:
-            pass
         return inchi_str
 
 
@@ -144,7 +113,7 @@ class StructureParser(BaseParser, IonicDataMixin):
         """
         inchi_key_str = {
             "name": "inchi_key",
-            "value": "Not Available"
+            "value": ""
         }
         return inchi_key_str
 
