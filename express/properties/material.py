@@ -9,7 +9,8 @@ from express.parsers.apps.vasp.parser import VaspParser
 from express.parsers.utils import lattice_basis_to_poscar
 from express.properties.non_scalar.symmetry import Symmetry
 from express.properties.scalar.elemental_ratio import ElementalRatio
-
+from express.properties.non_scalar.inchi import Inchi
+from express.properties.non_scalar.inchi_key import InchiKey
 
 class Material(BaseProperty):
     """
@@ -101,7 +102,7 @@ class Material(BaseProperty):
                 "cls": "Account",
                 "slug": ""
             },
-            "schemaVersion": "0.2.0"
+            "schemaVersion": "0.2.0",
         }
 
     def _elemental_ratios(self):

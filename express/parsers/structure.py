@@ -29,7 +29,6 @@ try:
     import pybel
     inchi_run  = 1
 except ImportError:
-    print("WARNING: In Structure.py openbabel & pybel import failed. Inchi's will be turned off!")
     inchi_run = 0
 
 STRUCTURE_MAP = {
@@ -78,8 +77,6 @@ class StructureParser(BaseParser, IonicDataMixin):
         Returns:
             Str
         """
-        print("string: {}".format(self.structure_string))
-        print("format: {}".format(self.structure_format))
         inchi_str = {
             "name": "inchi",
             "value": ""
