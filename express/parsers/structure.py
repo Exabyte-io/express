@@ -1,7 +1,6 @@
 import io
 import os
 import pymatgen as mg
-from pymatgen.io.xyz import XYZ
 from ase.io import read, write
 from express.parsers import BaseParser
 from express.parsers.mixins.ionic import IonicDataMixin
