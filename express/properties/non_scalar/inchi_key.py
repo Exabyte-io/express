@@ -12,3 +12,6 @@ class InchiKey(NonScalarProperty):
             self.value = self.parser.get_inchi_key_null()
         else:
             self.value = self.parser.get_inchi_key()
+
+    def _serialize(self):
+        return self.value

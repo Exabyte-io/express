@@ -80,8 +80,11 @@ class StructureParser(BaseParser, IonicDataMixin):
         Returns:
             Str
         """
-        inchi_str = '{"name":"inchi","value":""}'
-        return inchi_str
+        inchi_key_str = {
+            'name': 'inchi',
+            'value': ''
+        }
+        return inchi_key_str
 
     def get_inchi(self):
         """
@@ -111,12 +114,10 @@ class StructureParser(BaseParser, IonicDataMixin):
         Returns:
             Str
         """
-        val = ""
         inchi_key_str = {
-            "name": "inchi_key",
-            "value": val
+            'name': 'inchi_key',
+            'value': ''
         }
-        inchi_key_str = json.loads(inchi_key_str)
         return inchi_key_str
 
     def get_inchi_key(self):
