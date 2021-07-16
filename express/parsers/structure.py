@@ -4,8 +4,10 @@ import pymatgen as mg
 from ase.io import read, write
 from express.parsers import BaseParser
 from express.parsers.mixins.ionic import IonicDataMixin
+import ase
 import rdkit
 from rdkit import Chem
+import json
 """
     openbabel & pybel work together to generate the molecule string that
     can then be converted into an InChI string by rdkit.
@@ -66,6 +68,8 @@ class StructureParser(BaseParser, IonicDataMixin):
         self.lattice_only_structure = mg.Structure.from_str(self.structure_string, self.structure_format)  # deepcopy
         self.lattice_only_structure.remove_sites(range(1, len(self.structure.sites)))
 
+        # testing
+
     def get_inchi_run(self):
         return inchi_run
 
@@ -76,10 +80,7 @@ class StructureParser(BaseParser, IonicDataMixin):
         Returns:
             Str
         """
-        inchi_str = {
-            "name": "inchi",
-            "value": ""
-        }
+        inchi_str = '{"name":"inchi","value":""}'
         return inchi_str
 
     def get_inchi(self):
@@ -89,9 +90,12 @@ class StructureParser(BaseParser, IonicDataMixin):
         Returns:
             Str
         """
-        inchi_read = list(pybel.readfile('POSCAR', self.structure_string))[0]
-        inchi = inchi_read.write("inchi")
-        inchi_short = inchi.split("=")
+        poscar_file = ase.io.write("poscar.txt", structure_string, format="vasp")
+        ase_poscar = ase.io.read("poscar.txt", format='vasp')
+        xyz_file = ase.io.write("mol.xyz", ase_poscar, format='xyz')
+        xyz_read = list(pybel.readfile('xyz', 'mol.xyz'))[0]
+        self.inchi = xyz_read.write("inchi")
+        inchi_short = self.inchi.split("=")
         inchi_short = inchi_short[1]
         inchi_str = {
             "name": "inchi",
@@ -107,10 +111,12 @@ class StructureParser(BaseParser, IonicDataMixin):
         Returns:
             Str
         """
+        val = ""
         inchi_key_str = {
             "name": "inchi_key",
-            "value": ""
+            "value": val
         }
+        inchi_key_str = json.loads(inchi_key_str)
         return inchi_key_str
 
     def get_inchi_key(self):
