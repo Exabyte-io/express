@@ -1,4 +1,5 @@
 import io
+from io import StringIO
 import os
 import pymatgen as mg
 from ase.io import read, write
@@ -7,7 +8,6 @@ from express.parsers.mixins.ionic import IonicDataMixin
 import ase
 import rdkit
 from rdkit import Chem
-import json
 """
     openbabel & pybel work together to generate the molecule string that
     can then be converted into an InChI string by rdkit.
@@ -86,6 +86,26 @@ class StructureParser(BaseParser, IonicDataMixin):
         }
         return inchi_key_str
 
+    def create_pybel_smi_from_poscar(self):
+        """
+        Function using ase to convert the POSCAR formatted string of a structure
+        into an XYZ formatted text file for that structure.
+
+        Then pybel converts the XYZ formatted text file into a SMILES format.
+
+        Returns:
+            Str
+        """
+        fi = "geom.xyz"
+        f = open(fi, "w")
+        os.chmod(fi, 0o777)
+        fstr = StringIO(self.structure_string)
+        ase_pos = ase.io.read(fstr, format="vasp")
+        xyz_file = ase.io.write(fi, ase_pos, format='xyz')
+        psmi = list(pybel.readfile('xyz', 'geom.xyz'))[0]
+        f.close()
+        return psmi
+
     def get_inchi(self):
         """
         Function calculates the International Chemical Identifier (InChI) string for a given structure.
@@ -93,11 +113,8 @@ class StructureParser(BaseParser, IonicDataMixin):
         Returns:
             Str
         """
-        poscar_file = ase.io.write("poscar.txt", structure_string, format="vasp")
-        ase_poscar = ase.io.read("poscar.txt", format='vasp')
-        xyz_file = ase.io.write("mol.xyz", ase_poscar, format='xyz')
-        xyz_read = list(pybel.readfile('xyz', 'mol.xyz'))[0]
-        self.inchi = xyz_read.write("inchi")
+        psmi = self.create_pybel_smi_from_poscar()
+        self.inchi = psmi.write("inchi")
         inchi_short = self.inchi.split("=")
         inchi_short = inchi_short[1]
         inchi_str = {
