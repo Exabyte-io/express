@@ -68,8 +68,6 @@ class StructureParser(BaseParser, IonicDataMixin):
         self.lattice_only_structure = mg.Structure.from_str(self.structure_string, self.structure_format)  # deepcopy
         self.lattice_only_structure.remove_sites(range(1, len(self.structure.sites)))
 
-        # testing
-
     def get_inchi_run(self):
         return inchi_run
 
