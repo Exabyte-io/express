@@ -57,13 +57,6 @@ class Material(BaseProperty):
     @property
     def derived_properties(self):
         derived_properties = []
-
-        # following two lines work for code
-        # !
-        # inchi = {'name': 'inchi', 'value': 'HELLO'}
-        # inchi_key = {'name': 'inchi_key', 'value': 'KEY GOES HERE'}
-        # !
-
         inchi = Inchi("inchi", self.parser).serialize_and_validate()
         inchi_key = InchiKey("inchi_key", self.parser).serialize_and_validate()
         volume = Volume("volume", self.parser).serialize_and_validate()

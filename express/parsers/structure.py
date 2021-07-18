@@ -123,7 +123,6 @@ class StructureParser(BaseParser, IonicDataMixin):
         }
         return inchi_str
 
-
     def get_inchi_key_null(self):
         """
         Function returns "Not Available" for the non-human readable InChI Hash value when it is unavailable
