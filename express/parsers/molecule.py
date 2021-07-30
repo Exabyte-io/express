@@ -4,7 +4,7 @@ from ase.io import read, write
 import ase
 import rdkit
 from rdkit import Chem
-
+import logging
 
 class MoleculeParser():
     """
@@ -20,6 +20,7 @@ class MoleculeParser():
     def __init__(self, structure_string):
         self.structure_string = structure_string
         self.inchi_run = self.try_openbabel_import()
+
 
     def try_openbabel_import(self):
         """
@@ -48,7 +49,8 @@ class MoleculeParser():
             inchi_run = 1
         except ImportError:
             inchi_run = 0
-            logging.ERROR("Pybel failed to import. InChI & InChI Key cannot be created.")
+            logging.error("Pybel failed to import. InChI & InChI Key cannot be created.")
+        print(inchi_run)
         return inchi_run
 
     def create_pybel_smi_from_poscar(self):
@@ -68,8 +70,8 @@ class MoleculeParser():
             file_string = StringIO(self.structure_string)
             ase_poscar = ase.io.read(file_string, format="vasp")
             ase_xyz_file = ase.io.write(xyz_file, ase_poscar, format='xyz')
-            pybel_smile = list(pybel.readfile('xyz', 'geom.xyz'))[0]
-        return pybel_smile
+            pybel_smi = list(pybel.readfile('xyz', 'geom.xyz'))[0]
+        return pybel_smi
 
     def get_inchi(self):
         """
@@ -81,7 +83,7 @@ class MoleculeParser():
         if self.inchi_run == 0:
             inchi_short = ''
         else:
-            psmi = self.create_pybel_smi_from_poscar()
+            pybel_smi = self.create_pybel_smi_from_poscar()
             self.inchi = psmi.write("inchi")
             inchi_short = self.inchi.split("=")
             inchi_short = inchi_short[1]
