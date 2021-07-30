@@ -11,6 +11,7 @@ from express.properties.non_scalar.symmetry import Symmetry
 from express.properties.scalar.elemental_ratio import ElementalRatio
 from express.properties.non_scalar.inchi import Inchi
 from express.properties.non_scalar.inchi_key import InchiKey
+from express.parsers.molecule import MoleculeParser
 
 class Material(BaseProperty):
     """
@@ -45,6 +46,7 @@ class Material(BaseProperty):
 
         # override parser to use StructureParser from now on
         self.parser = StructureParser(structure_string=structure_string, structure_format=structure_format, cell=cell)
+        self.molecule_parser = MoleculeParser(structure_string=structure_string)
 
     @property
     def formula(self):
@@ -57,8 +59,8 @@ class Material(BaseProperty):
     @property
     def derived_properties(self):
         derived_properties = []
-        inchi = Inchi("inchi", self.parser).serialize_and_validate()
-        inchi_key = InchiKey("inchi_key", self.parser).serialize_and_validate()
+        inchi = Inchi("inchi", self.molecule_parser).serialize_and_validate()
+        inchi_key = InchiKey("inchi_key", self.molecule_parser).serialize_and_validate()
         volume = Volume("volume", self.parser).serialize_and_validate()
         density = Density("density", self.parser).serialize_and_validate()
         symmetry = Symmetry("symmetry", self.parser).serialize_and_validate()

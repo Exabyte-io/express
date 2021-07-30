@@ -5,32 +5,7 @@ import pymatgen as mg
 from ase.io import read, write
 from express.parsers import BaseParser
 from express.parsers.mixins.ionic import IonicDataMixin
-import ase
-import rdkit
-from rdkit import Chem
-"""
-    openbabel & pybel work together to generate the molecule string that
-    can then be converted into an InChI string by rdkit.
 
-    openbabel & pybel can be imported when the butler-venv is running.
-    Without the butler-venv, openbabel is not installed and therefore
-    both imports will fail.
-
-    When the butler-venv is not installed, inchi generation will be 
-    set to 'None' and essentially skipped for the purpose of testing.
-
-    Without the 'try' statements ExPrESS will fail due to import errors.
-
-    If the openbabel import is successul, then pybel will be imported.
-    If the openbabel import fails, then get_inchi & get_inchi_key will
-    be set to 'None'
-"""
-try:
-    import openbabel
-    import pybel
-    inchi_run  = 1
-except ImportError:
-    inchi_run = 0
 
 STRUCTURE_MAP = {
     "primitive": lambda s: mg.symmetry.analyzer.SpacegroupAnalyzer(s).get_primitive_standard_structure(),
@@ -67,86 +42,6 @@ class StructureParser(BaseParser, IonicDataMixin):
         # keep only one atom inside the basis in order to have the original lattice type
         self.lattice_only_structure = mg.Structure.from_str(self.structure_string, self.structure_format)  # deepcopy
         self.lattice_only_structure.remove_sites(range(1, len(self.structure.sites)))
-
-    def get_inchi_run(self):
-        return inchi_run
-
-    def get_inchi_null(self):
-        """
-        Function returns "Not Available" value for InChI when it cannot be calculated.
-
-        Returns:
-            Str
-        """
-        inchi_key_str = {
-            'name': 'inchi',
-            'value': ''
-        }
-        return inchi_key_str
-
-    def create_pybel_smi_from_poscar(self):
-        """
-        Function using ase to convert the POSCAR formatted string of a structure
-        into an XYZ formatted text file for that structure.
-
-        Then pybel converts the XYZ formatted text file into a SMILES format.
-
-        Returns:
-            Str
-        """
-        fi = "geom.xyz"
-        f = open(fi, "w")
-        os.chmod(fi, 0o777)
-        fstr = StringIO(self.structure_string)
-        ase_pos = ase.io.read(fstr, format="vasp")
-        xyz_file = ase.io.write(fi, ase_pos, format='xyz')
-        psmi = list(pybel.readfile('xyz', 'geom.xyz'))[0]
-        f.close()
-        return psmi
-
-    def get_inchi(self):
-        """
-        Function calculates the International Chemical Identifier (InChI) string for a given structure.
-
-        Returns:
-            Str
-        """
-        psmi = self.create_pybel_smi_from_poscar()
-        self.inchi = psmi.write("inchi")
-        inchi_short = self.inchi.split("=")
-        inchi_short = inchi_short[1]
-        inchi_str = {
-            "name": "inchi",
-            "value": inchi_short
-        }
-        return inchi_str
-
-    def get_inchi_key_null(self):
-        """
-        Function returns "Not Available" for the non-human readable InChI Hash value when it is unavailable
-
-        Returns:
-            Str
-        """
-        inchi_key_str = {
-            'name': 'inchi_key',
-            'value': ''
-        }
-        return inchi_key_str
-
-    def get_inchi_key(self):
-        """
-        Function calculates the non-human readable InChI Hash value.
-
-        Returns:
-            Str
-        """
-        inchi_key_val = rdkit.Chem.inchi.InchiToInchiKey(self.inchi)
-        inchi_key_str = {
-            "name": "inchi_key",
-            "value": inchi_key_val
-        }
-        return inchi_key_str
 
     def lattice_vectors(self):
         """

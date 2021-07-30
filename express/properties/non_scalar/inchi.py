@@ -1,4 +1,5 @@
 from express.properties.non_scalar import NonScalarProperty
+from express.parsers.molecule import MoleculeParser
 
 
 class Inchi(NonScalarProperty):
@@ -8,11 +9,8 @@ class Inchi(NonScalarProperty):
     def __init__(self, name, parser, *args, **kwargs):
         super(Inchi, self).__init__(name, parser, *args, **kwargs)
         self.name = name
-        inchi_run = self.parser.get_inchi_run()
-        if inchi_run == 0:
-            self.value = self.parser.get_inchi_null()
-        else:
-            self.value = self.parser.get_inchi()
+        print(parser)
+        self.value = self.parser.get_inchi()
 
     def _serialize(self):
         return self.value
