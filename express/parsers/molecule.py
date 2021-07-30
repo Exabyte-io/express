@@ -84,7 +84,7 @@ class MoleculeParser():
             inchi_short = ''
         else:
             pybel_smi = self.create_pybel_smi_from_poscar()
-            self.inchi = psmi.write("inchi")
+            self.inchi = pybel_smi.write("inchi")
             inchi_short = self.inchi.split("=")
             inchi_short = inchi_short[1]
 
