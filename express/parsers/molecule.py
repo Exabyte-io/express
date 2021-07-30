@@ -64,7 +64,7 @@ class MoleculeParser():
         import pybel
         xyz_file = "geom.xyz"
         with open(xyz_file, "w") as file:
-            os.chmod(file, 0o777)
+            os.chmod(xyz_file, 0o777)
             file_string = StringIO(self.structure_string)
             ase_poscar = ase.io.read(file_string, format="vasp")
             ase_xyz_file = ase.io.write(xyz_file, ase_poscar, format='xyz')
