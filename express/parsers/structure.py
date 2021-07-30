@@ -1,11 +1,9 @@
 import io
-from io import StringIO
-import os
 import pymatgen as mg
 from ase.io import read, write
+
 from express.parsers import BaseParser
 from express.parsers.mixins.ionic import IonicDataMixin
-
 
 STRUCTURE_MAP = {
     "primitive": lambda s: mg.symmetry.analyzer.SpacegroupAnalyzer(s).get_primitive_standard_structure(),

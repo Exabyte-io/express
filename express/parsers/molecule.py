@@ -1,11 +1,7 @@
-import io
 from io import StringIO
 import os
-import pymatgen as mg
 from ase.io import read, write
 import ase
-from express.parsers import BaseParser
-from express.parsers.structure import StructureParser
 import rdkit
 from rdkit import Chem
 
@@ -41,6 +37,11 @@ class MoleculeParser():
         If the openbabel import is successul, then pybel will be imported.
         If the openbabel import fails, then get_inchi & get_inchi_key will
         be set to 'None'
+
+        Returns:
+            Int:
+                0 = import failed, do not run InChI generation.
+                1 = import successful, run InChI generation.
         """
         try:
             import pybel
@@ -58,7 +59,7 @@ class MoleculeParser():
         Then pybel converts the XYZ formatted text file into a SMILES format.
 
         Returns:
-            Str
+            Str: structure in SMILES format.
         """
         import pybel
         xyz_file = "geom.xyz"
@@ -75,7 +76,7 @@ class MoleculeParser():
         Function calculates the International Chemical Identifier (InChI) string for a given structure.
 
         Returns:
-            Str
+            Str: structure in InChI format.
         """
         if self.inchi_run == 0:
             inchi_short = ''
@@ -96,7 +97,7 @@ class MoleculeParser():
         Function calculates the non-human readable InChI Hash value.
 
         Returns:
-            Str
+            Str: Structure in InChI Key format.
         """
         if self.inchi_run == 0:
             inchi_key_val = ''

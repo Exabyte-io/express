@@ -1,5 +1,4 @@
 from express.properties.non_scalar import NonScalarProperty
-from express.parsers.molecule import MoleculeParser
 
 
 class Inchi(NonScalarProperty):
