@@ -2,7 +2,6 @@ from io import StringIO
 import os
 from ase.io import read, write
 import ase
-import rdkit
 from rdkit import Chem
 import logging
 
