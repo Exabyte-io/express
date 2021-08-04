@@ -40,15 +40,13 @@ class MoleculeParser():
         be set to 'None'
 
         Returns:
-            Int:
-                0 = import failed, do not run InChI generation.
-                1 = import successful, run InChI generation.
+            Boolean
         """
         try:
             import pybel
-            is_using_inchi = 1
+            is_using_inchi = True
         except ImportError:
-            is_using_inchi = 0
+            is_using_inchi = False
             logging.error("Pybel failed to import. InChI & InChI Key cannot be created.")
         return is_using_inchi
 
@@ -79,7 +77,7 @@ class MoleculeParser():
         Returns:
             Str: structure in InChI format.
         """
-        if self.is_using_inchi == 0:
+        if self.is_using_inchi == False:
             inchi_short = ''
         else:
             pybel_smile = self.create_pybel_smile_from_poscar()
@@ -100,7 +98,7 @@ class MoleculeParser():
         Returns:
             Str: Structure in InChI Key format.
         """
-        if self.is_using_inchi == 0:
+        if self.is_using_inchi == False:
             inchi_key_val = ''
         else:
             inchi_key_val = Chem.inchi.InchiToInchiKey(self.inchi)
