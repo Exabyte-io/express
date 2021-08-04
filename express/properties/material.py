@@ -9,8 +9,8 @@ from express.parsers.apps.vasp.parser import VaspParser
 from express.parsers.utils import lattice_basis_to_poscar
 from express.properties.non_scalar.symmetry import Symmetry
 from express.properties.scalar.elemental_ratio import ElementalRatio
-from express.properties.non_scalar.inchi import Inchi
-from express.properties.non_scalar.inchi_key import InchiKey
+from express.properties.structural.inchi import Inchi
+from express.properties.structural.inchi_key import InchiKey
 from express.parsers.molecule import MoleculeParser
 
 class Material(BaseProperty):
@@ -59,14 +59,17 @@ class Material(BaseProperty):
     @property
     def derived_properties(self):
         derived_properties = []
-        inchi = Inchi("inchi", self.molecule_parser).serialize_and_validate()
-        inchi_key = InchiKey("inchi_key", self.molecule_parser).serialize_and_validate()
-        volume = Volume("volume", self.parser).serialize_and_validate()
-        density = Density("density", self.parser).serialize_and_validate()
-        symmetry = Symmetry("symmetry", self.parser).serialize_and_validate()
-        derived_properties = [volume, density, symmetry, inchi, inchi_key]
-        derived_properties.extend(self._elemental_ratios())
-        derived_properties.extend(self._p_norms())
+        try:
+            inchi = Inchi("inchi", self.molecule_parser).serialize_and_validate()
+            inchi_key = InchiKey("inchi_key", self.molecule_parser).serialize_and_validate()
+            volume = Volume("volume", self.parser).serialize_and_validate()
+            density = Density("density", self.parser).serialize_and_validate()
+            symmetry = Symmetry("symmetry", self.parser).serialize_and_validate()
+            derived_properties = [volume, density, symmetry, inchi, inchi_key]
+            derived_properties.extend(self._elemental_ratios())
+            derived_properties.extend(self._p_norms())
+        except:
+            pass
         return derived_properties
 
     @property

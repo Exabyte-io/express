@@ -19,24 +19,24 @@ class MoleculeParser():
 
     def __init__(self, structure_string):
         self.structure_string = structure_string
-        self.inchi_run = self.try_openbabel_import()
+        self.is_using_inchi = self.is_pybel_import_successful()
 
 
-    def try_openbabel_import(self):
+    def is_pybel_import_successful(self):
         """
-        openbabel & pybel work together to generate the molecule string that
+        pybel is a submodule of openbabel used to generate the molecule string that
         can then be converted into an InChI string by rdkit.
 
-        openbabel & pybel can be imported when the butler-venv is running.
-        Without the butler-venv, openbabel is not installed and therefore
-        both imports will fail.
+        Pybel can be imported when the butler-venv is running.
+        Without the butler-venv, openbabel is not installed, thereby causing
+        the pybel import to fail.
 
         When the butler-venv is not installed, inchi generation will be
         set to 'None' and essentially skipped for the purpose of testing.
 
-        Without the 'try' statements ExPrESS will fail due to import errors.
-        If the openbabel import is successul, then pybel will be imported.
-        If the openbabel import fails, then get_inchi & get_inchi_key will
+        Without the 'try' statements present below ExPrESS will fail due to import errors.
+        If openbabel is installed properly pybel will be imported.
+        Otherwise, pybel import will fail and then get_inchi & get_inchi_key will
         be set to 'None'
 
         Returns:
@@ -46,14 +46,13 @@ class MoleculeParser():
         """
         try:
             import pybel
-            inchi_run = 1
+            is_using_inchi = 1
         except ImportError:
-            inchi_run = 0
+            is_using_inchi = 0
             logging.error("Pybel failed to import. InChI & InChI Key cannot be created.")
-        print(inchi_run)
-        return inchi_run
+        return is_using_inchi
 
-    def create_pybel_smi_from_poscar(self):
+    def create_pybel_smile_from_poscar(self):
         """
         Function using ase to convert the POSCAR formatted string of a structure
         into an XYZ formatted text file for that structure.
@@ -70,8 +69,8 @@ class MoleculeParser():
             file_string = StringIO(self.structure_string)
             ase_poscar = ase.io.read(file_string, format="vasp")
             ase_xyz_file = ase.io.write(xyz_file, ase_poscar, format='xyz')
-            pybel_smi = list(pybel.readfile('xyz', 'geom.xyz'))[0]
-        return pybel_smi
+            pybel_smile = list(pybel.readfile('xyz', 'geom.xyz'))[0]
+        return pybel_smile
 
     def get_inchi(self):
         """
@@ -80,11 +79,11 @@ class MoleculeParser():
         Returns:
             Str: structure in InChI format.
         """
-        if self.inchi_run == 0:
+        if self.is_using_inchi == 0:
             inchi_short = ''
         else:
-            pybel_smi = self.create_pybel_smi_from_poscar()
-            self.inchi = pybel_smi.write("inchi")
+            pybel_smile = self.create_pybel_smile_from_poscar()
+            self.inchi = pybel_smile.write("inchi")
             inchi_short = self.inchi.split("=")
             inchi_short = inchi_short[1]
 
@@ -101,10 +100,10 @@ class MoleculeParser():
         Returns:
             Str: Structure in InChI Key format.
         """
-        if self.inchi_run == 0:
+        if self.is_using_inchi == 0:
             inchi_key_val = ''
         else:
-            inchi_key_val = rdkit.Chem.inchi.InchiToInchiKey(self.inchi)
+            inchi_key_val = Chem.inchi.InchiToInchiKey(self.inchi)
 
         inchi_key_str = {
             "name": "inchi_key",
