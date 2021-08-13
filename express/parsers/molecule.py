@@ -1,6 +1,7 @@
 from io import StringIO
 import os
-from ase.io import read, write
+from ase.io import read
+from ase.io import write
 import ase
 from rdkit import Chem
 import logging
@@ -43,8 +44,10 @@ class MoleculeParser():
         """
         try:
             import pybel
+            self.pybel = pybel
             is_using_inchi = True
         except ImportError:
+            self.pybel = None
             is_using_inchi = False
             logging.error("Pybel failed to import. InChI & InChI Key cannot be created.")
         return is_using_inchi
@@ -59,7 +62,7 @@ class MoleculeParser():
         Returns:
             Str: structure in SMILES format.
         """
-        import pybel
+        pybel = self.pybel
         xyz_file = "geom.xyz"
         with open(xyz_file, "w") as file:
             os.chmod(xyz_file, 0o777)
@@ -79,6 +82,7 @@ class MoleculeParser():
         if self.is_using_inchi == False:
             inchi_short = ''
         else:
+            pybel = self.pybel
             pybel_smile = self.create_pybel_smile_from_poscar()
             self.inchi = pybel_smile.write("inchi")
             inchi_short = self.inchi.split("=")
