@@ -63,13 +63,11 @@ class MoleculeParser():
             Str: structure in SMILES format.
         """
         pybel = self.pybel
-        xyz_file = "geom.xyz"
-        with open(xyz_file, "w") as file:
-            os.chmod(xyz_file, 0o777)
-            file_string = StringIO(self.structure_string)
-            ase_poscar = ase.io.read(file_string, format="vasp")
-            ase_xyz_file = ase.io.write(xyz_file, ase_poscar, format='xyz')
-            pybel_smile = list(pybel.readfile('xyz', 'geom.xyz'))[0]
+        ase_string = StringIO()
+        file_string = StringIO(self.structure_string)
+        ase_poscar = ase.io.read(file_string, format="vasp")
+        ase_xyz_file = ase.io.write(ase_string, ase_poscar, format='xyz')
+        pybel_smile = pybel.readstring('xyz', ase_string.getvalue())
         return pybel_smile
 
     def get_inchi(self):
