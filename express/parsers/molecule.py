@@ -55,9 +55,9 @@ class MoleculeParser():
     def create_pybel_smile_from_poscar(self):
         """
         Function using ase to convert the POSCAR formatted string of a structure
-        into an XYZ formatted text file for that structure.
+        into an XYZ formatted StringIO object.
 
-        Then pybel converts the XYZ formatted text file into a SMILES format.
+        Then pybel converts the XYZ formatted StringIO object into a SMILES formatted string.
 
         Returns:
             Str: structure in SMILES format.
