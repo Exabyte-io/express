@@ -59,17 +59,17 @@ class Material(BaseProperty):
     @property
     def derived_properties(self):
         derived_properties = []
-        try:
-            inchi = Inchi("inchi", self.molecule_parser).serialize_and_validate()
-            inchi_key = InchiKey("inchi_key", self.molecule_parser).serialize_and_validate()
-            volume = Volume("volume", self.parser).serialize_and_validate()
-            density = Density("density", self.parser).serialize_and_validate()
-            symmetry = Symmetry("symmetry", self.parser).serialize_and_validate()
-            derived_properties = [volume, density, symmetry, inchi, inchi_key]
-            derived_properties.extend(self._elemental_ratios())
-            derived_properties.extend(self._p_norms())
-        except:
-            pass
+        inchi = Inchi("inchi", self.molecule_parser).serialize_and_validate()
+        inchi_key = InchiKey("inchi_key", self.molecule_parser).serialize_and_validate()
+        # try:
+        volume = Volume("volume", self.parser).serialize_and_validate()
+        density = Density("density", self.parser).serialize_and_validate()
+        symmetry = Symmetry("symmetry", self.parser).serialize_and_validate()
+        derived_properties = [volume, density, symmetry, inchi, inchi_key]
+        derived_properties.extend(self._elemental_ratios())
+        derived_properties.extend(self._p_norms())
+        #except:
+        #    pass
         return derived_properties
 
     @property

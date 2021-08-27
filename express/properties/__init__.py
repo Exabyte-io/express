@@ -34,6 +34,7 @@ class BaseProperty(object):
         Returns:
             dict
         """
+        print("SCHEMA: {}".format(self.schema))
         instance = self._serialize()
         self.esse.validate(instance, self.schema)
         return instance

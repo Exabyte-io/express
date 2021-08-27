@@ -1,10 +1,13 @@
 from io import StringIO
+
 import os
+import ase
 from ase.io import read
 from ase.io import write
-import ase
+import rdkit
 from rdkit import Chem
 import logging
+import tempfile
 
 class MoleculeParser():
     """
@@ -19,56 +22,20 @@ class MoleculeParser():
 
     def __init__(self, structure_string):
         self.structure_string = structure_string
-        self.is_using_inchi = self.is_pybel_import_successful()
+        self.inchi_long, self.inchi = self.get_inchi()
 
-
-    def is_pybel_import_successful(self):
+    def create_pdb_from_poscar(self):
         """
-        pybel is a submodule of openbabel used to generate the molecule string that
-        can then be converted into an InChI string by rdkit.
-
-        Pybel can be imported when the butler-venv is running.
-        Without the butler-venv, openbabel is not installed, thereby causing
-        the pybel import to fail.
-
-        When the butler-venv is not installed, inchi generation will be
-        set to 'None' and essentially skipped for the purpose of testing.
-
-        Without the 'try' statements present below ExPrESS will fail due to import errors.
-        If openbabel is installed properly pybel will be imported.
-        Otherwise, pybel import will fail and then get_inchi & get_inchi_key will
-        be set to 'None'
-
-        Returns:
-            Boolean
+        Function to create pdb mol string object from a poscar string
         """
-        try:
-            import pybel
-            self.pybel = pybel
-            is_using_inchi = True
-        except ImportError:
-            self.pybel = None
-            is_using_inchi = False
-            logging.error("Pybel failed to import. InChI & InChI Key cannot be created.")
-        return is_using_inchi
-
-    def create_pybel_smile_from_poscar(self):
-        """
-        Function using ase to convert the POSCAR formatted string of a structure
-        into an XYZ formatted StringIO object.
-
-        Then pybel converts the XYZ formatted StringIO object into a SMILES formatted string.
-
-        Returns:
-            Str: structure in SMILES format.
-        """
-        pybel = self.pybel
-        ase_string = StringIO()
-        file_string = StringIO(self.structure_string)
-        ase_poscar = ase.io.read(file_string, format="vasp")
-        ase_xyz_file = ase.io.write(ase_string, ase_poscar, format='xyz')
-        pybel_smile = pybel.readstring('xyz', ase_string.getvalue())
-        return pybel_smile
+        pdb_string = StringIO()
+        ase_pdb = StringIO()
+        pdb = tempfile.TemporaryFile()
+        poscar_string = StringIO(self.structure_string)
+        ase_poscar = ase.io.read(poscar_string, format="vasp")
+        ase.io.write(ase_pdb, ase_poscar, format="proteindatabank")
+        pdbmol = rdkit.Chem.rdmolfiles.MolFromPDBBlock(ase_pdb.getvalue())
+        return pdbmol
 
     def get_inchi(self):
         """
@@ -77,20 +44,16 @@ class MoleculeParser():
         Returns:
             Str: structure in InChI format.
         """
-        if self.is_using_inchi == False:
-            inchi_short = ''
-        else:
-            pybel = self.pybel
-            pybel_smile = self.create_pybel_smile_from_poscar()
-            self.inchi = pybel_smile.write("inchi")
-            inchi_short = self.inchi.split("=")
-            inchi_short = inchi_short[1]
 
+        pdbmol = self.create_pdb_from_poscar()
+        inchi_long = rdkit.Chem.inchi.MolToInchi(pdbmol)
+        inchi_short = inchi_long.split("=")
+        inchi = inchi_short[1]
         inchi_str = {
             "name": "inchi",
-            "value": inchi_short
+            "value": inchi
         }
-        return inchi_str
+        return inchi_long, inchi_str
 
     def get_inchi_key(self):
         """
@@ -99,11 +62,7 @@ class MoleculeParser():
         Returns:
             Str: Structure in InChI Key format.
         """
-        if self.is_using_inchi == False:
-            inchi_key_val = ''
-        else:
-            inchi_key_val = Chem.inchi.InchiToInchiKey(self.inchi)
-
+        inchi_key_val = rdkit.Chem.inchi.InchiToInchiKey(self.inchi_long)
         inchi_key_str = {
             "name": "inchi_key",
             "value": inchi_key_val
