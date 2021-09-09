@@ -3,7 +3,7 @@ from express.properties.non_scalar import NonScalarProperty
 
 class InchiKey(NonScalarProperty):
     """
-    Inchi property class.
+    Inchi key property class.
     """
     def __init__(self, name, parser, *args, **kwargs):
         super(InchiKey, self).__init__(name, parser, *args, **kwargs)
