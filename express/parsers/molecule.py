@@ -1,4 +1,5 @@
 from io import StringIO
+from typing import Dict, Tuple
 
 import os
 import ase
@@ -8,6 +9,7 @@ import rdkit
 from rdkit import Chem
 import logging
 import tempfile
+
 
 class MoleculeParser():
     """
@@ -28,7 +30,7 @@ class MoleculeParser():
 
         self.inchi_long, self.inchi = self.get_inchi()
 
-    def create_rdkit_molfrom_structure(self):
+    def create_rdkit_molfrom_structure(self) -> rdkit.Chem.Mol:
         """
         Function to create an RDKit molecule object from a structure string
         """
@@ -41,7 +43,7 @@ class MoleculeParser():
         pdbmol = rdkit.Chem.rdmolfiles.MolFromPDBBlock(ase_pdb.getvalue())
         return pdbmol
 
-    def get_inchi(self):
+    def get_inchi(self) -> (Tuple[str, str, str, str, str], str):
         """
         Function calculates the International Chemical Identifier (InChI) string for a given structure.
 
@@ -59,14 +61,14 @@ class MoleculeParser():
         }
         return inchi_long, inchi_str
 
-    def get_inchi_key(self):
+    def get_inchi_key(self) -> Dict[str, str]:
         """
         Function calculates the non-human readable InChI Hash value.
 
         Returns:
             Str: Structure in InChI Key format.
         """
-        inchi_key_val = rdkit.Chem.inchi.InchiToInchiKey(self.inchi_long)
+        inchi_key_val: str = rdkit.Chem.inchi.InchiToInchiKey(self.inchi_long)
         inchi_key_str = {
             "name": "inchi_key",
             "value": inchi_key_val
