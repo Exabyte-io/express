@@ -43,7 +43,7 @@ class MoleculeParser():
         pdbmol = rdkit.Chem.rdmolfiles.MolFromPDBBlock(ase_pdb.getvalue())
         return pdbmol
 
-    def get_inchi(self) -> (str, str):
+    def get_inchi(self) -> Tuple[str, Dict[str, str]]:
         """
         Function calculates the International Chemical Identifier (InChI) string for a given structure.
 
