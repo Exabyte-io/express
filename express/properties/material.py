@@ -46,7 +46,7 @@ class Material(BaseProperty):
 
         # override parser to use StructureParser from now on
         self.parser = StructureParser(structure_string=structure_string, structure_format=structure_format, cell=cell)
-        self.molecule_parser = MoleculeParser(structure_string=structure_string)
+        self.molecule_parser = MoleculeParser(structure_string=structure_string, structure_format=structure_format)
 
     @property
     def formula(self):
