@@ -20,6 +20,7 @@ class Material(BaseProperty):
 
     def __init__(self, name, parser, *args, **kwargs):
         super(Material, self).__init__(name, parser, *args, **kwargs)
+        self.is_periodic = not kwargs.get("isNonPeriodic", False)
 
         cell = kwargs.get("cell", "original")
         structure_string = kwargs.get("structure_string")
@@ -60,8 +61,12 @@ class Material(BaseProperty):
     def derived_properties(self):
         derived_properties = []
         try:
-            inchi = Inchi("inchi", self.molecule_parser).serialize_and_validate()
-            inchi_key = InchiKey("inchi_key", self.molecule_parser).serialize_and_validate()
+            if self.is_periodic:
+                inchi = None
+                inchi_key = None
+            else:
+                inchi = Inchi("inchi", self.molecule_parser).serialize_and_validate()
+                inchi_key = InchiKey("inchi_key", self.molecule_parser).serialize_and_validate()
             volume = Volume("volume", self.parser).serialize_and_validate()
             density = Density("density", self.parser).serialize_and_validate()
             symmetry = Symmetry("symmetry", self.parser).serialize_and_validate()
