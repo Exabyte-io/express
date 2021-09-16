@@ -40,8 +40,8 @@ class MoleculeParser():
         ase_atoms = ase.io.read(material_file_string, format=self.ase_format)
 
         ase.io.write(ase_pdb, ase_atoms, format="proteindatabank")
-        pdbmol = rdkit.Chem.rdmolfiles.MolFromPDBBlock(ase_pdb.getvalue())
-        return pdbmol
+        rdkit_mol_object = rdkit.Chem.rdmolfiles.MolFromPDBBlock(ase_pdb.getvalue())
+        return rdkit_mol_object
 
     def get_inchi(self) -> Tuple[str, Dict[str, str]]:
         """
@@ -51,10 +51,15 @@ class MoleculeParser():
             Str: structure in InChI format.
         """
 
-        pdbmol = self.create_rdkit_molfrom_structure()
-        inchi_long = rdkit.Chem.inchi.MolToInchi(pdbmol)
-        inchi_short = inchi_long.split("=")
-        inchi = inchi_short[1]
+        rdkit_mol_object = self.create_rdkit_molfrom_structure()
+
+        if rdkit_mol_object is None:
+            inchi = None
+            inchi_long = None
+        else:
+            inchi_long = rdkit.Chem.inchi.MolToInchi(rdkit_mol_object)
+            inchi_short = inchi_long.split("=")
+            inchi = inchi_short[1]
         inchi_str = {
             "name": "inchi",
             "value": inchi
