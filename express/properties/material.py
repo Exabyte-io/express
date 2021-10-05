@@ -20,7 +20,7 @@ class Material(BaseProperty):
 
     def __init__(self, name, parser, *args, **kwargs):
         super(Material, self).__init__(name, parser, *args, **kwargs)
-        self.is_periodic = not kwargs.get("isNonPeriodic", False)
+        self.is_periodic = not kwargs.get("is_non_periodic", False)
 
         cell = kwargs.get("cell", "original")
         structure_string = kwargs.get("structure_string")
