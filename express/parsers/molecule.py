@@ -30,7 +30,7 @@ class MoleculeParser():
 
         self.inchi_long, self.inchi = self.get_inchi()
 
-    def create_rdkit_molfrom_structure(self) -> rdkit.Chem.Mol:
+    def get_rdkit_mol(self) -> rdkit.Chem.Mol:
         """
         Function to create an RDKit molecule object from a structure string
         """
@@ -46,36 +46,52 @@ class MoleculeParser():
     def get_inchi(self) -> Tuple[str, Dict[str, str]]:
         """
         Function calculates the International Chemical Identifier (InChI) string for a given structure.
+        It returns the full InChI string that is calculated along with a shorter notation that omits
+        the `InChI=` prefix and is stored as the 'inchi' value.
 
-        Returns:
-            Str: structure in InChI format.
+        Returns: 
+            Str, Dict
+
+        Example:
+            InChI for H2O
+		Str:  InChI=1S/H2O/h1H2
+                Dict: {
+                          "name": "inchi",
+                          "value": "1S/H2O/h1H2"
+                      } 
         """
 
-        rdkit_mol_object = self.create_rdkit_molfrom_structure()
+        rdkit_mol_object = self.get_rdkit_mol()
 
         if rdkit_mol_object is None:
-            inchi = None
+            inchi_short = None
             inchi_long = None
         else:
             inchi_long = rdkit.Chem.inchi.MolToInchi(rdkit_mol_object)
-            inchi_short = inchi_long.split("=")
-            inchi = inchi_short[1]
-        inchi_str = {
+            inchi_short = inchi_long.split("=")[1]
+        inchi = {
             "name": "inchi",
-            "value": inchi
+            "value": inchi_short
         }
-        return inchi_long, inchi_str
+        return inchi_long, inchi
 
     def get_inchi_key(self) -> Dict[str, str]:
         """
         Function calculates the non-human readable InChI Hash value.
 
         Returns:
-            Str: Structure in InChI Key format.
+            Dict
+
+        Example:
+            InChI Key for H2O
+            Dict: {
+                      "name": "inchi_key",
+                      "value": "XLYOFNOQVPJJNP-UHFFFAOYSA-N"
+                  }
         """
         inchi_key_val: str = rdkit.Chem.inchi.InchiToInchiKey(self.inchi_long)
-        inchi_key_str = {
+        inchi_key = {
             "name": "inchi_key",
             "value": inchi_key_val
         }
-        return inchi_key_str
+        return inchi_key
