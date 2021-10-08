@@ -22,12 +22,7 @@ class MoleculeParser():
 
     def __init__(self, structure_string: str, structure_format: str):
         self.structure_string = structure_string
-
-        if structure_format == "poscar":
-            self.ase_format = "vasp"
-        else:
-            self.ase_format = structure_format
-
+        self.ase_format = self.get_ase_format(structure_format)
         self.inchi_long, self.inchi = self.get_inchi()
 
     def get_rdkit_mol(self) -> rdkit.Chem.Mol:
@@ -49,7 +44,7 @@ class MoleculeParser():
         It returns the full InChI string that is calculated along with a shorter notation that omits
         the `InChI=` prefix and is stored as the 'inchi' value.
 
-        Returns: 
+        Returns:
             Str, Dict
 
         Example:
@@ -58,7 +53,7 @@ class MoleculeParser():
                 Dict: {
                           "name": "inchi",
                           "value": "1S/H2O/h1H2"
-                      } 
+                      }
         """
 
         rdkit_mol_object = self.get_rdkit_mol()
@@ -95,3 +90,23 @@ class MoleculeParser():
             "value": inchi_key_val
         }
         return inchi_key
+
+    def get_ase_format(self, format):
+        """
+        Function converts the format keywords used in this code to their
+        corresponding ase keywords based on a predisposed dictionary of values.
+
+        Returns:
+            Str
+
+        Example:
+            format="poscar" --> format="vasp"
+        """
+        ase_format = ASE_FORMATS[format]
+        return ase_format
+
+ASE_FORMATS = {
+    "poscar": "vasp",
+    "cif": "cif",
+    "espresso-in": "espresso-in"
+}

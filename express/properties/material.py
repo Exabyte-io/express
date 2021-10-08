@@ -1,4 +1,5 @@
 import os
+import logging
 
 from express.properties import BaseProperty
 from express.properties.scalar.p_norm import PNorm
@@ -73,7 +74,9 @@ class Material(BaseProperty):
             derived_properties = [volume, density, symmetry, inchi, inchi_key]
             derived_properties.extend(self._elemental_ratios())
             derived_properties.extend(self._p_norms())
+        # TODO: Determine how to avoid an eternal pass when one derived property fails
         except:
+            logging.info("Derived properties array empty due to failure to caluclate one (or more) values.")
             pass
         return derived_properties
 
