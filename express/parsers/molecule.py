@@ -18,7 +18,7 @@ class MoleculeParser():
 
     Args:
         structure_string (str): structure string.
-        structure_format (str): structure format, poscar or espresso-in.
+        structure_format (str): structure format, poscar, cif or espresso-in.
     """
 
     def __init__(self, structure_string: str, structure_format: str):
@@ -49,12 +49,11 @@ class MoleculeParser():
             Str, Dict
 
         Example:
-            InChI for H2O
-		Str:  InChI=1S/H2O/h1H2
-                Dict: {
-                          "name": "inchi",
-                          "value": "1S/H2O/h1H2"
-                      }
+            InChI=1S/H2O/h1H2,
+            {
+                "name": "inchi",
+                "value": "1S/H2O/h1H2"
+            }
         """
 
         rdkit_mol_object = self.get_rdkit_mol()
