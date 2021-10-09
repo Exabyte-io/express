@@ -19,6 +19,7 @@ class TestStructureParser(IntegrationTestBase):
         with open(os.path.join(self.rootDir, manifest["structurePath"])) as f:
             kwargs = {
                 "structure_string": f.read(),
+                "structure_format": "poscar"
             }
             return MoleculeParser(**kwargs)
 

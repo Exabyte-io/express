@@ -1,4 +1,5 @@
 import os
+import logging
 
 from express.properties import BaseProperty
 from express.properties.scalar.p_norm import PNorm
@@ -20,6 +21,7 @@ class Material(BaseProperty):
 
     def __init__(self, name, parser, *args, **kwargs):
         super(Material, self).__init__(name, parser, *args, **kwargs)
+        self.is_non_periodic = kwargs.get("is_non_periodic", False)
 
         cell = kwargs.get("cell", "original")
         structure_string = kwargs.get("structure_string")
@@ -46,7 +48,7 @@ class Material(BaseProperty):
 
         # override parser to use StructureParser from now on
         self.parser = StructureParser(structure_string=structure_string, structure_format=structure_format, cell=cell)
-        self.molecule_parser = MoleculeParser(structure_string=structure_string)
+        self.molecule_parser = MoleculeParser(structure_string=structure_string, structure_format=structure_format)
 
     @property
     def formula(self):
@@ -60,15 +62,21 @@ class Material(BaseProperty):
     def derived_properties(self):
         derived_properties = []
         try:
-            inchi = Inchi("inchi", self.molecule_parser).serialize_and_validate()
-            inchi_key = InchiKey("inchi_key", self.molecule_parser).serialize_and_validate()
+            if self.is_non_periodic:
+                inchi = Inchi("inchi", self.molecule_parser).serialize_and_validate()
+                inchi_key = InchiKey("inchi_key", self.molecule_parser).serialize_and_validate()
+            else:
+                inchi = None
+                inchi_key = None
             volume = Volume("volume", self.parser).serialize_and_validate()
             density = Density("density", self.parser).serialize_and_validate()
             symmetry = Symmetry("symmetry", self.parser).serialize_and_validate()
             derived_properties = [volume, density, symmetry, inchi, inchi_key]
             derived_properties.extend(self._elemental_ratios())
             derived_properties.extend(self._p_norms())
+        # TODO: Determine how to avoid an eternal pass when one derived property fails
         except:
+            logging.info("Derived properties array empty due to failure to caluclate one (or more) values.")
             pass
         return derived_properties
 
