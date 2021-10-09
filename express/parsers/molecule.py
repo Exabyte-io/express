@@ -1,5 +1,6 @@
 from io import StringIO
 from typing import Dict, Tuple
+from express.parsers.utils import convert_to_ase_format
 
 import os
 import ase
@@ -22,7 +23,7 @@ class MoleculeParser():
 
     def __init__(self, structure_string: str, structure_format: str):
         self.structure_string = structure_string
-        self.ase_format = self.get_ase_format(structure_format)
+        self.ase_format = convert_to_ase_format(structure_format)
         self.inchi_long, self.inchi = self.get_inchi()
 
     def get_rdkit_mol(self) -> rdkit.Chem.Mol:
@@ -90,23 +91,3 @@ class MoleculeParser():
             "value": inchi_key_val
         }
         return inchi_key
-
-    def get_ase_format(self, format):
-        """
-        Function converts the format keywords used in this code to their
-        corresponding ase keywords based on a predisposed dictionary of values.
-
-        Returns:
-            Str
-
-        Example:
-            format="poscar" --> format="vasp"
-        """
-        ase_format = ASE_FORMATS[format]
-        return ase_format
-
-ASE_FORMATS = {
-    "poscar": "vasp",
-    "cif": "cif",
-    "espresso-in": "espresso-in"
-}
