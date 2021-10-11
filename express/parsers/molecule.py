@@ -20,8 +20,6 @@ class MoleculeParser(StructureParser):
 
     def __init__(self, *args, **kwargs):
         super(MoleculeParser, self).__init__(*args, **kwargs)
-        self.structure_string = kwargs.get("structure_string")
-        self.structure_format = kwargs.get("structure_format")
         self.ase_format = convert_to_ase_format(self.structure_format)
         self.inchi_long, self.inchi = self.get_inchi()
 
