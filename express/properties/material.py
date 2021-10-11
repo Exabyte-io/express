@@ -13,6 +13,7 @@ from express.properties.scalar.elemental_ratio import ElementalRatio
 from express.properties.structural.inchi import Inchi
 from express.properties.structural.inchi_key import InchiKey
 from express.parsers.molecule import MoleculeParser
+from express.parsers.crystal import CrystalParser
 
 class Material(BaseProperty):
     """
@@ -46,8 +47,8 @@ class Material(BaseProperty):
                     lattice = self.parser.final_lattice_vectors()
                     structure_string = lattice_basis_to_poscar(lattice, basis)
 
-        # override parser to use StructureParser from now on
         self.parser = StructureParser(structure_string=structure_string, structure_format=structure_format, cell=cell)
+        self.crystal_parser = CrystalParser(structure_string=structure_string, structure_format=structure_format, cell=cell)
         self.molecule_parser = MoleculeParser(structure_string=structure_string, structure_format=structure_format, cell=None)
 
     @property
@@ -68,9 +69,9 @@ class Material(BaseProperty):
             else:
                 inchi = None
                 inchi_key = None
-            volume = Volume("volume", self.parser).serialize_and_validate()
-            density = Density("density", self.parser).serialize_and_validate()
-            symmetry = Symmetry("symmetry", self.parser).serialize_and_validate()
+            volume = Volume("volume", self.crystal_parser).serialize_and_validate()
+            density = Density("density", self.crystal_parser).serialize_and_validate()
+            symmetry = Symmetry("symmetry", self.crystal_parser).serialize_and_validate()
             derived_properties = [volume, density, symmetry, inchi, inchi_key]
             derived_properties.extend(self._elemental_ratios())
             derived_properties.extend(self._p_norms())
@@ -86,7 +87,7 @@ class Material(BaseProperty):
 
     @property
     def lattice(self):
-        return self.parser.lattice_bravais()
+        return self.crystal_parser.lattice_bravais()
 
     def _serialize(self):
         """
@@ -126,8 +127,8 @@ class Material(BaseProperty):
              list
         """
         elemental_ratios = []
-        for element in self.parser.elemental_ratios().keys():
-            elemental_ratio = ElementalRatio("elemental_ratio", self.parser, element=element).serialize_and_validate()
+        for element in self.crystal_parser.elemental_ratios().keys():
+            elemental_ratio = ElementalRatio("elemental_ratio", self.crystal_parser, element=element).serialize_and_validate()
             elemental_ratios.append(elemental_ratio)
         return elemental_ratios
 
@@ -143,5 +144,5 @@ class Material(BaseProperty):
         """
         p_norms = []
         for degree in [0, 2, 3, 5, 7, 10]:
-            p_norms.append(PNorm("p-norm", self.parser, degree=degree).serialize_and_validate())
+            p_norms.append(PNorm("p-norm", self.crystal_parser, degree=degree).serialize_and_validate())
         return p_norms

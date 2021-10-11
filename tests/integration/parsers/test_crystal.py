@@ -2,10 +2,10 @@ import os
 
 from tests.fixtures.data import SI
 from tests.integration import IntegrationTestBase
-from express.parsers.structure import StructureParser
+from express.parsers.crystal import CrystalParser
 
 
-class TestStructureParser(IntegrationTestBase):
+class TestCrystalParser(IntegrationTestBase):
 
     def setUp(self):
         super(IntegrationTestBase, self).setUp()
@@ -22,10 +22,10 @@ class TestStructureParser(IntegrationTestBase):
                 "cell": manifest.get("cell", "original"),
                 "structure_format": manifest.get("structureFormat", "poscar")
             }
-            return StructureParser(**kwargs)
+            return CrystalParser(**kwargs)
 
-    def test_structure_espresso_basis(self):
-        self.assertDeepAlmostEqual(self.parser.basis(), SI["basis"], places=2)
+    def test_crystal_espresso_lattice_bravais(self):
+        self.assertDeepAlmostEqual(self.parser.lattice_bravais(), SI["lattice"], places=2)
 
-    def test_structure_vasp_basis(self):
-        self.assertDeepAlmostEqual(self.parser.basis(), SI["basis"], places=2)
+    def test_crystal_vasp_lattice_bravais(self):
+        self.assertDeepAlmostEqual(self.parser.lattice_bravais(), SI["lattice"], places=2)
