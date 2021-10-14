@@ -23,7 +23,7 @@ class StructureParser(BaseParser, IonicDataMixin):
     """
 
     def __init__(self, *args, **kwargs):
-        super(StructureParser, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
         self.structure_string = kwargs.get("structure_string")
         self.structure_format = kwargs.get("structure_format")
 
@@ -35,11 +35,112 @@ class StructureParser(BaseParser, IonicDataMixin):
         # cell is either original, primitive or conventional
         self.cell = kwargs["cell"]
         self.structure = mg.Structure.from_str(self.structure_string, self.structure_format)
-        if self.cell != "original" and self.cell != None: self.structure = STRUCTURE_MAP[self.cell](self.structure)
+        if self.cell != "original": self.structure = STRUCTURE_MAP[self.cell](self.structure)
 
         # keep only one atom inside the basis in order to have the original lattice type
         self.lattice_only_structure = mg.Structure.from_str(self.structure_string, self.structure_format)  # deepcopy
         self.lattice_only_structure.remove_sites(range(1, len(self.structure.sites)))
+
+
+    def lattice_vectors(self):
+        """
+        Returns lattice vectors.
+
+        Reference:
+            func: express.parsers.mixins.ionic.IonicDataMixin.lattice_vectors
+        """
+        return {
+            'vectors': {
+                'a': self.structure.lattice.matrix.tolist()[0],
+                'b': self.structure.lattice.matrix.tolist()[1],
+                'c': self.structure.lattice.matrix.tolist()[2],
+                'alat': 1.0
+            }
+        }
+
+    def lattice_bravais(self):
+        """
+        Returns lattice bravais.
+
+        Reference:
+            func: express.parsers.mixins.ionic.IonicDataMixin.lattice_bravais
+        """
+        return {
+            "type": self._lattice_type(),
+            "a": self.structure.lattice.a,
+            "b": self.structure.lattice.b,
+            "c": self.structure.lattice.c,
+            "alpha": self.structure.lattice.alpha,
+            "beta": self.structure.lattice.beta,
+            "gamma": self.structure.lattice.gamma,
+            "units": {
+                "length": "angstrom",
+                "angle": "degree"
+            }
+        }
+
+    def _lattice_type(self):
+        """
+        Returns lattice type according to AFLOW (http://aflowlib.org/) classification.
+
+        Returns:
+             str
+        """
+        structure_ = self.lattice_only_structure if self.cell != "primitive" else self.structure
+        try:
+            # try getting the lattice type from the lattice only structure
+            return self._lattice_type_from_structure(structure_)
+        except:
+            try:
+                # try getting the lattice type from the current structure
+                return self._lattice_type_from_structure(self.structure)
+            except:
+                return "TRI"
+
+    def _lattice_type_from_structure(self, structure_):
+        """
+        Returns lattice type according to AFLOW (http://aflowlib.org/) classification.
+
+        Returns:
+             str
+        """
+        analyzer = mg.symmetry.analyzer.SpacegroupAnalyzer(structure_, symprec=0.001)
+        lattice_type = analyzer.get_lattice_type()
+        spg_symbol = analyzer.get_space_group_symbol()
+
+        # TODO: find a better implementation
+        if lattice_type == "cubic":
+            if "P" in spg_symbol:
+                return "CUB"
+            elif "F" in spg_symbol:
+                return "FCC"
+            elif "I" in spg_symbol:
+                return "BCC"
+        elif lattice_type == "tetragonal":
+            if "P" in spg_symbol:
+                return "TET"
+            elif "I" in spg_symbol:
+                return "BCT"
+        elif lattice_type == "orthorhombic":
+            if "P" in spg_symbol:
+                return "ORC"
+            elif "F" in spg_symbol:
+                return "ORCF"
+            elif "I" in spg_symbol:
+                return "ORCI"
+            elif "C" in spg_symbol:
+                return "ORCC"
+        elif lattice_type == "hexagonal":
+            return "HEX"
+        elif lattice_type == "rhombohedral":
+            return "RHL"
+        elif lattice_type == "monoclinic":
+            if "P" in spg_symbol:
+                return "MCL"
+            elif "C" in spg_symbol:
+                return "MCLC"
+
+        return "TRI"
 
     def basis(self):
         """
@@ -83,6 +184,17 @@ class StructureParser(BaseParser, IonicDataMixin):
             func: express.parsers.mixins.ionic.IonicDataMixin.reduced_formula
         """
         return self.structure.composition.reduced_formula
+
+    def elemental_ratios(self):
+        """
+        Returns elemental ratios.
+
+        Reference:
+            func: express.parsers.mixins.ionic.IonicDataMixin.elemental_ratios
+        """
+        return {
+            el.symbol: self.structure.composition.get_atomic_fraction(el) for el in self.structure.composition.elements
+        }
 
     def atomic_constraints(self):
         """

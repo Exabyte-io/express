@@ -1,9 +1,7 @@
-import ase
-import rdkit
+import ase.io
+import rdkit.Chem
 from io import StringIO
 from typing import Dict, Tuple
-from ase.io import read
-from rdkit import Chem
 
 from express.parsers.structure import StructureParser
 from express.parsers.utils import convert_to_ase_format
@@ -19,7 +17,7 @@ class MoleculeParser(StructureParser):
     """
 
     def __init__(self, *args, **kwargs):
-        super(MoleculeParser, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
         self.ase_format = convert_to_ase_format(self.structure_format)
         self.inchi_long, self.inchi = self.get_inchi()
 
