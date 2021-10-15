@@ -1,18 +1,13 @@
+import ase.io
+import rdkit.Chem
 from io import StringIO
 from typing import Dict, Tuple
+
+from express.parsers.structure import StructureParser
 from express.parsers.utils import convert_to_ase_format
 
-import os
-import ase
-from ase.io import read
-from ase.io import write
-import rdkit
-from rdkit import Chem
-import logging
-import tempfile
 
-
-class MoleculeParser():
+class MoleculeParser(StructureParser):
     """
     Molecule parser class.
 
@@ -21,9 +16,9 @@ class MoleculeParser():
         structure_format (str): structure format, poscar, cif or espresso-in.
     """
 
-    def __init__(self, structure_string: str, structure_format: str):
-        self.structure_string = structure_string
-        self.ase_format = convert_to_ase_format(structure_format)
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.ase_format = convert_to_ase_format(self.structure_format)
         self.inchi_long, self.inchi = self.get_inchi()
 
     def get_rdkit_mol(self) -> rdkit.Chem.Mol:

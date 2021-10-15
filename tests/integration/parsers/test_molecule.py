@@ -5,7 +5,7 @@ from tests.integration import IntegrationTestBase
 from express.parsers.molecule import MoleculeParser
 
 
-class TestStructureParser(IntegrationTestBase):
+class TestMoleculeParser(IntegrationTestBase):
 
     def setUp(self):
         super(IntegrationTestBase, self).setUp()
@@ -18,6 +18,7 @@ class TestStructureParser(IntegrationTestBase):
         manifest = self.getManifest()
         with open(os.path.join(self.rootDir, manifest["structurePath"])) as f:
             kwargs = {
+                "cell": manifest.get("cell", "original"),
                 "structure_string": f.read(),
                 "structure_format": "poscar"
             }

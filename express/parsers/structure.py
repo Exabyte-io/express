@@ -23,7 +23,7 @@ class StructureParser(BaseParser, IonicDataMixin):
     """
 
     def __init__(self, *args, **kwargs):
-        super(StructureParser, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
         self.structure_string = kwargs.get("structure_string")
         self.structure_format = kwargs.get("structure_format")
 
@@ -40,6 +40,7 @@ class StructureParser(BaseParser, IonicDataMixin):
         # keep only one atom inside the basis in order to have the original lattice type
         self.lattice_only_structure = mg.Structure.from_str(self.structure_string, self.structure_format)  # deepcopy
         self.lattice_only_structure.remove_sites(range(1, len(self.structure.sites)))
+
 
     def lattice_vectors(self):
         """
@@ -184,15 +185,6 @@ class StructureParser(BaseParser, IonicDataMixin):
         """
         return self.structure.composition.reduced_formula
 
-    def volume(self):
-        """
-        Returns volume.
-
-        Reference:
-            func: express.parsers.mixins.ionic.IonicDataMixin.volume
-        """
-        return self.structure.volume
-
     def elemental_ratios(self):
         """
         Returns elemental ratios.
@@ -203,15 +195,6 @@ class StructureParser(BaseParser, IonicDataMixin):
         return {
             el.symbol: self.structure.composition.get_atomic_fraction(el) for el in self.structure.composition.elements
         }
-
-    def density(self):
-        """
-        Returns density.
-
-        Reference:
-            func: express.parsers.mixins.ionic.IonicDataMixin.density
-        """
-        return self.structure.density
 
     def atomic_constraints(self):
         """
