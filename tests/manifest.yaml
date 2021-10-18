@@ -150,3 +150,6 @@ test_molecule_point_group_symmetry:
 
 test_molecule_centered_basis:
   structurePath: fixtures/structural/test-001/POSCAR
+
+test_crystal_space_group_symmetry:
+  structurePath: fixtures/structural/test-001/CRYSTAL_POSCAR

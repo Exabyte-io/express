@@ -1,5 +1,5 @@
 """
-Reference values for the InChI test calculations within ExPrESS
+Reference values for the molecule parser test calculations within ExPrESS
 """
 INCHI_DATA = {
     "inchi": "1S/CH4/h1H4",
@@ -23,12 +23,8 @@ MAX_RADII_DATA = {
 }
 
 POINT_GROUP_DATA = {
-    "name": "symmetry",
-    "pointGroupSymbol": "Td",
-    "tolerance": {
-        "units": "angstrom",
-        "value": 0.3
-    }
+    "value": "Td",
+    "tolerance": 0.3
 }
 
 CENTERED_BASIS_DATA = {
@@ -100,3 +96,12 @@ CENTERED_BASIS_DATA = {
 }
 
 N_ATOMS_DATA = 5
+
+"""
+Reference values for the crystal parser test calculations within ExPrESS
+"""
+
+SPACE_GROUP_DATA = {
+    "value": "C2/m",
+    "tolerance": 0.3
+}

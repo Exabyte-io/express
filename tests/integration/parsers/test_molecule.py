@@ -46,7 +46,7 @@ class TestMoleculeParser(IntegrationTestBase):
 
     def test_molecule_point_group_symmetry(self):
         self.point_group_symmetry = self.parser.point_group_symbol()
-        self.assertEqual(self.point_group_symmetry['pointGroupSymbol'], POINT_GROUP_DATA["pointGroupSymbol"])
+        self.assertEqual(self.point_group_symmetry['value'], POINT_GROUP_DATA["value"])
 
     def test_molecule_centered_basis(self):
         self.centered_basis = self.parser.get_center_of_mass_basis()

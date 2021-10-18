@@ -85,8 +85,8 @@ class Material(BaseProperty):
                 volume = Volume("volume", self.parser).serialize_and_validate()
                 density = Density("density", self.parser).serialize_and_validate()
                 derived_properties = [volume, density, symmetry]
-            derived_properties.extend(self._elemental_ratios())
-            derived_properties.extend(self._p_norms())
+                derived_properties.extend(self._elemental_ratios())
+                derived_properties.extend(self._p_norms())
         # TODO: Determine how to avoid an eternal pass when one derived property fails
         except:
             logging.info("Derived properties array empty due to failure to caluclate one (or more) values.")

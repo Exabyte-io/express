@@ -41,12 +41,8 @@ class MoleculeParser(StructureParser):
 
         point_group_symbol = str(mg.symmetry.analyzer.PointGroupAnalyzer(self.mg_mol).get_pointgroup())
         point_group = {
-            "name": "symmetry",
-            "pointGroupSymbol": point_group_symbol,
-            "tolerance": {
-                "units": "angstrom",
-                "value": 0.3
-            }
+            "value": point_group_symbol,
+            "tolerance": 0.3
         }
         return point_group
 
