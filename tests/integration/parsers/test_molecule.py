@@ -3,6 +3,7 @@ import os
 from tests.fixtures.structural.references import INCHI_DATA
 from tests.fixtures.structural.references import N_ATOMS_DATA
 from tests.fixtures.structural.references import MAX_RADII_DATA
+from tests.fixtures.structural.references import POINT_GROUP_DATA
 from tests.integration import IntegrationTestBase
 from express.parsers.molecule import MoleculeParser
 
@@ -22,7 +23,8 @@ class TestMoleculeParser(IntegrationTestBase):
             kwargs = {
                 "cell": manifest.get("cell", "original"),
                 "structure_string": f.read(),
-                "structure_format": "poscar"
+                "structure_format": "poscar",
+                "is_non_periodic": True
             }
             return MoleculeParser(**kwargs)
 
@@ -40,3 +42,7 @@ class TestMoleculeParser(IntegrationTestBase):
         self.max_radii = self.parser.find_max_radii()
         self.assertEqual(self.max_radii["distance"], MAX_RADII_DATA["distance"])
         self.assertEqual(self.max_radii["atom-pair"], MAX_RADII_DATA["atom-pair"])
+
+    def test_molecule_point_group_symmetry(self):
+        self.point_group_symmetry = self.parser.point_group_symbol()
+        self.assertEqual(self.point_group_symmetry['pointGroupSymbol'], POINT_GROUP_DATA["pointGroupSymbol"])

@@ -22,4 +22,13 @@ MAX_RADII_DATA = {
     }
 }
 
+POINT_GROUP_DATA = {
+    "name": "symmetry",
+    "pointGroupSymbol": "Td",
+    "tolerance": {
+        "units": "angstrom",
+        "value": 0.3
+    }
+}
+
 N_ATOMS_DATA = 5

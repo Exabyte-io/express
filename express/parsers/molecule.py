@@ -38,10 +38,17 @@ class MoleculeParser(StructureParser):
         Reference:
             func: express.parsers.mixins.ionic.IonicDataMixin.point_group_symbol
         """
-        return {
-            "value": mg.symmetry.analyzer.PointgroupAnalyzer(self.structure).get_pointgroup(),
-            "tolerance": 0.3
+
+        point_group_symbol = str(mg.symmetry.analyzer.PointGroupAnalyzer(self.mg_mol).get_pointgroup())
+        point_group = {
+            "name": "symmetry",
+            "pointGroupSymbol": point_group_symbol,
+            "tolerance": {
+                "units": "angstrom",
+                "value": 0.3
+            }
         }
+        return point_group
 
     def get_rdkit_mol(self) -> rdkit.Chem.Mol:
         """
