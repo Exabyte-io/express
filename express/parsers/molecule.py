@@ -127,14 +127,38 @@ class MoleculeParser(StructureParser):
 
     def get_center_of_mass_basis(self):
         """
-        Function returns array of XYZ coordiantes for a molecule centered at its center of mass.
+        Function returns the XYZ basis for a molecule centered around the center of mass of the molecule.
 
         Example:
-            ['C', 0.000, 0.000, 0.000]
-            ['H', 1.070, 0.000, 0.000]
-            ['H', -0.357, 0.793, 0.624]
-            ['H', -0.357, -0.937, 0.375]
-            ['H', -0.3567, 0.144, -0.999]
+            "elements": [
+                {
+                    "id": 1,
+                    "value": "O"
+                },
+                {
+                    "id": 2,
+                    "value": "O"
+                }
+           ],
+           "name": "atomic_coordinates",
+           "values": [
+               {
+                   "id": 1,
+                   "value": [
+                       -0.60400,
+                       0.00000,
+                       0.00000
+                   ]
+               },
+               {
+                   "id": 2,
+                   "value": [
+                       0.60400,
+                       0.00000,
+                       0.00000
+                   ]
+               }
+           ]
         """
         centered_mol = self.mg_mol.get_centered_molecule()
         centered_mol_dict = centered_mol.as_dict()
