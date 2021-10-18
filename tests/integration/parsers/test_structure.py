@@ -19,7 +19,7 @@ class TestStructureParser(IntegrationTestBase):
         with open(os.path.join(self.rootDir, manifest["structurePath"])) as f:
             kwargs = {
                 "structure_string": f.read(),
-                "cell": manifest.get("cell", "original"),
+                "cell_type": manifest.get("cell", "original"),
                 "structure_format": manifest.get("structureFormat", "poscar")
             }
             return StructureParser(**kwargs)

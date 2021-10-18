@@ -22,7 +22,7 @@ class TestMoleculeParser(IntegrationTestBase):
         manifest = self.getManifest()
         with open(os.path.join(self.rootDir, manifest["structurePath"])) as f:
             kwargs = {
-                "cell": manifest.get("cell", "original"),
+                "cell_type": manifest.get("cell_type", "original"),
                 "structure_string": f.read(),
                 "structure_format": "poscar",
                 "is_non_periodic": True
