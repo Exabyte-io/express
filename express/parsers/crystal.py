@@ -1,7 +1,4 @@
-import io
 import pymatgen as mg
-from ase.io import read, write
-
 from express.parsers.structure import StructureParser
 
 
@@ -19,6 +16,17 @@ class CrystalParser(StructureParser):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
+    def space_group_symbol(self):
+        """
+        Returns space group symbol.
+
+        Reference:
+            func: express.parsers.mixins.ionic.IonicDataMixin.space_group_symbol
+        """
+        return {
+            "value": mg.symmetry.analyzer.SpacegroupAnalyzer(self.structure).get_space_group_symbol(),
+            "tolerance": 0.3
+        }
 
     def volume(self):
         """

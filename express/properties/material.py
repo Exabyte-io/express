@@ -4,6 +4,8 @@ import logging
 from express.properties import BaseProperty
 from express.properties.scalar.p_norm import PNorm
 from express.properties.scalar.volume import Volume
+from express.properties.structural.n_atoms import NAtoms
+from express.properties.structural.molecule_max_radii import MaxRadii
 from express.parsers.structure import StructureParser
 from express.properties.scalar.density import Density
 from express.parsers.apps.vasp.parser import VaspParser
@@ -21,10 +23,10 @@ class Material(BaseProperty):
     """
 
     def __init__(self, name, parser, *args, **kwargs):
-        super(Material, self).__init__(name, parser, *args, **kwargs)
+        super().__init__(name, parser, *args, **kwargs)
         self.is_non_periodic = kwargs.get("is_non_periodic", False)
 
-        cell = kwargs.get("cell", "original")
+        cell_type = kwargs.get("cell_type", "original")
         structure_string = kwargs.get("structure_string")
         structure_format = kwargs.get("structure_format", "poscar")
 
@@ -47,13 +49,16 @@ class Material(BaseProperty):
                     lattice = self.parser.final_lattice_vectors()
                     structure_string = lattice_basis_to_poscar(lattice, basis)
         if self.is_non_periodic == False:
-            self.parser = CrystalParser(structure_string=structure_string, structure_format=structure_format, cell=cell)
+            self.parser = CrystalParser(structure_string=structure_string, structure_format=structure_format, cell_type=cell_type)
         else:
-            self.parser = MoleculeParser(structure_string=structure_string, structure_format=structure_format, cell=cell)
+            self.parser = MoleculeParser(structure_string=structure_string, structure_format=structure_format, cell_type=cell_type)
 
     @property
     def formula(self):
-        return self.parser.reduced_formula()
+        if self.is_non_periodic == False:
+            return self.parser.reduced_formula()
+        else:
+            return self.parser.formula()
 
     @property
     def unitCellFormula(self):
@@ -63,13 +68,15 @@ class Material(BaseProperty):
     def derived_properties(self):
         derived_properties = []
         try:
-            symmetry = Symmetry("symmetry", self.parser).serialize_and_validate()
+            symmetry = Symmetry("symmetry", self.parser, self.is_non_periodic).serialize_and_validate()
             if self.is_non_periodic:
+                n_atoms = NAtoms("n-atoms", self.parser).serialize_and_validate()
+                max_radii = MaxRadii("max-radii", self.parser).serialize_and_validate()
                 inchi = Inchi("inchi", self.parser).serialize_and_validate()
                 inchi_key = InchiKey("inchi_key", self.parser).serialize_and_validate()
                 volume = None
                 density = None
-                derived_properties = [symmetry, inchi, inchi_key]
+                derived_properties = [symmetry, n_atoms, max_radii, inchi, inchi_key]
             else:
                 inchi = None
                 inchi_key = None

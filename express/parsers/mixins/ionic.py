@@ -283,6 +283,22 @@ class IonicDataMixin(object):
         pass
 
     @abstractmethod
+    def point_group_symbol(self):
+        """
+        Returns point group symbol.
+
+        Returns:
+             dict
+
+        Example:
+            {
+                "value": "C2v",
+                "tolerance": 0.3
+            }
+        """
+        pass
+
+    @abstractmethod
     def space_group_symbol(self):
         """
         Returns space group symbol.

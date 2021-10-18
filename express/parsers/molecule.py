@@ -2,7 +2,7 @@ import ase.io
 import rdkit.Chem
 from io import StringIO
 from typing import Dict, Tuple
-
+import pymatgen as mg
 from express.parsers.structure import StructureParser
 from express.parsers.utils import convert_to_ase_format
 
@@ -20,6 +20,28 @@ class MoleculeParser(StructureParser):
         super().__init__(*args, **kwargs)
         self.ase_format = convert_to_ase_format(self.structure_format)
         self.inchi_long, self.inchi = self.get_inchi()
+        self.mg_mol = mg.core.structure.Molecule.from_str(self.get_pymatgen_mol(), 'xyz')
+
+    def n_atoms(self):
+        """
+        Function that returns the number of atoms in a molecule.
+
+        Returns:
+            Int
+        """
+        return len(self.mg_mol)
+
+    def point_group_symbol(self):
+        """
+        Returns point group symbol.
+
+        Reference:
+            func: express.parsers.mixins.ionic.IonicDataMixin.point_group_symbol
+        """
+        return {
+            "value": mg.symmetry.analyzer.PointgroupAnalyzer(self.structure).get_pointgroup(),
+            "tolerance": 0.3
+        }
 
     def get_rdkit_mol(self) -> rdkit.Chem.Mol:
         """
@@ -27,8 +49,8 @@ class MoleculeParser(StructureParser):
         """
         ase_pdb = StringIO()
 
-        material_file_string = StringIO(self.structure_string)
-        ase_atoms = ase.io.read(material_file_string, format=self.ase_format)
+        molecule_file_string = StringIO(self.structure_string)
+        ase_atoms = ase.io.read(molecule_file_string, format=self.ase_format)
 
         ase.io.write(ase_pdb, ase_atoms, format="proteindatabank")
         rdkit_mol_object = rdkit.Chem.rdmolfiles.MolFromPDBBlock(ase_pdb.getvalue())
@@ -85,3 +107,58 @@ class MoleculeParser(StructureParser):
             "value": inchi_key_val
         }
         return inchi_key
+
+    def get_pymatgen_mol(self):
+        """
+        Function returns a pymatgen molecule object
+        """
+        molecule_file_string = StringIO(self.structure_string)
+        ase_atoms = ase.io.read(molecule_file_string, format=self.ase_format)
+        ase_xyz = StringIO()
+        ase.io.write(ase_xyz, ase_atoms, format='xyz')
+        return ase_xyz.getvalue()
+
+    def get_center_of_mass_molecule(self):
+        """
+        Function returns XYZ coordinates for a molecule centered around its center of mass.
+        """
+        return self.mg_mol.get_centered_molecule()
+
+    def find_max_radii(self):
+        """
+        Function returns the atoms with the max radii and the max radii of a molecule
+        """
+        radii = {}
+        atom_counter_a = 0
+        atom_counter_b = 1
+        total_atoms = self.n_atoms()
+        while atom_counter_a < total_atoms:
+            while atom_counter_b < total_atoms:
+                atom_pair = str(atom_counter_a) + '_' + str(atom_counter_b)
+                dist = self.mg_mol.get_distance(atom_counter_a, atom_counter_b)
+                radii[atom_pair] = dist
+                atom_counter_b += 1
+            atom_counter_a += 1
+            atom_counter_b = atom_counter_a + 1
+
+        max_distance = max(radii.values())
+        for key in radii.keys():
+            if radii[key] == max_distance:
+                max_distance_atom_pair = key.split('_')
+
+        max_radii = {
+            "name": "max-molecule-radii",
+            "atom-pair": [
+                {
+                    "id": int(max_distance_atom_pair[0]),
+                },
+                {
+                    "id": int(max_distance_atom_pair[1])
+                }
+            ],
+            "distance":{
+                "value": max_distance,
+                "units": "angstrom"
+            }
+        }
+        return max_radii

@@ -155,18 +155,6 @@ class StructureParser(BaseParser, IonicDataMixin):
             'coordinates': [{'id': i + 1, 'value': v.frac_coords.tolist()} for i, v in enumerate(self.structure.sites)]
         }
 
-    def space_group_symbol(self):
-        """
-        Returns space group symbol.
-
-        Reference:
-            func: express.parsers.mixins.ionic.IonicDataMixin.space_group_symbol
-        """
-        return {
-            "value": mg.symmetry.analyzer.SpacegroupAnalyzer(self.structure).get_space_group_symbol(),
-            "tolerance": 0.3
-        }
-
     def formula(self):
         """
         Returns formula.
