@@ -125,11 +125,31 @@ class MoleculeParser(StructureParser):
         ase.io.write(ase_xyz, ase_atoms, format='xyz')
         return ase_xyz.getvalue()
 
-    def get_center_of_mass_molecule(self):
+    def get_center_of_mass_basis(self):
         """
-        Function returns XYZ coordinates for a molecule centered around its center of mass.
+        Function returns array of XYZ coordiantes for a molecule centered at its center of mass.
+
+        Example:
+            ['C', 0.000, 0.000, 0.000]
+            ['H', 1.070, 0.000, 0.000]
+            ['H', -0.357, 0.793, 0.624]
+            ['H', -0.357, -0.937, 0.375]
+            ['H', -0.3567, 0.144, -0.999]
         """
-        return self.mg_mol.get_centered_molecule()
+        centered_mol = self.mg_mol.get_centered_molecule()
+        centered_mol_dict = centered_mol.as_dict()
+        centered_mol_basis = centered_mol_dict['sites']
+        centered_basis = []
+        for element in centered_mol_basis:
+            element_array = []
+            atom = element['name']
+            coords = element['xyz']
+            element_array.append(atom)
+            for coord in coords:
+                element_array.append(float("{:.5f}".format(coord)))
+            centered_basis.append(element_array)
+
+        return centered_basis
 
     def find_max_radii(self):
         """

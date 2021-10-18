@@ -4,6 +4,7 @@ from tests.fixtures.structural.references import INCHI_DATA
 from tests.fixtures.structural.references import N_ATOMS_DATA
 from tests.fixtures.structural.references import MAX_RADII_DATA
 from tests.fixtures.structural.references import POINT_GROUP_DATA
+from tests.fixtures.structural.references import CENTERED_BASIS_DATA
 from tests.integration import IntegrationTestBase
 from express.parsers.molecule import MoleculeParser
 
@@ -46,3 +47,7 @@ class TestMoleculeParser(IntegrationTestBase):
     def test_molecule_point_group_symmetry(self):
         self.point_group_symmetry = self.parser.point_group_symbol()
         self.assertEqual(self.point_group_symmetry['pointGroupSymbol'], POINT_GROUP_DATA["pointGroupSymbol"])
+
+    def test_molecule_centered_basis(self):
+        self.centered_basis = self.parser.get_center_of_mass_basis()
+        self.assertEqual(self.centered_basis, CENTERED_BASIS_DATA)
