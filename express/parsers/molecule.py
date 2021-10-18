@@ -139,15 +139,27 @@ class MoleculeParser(StructureParser):
         centered_mol = self.mg_mol.get_centered_molecule()
         centered_mol_dict = centered_mol.as_dict()
         centered_mol_basis = centered_mol_dict['sites']
-        centered_basis = []
-        for element in centered_mol_basis:
+
+        centered_basis = {}
+        basis_elements = []
+        basis_coordinates = []
+        for i, element in enumerate(centered_mol_basis):
+            atom_dict = {}
+            coord_dict = {}
             element_array = []
-            atom = element['name']
-            coords = element['xyz']
-            element_array.append(atom)
-            for coord in coords:
+
+            atom_dict["id"] = coord_dict["id"] = i + 1
+            atom_dict["value"] = element['name']
+            for coord in element['xyz']:
                 element_array.append(float("{:.5f}".format(coord)))
-            centered_basis.append(element_array)
+            coord_dict["value"] = element_array
+
+            basis_elements.append(atom_dict)
+            basis_coordinates.append(coord_dict)
+
+        centered_basis['elements'] = basis_elements
+        centered_basis['name'] = "atomic_coordinates"
+        centered_basis['values'] = basis_coordinates
 
         return centered_basis
 
