@@ -148,7 +148,7 @@ test_molecule_n_atoms:
 test_molecule_point_group_symmetry:
   structurePath: fixtures/structural/test-001/POSCAR
 
-test_molecule_centered_basis:
+test_basis_centered_basis:
   structurePath: fixtures/structural/test-001/POSCAR
 
 test_crystal_space_group_symmetry:

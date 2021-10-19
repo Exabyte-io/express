@@ -1,13 +1,13 @@
 import io
-import pymatgen as mg
+import pymatgen
 from ase.io import read, write
 
 from express.parsers import BaseParser
 from express.parsers.mixins.ionic import IonicDataMixin
 
 STRUCTURE_MAP = {
-    "primitive": lambda s: mg.symmetry.analyzer.SpacegroupAnalyzer(s).get_primitive_standard_structure(),
-    "conventional": lambda s: mg.symmetry.analyzer.SpacegroupAnalyzer(s).get_conventional_standard_structure()
+    "primitive": lambda s: pymatgen.symmetry.analyzer.SpacegroupAnalyzer(s).get_primitive_standard_structure(),
+    "conventional": lambda s: pymatgen.symmetry.analyzer.SpacegroupAnalyzer(s).get_conventional_standard_structure()
 }
 
 
@@ -34,11 +34,11 @@ class StructureParser(BaseParser, IonicDataMixin):
 
         # cell_type is either original, primitive or conventional
         self.cell_type = kwargs["cell_type"]
-        self.structure = mg.Structure.from_str(self.structure_string, self.structure_format)
+        self.structure = pymatgen.Structure.from_str(self.structure_string, self.structure_format)
         if self.cell_type != "original": self.structure = STRUCTURE_MAP[self.cell_type](self.structure)
 
         # keep only one atom inside the basis in order to have the original lattice type
-        self.lattice_only_structure = mg.Structure.from_str(self.structure_string, self.structure_format)  # deepcopy
+        self.lattice_only_structure = pymatgen.Structure.from_str(self.structure_string, self.structure_format)  # deepcopy
         self.lattice_only_structure.remove_sites(range(1, len(self.structure.sites)))
 
 
@@ -104,7 +104,7 @@ class StructureParser(BaseParser, IonicDataMixin):
         Returns:
              str
         """
-        analyzer = mg.symmetry.analyzer.SpacegroupAnalyzer(structure_, symprec=0.001)
+        analyzer = pymatgen.symmetry.analyzer.SpacegroupAnalyzer(structure_, symprec=0.001)
         lattice_type = analyzer.get_lattice_type()
         spg_symbol = analyzer.get_space_group_symbol()
 

@@ -1,4 +1,4 @@
-import pymatgen as mg
+import pymatgen
 from express.parsers.structure import StructureParser
 
 
@@ -24,7 +24,7 @@ class CrystalParser(StructureParser):
             func: express.parsers.mixins.ionic.IonicDataMixin.space_group_symbol
         """
         return {
-            "value": mg.symmetry.analyzer.SpacegroupAnalyzer(self.structure).get_space_group_symbol(),
+            "value": pymatgen.symmetry.analyzer.SpacegroupAnalyzer(self.structure).get_space_group_symbol(),
             "tolerance": 0.3
         }
 
