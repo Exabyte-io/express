@@ -8,7 +8,7 @@ class MaxRadii(NonScalarProperty):
     def __init__(self, name, parser, *args, **kwargs):
         super().__init__(name, parser, *args, **kwargs)
         self.name = name
-        self.max_radii = self.parser.find_max_radii()
+        self.max_radii = self.parser.max_radii()
 
     def _serialize(self):
         return self.value

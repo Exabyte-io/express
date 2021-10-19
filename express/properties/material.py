@@ -75,12 +75,11 @@ class Material(BaseProperty):
             if self.is_non_periodic:
                 n_atoms = NAtoms("n-atoms", self.parser).serialize_and_validate()
                 max_radii = MaxRadii("max-radii", self.parser).serialize_and_validate()
-                centered_basis = CenteredBasis("basis", self.basis_parser).serialize_and_validate()
                 inchi = Inchi("inchi", self.parser).serialize_and_validate()
                 inchi_key = InchiKey("inchi_key", self.parser).serialize_and_validate()
                 volume = None
                 density = None
-                derived_properties = [symmetry, n_atoms, max_radii, centered_basis, inchi, inchi_key]
+                derived_properties = [symmetry, n_atoms, max_radii, inchi, inchi_key]
             else:
                 inchi = None
                 inchi_key = None

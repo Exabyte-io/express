@@ -121,7 +121,7 @@ class MoleculeParser(StructureParser):
         ase.io.write(xyz, ase_atoms, format='xyz')
         return xyz.getvalue()
 
-    def find_max_radii(self):
+    def max_radii(self):
         """
         Function returns the atoms with the max radii and the max radii of a molecule
         """
