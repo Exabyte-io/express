@@ -39,7 +39,7 @@ class TestMoleculeParser(IntegrationTestBase):
         self.assertEqual(self.n_atoms, N_ATOMS_DATA)
 
     def test_molecule_max_radii(self):
-        self.max_radii = self.parser.find_max_radii()
+        self.max_radii = self.parser.max_radii()
         self.assertEqual(self.max_radii["distance"], MAX_RADII_DATA["distance"])
         self.assertEqual(self.max_radii["atom-pair"], MAX_RADII_DATA["atom-pair"])
 
