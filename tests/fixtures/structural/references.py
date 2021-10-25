@@ -27,8 +27,6 @@ POINT_GROUP_DATA = {
     "tolerance": 0.3
 }
 
-N_ATOMS_DATA = 5
-
 """
 Reference values for the crystal parser test calculations within ExPrESS
 """

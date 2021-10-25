@@ -142,9 +142,6 @@ test_molecule_inchi:
 test_molecule_max_radii:
   structurePath: fixtures/structural/test-001/POSCAR
 
-test_molecule_n_atoms:
-  structurePath: fixtures/structural/test-001/POSCAR
-
 test_molecule_point_group_symmetry:
   structurePath: fixtures/structural/test-001/POSCAR
 

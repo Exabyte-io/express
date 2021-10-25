@@ -4,10 +4,7 @@ import logging
 from express.properties import BaseProperty
 from express.properties.scalar.p_norm import PNorm
 from express.properties.scalar.volume import Volume
-from express.properties.structural.n_atoms import NAtoms
 from express.properties.structural.molecule_max_radii import MaxRadii
-from express.properties.structural.centered_basis import CenteredBasis
-from express.parsers.structure import StructureParser
 from express.properties.scalar.density import Density
 from express.parsers.apps.vasp.parser import VaspParser
 from express.parsers.utils import lattice_basis_to_poscar
@@ -17,7 +14,6 @@ from express.properties.structural.inchi import Inchi
 from express.properties.structural.inchi_key import InchiKey
 from express.parsers.molecule import MoleculeParser
 from express.parsers.crystal import CrystalParser
-from express.parsers.basis import BasisParser
 
 class Material(BaseProperty):
     """
@@ -50,7 +46,6 @@ class Material(BaseProperty):
                     basis = self.parser.final_basis()
                     lattice = self.parser.final_lattice_vectors()
                     structure_string = lattice_basis_to_poscar(lattice, basis)
-        self.basis_parser = BasisParser(structure_string=structure_string, structure_format=structure_format, cell_type=cell_type)
         if self.is_non_periodic == False:
             self.parser = CrystalParser(structure_string=structure_string, structure_format=structure_format, cell_type=cell_type)
         else:
@@ -73,7 +68,6 @@ class Material(BaseProperty):
         try:
             symmetry = Symmetry("symmetry", self.parser, self.is_non_periodic).serialize_and_validate()
             if self.is_non_periodic:
-                n_atoms = NAtoms("n-atoms", self.parser).serialize_and_validate()
                 max_radii = MaxRadii("max-radii", self.parser).serialize_and_validate()
                 inchi = Inchi("inchi", self.parser).serialize_and_validate()
                 inchi_key = InchiKey("inchi_key", self.parser).serialize_and_validate()

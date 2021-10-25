@@ -22,15 +22,6 @@ class MoleculeParser(StructureParser):
         self.inchi_long, self.inchi = self.get_inchi()
         self.pymatgen_molecule = pymatgen.core.structure.Molecule.from_str(self.get_xyz_string(), 'xyz')
 
-    def n_atoms(self):
-        """
-        Function that returns the number of atoms in a molecule.
-
-        Returns:
-            Int
-        """
-        return len(self.pymatgen_molecule)
-
     def point_group_symbol(self):
         """
         Returns point group symbol.
@@ -128,7 +119,7 @@ class MoleculeParser(StructureParser):
         atom_counter_a = 0
         atom_counter_b = 1
         max_distance = 0
-        total_atoms = self.n_atoms()
+        total_atoms = len(self.pymatgen_molecule)
         while atom_counter_a < total_atoms:
             while atom_counter_b < total_atoms:
                 dist = self.pymatgen_molecule.get_distance(atom_counter_a, atom_counter_b)
