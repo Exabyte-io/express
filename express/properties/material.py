@@ -4,7 +4,6 @@ import logging
 from express.properties import BaseProperty
 from express.properties.scalar.p_norm import PNorm
 from express.properties.scalar.volume import Volume
-from express.properties.structural.molecule_max_radii import MaxRadii
 from express.properties.scalar.density import Density
 from express.parsers.apps.vasp.parser import VaspParser
 from express.parsers.utils import lattice_basis_to_poscar
@@ -68,12 +67,11 @@ class Material(BaseProperty):
         try:
             symmetry = Symmetry("symmetry", self.parser, self.is_non_periodic).serialize_and_validate()
             if self.is_non_periodic:
-                max_radii = MaxRadii("max-radii", self.parser).serialize_and_validate()
                 inchi = Inchi("inchi", self.parser).serialize_and_validate()
                 inchi_key = InchiKey("inchi_key", self.parser).serialize_and_validate()
                 volume = None
                 density = None
-                derived_properties = [symmetry, n_atoms, max_radii, inchi, inchi_key]
+                derived_properties = [symmetry, inchi, inchi_key]
             else:
                 inchi = None
                 inchi_key = None

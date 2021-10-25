@@ -111,38 +111,3 @@ class MoleculeParser(StructureParser):
         xyz = StringIO()
         ase.io.write(xyz, ase_atoms, format='xyz')
         return xyz.getvalue()
-
-    def max_radii(self):
-        """
-        Function returns the atoms with the max radii and the max radii of a molecule
-        """
-        atom_counter_a = 0
-        atom_counter_b = 1
-        max_distance = 0
-        total_atoms = len(self.pymatgen_molecule)
-        while atom_counter_a < total_atoms:
-            while atom_counter_b < total_atoms:
-                dist = self.pymatgen_molecule.get_distance(atom_counter_a, atom_counter_b)
-                if dist > max_distance:
-                    max_distance = dist
-                    max_distance_atom_pair = [atom_counter_a, atom_counter_b]
-                atom_counter_b += 1
-            atom_counter_a += 1
-            atom_counter_b = atom_counter_a + 1
-
-        max_radii = {
-            "name": "pairwise-distance-maximum",
-            "atom-pair": [
-                {
-                    "id": int(max_distance_atom_pair[0]),
-                },
-                {
-                    "id": int(max_distance_atom_pair[1])
-                }
-            ],
-            "distance":{
-                "value": max_distance,
-                "units": "angstrom"
-            }
-        }
-        return max_radii

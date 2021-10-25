@@ -1,7 +1,6 @@
 import os
 
 from tests.fixtures.structural.references import INCHI_DATA
-from tests.fixtures.structural.references import MAX_RADII_DATA
 from tests.fixtures.structural.references import POINT_GROUP_DATA
 from tests.integration import IntegrationTestBase
 from express.parsers.molecule import MoleculeParser
@@ -32,11 +31,6 @@ class TestMoleculeParser(IntegrationTestBase):
         self.inchi_key = self.parser.get_inchi_key()
         self.assertEqual(self.inchi["value"], INCHI_DATA["inchi"])
         self.assertEqual(self.inchi_key["value"], INCHI_DATA["inchi_key"])
-
-    def test_molecule_max_radii(self):
-        self.max_radii = self.parser.max_radii()
-        self.assertEqual(self.max_radii["distance"], MAX_RADII_DATA["distance"])
-        self.assertEqual(self.max_radii["atom-pair"], MAX_RADII_DATA["atom-pair"])
 
     def test_molecule_point_group_symmetry(self):
         self.point_group_symmetry = self.parser.point_group_symbol()
