@@ -22,6 +22,14 @@ class MoleculeParser(StructureParser):
         self.inchi_long, self.inchi = self.get_inchi()
         self.pymatgen_molecule = pymatgen.core.structure.Molecule.from_str(self.get_xyz_string(), 'xyz')
 
+    def n_atoms(self):
+        """
+        Returns number of atoms in a molecule
+
+        Returns: Number
+        """
+        return len(self.pymatgen_molecule.sites)
+
     def point_group_symbol(self):
         """
         Returns point group symbol.

@@ -69,9 +69,10 @@ class Material(BaseProperty):
             if self.is_non_periodic:
                 inchi = Inchi("inchi", self.parser).serialize_and_validate()
                 inchi_key = InchiKey("inchi_key", self.parser).serialize_and_validate()
+                n_atoms = self.parser.n_atoms()
                 volume = None
                 density = None
-                derived_properties = [symmetry, inchi, inchi_key]
+                derived_properties = [symmetry, n_atoms, inchi, inchi_key]
             else:
                 inchi = None
                 inchi_key = None
