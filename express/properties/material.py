@@ -23,7 +23,7 @@ class Material(BaseProperty):
         super(Material, self).__init__(name, parser, *args, **kwargs)
         self.is_non_periodic = kwargs.get("is_non_periodic", False)
 
-        cell = kwargs.get("cell", "original")
+        cell_type = kwargs.get("cell_type", "original")
         structure_string = kwargs.get("structure_string")
         structure_format = kwargs.get("structure_format", "poscar")
 
@@ -47,7 +47,7 @@ class Material(BaseProperty):
                     structure_string = lattice_basis_to_poscar(lattice, basis)
 
         # override parser to use StructureParser from now on
-        self.parser = StructureParser(structure_string=structure_string, structure_format=structure_format, cell=cell)
+        self.parser = StructureParser(structure_string=structure_string, structure_format=structure_format, cell_type=cell_type)
         self.molecule_parser = MoleculeParser(structure_string=structure_string, structure_format=structure_format)
 
     @property

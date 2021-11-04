@@ -32,10 +32,10 @@ class StructureParser(BaseParser, IonicDataMixin):
             self.structure_format = "poscar"
             self.structure_string = self.espresso_input_to_poscar(self.structure_string)
 
-        # cell is either original, primitive or conventional
-        self.cell = kwargs["cell"]
+        # cell_type is either original, primitive or conventional
+        self.cell_type = kwargs["cell_type"]
         self.structure = mg.Structure.from_str(self.structure_string, self.structure_format)
-        if self.cell != "original": self.structure = STRUCTURE_MAP[self.cell](self.structure)
+        if self.cell_type != "original": self.structure = STRUCTURE_MAP[self.cell_type](self.structure)
 
         # keep only one atom inside the basis in order to have the original lattice type
         self.lattice_only_structure = mg.Structure.from_str(self.structure_string, self.structure_format)  # deepcopy
@@ -85,7 +85,7 @@ class StructureParser(BaseParser, IonicDataMixin):
         Returns:
              str
         """
-        structure_ = self.lattice_only_structure if self.cell != "primitive" else self.structure
+        structure_ = self.lattice_only_structure if self.cell_type != "primitive" else self.structure
         try:
             # try getting the lattice type from the lattice only structure
             return self._lattice_type_from_structure(structure_)
