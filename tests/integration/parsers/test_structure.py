@@ -19,7 +19,7 @@ class TestStructureParser(IntegrationTestBase):
         with open(os.path.join(self.rootDir, manifest["structurePath"])) as f:
             kwargs = {
                 "structure_string": f.read(),
-                "cell": manifest.get("cell", "original"),
+                "cell_type": manifest.get("cell_type", "original"),
                 "structure_format": manifest.get("structureFormat", "poscar")
             }
             return StructureParser(**kwargs)
@@ -27,11 +27,11 @@ class TestStructureParser(IntegrationTestBase):
     def test_structure_espresso_basis(self):
         self.assertDeepAlmostEqual(self.parser.basis(), SI["basis"], places=2)
 
-    def test_structure_espresso_lattice_bravais(self):
-        self.assertDeepAlmostEqual(self.parser.lattice_bravais(), SI["lattice"], places=2)
-
     def test_structure_vasp_basis(self):
         self.assertDeepAlmostEqual(self.parser.basis(), SI["basis"], places=2)
+
+    def test_structure_espresso_lattice_bravais(self):
+        self.assertDeepAlmostEqual(self.parser.lattice_bravais(), SI["lattice"], places=2)
 
     def test_structure_vasp_lattice_bravais(self):
         self.assertDeepAlmostEqual(self.parser.lattice_bravais(), SI["lattice"], places=2)

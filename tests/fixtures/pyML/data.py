@@ -13,7 +13,7 @@ with open(os.path.join(path, train_workflow), "r") as file_pointer:
 with open(os.path.join(path, predict_workflow), "r") as file_pointer:
     WORKFLOW_PREDICT = json.load(file_pointer)
 
-NAME = WORKFLOW_PREDICT["name"]
+NAME = "workflow:pyml_predict"
 PARSER = None
 ARGS = []
 
