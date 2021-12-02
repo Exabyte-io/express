@@ -22,6 +22,7 @@ setup(
         "pymatgen==2020.4.29",
         "ase==3.17.0",
         "esse>=2020.10.19",
+        "rdkit-pypi==2021.3.3"
     ],
     extras_require={
         "test": [
