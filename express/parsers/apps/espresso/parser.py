@@ -19,7 +19,7 @@ class EspressoParser(BaseParser, IonicDataMixin, ElectronicDataMixin, Reciprocal
     """
 
     def __init__(self, *args, **kwargs):
-        super(EspressoParser, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
         self.work_dir = self.kwargs["work_dir"]
         self.stdout_file = self.kwargs["stdout_file"]
         self.txt_parser = EspressoTXTParser(self.work_dir)
