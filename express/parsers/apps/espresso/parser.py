@@ -13,7 +13,7 @@ from express.parsers.apps.espresso.formats.txt import EspressoTXTParser
 from express.parsers.apps.espresso.formats.espresso_legacyxml import EspressoXMLParser
 
 
-class EspressoParser(BaseParser, IonicDataMixin, ElectronicDataMixin, ReciprocalDataMixin):
+class EspressoLegacyParser(BaseParser, IonicDataMixin, ElectronicDataMixin, ReciprocalDataMixin):
     """
     Espresso parser class.
     """
