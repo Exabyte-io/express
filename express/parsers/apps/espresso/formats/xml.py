@@ -199,7 +199,7 @@ class EspressoXMLParser(BaseXMLParser):
                 })
                 coordinates.append({
                     'id': int(atom.tag[5:]),
-                    'value': (Constant.BOHR * np.array(atom.attrib.get("tau").split()).astype(np.float)).tolist()
+                    'value': (Constant.BOHR * np.array(atom.attrib.get("tau").split()).astype(np.float64)).tolist()
                 })
 
         return {
