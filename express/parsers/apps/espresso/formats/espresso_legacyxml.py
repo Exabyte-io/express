@@ -20,7 +20,7 @@ TAG_VALUE_CAST_MAP = {
 }
 
 
-class EspressoXMLParser(BaseXMLParser):
+class EspressoLegacyXMLParser(BaseXMLParser):
     """
     Espresso XML parser class.
 
@@ -29,7 +29,7 @@ class EspressoXMLParser(BaseXMLParser):
     """
 
     def __init__(self, xml_file_path):
-        super(EspressoXMLParser, self).__init__(xml_file_path)
+        super(EspressoLegacyXMLParser, self).__init__(xml_file_path)
 
     def _get_xml_tag_value(self, tag):
         """

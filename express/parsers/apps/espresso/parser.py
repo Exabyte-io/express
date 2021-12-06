@@ -10,7 +10,7 @@ from express.parsers.mixins.electronic import ElectronicDataMixin
 from express.parsers.utils import find_file, lattice_basis_to_poscar
 from express.parsers.apps.espresso.settings import NEB_PATH_FILE_SUFFIX
 from express.parsers.apps.espresso.formats.txt import EspressoTXTParser
-from express.parsers.apps.espresso.formats.espresso_legacyxml import EspressoXMLParser
+from express.parsers.apps.espresso.formats.espresso_legacyxml import EspressoLegacyXMLParser
 
 
 class EspressoLegacyParser(BaseParser, IonicDataMixin, ElectronicDataMixin, ReciprocalDataMixin):
@@ -26,7 +26,7 @@ class EspressoLegacyParser(BaseParser, IonicDataMixin, ElectronicDataMixin, Reci
 
     @cached_property
     def xml_parser(self):
-        return EspressoXMLParser(self.find_xml_file())
+        return EspressoLegacyXMLParser(self.find_xml_file())
 
     def find_xml_file(self):
         """
