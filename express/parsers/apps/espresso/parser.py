@@ -1,5 +1,6 @@
 import os
 import numpy as np
+from functools import cached_property
 
 from express.parsers import BaseParser
 from express.parsers.apps.espresso import settings
@@ -22,7 +23,10 @@ class EspressoParser(BaseParser, IonicDataMixin, ElectronicDataMixin, Reciprocal
         self.work_dir = self.kwargs["work_dir"]
         self.stdout_file = self.kwargs["stdout_file"]
         self.txt_parser = EspressoTXTParser(self.work_dir)
-        self.xml_parser = EspressoXMLParser(self.find_xml_file())
+
+    @cached_property
+    def xml_parser(self):
+        return EspressoXMLParser(self.find_xml_file())
 
     def find_xml_file(self):
         """
