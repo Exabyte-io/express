@@ -47,14 +47,32 @@ class Espresso640XMLParser(BaseXMLParser):
     def get_inverse_reciprocal_lattice_vectors(self):
         raise NotImplementedError
 
+
     def eigenvalues_at_kpoints(self):
-    #     bs_node = find_tag(self.root, 'band_structure')
-    #     ks_nodes = bs_node.find_all('ks_energies')
+        #     bs_node = find_tag(self.root, 'band_structure')
+        #     ks_nodes = bs_node.find_all('ks_energies')
         raise NotImplementedError
 
     def final_basis(self):
-        raise NotImplementedError
+        elements, coordinates = [], []
+        final_step = self._get_step_by_index(-1)
+        atoms = sorted(final_step.find('atomic_structure').find('atomic_positions'),
+                       key=lambda atom: int(atom.get('index')))
 
+        for atom in atoms:
+            atom_id = atom.get("index")
+            atom_symbol = atom.get("name")
+            atom_coords = [float(component) for component in atom.text.split()]
+            elements.append({"id": atom_id, "value": atom_symbol})
+            # TODO: Do we need to convert this value? What units are reported by Espresso?
+            coordinates.append({"id": atom_id, "value": atom_coords})
+
+        result = {
+            "units": "angstrom",
+            "elements": elements,
+            "coordinates": coordinates
+        }
+        return result
 
     def final_lattice_vectors(self, reciprocal=False):
         if reciprocal:
