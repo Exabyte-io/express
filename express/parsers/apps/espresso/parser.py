@@ -11,6 +11,7 @@ from express.parsers.mixins.electronic import ElectronicDataMixin
 from express.parsers.utils import find_file, lattice_basis_to_poscar
 from express.parsers.apps.espresso.settings import NEB_PATH_FILE_SUFFIX
 from express.parsers.apps.espresso.formats.txt import EspressoTXTParser
+from express.parsers.apps.espresso.formats.espresso_640xml import Espresso640XMLParser
 from express.parsers.apps.espresso.formats.espresso_legacyxml import EspressoLegacyXMLParser
 
 
@@ -339,3 +340,20 @@ class EspressoLegacyParser(BaseParser, IonicDataMixin, ElectronicDataMixin, Reci
             except:
                 pass
         return structures
+
+
+class EspressoParser(EspressoLegacyParser):
+
+    def _is_sternheimer_gw_calculation(self):
+        """
+        Sternheimer GW is not maintained anymore in Espresso, and breaks compilation in recent versions.
+        The versions of express we use this parser with cannot run Sternheimer GW, therefore this is always false.
+
+        Returns:
+            False
+        """
+        return False
+
+    @cached_property
+    def xml_parser(self):
+        return Espresso640XMLParser(self.find_xml_file())
