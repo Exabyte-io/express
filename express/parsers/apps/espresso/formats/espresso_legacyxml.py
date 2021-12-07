@@ -28,9 +28,6 @@ class EspressoLegacyXMLParser(BaseXMLParser):
         xml_file_path (str): path to the xml file.
     """
 
-    def __init__(self, xml_file_path):
-        super(EspressoLegacyXMLParser, self).__init__(xml_file_path)
-
     def _get_xml_tag_value(self, tag):
         """
         This function helps casting xml tag value to the the type defined in the tag attribute. It xml tag's text
