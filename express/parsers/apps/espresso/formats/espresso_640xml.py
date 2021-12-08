@@ -1,4 +1,3 @@
-from functools import cached_property
 from typing import Sequence, List, Any, Optional, Dict, Union
 
 import xml.etree.ElementTree as ET
@@ -54,11 +53,15 @@ class Espresso640XMLParser(BaseXMLParser):
     Args:
         xml_file_path (str): path to the xml file.`
     """
+    def __init__(self, xml_file_path):
+        super().__init__(xml_file_path)
+        self._steps = None
 
-    @cached_property
+    @property
     def steps(self):
-        steps = sorted(self.root.findall("step"), key=lambda node: int(node.get("n_step")))
-        return steps
+        if self._steps is None:
+            self._steps = sorted(self.root.findall("step"), key=lambda node: int(node.get("n_step")))
+        return self._steps
 
     def fermi_energy(self) -> float:
         """

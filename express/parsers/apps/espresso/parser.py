@@ -1,6 +1,5 @@
 import os
 import numpy as np
-from functools import cached_property
 from typing import List, Dict, Union, Any
 
 from express.parsers import BaseParser
@@ -25,10 +24,13 @@ class EspressoLegacyParser(BaseParser, IonicDataMixin, ElectronicDataMixin, Reci
         self.work_dir = self.kwargs["work_dir"]
         self.stdout_file = self.kwargs["stdout_file"]
         self.txt_parser = EspressoTXTParser(self.work_dir)
+        self._xml_parser = None
 
-    @cached_property
+    @property
     def xml_parser(self):
-        return EspressoLegacyXMLParser(self.find_xml_file())
+        if self._xml_parser is None:
+            self._xml_parser = EspressoLegacyXMLParser(self.find_xml_file())
+        return self._xml_parser
 
     def find_xml_file(self):
         """
@@ -354,9 +356,10 @@ class EspressoParser(EspressoLegacyParser):
         """
         return False
 
-    @cached_property
     def xml_parser(self):
-        return Espresso640XMLParser(self.find_xml_file())
+        if self._xml_parser is None:
+            self._xml_parser = Espresso640XMLParser(self.find_xml_file())
+        return self._xml_parser
 
 
     def fermi_energy(self):
