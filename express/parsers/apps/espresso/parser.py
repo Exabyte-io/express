@@ -357,3 +357,10 @@ class EspressoParser(EspressoLegacyParser):
     @cached_property
     def xml_parser(self):
         return Espresso640XMLParser(self.find_xml_file())
+
+
+    def fermi_energy(self):
+        return self.ase_parser.fermi_energy()
+
+    def eigenvalues_at_kpoints(self) -> List:
+        return self.ase_parser.eigenvalues_at_kpoints()
