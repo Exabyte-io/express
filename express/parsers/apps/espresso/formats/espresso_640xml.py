@@ -18,34 +18,6 @@ def traverse_xml(node: ET.Element, *pathway: Sequence[str]) -> ET.Element:
     return node
 
 
-def string_to_vec(string: str, dtype: type = float, sep: Optional[str] = None) -> List[Any]:
-    """
-    Given a string and some delimiter, will create a vector with the specified type.
-
-    Args:
-        string (str): The string to convert, for example "6.022e23 2.718 3.14159"
-        dtype (type): The type to convert into. Must support conversion from a string. Defaults to `float`
-        sep (Optional[str]): Delimiter for the the string. Defaults to whitespace.
-    Returns:
-        List[Any]: A list that has the correct type, for example [6.022e23, 2.718, 3.14159]
-    """
-    result = [dtype(component) for component in string.split(sep)]
-    return result
-
-
-def find_tag(node: ET.Element, tag: str):
-    """
-    DFS for tag in the node tree. Be aware that this is pretty imprecise, and just finds the *first* one it sees.
-    """
-    if node.tag == tag:
-        return node
-
-    for child in node:
-        result = find_tag(child, tag)
-        if result is not None:
-            return result
-
-
 class Espresso640XMLParser(BaseXMLParser):
     """
     Espresso XML parser class.
@@ -53,6 +25,7 @@ class Espresso640XMLParser(BaseXMLParser):
     Args:
         xml_file_path (str): path to the xml file.`
     """
+
     def __init__(self, xml_file_path):
         super().__init__(xml_file_path)
         self._steps = None
@@ -101,7 +74,7 @@ class Espresso640XMLParser(BaseXMLParser):
         else:
             cell_node = traverse_xml(self.root, ("output", "atomic_structure", "cell"))
             for key, tag in (("a", "a1"), ("b", "a2"), ("c", "a3")):
-                vector = string_to_vec(cell_node.find(tag).text, dtype=float)
+                vector = self.string_to_vec(cell_node.find(tag).text, dtype=float)
                 vector = [component * Constant.BOHR for component in vector]
                 vectors[key] = vector
 
@@ -132,10 +105,25 @@ class Espresso640XMLParser(BaseXMLParser):
         for atom in atoms:
             atom_id = float(atom.get("index"))
             symbol = atom.get("name")
-            coords = string_to_vec(atom.text, dtype=float)
+            coords = self.string_to_vec(atom.text, dtype=float)
             coords = [component * Constant.BOHR for component in coords]
 
             result["elements"].append({"id": atom_id, "value": symbol})
             result["coordinates"].append({"id": atom_id, "value": coords})
 
+        return result
+
+    @staticmethod
+    def string_to_vec(string: str, dtype: type = float, sep: Optional[str] = None) -> List[Any]:
+        """
+        Given a string and some delimiter, will create a vector with the specified type.
+
+        Args:
+            string (str): The string to convert, for example "6.022e23 2.718 3.14159"
+            dtype (type): The type to convert into. Must support conversion from a string. Defaults to `float`
+            sep (Optional[str]): Delimiter for the the string. Defaults to whitespace.
+        Returns:
+            List[Any]: A list that has the correct type, for example [6.022e23, 2.718, 3.14159]
+        """
+        result = [dtype(component) for component in string.split(sep)]
         return result
