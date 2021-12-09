@@ -5,19 +5,6 @@ from express.parsers.formats.xml import BaseXMLParser
 from express.parsers.settings import Constant
 
 
-def traverse_xml(node: ET.Element, *pathway: Sequence[str]) -> ET.Element:
-    """
-    Goes to a node in the node's path. For example, if we have a node tree that looks like A->B->C->D, then
-    we could call go_to_node(B, ["C", "D"]) to return a reference to node D. Mostly this is useful to avoid numerous
-    calls to "node.find('some_tag').find('some_other_tag').find('yet-another-tag')".
-    """
-    if isinstance(pathway, str):
-        pathway = (pathway,)
-    for step in pathway:
-        node = node.find(step)
-    return node
-
-
 class Espresso640XMLParser(BaseXMLParser):
     """
     Espresso XML parser class.
@@ -43,7 +30,7 @@ class Espresso640XMLParser(BaseXMLParser):
         Returns:
             float
         """
-        fermi_node = traverse_xml(self.root, ("output", "band_structure", "fermi_energy"))
+        fermi_node = self.traverse_xml(self.root, ("output", "band_structure", "fermi_energy"))
         result = float(fermi_node.text) * Constant.HARTREE
         return result
 
@@ -72,7 +59,7 @@ class Espresso640XMLParser(BaseXMLParser):
             raise NotImplementedError
 
         else:
-            cell_node = traverse_xml(self.root, ("output", "atomic_structure", "cell"))
+            cell_node = self.traverse_xml(self.root, ("output", "atomic_structure", "cell"))
             for key, tag in (("a", "a1"), ("b", "a2"), ("c", "a3")):
                 vector = self.string_to_vec(cell_node.find(tag).text, dtype=float)
                 vector = [component * Constant.BOHR for component in vector]
@@ -100,7 +87,7 @@ class Espresso640XMLParser(BaseXMLParser):
             "elements": [],
             "coordinates": []
         }
-        output_positions = traverse_xml(self.root, ("output", "atomic_structure", "atomic_positions"))
+        output_positions = self.traverse_xml(self.root, ("output", "atomic_structure", "atomic_positions"))
         atoms = output_positions.findall("atom")
         for atom in atoms:
             atom_id = float(atom.get("index"))
@@ -112,6 +99,19 @@ class Espresso640XMLParser(BaseXMLParser):
             result["coordinates"].append({"id": atom_id, "value": coords})
 
         return result
+
+    @staticmethod
+    def traverse_xml(node: ET.Element, *pathway: Sequence[str]) -> ET.Element:
+        """
+        Goes to a node in the node's path. For example, if we have a node tree that looks like A->B->C->D, then
+        we could call go_to_node(B, ["C", "D"]) to return a reference to node D. Mostly this is useful to avoid numerous
+        calls to "node.find('some_tag').find('some_other_tag').find('yet-another-tag')".
+        """
+        if isinstance(pathway, str):
+            pathway = (pathway,)
+        for step in pathway:
+            node = node.find(step)
+        return node
 
     @staticmethod
     def string_to_vec(string: str, dtype: type = float, sep: Optional[str] = None) -> List[Any]:
