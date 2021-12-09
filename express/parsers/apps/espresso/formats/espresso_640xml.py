@@ -1,4 +1,4 @@
-from typing import List, Dict, Union
+from typing import List, Dict, Union, Optional, Any
 
 from express.parsers.formats.xml import BaseXMLParser
 from express.parsers.settings import Constant
@@ -97,4 +97,19 @@ class Espresso640XMLParser(BaseXMLParser):
             result["elements"].append({"id": atom_id, "value": symbol})
             result["coordinates"].append({"id": atom_id, "value": coords})
 
+        return result
+
+    @staticmethod
+    def string_to_vec(string: str, dtype: type = float, sep: Optional[str] = None) -> List[Any]:
+        """
+        Given a string and some delimiter, will create a vector with the specified type.
+
+        Args:
+            string (str): The string to convert, for example "6.022e23 2.718 3.14159"
+            dtype (type): The type to convert into. Must support conversion from a string. Defaults to `float`
+            sep (Optional[str]): Delimiter for the the string. Defaults to whitespace.
+        Returns:
+            List[Any]: A list that has the correct type, for example [6.022e23, 2.718, 3.14159]
+        """
+        result = [dtype(component) for component in string.split(sep)]
         return result
