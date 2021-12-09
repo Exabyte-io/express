@@ -3,13 +3,13 @@ from tests.integration import IntegrationTestBase
 from express.parsers.apps.espresso.parser import EspressoLegacyParser
 
 
-class TestEspressoParser(IntegrationTestBase):
+class TestEspressoLegacyParser(IntegrationTestBase):
     def setUp(self):
-        super(TestEspressoParser, self).setUp()
+        super(TestEspressoLegacyParser, self).setUp()
         self.parser = EspressoLegacyParser(work_dir=self.workDir, stdout_file=self.stdoutFile)
 
     def tearDown(self):
-        super(TestEspressoParser, self).setUp()
+        super(TestEspressoLegacyParser, self).setUp()
 
     def test_espresso_total_energy(self):
         self.assertAlmostEqual(self.parser.total_energy(), TOTAL_ENERGY, places=2)
