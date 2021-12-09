@@ -1,6 +1,5 @@
-from typing import Sequence, List, Any, Optional, Dict, Union
+from typing import List, Dict, Union
 
-import xml.etree.ElementTree as ET
 from express.parsers.formats.xml import BaseXMLParser
 from express.parsers.settings import Constant
 
@@ -98,32 +97,4 @@ class Espresso640XMLParser(BaseXMLParser):
             result["elements"].append({"id": atom_id, "value": symbol})
             result["coordinates"].append({"id": atom_id, "value": coords})
 
-        return result
-
-    @staticmethod
-    def traverse_xml(node: ET.Element, *pathway: Sequence[str]) -> ET.Element:
-        """
-        Goes to a node in the node's path. For example, if we have a node tree that looks like A->B->C->D, then
-        we could call go_to_node(B, ["C", "D"]) to return a reference to node D. Mostly this is useful to avoid numerous
-        calls to "node.find('some_tag').find('some_other_tag').find('yet-another-tag')".
-        """
-        if isinstance(pathway, str):
-            pathway = (pathway,)
-        for step in pathway:
-            node = node.find(step)
-        return node
-
-    @staticmethod
-    def string_to_vec(string: str, dtype: type = float, sep: Optional[str] = None) -> List[Any]:
-        """
-        Given a string and some delimiter, will create a vector with the specified type.
-
-        Args:
-            string (str): The string to convert, for example "6.022e23 2.718 3.14159"
-            dtype (type): The type to convert into. Must support conversion from a string. Defaults to `float`
-            sep (Optional[str]): Delimiter for the the string. Defaults to whitespace.
-        Returns:
-            List[Any]: A list that has the correct type, for example [6.022e23, 2.718, 3.14159]
-        """
-        result = [dtype(component) for component in string.split(sep)]
         return result
