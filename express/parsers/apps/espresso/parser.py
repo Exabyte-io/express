@@ -24,6 +24,7 @@ class EspressoLegacyParser(BaseParser, IonicDataMixin, ElectronicDataMixin, Reci
         self.work_dir = self.kwargs["work_dir"]
         self.stdout_file = self.kwargs["stdout_file"]
         self.txt_parser = EspressoTXTParser(self.work_dir)
+        self.xml_data_file = settings.XML_DATA_FILE
         self._xml_parser = None
 
     @property
@@ -43,7 +44,7 @@ class EspressoLegacyParser(BaseParser, IonicDataMixin, ElectronicDataMixin, Reci
         """
         is_sternheimer_gw = self._is_sternheimer_gw_calculation()
         for root, dirs, files in os.walk(self.work_dir, followlinks=True):
-            for file_ in [f for f in files if settings.XML_DATA_FILE == f]:
+            for file_ in [f for f in files if self.xml_data_file == f]:
                 file_path = os.path.join(root, file_)
                 if not is_sternheimer_gw or (is_sternheimer_gw and settings.STERNHEIMER_GW0_DIR_PATTERN in file_path):
                     return file_path
@@ -346,6 +347,10 @@ class EspressoLegacyParser(BaseParser, IonicDataMixin, ElectronicDataMixin, Reci
 
 class EspressoParser(EspressoLegacyParser):
 
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.xml_data_file = "data-file-schema.xml"
+
     def _is_sternheimer_gw_calculation(self):
         """
         Sternheimer GW is not maintained anymore in Espresso, and breaks compilation in recent versions.
@@ -362,24 +367,3 @@ class EspressoParser(EspressoLegacyParser):
             xml_file = self.find_xml_file()
             self._xml_parser = Espresso640XMLParser(xml_file)
         return self._xml_parser
-
-    def find_xml_file(self, cwd=None):
-        if cwd is None:
-            cwd = self.work_dir
-        files = []
-        directories = []
-        for item in map(lambda i: os.path.join(cwd, i), os.listdir(cwd)):
-            if os.path.isdir(item):
-                directories.append(item)
-            elif os.path.isfile(item):
-                files.append(item)
-
-        for file in files:
-            if file.endswith("xml"):
-                return os.path.join(cwd, file)
-        else:
-            for directory in directories:
-                next_dir = os.path.join(os.path.join(cwd, directory))
-                result = self.find_xml_file(next_dir)
-                if result:
-                    return result
