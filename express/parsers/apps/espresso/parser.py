@@ -356,14 +356,30 @@ class EspressoParser(EspressoLegacyParser):
         """
         return False
 
+    @property
     def xml_parser(self):
         if self._xml_parser is None:
-            self._xml_parser = Espresso640XMLParser(self.find_xml_file())
+            xml_file = self.find_xml_file()
+            self._xml_parser = Espresso640XMLParser(xml_file)
         return self._xml_parser
 
+    def find_xml_file(self, cwd=None):
+        if cwd is None:
+            cwd = self.work_dir
+        files = []
+        directories = []
+        for item in map(lambda i: os.path.join(cwd, i), os.listdir(cwd)):
+            if os.path.isdir(item):
+                directories.append(item)
+            elif os.path.isfile(item):
+                files.append(item)
 
-    def fermi_energy(self):
-        return self.ase_parser.fermi_energy()
-
-    def eigenvalues_at_kpoints(self) -> List:
-        return self.ase_parser.eigenvalues_at_kpoints()
+        for file in files:
+            if file.endswith("xml"):
+                return os.path.join(cwd, file)
+        else:
+            for directory in directories:
+                next_dir = os.path.join(os.path.join(cwd, directory))
+                result = self.find_xml_file(next_dir)
+                if result:
+                    return result
