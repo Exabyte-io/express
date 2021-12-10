@@ -1,7 +1,11 @@
 import functools
-
+import os
+from express.parsers.apps.espresso.parser import EspressoParser
+from express.parsers.settings import Constant
+import tests.fixtures.espresso.references
 from tests.integration import IntegrationTestBase
-from tests.fixtures.espresso.references import REFERENCE_VALUES
+
+REFERENCE_VALUES = tests.fixtures.espresso.references.REFERENCE_VALUES
 
 ESPRESSO_VERSIONS = {
     "6.4.1": "v641",
@@ -20,6 +24,7 @@ RUN_TYPES = {
 class TestEspressoParser(IntegrationTestBase):
     def setUp(self):
         super().setUp()
+        self.fixtures_dirname = os.path.dirname(tests.fixtures.espresso.references.__file__)
 
     def tearDown(self):
         super().tearDown()
@@ -33,3 +38,37 @@ class TestEspressoParser(IntegrationTestBase):
                         test_function(self, version, jobtype)
 
         return inner
+
+    def _get_parser(self, version, jobtype):
+        work_dir = os.path.join(self.fixtures_dirname, version, jobtype)
+        stdout_file = os.path.join(work_dir, "pw.out")
+        parser = EspressoParser(work_dir=work_dir, stdout_file=stdout_file)
+        return parser
+
+    @for_all_versions
+    def test_total_energy(self, version, jobtype):
+        parser = self._get_parser(version, jobtype)
+        reference = REFERENCE_VALUES[version][jobtype]["total_energy"]
+        result = parser.total_energy()
+        self.assertAlmostEqual(reference, result, places=2)
+
+    @for_all_versions
+    def test_fermi_energy(self, version, jobtype):
+        parser = self._get_parser(version, jobtype)
+        reference = REFERENCE_VALUES[version][jobtype]["fermi_energy"]
+        result = parser.fermi_energy()
+        self.assertAlmostEqual(reference, result, places=2)
+
+    @for_all_versions
+    def test_pressure(self, version, jobtype):
+        parser = self._get_parser(version, jobtype)
+        reference = REFERENCE_VALUES[version][jobtype]["pressure"]
+        result = parser.pressure()
+        self.assertEqual(reference, result)
+
+    @for_all_versions
+    def test_total_force(self, version, jobtype):
+        parser = self._get_parser(version, jobtype)
+        reference = REFERENCE_VALUES[version][jobtype]["total_force"]
+        result = parser.total_force()
+        self.assertEqual(reference, result)
