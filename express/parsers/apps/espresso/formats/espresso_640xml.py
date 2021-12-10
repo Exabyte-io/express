@@ -1,49 +1,7 @@
-from typing import Sequence, List, Any, Optional, Dict, Union
+from typing import List, Dict, Union, Optional, Any
 
-import xml.etree.ElementTree as ET
 from express.parsers.formats.xml import BaseXMLParser
 from express.parsers.settings import Constant
-
-
-def traverse_xml(node: ET.Element, *pathway: Sequence[str]) -> ET.Element:
-    """
-    Goes to a node in the node's path. For example, if we have a node tree that looks like A->B->C->D, then
-    we could call go_to_node(B, ["C", "D"]) to return a reference to node D. Mostly this is useful to avoid numerous
-    calls to "node.find('some_tag').find('some_other_tag').find('yet-another-tag')".
-    """
-    if isinstance(pathway, str):
-        pathway = (pathway,)
-    for step in pathway:
-        node = node.find(step)
-    return node
-
-
-def string_to_vec(string: str, dtype: type = float, sep: Optional[str] = None) -> List[Any]:
-    """
-    Given a string and some delimiter, will create a vector with the specified type.
-
-    Args:
-        string (str): The string to convert, for example "6.022e23 2.718 3.14159"
-        dtype (type): The type to convert into. Must support conversion from a string. Defaults to `float`
-        sep (Optional[str]): Delimiter for the the string. Defaults to whitespace.
-    Returns:
-        List[Any]: A list that has the correct type, for example [6.022e23, 2.718, 3.14159]
-    """
-    result = [dtype(component) for component in string.split(sep)]
-    return result
-
-
-def find_tag(node: ET.Element, tag: str):
-    """
-    DFS for tag in the node tree. Be aware that this is pretty imprecise, and just finds the *first* one it sees.
-    """
-    if node.tag == tag:
-        return node
-
-    for child in node:
-        result = find_tag(child, tag)
-        if result is not None:
-            return result
 
 
 class Espresso640XMLParser(BaseXMLParser):
@@ -53,6 +11,7 @@ class Espresso640XMLParser(BaseXMLParser):
     Args:
         xml_file_path (str): path to the xml file.`
     """
+
     def __init__(self, xml_file_path):
         super().__init__(xml_file_path)
         self._steps = None
@@ -70,7 +29,7 @@ class Espresso640XMLParser(BaseXMLParser):
         Returns:
             float
         """
-        fermi_node = traverse_xml(self.root, ("output", "band_structure", "fermi_energy"))
+        fermi_node = self.traverse_xml(self.root, ("output", "band_structure", "fermi_energy"))
         result = float(fermi_node.text) * Constant.HARTREE
         return result
 
@@ -99,9 +58,9 @@ class Espresso640XMLParser(BaseXMLParser):
             raise NotImplementedError
 
         else:
-            cell_node = traverse_xml(self.root, ("output", "atomic_structure", "cell"))
+            cell_node = self.traverse_xml(self.root, ("output", "atomic_structure", "cell"))
             for key, tag in (("a", "a1"), ("b", "a2"), ("c", "a3")):
-                vector = string_to_vec(cell_node.find(tag).text, dtype=float)
+                vector = self.string_to_vec(cell_node.find(tag).text, dtype=float)
                 vector = [component * Constant.BOHR for component in vector]
                 vectors[key] = vector
 
@@ -127,15 +86,30 @@ class Espresso640XMLParser(BaseXMLParser):
             "elements": [],
             "coordinates": []
         }
-        output_positions = traverse_xml(self.root, ("output", "atomic_structure", "atomic_positions"))
+        output_positions = self.traverse_xml(self.root, ("output", "atomic_structure", "atomic_positions"))
         atoms = output_positions.findall("atom")
         for atom in atoms:
             atom_id = float(atom.get("index"))
             symbol = atom.get("name")
-            coords = string_to_vec(atom.text, dtype=float)
+            coords = self.string_to_vec(atom.text, dtype=float)
             coords = [component * Constant.BOHR for component in coords]
 
             result["elements"].append({"id": atom_id, "value": symbol})
             result["coordinates"].append({"id": atom_id, "value": coords})
 
+        return result
+
+    @staticmethod
+    def string_to_vec(string: str, dtype: type = float, sep: Optional[str] = None) -> List[Any]:
+        """
+        Given a string and some delimiter, will create a vector with the specified type.
+
+        Args:
+            string (str): The string to convert, for example "6.022e23 2.718 3.14159"
+            dtype (type): The type to convert into. Must support conversion from a string. Defaults to `float`
+            sep (Optional[str]): Delimiter for the the string. Defaults to whitespace.
+        Returns:
+            List[Any]: A list that has the correct type, for example [6.022e23, 2.718, 3.14159]
+        """
+        result = [dtype(component) for component in string.split(sep)]
         return result
