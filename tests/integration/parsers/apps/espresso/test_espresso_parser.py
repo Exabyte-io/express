@@ -3,6 +3,7 @@ import os
 from express.parsers.apps.espresso.parser import EspressoParser
 from express.parsers.settings import Constant
 import tests.fixtures.espresso.references
+from tests import for_all_versions
 from tests.integration import IntegrationTestBase
 
 REFERENCE_VALUES = tests.fixtures.espresso.references.REFERENCE_VALUES
@@ -20,7 +21,6 @@ RUN_TYPES = {
     "VC-Relax": "vc_relax",
 }
 
-
 class TestEspressoParser(IntegrationTestBase):
     def setUp(self):
         super().setUp()
@@ -29,44 +29,36 @@ class TestEspressoParser(IntegrationTestBase):
     def tearDown(self):
         super().tearDown()
 
-    def for_all_versions(test_function):
-        @functools.wraps(test_function)
-        def inner(self):
-            for version_test_label, version in ESPRESSO_VERSIONS.items():
-                for job_test_label, jobtype in RUN_TYPES.items():
-                    with self.subTest(version_number=version_test_label, job_type=job_test_label):
-                        test_function(self, version, jobtype)
-
-        return inner
-
     def _get_parser(self, version, jobtype):
         work_dir = os.path.join(self.fixtures_dirname, version, jobtype)
         stdout_file = os.path.join(work_dir, "pw.out")
         parser = EspressoParser(work_dir=work_dir, stdout_file=stdout_file)
         return parser
 
-    @for_all_versions
+    for_all_espresso = for_all_versions(ESPRESSO_VERSIONS, RUN_TYPES)
+
+    @for_all_espresso
     def test_total_energy(self, version, jobtype):
         parser = self._get_parser(version, jobtype)
         reference = REFERENCE_VALUES[version][jobtype]["total_energy"]
         result = parser.total_energy()
         self.assertAlmostEqual(reference, result, places=2)
 
-    @for_all_versions
+    @for_all_espresso
     def test_fermi_energy(self, version, jobtype):
         parser = self._get_parser(version, jobtype)
         reference = REFERENCE_VALUES[version][jobtype]["fermi_energy"]
         result = parser.fermi_energy()
         self.assertAlmostEqual(reference, result, places=2)
 
-    @for_all_versions
+    @for_all_espresso
     def test_pressure(self, version, jobtype):
         parser = self._get_parser(version, jobtype)
         reference = REFERENCE_VALUES[version][jobtype]["pressure"]
         result = parser.pressure()
         self.assertEqual(reference, result)
 
-    @for_all_versions
+    @for_all_espresso
     def test_total_force(self, version, jobtype):
         parser = self._get_parser(version, jobtype)
         reference = REFERENCE_VALUES[version][jobtype]["total_force"]

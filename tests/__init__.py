@@ -1,8 +1,19 @@
+import functools
 import os
 import yaml
 import unittest
 import numpy as np
 
+def for_all_versions(version_map: dict, runtype_map: dict):
+    def decorator(test_function):
+        @functools.wraps(test_function)
+        def inner(self):
+            for version_test_label, version in version_map.items():
+                for job_test_label, jobtype in runtype_map.items():
+                    with self.subTest(version_number=version_test_label, job_type=job_test_label):
+                        test_function(self, version, jobtype)
+        return inner
+    return decorator
 
 class TestBase(unittest.TestCase):
     """
@@ -15,6 +26,7 @@ class TestBase(unittest.TestCase):
 
     def tearDown(self):
         super(TestBase, self).tearDown()
+
 
     def getManifest(self):
         """
