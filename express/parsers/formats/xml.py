@@ -21,7 +21,7 @@ class BaseXMLParser(object):
                 pass
 
     @staticmethod
-    def traverse_xml(node: ET.Element, *pathway: Sequence[str]) -> ET.Element:
+    def traverse_xml(node: ET.Element, pathway: Sequence[str]) -> ET.Element:
         """
         Goes to a node in the node's path. For example, if we have a node tree that looks like A->B->C->D, then
         we could call go_to_node(B, ["C", "D"]) to return a reference to node D. Mostly this is useful to avoid numerous
