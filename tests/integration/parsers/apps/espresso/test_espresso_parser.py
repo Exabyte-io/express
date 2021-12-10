@@ -64,3 +64,10 @@ class TestEspressoParser(IntegrationTestBase):
         reference = REFERENCE_VALUES[version][jobtype]["total_force"]
         result = parser.total_force()
         self.assertEqual(reference, result)
+
+    @for_all_espresso
+    def test_final_realspace_lattice_Vectors(self, version, jobtype):
+        parser = self._get_parser(version, jobtype)
+        reference = REFERENCE_VALUES[version][jobtype]["realspace_lattice"]
+        result = parser.final_lattice_vectors()
+        self.assertDeepAlmostEqual(expected=reference, actual=result, places=3)
