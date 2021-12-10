@@ -1,4 +1,4 @@
-from typing import List, Dict, Union, Optional, Any
+from typing import List, Dict, Union, Optional, Any, Sequence
 
 from express.parsers.formats.xml import BaseXMLParser
 from express.parsers.settings import Constant
@@ -100,16 +100,22 @@ class Espresso640XMLParser(BaseXMLParser):
         return result
 
     @staticmethod
-    def string_to_vec(string: str, dtype: type = float, sep: Optional[str] = None) -> List[Any]:
+    def string_to_vec(string: str,
+                      dtype: type = float,
+                      container: type = list,
+                      sep: Optional[str] = None) -> Sequence[Any]:
         """
         Given a string and some delimiter, will create a vector with the specified type.
 
         Args:
             string (str): The string to convert, for example "6.022e23 2.718 3.14159"
             dtype (type): The type to convert into. Must support conversion from a string. Defaults to `float`
+            container (type): The container that will store the vector (e.g. a list, a numpy array, etc). Assumes an
+                              interface where the container's constructor can take a list as an argument.
             sep (Optional[str]): Delimiter for the the string. Defaults to whitespace.
         Returns:
             List[Any]: A list that has the correct type, for example [6.022e23, 2.718, 3.14159]
         """
         result = [dtype(component) for component in string.split(sep)]
+        result = container(result)
         return result
