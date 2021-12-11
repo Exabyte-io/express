@@ -1,7 +1,5 @@
-import functools
 import os
 from express.parsers.apps.espresso.parser import EspressoParser
-from express.parsers.settings import Constant
 import tests.fixtures.espresso.references
 from tests import for_all_versions
 from tests.integration import IntegrationTestBase
