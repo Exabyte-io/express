@@ -1,7 +1,5 @@
-import functools
 import os
 from express.parsers.apps.espresso.parser import EspressoParser
-from express.parsers.settings import Constant
 import tests.fixtures.espresso.references
 from tests import for_all_versions
 from tests.integration import IntegrationTestBase
@@ -78,3 +76,10 @@ class TestEspressoParser(IntegrationTestBase):
         reference = REFERENCE_VALUES[version][jobtype]["reciprocal_lattice"]
         result = parser.xml_parser.final_lattice_vectors(reciprocal=True)
         self.assertDeepAlmostEqual(expected=reference, actual=result)
+
+    @for_all_espresso
+    def test_nspin(self, version, jobtype):
+        parser = self._get_parser(version, jobtype)
+        reference = REFERENCE_VALUES[version][jobtype]["nspin"]
+        result = parser.nspins()
+        self.assertEqual(reference, result)
