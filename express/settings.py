@@ -108,7 +108,7 @@ PROPERTIES_MANIFEST.update(SCALAR_PROPERTIES_MANIFEST)
 PROPERTIES_MANIFEST.update(NON_SCALAR_PROPERTIES_MANIFEST)
 
 PARSERS_REGISTRY = {
-    'espresso': 'express.parsers.apps.espresso.parser.EspressoParser',
+    'espresso': 'express.parsers.apps.espresso.parser.EspressoLegacyParser',
     'vasp': 'express.parsers.apps.vasp.parser.VaspParser',
     'nwchem': 'express.parsers.apps.nwchem.parser.NwchemParser',
     'structure': 'express.parsers.structure.StructureParser',

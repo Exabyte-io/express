@@ -1,5 +1,6 @@
 import os
 import numpy as np
+from typing import List, Dict, Union, Any
 
 from express.parsers import BaseParser
 from express.parsers.apps.espresso import settings
@@ -9,20 +10,27 @@ from express.parsers.mixins.electronic import ElectronicDataMixin
 from express.parsers.utils import find_file, lattice_basis_to_poscar
 from express.parsers.apps.espresso.settings import NEB_PATH_FILE_SUFFIX
 from express.parsers.apps.espresso.formats.txt import EspressoTXTParser
-from express.parsers.apps.espresso.formats.xml import EspressoXMLParser
+from express.parsers.apps.espresso.formats.espresso_640xml import Espresso640XMLParser
+from express.parsers.apps.espresso.formats.espresso_legacyxml import EspressoLegacyXMLParser
 
 
-class EspressoParser(BaseParser, IonicDataMixin, ElectronicDataMixin, ReciprocalDataMixin):
+class EspressoLegacyParser(BaseParser, IonicDataMixin, ElectronicDataMixin, ReciprocalDataMixin):
     """
     Espresso parser class.
     """
 
     def __init__(self, *args, **kwargs):
-        super(EspressoParser, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
         self.work_dir = self.kwargs["work_dir"]
         self.stdout_file = self.kwargs["stdout_file"]
         self.txt_parser = EspressoTXTParser(self.work_dir)
-        self.xml_parser = EspressoXMLParser(self.find_xml_file())
+        self._xml_parser = None
+
+    @property
+    def xml_parser(self):
+        if self._xml_parser is None:
+            self._xml_parser = EspressoLegacyXMLParser(self.find_xml_file())
+        return self._xml_parser
 
     def find_xml_file(self):
         """
@@ -40,7 +48,7 @@ class EspressoParser(BaseParser, IonicDataMixin, ElectronicDataMixin, Reciprocal
                 if not is_sternheimer_gw or (is_sternheimer_gw and settings.STERNHEIMER_GW0_DIR_PATTERN in file_path):
                     return file_path
 
-    def total_energy(self):
+    def total_energy(self) -> float:
         """
         Returns total energy.
 
@@ -49,7 +57,7 @@ class EspressoParser(BaseParser, IonicDataMixin, ElectronicDataMixin, Reciprocal
         """
         return self.txt_parser.total_energy(self._get_file_content(self.stdout_file))
 
-    def fermi_energy(self):
+    def fermi_energy(self) -> float:
         """
         Returns fermi energy.
 
@@ -58,7 +66,7 @@ class EspressoParser(BaseParser, IonicDataMixin, ElectronicDataMixin, Reciprocal
         """
         return self.xml_parser.fermi_energy()
 
-    def nspins(self):
+    def nspins(self) -> int:
         """
         Returns the number of spins.
 
@@ -67,7 +75,7 @@ class EspressoParser(BaseParser, IonicDataMixin, ElectronicDataMixin, Reciprocal
         """
         return self.xml_parser.nspins()
 
-    def _is_sternheimer_gw_calculation(self):
+    def _is_sternheimer_gw_calculation(self) -> bool:
         """
         Checks whether this is a Sternheimer GW calculation.
 
@@ -81,11 +89,12 @@ class EspressoParser(BaseParser, IonicDataMixin, ElectronicDataMixin, Reciprocal
         if os.path.exists(self.stdout_file):
             with open(self.stdout_file, "r") as f:
                 for index, line in enumerate(f):
-                    if index > 50: return False
+                    if index > 50:
+                        return False
                     if settings.STERNHEIMER_GW_TITLE in line:
                         return True
 
-    def eigenvalues_at_kpoints(self):
+    def eigenvalues_at_kpoints(self) -> List:
         """
         Returns eigenvalues for all kpoints.
 
@@ -102,7 +111,7 @@ class EspressoParser(BaseParser, IonicDataMixin, ElectronicDataMixin, Reciprocal
         else:
             return self.xml_parser.eigenvalues_at_kpoints()
 
-    def ibz_k_points(self):
+    def ibz_k_points(self) -> np.ndarray:
         """
         Returns ibz_k_points.
 
@@ -115,7 +124,7 @@ class EspressoParser(BaseParser, IonicDataMixin, ElectronicDataMixin, Reciprocal
         """
         return np.array([eigenvalueData["kpoint"] for eigenvalueData in self.eigenvalues_at_kpoints()])
 
-    def dos(self):
+    def dos(self) -> Dict[str, Any]:
         """
         Returns density of states.
 
@@ -124,7 +133,7 @@ class EspressoParser(BaseParser, IonicDataMixin, ElectronicDataMixin, Reciprocal
         """
         return self.txt_parser.dos()
 
-    def initial_basis(self):
+    def initial_basis(self) -> Dict[str, Union[str, list]]:
         """
         Returns initial basis.
 
@@ -133,7 +142,7 @@ class EspressoParser(BaseParser, IonicDataMixin, ElectronicDataMixin, Reciprocal
         """
         return self.txt_parser.initial_basis(self._get_file_content(self.stdout_file))
 
-    def initial_lattice_vectors(self):
+    def initial_lattice_vectors(self) -> Dict[str, Dict[str, Union[List[float], int]]]:
         """
         Returns initial lattice vectors.
 
@@ -142,7 +151,7 @@ class EspressoParser(BaseParser, IonicDataMixin, ElectronicDataMixin, Reciprocal
         """
         return self.txt_parser.initial_lattice_vectors(self._get_file_content(self.stdout_file))
 
-    def final_basis(self):
+    def final_basis(self) -> Dict[str, Union[str, list]]:
         """
         Returns final basis.
 
@@ -151,7 +160,7 @@ class EspressoParser(BaseParser, IonicDataMixin, ElectronicDataMixin, Reciprocal
         """
         return self.xml_parser.final_basis()
 
-    def final_lattice_vectors(self):
+    def final_lattice_vectors(self) -> Dict[str, Dict[str, Union[List[float], int]]]:
         """
         Returns final lattice.
 
@@ -160,7 +169,7 @@ class EspressoParser(BaseParser, IonicDataMixin, ElectronicDataMixin, Reciprocal
         """
         return self.xml_parser.final_lattice_vectors(reciprocal=False)
 
-    def convergence_electronic(self):
+    def convergence_electronic(self) -> List[float]:
         """
         Extracts convergence electronic.
 
@@ -169,7 +178,7 @@ class EspressoParser(BaseParser, IonicDataMixin, ElectronicDataMixin, Reciprocal
         """
         return self.txt_parser.convergence_electronic(self._get_file_content(self.stdout_file))
 
-    def convergence_ionic(self):
+    def convergence_ionic(self) -> List[Dict]:
         """
         Returns convergence ionic.
 
@@ -178,7 +187,7 @@ class EspressoParser(BaseParser, IonicDataMixin, ElectronicDataMixin, Reciprocal
         """
         return self.txt_parser.convergence_ionic(self._get_file_content(self.stdout_file))
 
-    def stress_tensor(self):
+    def stress_tensor(self) -> List:
         """
         Returns stress tensor.
 
@@ -187,7 +196,7 @@ class EspressoParser(BaseParser, IonicDataMixin, ElectronicDataMixin, Reciprocal
         """
         return self.txt_parser.stress_tensor(self._get_file_content(self.stdout_file))
 
-    def pressure(self):
+    def pressure(self) -> float:
         """
         Returns pressure.
 
@@ -196,7 +205,7 @@ class EspressoParser(BaseParser, IonicDataMixin, ElectronicDataMixin, Reciprocal
         """
         return self.txt_parser.pressure(self._get_file_content(self.stdout_file))
 
-    def total_force(self):
+    def total_force(self) -> float:
         """
         Returns total force.
 
@@ -205,7 +214,7 @@ class EspressoParser(BaseParser, IonicDataMixin, ElectronicDataMixin, Reciprocal
         """
         return self.txt_parser.total_force(self._get_file_content(self.stdout_file))
 
-    def atomic_forces(self):
+    def atomic_forces(self) -> List:
         """
         Returns forces that is exerted on each atom by its surroundings.
 
@@ -214,7 +223,7 @@ class EspressoParser(BaseParser, IonicDataMixin, ElectronicDataMixin, Reciprocal
         """
         return self.txt_parser.atomic_forces(self._get_file_content(self.stdout_file))
 
-    def total_energy_contributions(self):
+    def total_energy_contributions(self) -> Dict:
         """
         Extracts total energy contributions.
 
@@ -223,7 +232,7 @@ class EspressoParser(BaseParser, IonicDataMixin, ElectronicDataMixin, Reciprocal
         """
         return self.txt_parser.total_energy_contributions(self._get_file_content(self.stdout_file))
 
-    def zero_point_energy(self):
+    def zero_point_energy(self) -> float:
         """
         Returns zero point energy.
 
@@ -232,7 +241,7 @@ class EspressoParser(BaseParser, IonicDataMixin, ElectronicDataMixin, Reciprocal
         """
         return self.txt_parser.zero_point_energy(self._get_file_content(self.stdout_file))
 
-    def phonon_dos(self):
+    def phonon_dos(self) -> Dict[str, List[float]]:
         """
         Returns phonon dos.
 
@@ -241,7 +250,7 @@ class EspressoParser(BaseParser, IonicDataMixin, ElectronicDataMixin, Reciprocal
         """
         return self.txt_parser.phonon_dos()
 
-    def phonon_dispersions(self):
+    def phonon_dispersions(self) -> Dict[str, List[List[float]]]:
         """
         Returns phonon dispersions.
 
@@ -250,11 +259,12 @@ class EspressoParser(BaseParser, IonicDataMixin, ElectronicDataMixin, Reciprocal
         """
         return self.txt_parser.phonon_dispersions()
 
-    def _find_neb_dat_file(self):
+    def _find_neb_dat_file(self) -> str:
         neb_path_file = find_file(NEB_PATH_FILE_SUFFIX, self.work_dir)
-        if neb_path_file: return "{}.dat".format(neb_path_file[:neb_path_file.rfind(".")])
+        if neb_path_file:
+            return "{}.dat".format(neb_path_file[:neb_path_file.rfind(".")])
 
-    def reaction_coordinates(self):
+    def reaction_coordinates(self) -> List[float]:
         """
         Returns reaction coordinates.
 
@@ -264,7 +274,7 @@ class EspressoParser(BaseParser, IonicDataMixin, ElectronicDataMixin, Reciprocal
         neb_dat_file = self._find_neb_dat_file()
         return self.txt_parser.reaction_coordinates(self._get_file_content(neb_dat_file))
 
-    def reaction_energies(self):
+    def reaction_energies(self) -> List[float]:
         """
         Returns reaction energies.
 
@@ -274,16 +284,16 @@ class EspressoParser(BaseParser, IonicDataMixin, ElectronicDataMixin, Reciprocal
         neb_dat_file = self._find_neb_dat_file()
         return self.txt_parser.reaction_energies(self._get_file_content(neb_dat_file))
 
-    def _get_esm_file(self):
+    def _get_esm_file(self) -> str:
         return find_file(".esm1", self.work_dir)
 
-    def potential_profile(self):
+    def potential_profile(self) -> List[List[float]]:
         return self.txt_parser.potential_profile(self._get_file_content(self._get_esm_file()))
 
-    def charge_density_profile(self):
+    def charge_density_profile(self) -> List[List[float]]:
         return self.txt_parser.charge_density_profile(self._get_file_content(self._get_esm_file()))
 
-    def _is_pw_scf_output_file(self, path):
+    def _is_pw_scf_output_file(self, path) -> bool:
         """
         Checks whether the given file is PWSCF output file.
 
@@ -297,11 +307,12 @@ class EspressoParser(BaseParser, IonicDataMixin, ElectronicDataMixin, Reciprocal
         if os.path.exists(path):
             with open(path, "r") as f:
                 for index, line in enumerate(f):
-                    if index > 50: return False
+                    if index > 50:
+                        return False
                     if settings.PWSCF_OUTPUT_FILE_REGEX in line:
                         return True
 
-    def _find_pw_scf_output_files(self):
+    def _find_pw_scf_output_files(self) -> List[str]:
         pw_scf_output_files = []
         for root, dirs, files in os.walk(self.work_dir, followlinks=True):
             for file in files:
@@ -310,7 +321,7 @@ class EspressoParser(BaseParser, IonicDataMixin, ElectronicDataMixin, Reciprocal
                     pw_scf_output_files.append(path)
         return pw_scf_output_files
 
-    def initial_structure_strings(self):
+    def initial_structure_strings(self) -> List[str]:
         structures = []
         for pw_scf_output_file in self._find_pw_scf_output_files():
             try:
@@ -321,7 +332,7 @@ class EspressoParser(BaseParser, IonicDataMixin, ElectronicDataMixin, Reciprocal
                 raise
         return structures
 
-    def final_structure_strings(self):
+    def final_structure_strings(self) -> List[str]:
         structures = []
         for pw_scf_output_file in self._find_pw_scf_output_files():
             try:
@@ -331,3 +342,28 @@ class EspressoParser(BaseParser, IonicDataMixin, ElectronicDataMixin, Reciprocal
             except:
                 pass
         return structures
+
+
+class EspressoParser(EspressoLegacyParser):
+
+    def _is_sternheimer_gw_calculation(self):
+        """
+        Sternheimer GW is not maintained anymore in Espresso, and breaks compilation in recent versions.
+        The versions of express we use this parser with cannot run Sternheimer GW, therefore this is always false.
+
+        Returns:
+            False
+        """
+        return False
+
+    def xml_parser(self):
+        if self._xml_parser is None:
+            self._xml_parser = Espresso640XMLParser(self.find_xml_file())
+        return self._xml_parser
+
+
+    def fermi_energy(self):
+        return self.ase_parser.fermi_energy()
+
+    def eigenvalues_at_kpoints(self) -> List:
+        return self.ase_parser.eigenvalues_at_kpoints()

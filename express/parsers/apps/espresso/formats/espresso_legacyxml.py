@@ -20,16 +20,13 @@ TAG_VALUE_CAST_MAP = {
 }
 
 
-class EspressoXMLParser(BaseXMLParser):
+class EspressoLegacyXMLParser(BaseXMLParser):
     """
     Espresso XML parser class.
 
     Args:
         xml_file_path (str): path to the xml file.
     """
-
-    def __init__(self, xml_file_path):
-        super(EspressoXMLParser, self).__init__(xml_file_path)
 
     def _get_xml_tag_value(self, tag):
         """
@@ -199,7 +196,7 @@ class EspressoXMLParser(BaseXMLParser):
                 })
                 coordinates.append({
                     'id': int(atom.tag[5:]),
-                    'value': (Constant.BOHR * np.array(atom.attrib.get("tau").split()).astype(np.float)).tolist()
+                    'value': (Constant.BOHR * np.array(atom.attrib.get("tau").split()).astype(np.float64)).tolist()
                 })
 
         return {

@@ -1,12 +1,12 @@
 from tests.fixtures.espresso.references import *
 from tests.integration import IntegrationTestBase
-from express.parsers.apps.espresso.parser import EspressoParser
+from express.parsers.apps.espresso.parser import EspressoLegacyParser
 
 
 class TestEspressoParser(IntegrationTestBase):
     def setUp(self):
         super(TestEspressoParser, self).setUp()
-        self.parser = EspressoParser(work_dir=self.workDir, stdout_file=self.stdoutFile)
+        self.parser = EspressoLegacyParser(work_dir=self.workDir, stdout_file=self.stdoutFile)
 
     def tearDown(self):
         super(TestEspressoParser, self).setUp()
