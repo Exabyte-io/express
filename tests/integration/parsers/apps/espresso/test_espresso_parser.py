@@ -66,8 +66,15 @@ class TestEspressoParser(IntegrationTestBase):
         self.assertEqual(reference, result)
 
     @for_all_espresso
-    def test_final_realspace_lattice_Vectors(self, version, jobtype):
+    def test_final_realspace_lattice_vectors(self, version, jobtype):
         parser = self._get_parser(version, jobtype)
         reference = REFERENCE_VALUES[version][jobtype]["realspace_lattice"]
         result = parser.final_lattice_vectors()
         self.assertDeepAlmostEqual(expected=reference, actual=result, places=3)
+
+    @for_all_espresso
+    def test_final_reciprocal_lattice_vectors(self, version, jobtype):
+        parser = self._get_parser(version, jobtype)
+        reference = REFERENCE_VALUES[version][jobtype]["reciprocal_lattice"]
+        result = parser.xml_parser.final_lattice_vectors(reciprocal=True)
+        self.assertDeepAlmostEqual(expected=reference, actual=result)
