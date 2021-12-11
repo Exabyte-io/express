@@ -62,7 +62,7 @@ class Espresso640XMLParser(BaseXMLParser):
 
     def eigenvalues_at_kpoints(self):
 
-        # Determine if we have multiple spin spates
+        # Determine if we have multiple spin states
         bandstructure_node = self.traverse_xml(self.root, ("output", "band_structure"))
         if bandstructure_node.find("nbnd_up"):
             has_multiple_bands = True
