@@ -1,5 +1,7 @@
 from typing import List, Dict, Union
 
+import numpy as np
+
 from express.parsers.formats.xml import BaseXMLParser
 from express.parsers.settings import Constant
 
@@ -57,6 +59,58 @@ class Espresso640XMLParser(BaseXMLParser):
             nspin = 1
 
         return nspin
+
+    def eigenvalues_at_kpoints(self):
+
+        # Determine if we have multiple spin spates
+        bandstructure_node = self.traverse_xml(self.root, ("output", "band_structure"))
+        if bandstructure_node.find("nbnd_up"):
+            has_multiple_bands = True
+        else:
+            has_multiple_bands = False
+
+        kpoints = []
+        for ks_energy_node in bandstructure_node.findall("ks_energies"):
+            # Basic information about the kpoint
+            kpoint = {}
+            kpoint_node = ks_energy_node.find("k_point")
+            kpoint["kpoint"] = self.string_to_vec(kpoint_node.text) # Coordinates
+            kpoint["weight"] = float(kpoint.get("weight"))
+
+            # Extract eigenvalues
+            eigenvalue_text = kpoint_node.find("eigenvalues").text
+            occupation_text = kpoint_node.find("occupations").text
+            energies = [component * Constant.HARTREE for component in self.string_to_vec(eigenvalue_text)]
+            occupations = self.string_to_vec(occupation_text, dtype=int)
+
+            # Split into up/down spin if we need to
+            if has_multiple_bands:
+                nband_up = int(bandstructure_node.find("nbnd_up").text)
+                nbnd_down = int(bandstructure_node.find("nbnd_dwn").text)
+                eigenvalues_up = {
+                    "energies": energies[0:nband_up],
+                    "occupations": occupations[0:nband_up],
+                    "spin": 0.5,
+                }
+                eigenvalues_down = {
+                    "energies": energies[nband_up:-1],
+                    "occupations": occupations[nband_up:-1],
+                    "spin": -0.5,
+                }
+                eigenvalues = [eigenvalues_up, eigenvalues_down]
+            else:
+                eigenvalues = [{
+                    "energies": energies,
+                    "occupations": occupations,
+                    "spin": 0.5, # ToDo: Is this the value we expect for when there is only one spin?
+                }]
+            kpoint["eigenvalues"] = eigenvalues
+            kpoints.append(kpoint)
+        return kpoints
+
+
+
+
 
 
     def final_lattice_vectors(self, reciprocal=False) -> Dict[str, Dict[str, Union[float, List[float]]]]:
