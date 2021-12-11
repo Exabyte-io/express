@@ -78,3 +78,10 @@ class TestEspressoParser(IntegrationTestBase):
         reference = REFERENCE_VALUES[version][jobtype]["reciprocal_lattice"]
         result = parser.xml_parser.final_lattice_vectors(reciprocal=True)
         self.assertDeepAlmostEqual(expected=reference, actual=result)
+
+    @for_all_espresso
+    def test_nspin(self, version, jobtype):
+        parser = self._get_parser(version, jobtype)
+        reference = REFERENCE_VALUES[version][jobtype]["nspin"]
+        result = parser.nspins()
+        self.assertEqual(reference, result)
