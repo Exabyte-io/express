@@ -56,19 +56,19 @@ class Espresso640XMLParser(BaseXMLParser):
         vectors = {"alat": 1.0}
         result = {"vectors": vectors}
         if reciprocal:
-            cell_node = self.traverse_xml(self.root, ("output", "atomic_structure", "basis_set"))
+            cell_node = self.traverse_xml(self.root, ("output", "basis_set", "reciprocal_lattice"))
             scale_factor = 1.0
             tags = ("b1", "b2", "b3")
         else:
             cell_node = self.traverse_xml(self.root, ("output", "atomic_structure", "cell"))
             scale_factor = Constant.BOHR
             tags = ("a1", "a2", "a3")
+            result["units"] = "angstrom"
 
         for key, tag in zip(("a", "b", "c"), tags):
             vector = self.string_to_vec(cell_node.find(tag).text, dtype=float)
             vector = [component * scale_factor for component in vector]
             vectors[key] = vector
-            result["units"] = "angstrom"
 
         return result
 
