@@ -106,7 +106,7 @@ class Espresso640XMLParser(BaseXMLParser):
             eigenvalue_text = ks_energy_node.find("eigenvalues").text
             occupation_text = ks_energy_node.find("occupations").text
             energies = [component * Constant.HARTREE for component in string_to_vec(eigenvalue_text)]
-            occupations = string_to_vec(occupation_text, dtype=int)
+            occupations = string_to_vec(occupation_text, dtype=float)
 
             # Split into up/down spin if we need to
             # In the case of having multiple spins, the spin up states are listed before the spin down states, hence
