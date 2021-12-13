@@ -1,3 +1,37 @@
+applications:
+  espresso:
+    #    5.4.0:
+    #      fixture_dir: v540
+    #      runtypes:
+    #        - scf
+    #        - vc_relax
+    6.4.1:
+      base_dir: v641
+      runtypes:
+        - scf
+        - vc_relax
+    6.5.0:
+      base_dir: v650
+      runtypes:
+        - scf
+        - vc_relax
+    6.6.0:
+      base_dir: v660
+      runtypes:
+        - scf
+        - vc_relax
+    6.7.0:
+      base_dir: v670
+      runtypes:
+        - scf
+        - vc_relax
+    6.8.0:
+      base_dir: v680
+      runtypes:
+        - scf
+        - vc_relax
+
+
 # =================
 # Quantum Espresso
 # =================
