@@ -49,6 +49,26 @@ class TestEspressoParser(IntegrationTestBase):
         self.assertAlmostEqual(reference, result, places=2)
 
     @for_all_espresso
+    def test_nspin(self, version, runtype, test_config):
+        fixture_dir = test_config['base_dir']
+        parser = self._get_parser(fixture_dir, runtype)
+        reference = REFERENCE_VALUES[fixture_dir][runtype]["nspin"]
+        result = parser.nspins()
+        self.assertEqual(reference, result)
+
+    # eigenvalues_at_kpoints
+
+    # ibz_k_points
+
+    # dos
+
+    # convergence_electronic
+
+    # convergence_ionic
+
+    # stress_tensor
+
+    @for_all_espresso
     def test_pressure(self, version, runtype, test_config):
         fixture_dir = test_config['base_dir']
         parser = self._get_parser(fixture_dir, runtype)
@@ -72,10 +92,12 @@ class TestEspressoParser(IntegrationTestBase):
         result = parser.xml_parser.final_lattice_vectors(reciprocal=True)
         self.assertDeepAlmostEqual(expected=reference, actual=result)
 
-    @for_all_espresso
-    def test_nspin(self, version, runtype, test_config):
-        fixture_dir = test_config['base_dir']
-        parser = self._get_parser(fixture_dir, runtype)
-        reference = REFERENCE_VALUES[fixture_dir][runtype]["nspin"]
-        result = parser.nspins()
-        self.assertEqual(reference, result)
+    # total_force
+
+    # atomic_forces
+
+    # energy_contributions
+
+    # phonon_dos
+
+    # phonon_dispersion
