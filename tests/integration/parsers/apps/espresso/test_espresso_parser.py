@@ -19,6 +19,7 @@ RUN_TYPES = {
     "VC-Relax": "vc_relax",
 }
 
+
 class TestEspressoParser(IntegrationTestBase):
     def setUp(self):
         super().setUp()
@@ -61,25 +62,4 @@ class TestEspressoParser(IntegrationTestBase):
         parser = self._get_parser(version, jobtype)
         reference = REFERENCE_VALUES[version][jobtype]["total_force"]
         result = parser.total_force()
-        self.assertEqual(reference, result)
-
-    @for_all_espresso
-    def test_final_realspace_lattice_vectors(self, version, jobtype):
-        parser = self._get_parser(version, jobtype)
-        reference = REFERENCE_VALUES[version][jobtype]["realspace_lattice"]
-        result = parser.final_lattice_vectors()
-        self.assertDeepAlmostEqual(expected=reference, actual=result, places=3)
-
-    @for_all_espresso
-    def test_final_reciprocal_lattice_vectors(self, version, jobtype):
-        parser = self._get_parser(version, jobtype)
-        reference = REFERENCE_VALUES[version][jobtype]["reciprocal_lattice"]
-        result = parser.xml_parser.final_lattice_vectors(reciprocal=True)
-        self.assertDeepAlmostEqual(expected=reference, actual=result)
-
-    @for_all_espresso
-    def test_nspin(self, version, jobtype):
-        parser = self._get_parser(version, jobtype)
-        reference = REFERENCE_VALUES[version][jobtype]["nspin"]
-        result = parser.nspins()
         self.assertEqual(reference, result)
