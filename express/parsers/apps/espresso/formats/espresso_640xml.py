@@ -99,14 +99,14 @@ class Espresso640XMLParser(BaseXMLParser):
             # Basic information about the kpoint
             kpoint = {}
             kpoint_node = ks_energy_node.find("k_point")
-            kpoint["kpoint"] = self.string_to_vec(kpoint_node.text)  # Coordinates
+            kpoint["kpoint"] = string_to_vec(kpoint_node.text)  # Coordinates
             kpoint["weight"] = float(kpoint.get("weight"))
 
             # Extract eigenvalues
             eigenvalue_text = kpoint_node.find("eigenvalues").text
             occupation_text = kpoint_node.find("occupations").text
-            energies = [component * Constant.HARTREE for component in self.string_to_vec(eigenvalue_text)]
-            occupations = self.string_to_vec(occupation_text, dtype=int)
+            energies = [component * Constant.HARTREE for component in string_to_vec(eigenvalue_text)]
+            occupations = string_to_vec(occupation_text, dtype=int)
 
             # Split into up/down spin if we need to
             # In the case of having multiple spins, the spin up states are listed before the spin down states, hence
