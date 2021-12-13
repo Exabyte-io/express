@@ -100,7 +100,7 @@ class Espresso640XMLParser(BaseXMLParser):
             kpoint = {}
             kpoint_node = ks_energy_node.find("k_point")
             kpoint["kpoint"] = string_to_vec(kpoint_node.text)  # Coordinates
-            kpoint["weight"] = float(kpoint.get("weight"))
+            kpoint["weight"] = float(kpoint_node.get("weight"))
 
             # Extract eigenvalues
             eigenvalue_text = kpoint_node.find("eigenvalues").text
