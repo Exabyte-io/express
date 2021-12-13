@@ -16,10 +16,10 @@ def for_all_versions(version_map: dict, runtype_map: dict):
         Technically, this is a decoratory factory, which takes in a few arguments and returns a decorator.
 
     Args:
-        version_map (dict): Dictionary mapping version labels (keys) to version numbers (values). Keys are used to name
-                            the test in the test report. Values are passed to the test function.
-        runtype_map (dict): Dictioanry mapping runtype labels (keys) to version numbers (values). Keys are used to name
-                            the test in the test report. Values are passed to the test function.
+        version_map (dict): Dictionary mapping version labels (keys) to some version-specific data (values). Keys are
+                            used to name the test in the test report. Values are passed to the test function.
+        runtype_map (dict): Dictioanry mapping runtype labels (keys) to some runtype-specific data (values). Keys are
+                            used to name the test in the test report. Values are passed to the test function.
 
     Example:
         The below example uses this decorator as a way of passing in the location of fixture directories for the
