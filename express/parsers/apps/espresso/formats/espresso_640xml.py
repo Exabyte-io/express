@@ -1,6 +1,7 @@
 from typing import List, Dict, Union
 
-from express.parsers.formats.xml import BaseXMLParser, string_to_vec
+from express.parsers.formats.xml import BaseXMLParser
+from express.parsers.utils import string_to_vec
 from express.parsers.settings import Constant
 
 
