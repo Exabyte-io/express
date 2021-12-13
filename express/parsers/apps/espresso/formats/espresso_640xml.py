@@ -61,8 +61,32 @@ class Espresso640XMLParser(BaseXMLParser):
         return nspin
 
     def eigenvalues_at_kpoints(self):
+        """
+        Returns eigenvalues for all kpoints.
+
+        Returns:
+             list
+
+        Example:
+            [
+                {
+                    'kpoint': [-0.5, 0.5, 0.5],
+                    'weight': 9.5238095E-002,
+                    'eigenvalues': [
+                        {
+                            'energies': [-1.4498446E-001, ..., 4.6507387E-001],
+                            'occupations': [1, ... , 0],
+                            'spin': 0.5
+                        }
+                    ]
+                },
+                ...
+            ]
+        """
 
         # Determine if we have multiple spin states
+        # We're doing it this way to avoid coupling to the `self.nspins()` behavior. If there are up/down bands, then
+        # we know there are multiple spins. Otherwise, it only makes sense to treet it as having a single spin state.
         bandstructure_node = self.traverse_xml(self.root, ("output", "band_structure"))
         if bandstructure_node.find("nbnd_up"):
             has_multiple_bands = True
@@ -74,7 +98,7 @@ class Espresso640XMLParser(BaseXMLParser):
             # Basic information about the kpoint
             kpoint = {}
             kpoint_node = ks_energy_node.find("k_point")
-            kpoint["kpoint"] = self.string_to_vec(kpoint_node.text) # Coordinates
+            kpoint["kpoint"] = self.string_to_vec(kpoint_node.text)  # Coordinates
             kpoint["weight"] = float(kpoint.get("weight"))
 
             # Extract eigenvalues
@@ -84,6 +108,8 @@ class Espresso640XMLParser(BaseXMLParser):
             occupations = self.string_to_vec(occupation_text, dtype=int)
 
             # Split into up/down spin if we need to
+            # In the case of having multiple spins, the spin up states are listed before the spin down states, hence
+            # the list slicing.
             if has_multiple_bands:
                 nband_up = int(bandstructure_node.find("nbnd_up").text)
                 nbnd_down = int(bandstructure_node.find("nbnd_dwn").text)
@@ -102,16 +128,11 @@ class Espresso640XMLParser(BaseXMLParser):
                 eigenvalues = [{
                     "energies": energies,
                     "occupations": occupations,
-                    "spin": 0.5, # ToDo: Is this the value we expect for when there is only one spin?
+                    "spin": 0.5,  # ToDo: Is this the value we expect for when there is only one spin?
                 }]
             kpoint["eigenvalues"] = eigenvalues
             kpoints.append(kpoint)
         return kpoints
-
-
-
-
-
 
     def final_lattice_vectors(self, reciprocal=False) -> Dict[str, Dict[str, Union[float, List[float]]]]:
         """
