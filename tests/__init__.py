@@ -4,7 +4,45 @@ import yaml
 import unittest
 import numpy as np
 
+
 def for_all_versions(version_map: dict, runtype_map: dict):
+    """
+    Given a dict of versions and runtypes, this decorator will automatically create subtests, allowing the same test to
+    be run over multiple versions of the same software, and even multiple runtypes. This is useful, for example, if we
+    want to make sure that all versions of a particular DFT software correctly extract the fermi energy, regardless of
+    if it's an SCF optimization, geometry relaxation, molecular dynamics run, etc.
+
+    Note:
+        Technically, this is a decoratory factory, which takes in a few arguments and returns a decorator.
+
+    Args:
+        version_map (dict): Dictionary mapping version labels (keys) to some version-specific data (values). Keys are
+                            used to name the test in the test report. Values are passed to the test function.
+        runtype_map (dict): Dictioanry mapping runtype labels (keys) to some runtype-specific data (values). Keys are
+                            used to name the test in the test report. Values are passed to the test function.
+
+    Example:
+        The below example uses this decorator as a way of passing in the location of fixture directories for the
+        different versions and runtypes. In principle, anything (or Nonetype) could have been passed here. This is
+        very helpful, for example, if we want the test to behave differently for different versions or runtypes.
+
+        >>> version_map = {"1.0": "v1.0_fixture_dir", "1.5": "v1.5_fixture_dir"}
+        >>> runtype_map = {"scf": "scf_test_fixture_dir", "phonons": "phonon_test_fixture_dir"}
+        >>> class MyTestClass(unittest.TestCase)
+        ...     @for_all_versions(version_map, runtype_map)
+        ...     def test_some_property(self, version, runtype):
+        ...         ... # Test stuff here based on the version and runtype
+
+        This will result in subtests being created under `test_some_property` with the following labels:
+            - version_number="1.0", job_type="scf"
+            - version_number="1.0", job_type="phonons"
+            - version_number="1.5", job_type="scf"
+            - version_number="1.5", job_type="phonons"
+
+    Returns:
+        Callable: A decorator function.
+    """
+
     def decorator(test_function):
         @functools.wraps(test_function)
         def inner(self):
@@ -12,8 +50,11 @@ def for_all_versions(version_map: dict, runtype_map: dict):
                 for job_test_label, jobtype in runtype_map.items():
                     with self.subTest(version_number=version_test_label, job_type=job_test_label):
                         test_function(self, version, jobtype)
+
         return inner
+
     return decorator
+
 
 class TestBase(unittest.TestCase):
     """
@@ -26,7 +67,6 @@ class TestBase(unittest.TestCase):
 
     def tearDown(self):
         super(TestBase, self).tearDown()
-
 
     def getManifest(self):
         """

@@ -24,7 +24,7 @@ class EspressoLegacyParser(BaseParser, IonicDataMixin, ElectronicDataMixin, Reci
         self.work_dir = self.kwargs["work_dir"]
         self.stdout_file = self.kwargs["stdout_file"]
         self.txt_parser = EspressoTXTParser(self.work_dir)
-        self.xml_data_file = settings.XML_DATA_FILE
+        self.xml_data_file_name = settings.XML_DATA_FILE
         self._xml_parser = None
 
     @property
@@ -43,11 +43,15 @@ class EspressoLegacyParser(BaseParser, IonicDataMixin, ElectronicDataMixin, Reci
             str
         """
         is_sternheimer_gw = self._is_sternheimer_gw_calculation()
+        is_not_sternheimer_gw = not is_sternheimer_gw
+
         for root, dirs, files in os.walk(self.work_dir, followlinks=True):
-            for file_ in [f for f in files if self.xml_data_file == f]:
-                file_path = os.path.join(root, file_)
-                if not is_sternheimer_gw or (is_sternheimer_gw and settings.STERNHEIMER_GW0_DIR_PATTERN in file_path):
+            for file in filter(lambda filename: filename == self.xml_data_file_name, files):
+                file_path = os.path.join(root, file)
+                has_found_sternheimer_gw_dir = settings.STERNHEIMER_GW0_DIR_PATTERN in file_path
+                if is_not_sternheimer_gw or (is_sternheimer_gw and has_found_sternheimer_gw_dir):
                     return file_path
+
 
     def total_energy(self) -> float:
         """
@@ -349,7 +353,7 @@ class EspressoParser(EspressoLegacyParser):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.xml_data_file = "data-file-schema.xml"
+        self.xml_data_file_name = "data-file-schema.xml"
 
     def _is_sternheimer_gw_calculation(self):
         """
