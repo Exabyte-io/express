@@ -1,6 +1,6 @@
 from typing import List, Dict, Union
 
-from express.parsers.formats.xml import BaseXMLParser
+from express.parsers.formats.xml import BaseXMLParser, string_to_vec
 from express.parsers.settings import Constant
 
 
@@ -66,7 +66,7 @@ class Espresso640XMLParser(BaseXMLParser):
             result["units"] = "angstrom"
 
         for key, tag in zip(("a", "b", "c"), tags):
-            vector = self.string_to_vec(cell_node.find(tag).text, dtype=float)
+            vector = string_to_vec(cell_node.find(tag).text, dtype=float)
             vector = [component * scale_factor for component in vector]
             vectors[key] = vector
 
@@ -96,7 +96,7 @@ class Espresso640XMLParser(BaseXMLParser):
         for atom in atoms:
             atom_id = float(atom.get("index"))
             symbol = atom.get("name")
-            coords = self.string_to_vec(atom.text, dtype=float)
+            coords = string_to_vec(atom.text, dtype=float)
             coords = [component * Constant.BOHR for component in coords]
 
             result["elements"].append({"id": atom_id, "value": symbol})

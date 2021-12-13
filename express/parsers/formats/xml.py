@@ -3,6 +3,27 @@ import xml.etree.ElementTree as ET
 from typing import Sequence, Optional, Any
 
 
+def string_to_vec(string: str,
+                  dtype: type = float,
+                  container: type = list,
+                  sep: Optional[str] = None) -> Sequence[Any]:
+    """
+    Given a string and some delimiter, will create a vector with the specified type.
+
+    Args:
+        string (str): The string to convert, for example "6.022e23 2.718 3.14159"
+        dtype (type): The type to convert into. Must support conversion from a string. Defaults to `float`
+        container (type): The container that will store the vector (e.g. a list, a numpy array, etc). Assumes an
+                          interface where the container's constructor can take a list as an argument.
+        sep (Optional[str]): Delimiter for the the string. Defaults to whitespace.
+    Returns:
+        List[Any]: A list that has the correct type, for example [6.022e23, 2.718, 3.14159]
+    """
+    result = [dtype(component) for component in string.split(sep)]
+    result = container(result)
+    return result
+
+
 class BaseXMLParser(object):
     """
     Base XML parser class.
@@ -32,24 +53,3 @@ class BaseXMLParser(object):
         for step in pathway:
             node = node.find(step)
         return node
-
-    @staticmethod
-    def string_to_vec(string: str,
-                      dtype: type = float,
-                      container: type = list,
-                      sep: Optional[str] = None) -> Sequence[Any]:
-        """
-        Given a string and some delimiter, will create a vector with the specified type.
-
-        Args:
-            string (str): The string to convert, for example "6.022e23 2.718 3.14159"
-            dtype (type): The type to convert into. Must support conversion from a string. Defaults to `float`
-            container (type): The container that will store the vector (e.g. a list, a numpy array, etc). Assumes an
-                              interface where the container's constructor can take a list as an argument.
-            sep (Optional[str]): Delimiter for the the string. Defaults to whitespace.
-        Returns:
-            List[Any]: A list that has the correct type, for example [6.022e23, 2.718, 3.14159]
-        """
-        result = [dtype(component) for component in string.split(sep)]
-        result = container(result)
-        return result
