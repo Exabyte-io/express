@@ -103,8 +103,8 @@ class Espresso640XMLParser(BaseXMLParser):
             kpoint["weight"] = float(kpoint_node.get("weight"))
 
             # Extract eigenvalues
-            eigenvalue_text = kpoint_node.find("eigenvalues").text
-            occupation_text = kpoint_node.find("occupations").text
+            eigenvalue_text = ks_energy_node.find("eigenvalues").text
+            occupation_text = ks_energy_node.find("occupations").text
             energies = [component * Constant.HARTREE for component in string_to_vec(eigenvalue_text)]
             occupations = string_to_vec(occupation_text, dtype=int)
 
