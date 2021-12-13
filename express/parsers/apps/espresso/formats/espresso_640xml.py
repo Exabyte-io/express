@@ -34,6 +34,32 @@ class Espresso640XMLParser(BaseXMLParser):
         result = float(fermi_node.text) * Constant.HARTREE
         return result
 
+    def nspins(self):
+        """
+        Extracts the number of number of spin components.
+        Unfortunately, due to changes in the XML we can no longer directly get this. We can only indirectly infer it
+        based on what the values of LSDA and Noncolin are.
+
+        The alternative is to assume that we have an input file and write a parser for the input file, since that will
+        have the actual number of spins specified.
+
+        Returns:
+             int
+        """
+        spin_input_node = self.traverse_xml(self.root, ("input", "spin"))
+        is_lsda = spin_input_node.find("lsda").text == "true"
+        is_noncolin = spin_input_node.find("noncolin") == "true"
+
+        if is_noncolin:
+            nspin = 4
+        elif is_lsda:
+            nspin = 2
+        else:
+            nspin = 1
+
+        return nspin
+
+
     def final_lattice_vectors(self, reciprocal=False) -> Dict[str, Dict[str, Union[float, List[float]]]]:
         """
         Extracts lattice.
