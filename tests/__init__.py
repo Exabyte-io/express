@@ -30,8 +30,8 @@ def for_all_versions(version_map: dict, runtype_map: dict):
         >>> runtype_map = {"scf": "scf_test_fixture_dir", "phonons": "phonon_test_fixture_dir"}
         >>> class MyTestClass(unittest.TestCase)
         ...     @for_all_versions(version_map, runtype_map)
-        ...     def test_some_property(self, versions, runtypes):
-        ...         ... # Test stuff here
+        ...     def test_some_property(self, version, runtype):
+        ...         ... # Test stuff here based on the version and runtype
 
         This will result in subtests being created under `test_some_property` with the following labels:
             - version_number="1.0", job_type="scf"
