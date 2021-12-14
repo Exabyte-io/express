@@ -78,7 +78,13 @@ class TestEspressoParser(IntegrationTestBase):
             first_kpoint_result = result[0]
             self.assertDeepAlmostEqual(reference, first_kpoint_result)
 
-    # ibz_k_points
+    @for_all_espresso
+    def test_ibz_k_points(self, runtype, test_config):
+        test_property = "ibz_k_points"
+        parser, reference = self._get_parser_and_reference(runtype, test_config, test_property)
+        if reference != "NOT_TESTED":
+            result = parser.ibz_k_points()
+            self.assertDeepAlmostEqual(reference, result)
 
     # dos
 
