@@ -35,6 +35,7 @@ class TestEspressoParser(IntegrationTestBase):
         return parser
 
     for_all_espresso = for_all_versions(espresso_configs)
+    legacy_only = for_all_versions({"5.4.0": espresso_configs["5.4.0"]})
 
     def _get_parser_and_reference(self, runtype, test_config, target_property):
         fixture_dir = test_config['base_dir']
@@ -66,7 +67,7 @@ class TestEspressoParser(IntegrationTestBase):
             result = parser.nspins()
             self.assertEqual(reference, result)
 
-    @for_all_espresso
+    @legacy_only
     def test_eigenvalues_at_kpoints(self, runtype, test_config):
         test_property = "eigenvalues_at_kpoints"
         parser, reference = self._get_parser_and_reference(runtype, test_config, test_property)
@@ -76,7 +77,7 @@ class TestEspressoParser(IntegrationTestBase):
             first_kpoint_result = result[0]
             self.assertDeepAlmostEqual(reference, first_kpoint_result)
 
-    @for_all_espresso
+    @legacy_only
     def test_ibz_k_points(self, runtype, test_config):
         test_property = "ibz_k_points"
         parser, reference = self._get_parser_and_reference(runtype, test_config, test_property)
@@ -84,7 +85,7 @@ class TestEspressoParser(IntegrationTestBase):
             result = parser.ibz_k_points()
             self.assertDeepAlmostEqual(reference, result)
 
-    @for_all_espresso
+    @legacy_only
     def test_convergence_electronic(self, runtype, test_config):
         test_property = "convergence_electronic"
         parser, reference = self._get_parser_and_reference(runtype, test_config, test_property)
@@ -92,7 +93,7 @@ class TestEspressoParser(IntegrationTestBase):
             result = parser.convergence_electronic()
             self.assertDeepAlmostEqual(reference, result)
 
-    @for_all_espresso
+    @legacy_only
     def test_convergence_ionic(self, runtype, test_config):
         test_property = "convergence_ionic"
         parser, reference = self._get_parser_and_reference(runtype, test_config, test_property)
@@ -100,7 +101,7 @@ class TestEspressoParser(IntegrationTestBase):
             result = parser.convergence_ionic()
             self.assertDeepAlmostEqual(reference, result)
 
-    @for_all_espresso
+    @legacy_only
     def test_stress_tensor(self, runtype, test_config):
         test_property = "stress_tensor"
         parser, reference = self._get_parser_and_reference(runtype, test_config, test_property)
@@ -140,7 +141,7 @@ class TestEspressoParser(IntegrationTestBase):
             result = parser.total_force()
             self.assertEqual(reference, result)
 
-    @for_all_espresso
+    @legacy_only
     def test_atomic_forces(self, runtype, test_config):
         test_property = "atomic_forces"
         parser, reference = self._get_parser_and_reference(runtype, test_config, test_property)
@@ -148,7 +149,7 @@ class TestEspressoParser(IntegrationTestBase):
             result = parser.atomic_forces()
             self.assertDeepAlmostEqual(reference, result)
 
-    @for_all_espresso
+    @legacy_only
     def test_total_energy_contributions(self, runtype, test_config):
         test_property = "total_energy_contributions"
         parser, reference = self._get_parser_and_reference(runtype, test_config, test_property)
