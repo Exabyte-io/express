@@ -7,6 +7,7 @@ from tests import __file__ as base_test_file_path
 from tests.integration import IntegrationTestBase
 
 REFERENCE_VALUES = tests.fixtures.espresso.references.REFERENCE_VALUES
+LEGACY_REFERENCE_VALUES = tests.fixtures.espresso.references.LEGACY_REFERENCE_VALUES
 
 manifest_path = os.path.join(os.path.dirname(base_test_file_path), "manifest.yaml")
 with open(manifest_path, "r") as fp:
@@ -41,9 +42,6 @@ class TestEspressoParser(IntegrationTestBase):
         reference = REFERENCE_VALUES[fixture_dir][runtype][target_property]
         return parser, reference
 
-    # ===============================================================
-    # Basic functionality that all versions should be able to handle
-    # ===============================================================
     @for_all_espresso
     def test_total_energy(self, runtype, test_config):
         test_property = "total_energy"
@@ -85,8 +83,6 @@ class TestEspressoParser(IntegrationTestBase):
         if reference != "NOT_TESTED":
             result = parser.ibz_k_points()
             self.assertDeepAlmostEqual(reference, result)
-
-    # dos
 
     @for_all_espresso
     def test_convergence_electronic(self, runtype, test_config):
@@ -152,13 +148,30 @@ class TestEspressoParser(IntegrationTestBase):
             result = parser.atomic_forces()
             self.assertDeepAlmostEqual(reference, result)
 
-
     @for_all_espresso
     def test_total_energy_contributions(self, runtype, test_config):
         test_property = "total_energy_contributions"
         parser, reference = self._get_parser_and_reference(runtype, test_config, test_property)
         if reference != "NOT_TESTED":
             result = parser.total_energy_contributions()
+            self.assertDeepAlmostEqual(reference, result)
+
+    # =============================================
+    # Legacy test cases that had specific fixtures
+    # =============================================
+
+    def test_legacy_dos(self):
+        with self.subTest(version="5.4.0"):
+            test_property = "dos"
+            fixture_dir = "v540"
+            runtype = "dos"
+            reference = LEGACY_REFERENCE_VALUES[test_property]
+
+            work_dir = os.path.join(self.fixtures_dirname, fixture_dir, runtype)
+            stdout_file = os.path.join(work_dir, "pw-projwfc.out")
+            parser = EspressoLegacyParser(work_dir=work_dir, stdout_file=stdout_file)
+            result = parser.dos()
+
             self.assertDeepAlmostEqual(reference, result)
 
     # phonon_dos

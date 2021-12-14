@@ -38,10 +38,6 @@ applications:
 # Don't add more here. Work should focus on removing as many of these as possible, and implementing them in the
 # above format.
 # =================
-test_espresso_dos:
-  workDir: fixtures/espresso/test-002
-  stdoutFile: fixtures/espresso/test-002/projwfc.out
-
 test_espresso_phonon_dos:
   workDir: fixtures/espresso/test-003
   stdoutFile: fixtures/espresso/test-003/phonon_dos.out
