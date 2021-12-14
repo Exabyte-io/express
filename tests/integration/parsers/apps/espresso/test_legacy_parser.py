@@ -14,9 +14,6 @@ class TestEspressoLegacyParser(IntegrationTestBase):
     def test_espresso_dos(self):
         self.assertDeepAlmostEqual(self.parser.dos(), DOS, places=2)
 
-    def test_espresso_convergence_electronic(self):
-        self.assertDeepAlmostEqual(self.parser.convergence_electronic(), CONVERGENCE_ELECTRONIC, places=2)
-
     def test_espresso_convergence_ionic(self):
         self.assertDeepAlmostEqual(self.parser.convergence_ionic(), CONVERGENCE_IONIC, places=2)
 

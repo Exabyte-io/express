@@ -42,10 +42,6 @@ test_espresso_dos:
   workDir: fixtures/espresso/test-002
   stdoutFile: fixtures/espresso/test-002/projwfc.out
 
-test_espresso_convergence_electronic:
-  workDir: fixtures/espresso/test-001
-  stdoutFile: fixtures/espresso/test-001/pw-scf.out
-
 test_espresso_convergence_ionic:
   workDir: fixtures/espresso/test-001
   stdoutFile: fixtures/espresso/test-001/pw-scf.out

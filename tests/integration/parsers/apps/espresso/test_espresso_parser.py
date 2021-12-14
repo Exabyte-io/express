@@ -88,7 +88,13 @@ class TestEspressoParser(IntegrationTestBase):
 
     # dos
 
-    # convergence_electronic
+    @for_all_espresso
+    def test_convergence_electronic(self, runtype, test_config):
+        test_property = "convergence_electronic"
+        parser, reference = self._get_parser_and_reference(runtype, test_config, test_property)
+        if reference != "NOT_TESTED":
+            result = parser.convergence_electronic()
+            self.assertDeepAlmostEqual(reference, result)
 
     # convergence_ionic
 
