@@ -96,7 +96,13 @@ class TestEspressoParser(IntegrationTestBase):
             result = parser.convergence_electronic()
             self.assertDeepAlmostEqual(reference, result)
 
-    # convergence_ionic
+    @for_all_espresso
+    def test_convergence_ionic(self, runtype, test_config):
+        test_property = "convergence_ionic"
+        parser, reference = self._get_parser_and_reference(runtype, test_config, test_property)
+        if reference != "NOT_TESTED":
+            result = parser.convergence_ionic()
+            self.assertDeepAlmostEqual(reference, result)
 
     @for_all_espresso
     def test_stress_tensor(self, runtype, test_config):
