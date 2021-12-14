@@ -33,6 +33,10 @@ applications:
 
 # =================
 # Quantum Espresso
+#
+# These tests are old, legacy tests that don't utilize the above format for defining tests.
+# Don't add more here. Work should focus on removing as many of these as possible, and implementing them in the
+# above format.
 # =================
 test_espresso_eigenvalues_at_kpoints:
   workDir: fixtures/espresso/test-001
