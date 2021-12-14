@@ -34,18 +34,6 @@ applications:
 # =================
 # Quantum Espresso
 # =================
-test_espresso_total_energy:
-  workDir: fixtures/espresso/test-001
-  stdoutFile: fixtures/espresso/test-001/pw-scf.out
-
-test_espresso_fermi_energy:
-  workDir: fixtures/espresso/test-001
-  stdoutFile: fixtures/espresso/test-001/pw-scf.out
-
-test_espresso_nspins:
-  workDir: fixtures/espresso/test-001
-  stdoutFile: fixtures/espresso/test-001/pw-scf.out
-
 test_espresso_eigenvalues_at_kpoints:
   workDir: fixtures/espresso/test-001
   stdoutFile: fixtures/espresso/test-001/pw-scf.out
@@ -67,10 +55,6 @@ test_espresso_convergence_ionic:
   stdoutFile: fixtures/espresso/test-001/pw-scf.out
 
 test_espresso_stress_tensor:
-  workDir: fixtures/espresso/test-001
-  stdoutFile: fixtures/espresso/test-001/pw-scf.out
-
-test_espresso_pressure:
   workDir: fixtures/espresso/test-001
   stdoutFile: fixtures/espresso/test-001/pw-scf.out
 
