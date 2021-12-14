@@ -11,9 +11,6 @@ class TestEspressoLegacyParser(IntegrationTestBase):
     def tearDown(self):
         super(TestEspressoLegacyParser, self).setUp()
 
-    def test_espresso_eigenvalues_at_kpoints(self):
-        self.assertDeepAlmostEqual(self.parser.eigenvalues_at_kpoints()[0], EIGENVALUES_AT_KPOINTS_ZERO, places=2)
-
     def test_espresso_ibz_k_points(self):
         self.assertDeepAlmostEqual(self.parser.ibz_k_points(), IBZ_KPOINTS, places=2)
 

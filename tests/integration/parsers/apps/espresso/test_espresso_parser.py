@@ -68,7 +68,15 @@ class TestEspressoParser(IntegrationTestBase):
             result = parser.nspins()
             self.assertEqual(reference, result)
 
-    # eigenvalues_at_kpoints
+    @for_all_espresso
+    def test_eigenvalues_at_kpoints(self, runtype, test_config):
+        test_property = "eigenvalues_at_kpoints"
+        parser, reference = self._get_parser_and_reference(runtype, test_config, test_property)
+        if reference != "NOT_TESTED":
+            result = parser.eigenvalues_at_kpoints()
+            # This test is a special case, because only the first eigenvalue was historically checked
+            first_kpoint_result = result[0]
+            self.assertDeepAlmostEqual(reference, first_kpoint_result)
 
     # ibz_k_points
 
