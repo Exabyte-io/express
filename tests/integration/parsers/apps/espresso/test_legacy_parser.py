@@ -11,8 +11,5 @@ class TestEspressoLegacyParser(IntegrationTestBase):
     def tearDown(self):
         super(TestEspressoLegacyParser, self).setUp()
 
-    def test_espresso_phonon_dos(self):
-        self.assertDeepAlmostEqual(self.parser.phonon_dos(), PHONON_DOS, places=2)
-
     def test_espresso_phonon_dispersion(self):
         self.assertDeepAlmostEqual(self.parser.phonon_dispersions(), PHONON_DISPERSIONS, places=2)

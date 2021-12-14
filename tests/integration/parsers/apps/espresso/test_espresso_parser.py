@@ -162,18 +162,26 @@ class TestEspressoParser(IntegrationTestBase):
 
     def test_legacy_dos(self):
         with self.subTest(version="5.4.0"):
-            test_property = "dos"
-            fixture_dir = "v540"
-            runtype = "dos"
-            reference = LEGACY_REFERENCE_VALUES[test_property]
+            version = "v540"
+            reference = LEGACY_REFERENCE_VALUES["dos"]
 
-            work_dir = os.path.join(self.fixtures_dirname, fixture_dir, runtype)
+            work_dir = os.path.join(self.fixtures_dirname, version, "dos")
             stdout_file = os.path.join(work_dir, "pw-projwfc.out")
             parser = EspressoLegacyParser(work_dir=work_dir, stdout_file=stdout_file)
             result = parser.dos()
 
             self.assertDeepAlmostEqual(reference, result)
 
-    # phonon_dos
+    def test_legacy_phonon_dos(self):
+        with self.subTest(version="5.4.0"):
+            version = "v540"
+            reference = LEGACY_REFERENCE_VALUES["phonon_dos"]
+
+            work_dir = os.path.join(self.fixtures_dirname, version, "phonon_dos")
+            stdout_file = os.path.join(work_dir, "phonon_dos.out")
+            parser = EspressoLegacyParser(work_dir=work_dir, stdout_file=stdout_file)
+            result = parser.phonon_dos()
+
+            self.assertDeepAlmostEqual(reference, result)
 
     # phonon_dispersion
