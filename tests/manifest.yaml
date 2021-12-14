@@ -130,9 +130,9 @@ test_structure_vasp_lattice_bravais:
   structurePath: fixtures/vasp/test-001/POSCAR
 
 test_structure_espresso_basis:
-  structurePath: fixtures/espresso/test-001/pw-scf.in
+  structurePath: fixtures/espresso/v540/scf/pw-scf.in
   structureFormat: espresso-in
 
 test_structure_espresso_lattice_bravais:
-  structurePath: fixtures/espresso/test-001/pw-scf.in
+  structurePath: fixtures/espresso/v540/scf/pw-scf.in
   structureFormat: espresso-in
