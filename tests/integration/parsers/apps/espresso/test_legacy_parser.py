@@ -11,15 +11,6 @@ class TestEspressoLegacyParser(IntegrationTestBase):
     def tearDown(self):
         super(TestEspressoLegacyParser, self).setUp()
 
-    def test_espresso_total_energy(self):
-        self.assertAlmostEqual(self.parser.total_energy(), TOTAL_ENERGY, places=2)
-
-    def test_espresso_fermi_energy(self):
-        self.assertAlmostEqual(self.parser.fermi_energy(), FERMI_ENERGY, places=2)
-
-    def test_espresso_nspins(self):
-        self.assertEqual(self.parser.nspins(), NSPIN)
-
     def test_espresso_eigenvalues_at_kpoints(self):
         self.assertDeepAlmostEqual(self.parser.eigenvalues_at_kpoints()[0], EIGENVALUES_AT_KPOINTS_ZERO, places=2)
 
@@ -37,9 +28,6 @@ class TestEspressoLegacyParser(IntegrationTestBase):
 
     def test_espresso_stress_tensor(self):
         self.assertDeepAlmostEqual(self.parser.stress_tensor(), STRESS_TENSOR, places=2)
-
-    def test_espresso_pressure(self):
-        self.assertAlmostEqual(self.parser.pressure(), PRESSURE, places=2)
 
     def test_espresso_total_force(self):
         self.assertAlmostEqual(self.parser.total_force(), TOTAL_FORCE, places=2)
