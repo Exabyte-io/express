@@ -11,7 +11,7 @@ def for_all_versions(test_configurations: dict):
             for test_label, test_config in test_configurations.items():
                 for job_runtype in test_config["runtypes"]:
                     with self.subTest(version_number=test_label, job_type=job_runtype):
-                        test_function(self, test_label, job_runtype, test_config)
+                        test_function(self, job_runtype, test_config)
         return inner
     return decorator
 

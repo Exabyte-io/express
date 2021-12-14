@@ -13,6 +13,7 @@ with open(manifest_path, "r") as fp:
     test_yaml = yaml.load(fp)
 espresso_configs = test_yaml['applications']['espresso']
 
+
 class TestEspressoParser(IntegrationTestBase):
     def setUp(self):
         super().setUp()
@@ -44,16 +45,15 @@ class TestEspressoParser(IntegrationTestBase):
     # Basic functionality that all versions should be able to handle
     # ===============================================================
     @for_all_espresso
-    def test_total_energy(self, version, runtype, test_config):
+    def test_total_energy(self, runtype, test_config):
         test_property = "total_energy"
         parser, reference = self._get_parser_and_reference(runtype, test_config, test_property)
         if reference != "NOT_TESTED":
             result = parser.total_energy()
             self.assertAlmostEqual(reference, result, places=2)
 
-
     @for_all_espresso
-    def test_fermi_energy(self, version, runtype, test_config):
+    def test_fermi_energy(self, runtype, test_config):
         test_property = "fermi_energy"
         parser, reference = self._get_parser_and_reference(runtype, test_config, test_property)
         if reference != "NOT_TESTED":
@@ -61,7 +61,7 @@ class TestEspressoParser(IntegrationTestBase):
             self.assertAlmostEqual(reference, result, places=2)
 
     @for_all_espresso
-    def test_nspin(self, version, runtype, test_config):
+    def test_nspin(self, runtype, test_config):
         test_property = "nspin"
         parser, reference = self._get_parser_and_reference(runtype, test_config, test_property)
         if reference != "NOT_TESTED":
@@ -81,7 +81,7 @@ class TestEspressoParser(IntegrationTestBase):
     # stress_tensor
 
     @for_all_espresso
-    def test_pressure(self, version, runtype, test_config):
+    def test_pressure(self, runtype, test_config):
         test_property = "pressure"
         parser, reference = self._get_parser_and_reference(runtype, test_config, test_property)
         if reference != "NOT_TESTED":
@@ -89,7 +89,7 @@ class TestEspressoParser(IntegrationTestBase):
             self.assertEqual(reference, result)
 
     @for_all_espresso
-    def test_final_realspace_lattice_vectors(self, version, runtype, test_config):
+    def test_final_realspace_lattice_vectors(self, runtype, test_config):
         test_property = "realspace_lattice"
         parser, reference = self._get_parser_and_reference(runtype, test_config, test_property)
         if reference != "NOT_TESTED":
@@ -97,7 +97,7 @@ class TestEspressoParser(IntegrationTestBase):
             self.assertDeepAlmostEqual(expected=reference, actual=result, places=3)
 
     @for_all_espresso
-    def test_final_reciprocal_lattice_vectors(self, version, runtype, test_config):
+    def test_final_reciprocal_lattice_vectors(self, runtype, test_config):
         test_property = "reciprocal_lattice"
         parser, reference = self._get_parser_and_reference(runtype, test_config, test_property)
         if reference != "NOT_TESTED":
@@ -105,7 +105,7 @@ class TestEspressoParser(IntegrationTestBase):
             self.assertDeepAlmostEqual(expected=reference, actual=result)
 
     @for_all_espresso
-    def test_total_force(self, version, runtype, test_config):
+    def test_total_force(self, runtype, test_config):
         test_property = "total_force"
         parser, reference = self._get_parser_and_reference(runtype, test_config, test_property)
         if reference != "NOT_TESTED":
