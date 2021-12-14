@@ -27,16 +27,12 @@ class TestBase(unittest.TestCase):
     def tearDown(self):
         super(TestBase, self).tearDown()
 
-
-    def getManifest(self):
-        """
-        Returns test's manifest.
-
-        Returns:
-            dict
-        """
-        with open(os.path.join(self.rootDir, "manifest.yaml")) as f:
-            return yaml.load(f.read(), Loader=yaml.FullLoader)[self._testMethodName]
+    @property
+    @functools.lru_cache()
+    def manifest(self):
+        with open(os.path.join(self.rootDir, "manifest.yaml")) as fp:
+            manifest = yaml.load(fp, Loader=yaml.FullLoader)
+        return manifest
 
     def assertDeepAlmostEqual(self, expected, actual, *args, **kwargs):
         """

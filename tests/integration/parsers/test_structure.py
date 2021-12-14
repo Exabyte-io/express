@@ -15,7 +15,7 @@ class TestStructureParser(IntegrationTestBase):
 
     @property
     def parser(self):
-        manifest = self.getManifest()
+        manifest = self.manifest[self._testMethodName]
         with open(os.path.join(self.rootDir, manifest["structurePath"])) as f:
             kwargs = {
                 "structure_string": f.read(),

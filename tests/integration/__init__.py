@@ -1,3 +1,4 @@
+import functools
 import os
 
 from tests import TestBase
@@ -16,8 +17,8 @@ class IntegrationTestBase(TestBase):
 
     @property
     def workDir(self):
-        return os.path.join(self.rootDir, self.getManifest()["workDir"])
+        return os.path.join(self.rootDir, self.manifest[self._testMethodName]["workDir"])
 
     @property
     def stdoutFile(self):
-        return os.path.join(self.rootDir, self.getManifest()["stdoutFile"])
+        return os.path.join(self.rootDir, self.manifest[self._testMethodName]["stdoutFile"])

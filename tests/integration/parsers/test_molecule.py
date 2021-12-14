@@ -15,7 +15,7 @@ class TestMoleculeParser(IntegrationTestBase):
 
     @property
     def parser(self):
-        manifest = self.getManifest()
+        manifest = self.manifest[self._testMethodName]
         with open(os.path.join(self.rootDir, manifest["structurePath"])) as f:
             kwargs = {
                 "cell_type": manifest.get("cell_type", "original"),
