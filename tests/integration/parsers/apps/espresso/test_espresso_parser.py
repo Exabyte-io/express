@@ -2,7 +2,7 @@ import os
 import yaml
 from express.parsers.apps.espresso.parser import EspressoParser, EspressoLegacyParser
 import tests.fixtures.espresso.references
-from tests import for_all_versions, TestBase
+from tests import for_all_versions
 from tests import __file__ as base_test_file_path
 from tests.integration import IntegrationTestBase
 
@@ -184,4 +184,14 @@ class TestEspressoParser(IntegrationTestBase):
 
             self.assertDeepAlmostEqual(reference, result)
 
-    # phonon_dispersion
+    def test_legacy_phonon_dispersion(self):
+        with self.subTest(version="5.4.0"):
+            version = "v540"
+            reference = LEGACY_REFERENCE_VALUES["phonon_dispersions"]
+
+            work_dir = os.path.join(self.fixtures_dirname, version, "phonon_dos")
+            stdout_file = os.path.join(work_dir, "normal_modes.out")
+            parser = EspressoLegacyParser(work_dir=work_dir, stdout_file=stdout_file)
+            result = parser.phonon_dispersions()
+
+            self.assertDeepAlmostEqual(reference, result)

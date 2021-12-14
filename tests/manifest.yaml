@@ -30,18 +30,6 @@ applications:
         - scf
         - vc_relax
 
-
-# =================
-# Quantum Espresso
-#
-# These tests are old, legacy tests that don't utilize the above format for defining tests.
-# Don't add more here. Work should focus on removing as many of these as possible, and implementing them in the
-# above format.
-# =================
-test_espresso_phonon_dispersion:
-  workDir: fixtures/espresso/test-003
-  stdoutFile: fixtures/espresso/test-003/normal_modes.out
-
 # =====
 # VASP
 # =====
