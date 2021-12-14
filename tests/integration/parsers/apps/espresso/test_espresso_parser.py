@@ -112,7 +112,14 @@ class TestEspressoParser(IntegrationTestBase):
             result = parser.total_force()
             self.assertEqual(reference, result)
 
-    # atomic_forces
+    @for_all_espresso
+    def test_atomic_forces(self, runtype, test_config):
+        test_property = "atomic_forces"
+        parser, reference = self._get_parser_and_reference(runtype, test_config, test_property)
+        if reference != "NOT_TESTED":
+            result = parser.atomic_forces()
+            self.assertDeepAlmostEqual(reference, result)
+
 
     # energy_contributions
 
