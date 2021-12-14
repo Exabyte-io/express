@@ -19,6 +19,7 @@ class TestBase(unittest.TestCase):
     """
     Base class for express tests.
     """
+    application = "None"
 
     def setUp(self):
         super(TestBase, self).setUp()

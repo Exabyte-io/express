@@ -4,6 +4,8 @@ from express.parsers.apps.vasp.parser import VaspParser
 
 
 class TestVaspParser(IntegrationTestBase):
+    application = "vasp"
+
     def setUp(self):
         super(TestVaspParser, self).setUp()
         self.parser = VaspParser(work_dir=self.workDir, stdout_file=self.stdoutFile)
