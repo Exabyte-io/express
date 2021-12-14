@@ -153,7 +153,13 @@ class TestEspressoParser(IntegrationTestBase):
             self.assertDeepAlmostEqual(reference, result)
 
 
-    # energy_contributions
+    @for_all_espresso
+    def test_total_energy_contributions(self, runtype, test_config):
+        test_property = "total_energy_contributions"
+        parser, reference = self._get_parser_and_reference(runtype, test_config, test_property)
+        if reference != "NOT_TESTED":
+            result = parser.total_energy_contributions()
+            self.assertDeepAlmostEqual(reference, result)
 
     # phonon_dos
 
