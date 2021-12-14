@@ -26,9 +26,6 @@ class TestEspressoLegacyParser(IntegrationTestBase):
     def test_espresso_convergence_ionic(self):
         self.assertDeepAlmostEqual(self.parser.convergence_ionic(), CONVERGENCE_IONIC, places=2)
 
-    def test_espresso_stress_tensor(self):
-        self.assertDeepAlmostEqual(self.parser.stress_tensor(), STRESS_TENSOR, places=2)
-
     def test_espresso_total_energy_contributions(self):
         self.assertDeepAlmostEqual(self.parser.total_energy_contributions(), TOTAL_ENERGY_CONTRIBUTION, places=2)
 

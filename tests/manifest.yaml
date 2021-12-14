@@ -58,10 +58,6 @@ test_espresso_convergence_ionic:
   workDir: fixtures/espresso/test-001
   stdoutFile: fixtures/espresso/test-001/pw-scf.out
 
-test_espresso_stress_tensor:
-  workDir: fixtures/espresso/test-001
-  stdoutFile: fixtures/espresso/test-001/pw-scf.out
-
 test_espresso_total_energy_contributions:
   workDir: fixtures/espresso/test-001
   stdoutFile: fixtures/espresso/test-001/pw-scf.out
