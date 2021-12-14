@@ -1,6 +1,6 @@
 import os
 import yaml
-from express.parsers.apps.espresso.parser import EspressoParser
+from express.parsers.apps.espresso.parser import EspressoParser, EspressoLegacyParser
 import tests.fixtures.espresso.references
 from tests import for_all_versions, TestBase
 from tests import __file__ as base_test_file_path
@@ -23,8 +23,13 @@ class TestEspressoParser(IntegrationTestBase):
 
     def _get_parser(self, version, runtype):
         work_dir = os.path.join(self.fixtures_dirname, version, runtype)
-        stdout_file = os.path.join(work_dir, "pw.out")
-        parser = EspressoParser(work_dir=work_dir, stdout_file=stdout_file)
+        if version == "v540":
+            parser_cls = EspressoLegacyParser
+            stdout_file = os.path.join(work_dir, f"pw-{runtype}.out")
+        else:
+            parser_cls = EspressoParser
+            stdout_file = os.path.join(work_dir, "pw.out")
+        parser = parser_cls(work_dir=work_dir, stdout_file=stdout_file)
         return parser
 
     for_all_espresso = for_all_versions(espresso_configs)
@@ -37,24 +42,27 @@ class TestEspressoParser(IntegrationTestBase):
         fixture_dir = test_config['base_dir']
         parser = self._get_parser(fixture_dir, runtype)
         reference = REFERENCE_VALUES[fixture_dir][runtype]["total_energy"]
-        result = parser.total_energy()
-        self.assertAlmostEqual(reference, result, places=2)
+        if reference != "NOT_TESTED":
+            result = parser.total_energy()
+            self.assertAlmostEqual(reference, result, places=2)
 
     @for_all_espresso
     def test_fermi_energy(self, version, runtype, test_config):
         fixture_dir = test_config['base_dir']
         parser = self._get_parser(fixture_dir, runtype)
         reference = REFERENCE_VALUES[fixture_dir][runtype]["fermi_energy"]
-        result = parser.fermi_energy()
-        self.assertAlmostEqual(reference, result, places=2)
+        if reference != "NOT_TESTED":
+            result = parser.fermi_energy()
+            self.assertAlmostEqual(reference, result, places=2)
 
     @for_all_espresso
     def test_nspin(self, version, runtype, test_config):
         fixture_dir = test_config['base_dir']
         parser = self._get_parser(fixture_dir, runtype)
         reference = REFERENCE_VALUES[fixture_dir][runtype]["nspin"]
-        result = parser.nspins()
-        self.assertEqual(reference, result)
+        if reference != "NOT_TESTED":
+            result = parser.nspins()
+            self.assertEqual(reference, result)
 
     # eigenvalues_at_kpoints
 
@@ -73,24 +81,27 @@ class TestEspressoParser(IntegrationTestBase):
         fixture_dir = test_config['base_dir']
         parser = self._get_parser(fixture_dir, runtype)
         reference = REFERENCE_VALUES[fixture_dir][runtype]["pressure"]
-        result = parser.pressure()
-        self.assertEqual(reference, result)
+        if reference != "NOT_TESTED":
+            result = parser.pressure()
+            self.assertEqual(reference, result)
 
     @for_all_espresso
     def test_final_realspace_lattice_vectors(self, version, runtype, test_config):
         fixture_dir = test_config['base_dir']
         parser = self._get_parser(fixture_dir, runtype)
         reference = REFERENCE_VALUES[fixture_dir][runtype]["realspace_lattice"]
-        result = parser.final_lattice_vectors()
-        self.assertDeepAlmostEqual(expected=reference, actual=result, places=3)
+        if reference != "NOT_TESTED":
+            result = parser.final_lattice_vectors()
+            self.assertDeepAlmostEqual(expected=reference, actual=result, places=3)
 
     @for_all_espresso
     def test_final_reciprocal_lattice_vectors(self, version, runtype, test_config):
         fixture_dir = test_config['base_dir']
         parser = self._get_parser(fixture_dir, runtype)
         reference = REFERENCE_VALUES[fixture_dir][runtype]["reciprocal_lattice"]
-        result = parser.xml_parser.final_lattice_vectors(reciprocal=True)
-        self.assertDeepAlmostEqual(expected=reference, actual=result)
+        if reference != "NOT_TESTED":
+            result = parser.xml_parser.final_lattice_vectors(reciprocal=True)
+            self.assertDeepAlmostEqual(expected=reference, actual=result)
 
     # total_force
 

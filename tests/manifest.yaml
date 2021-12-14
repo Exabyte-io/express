@@ -1,10 +1,9 @@
 applications:
   espresso:
-    #    5.4.0:
-    #      fixture_dir: v540
-    #      runtypes:
-    #        - scf
-    #        - vc_relax
+    5.4.0:
+      base_dir: v540
+      runtypes:
+        - scf
     6.4.1:
       base_dir: v641
       runtypes:
