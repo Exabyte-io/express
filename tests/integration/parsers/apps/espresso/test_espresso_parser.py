@@ -34,32 +34,36 @@ class TestEspressoParser(IntegrationTestBase):
 
     for_all_espresso = for_all_versions(espresso_configs)
 
+    def _get_parser_and_reference(self, runtype, test_config, target_property):
+        fixture_dir = test_config['base_dir']
+        parser = self._get_parser(fixture_dir, runtype)
+        reference = REFERENCE_VALUES[fixture_dir][runtype][target_property]
+        return parser, reference
+
     # ===============================================================
     # Basic functionality that all versions should be able to handle
     # ===============================================================
     @for_all_espresso
     def test_total_energy(self, version, runtype, test_config):
-        fixture_dir = test_config['base_dir']
-        parser = self._get_parser(fixture_dir, runtype)
-        reference = REFERENCE_VALUES[fixture_dir][runtype]["total_energy"]
+        test_property = "total_energy"
+        parser, reference = self._get_parser_and_reference(runtype, test_config, test_property)
         if reference != "NOT_TESTED":
             result = parser.total_energy()
             self.assertAlmostEqual(reference, result, places=2)
 
+
     @for_all_espresso
     def test_fermi_energy(self, version, runtype, test_config):
-        fixture_dir = test_config['base_dir']
-        parser = self._get_parser(fixture_dir, runtype)
-        reference = REFERENCE_VALUES[fixture_dir][runtype]["fermi_energy"]
+        test_property = "fermi_energy"
+        parser, reference = self._get_parser_and_reference(runtype, test_config, test_property)
         if reference != "NOT_TESTED":
             result = parser.fermi_energy()
             self.assertAlmostEqual(reference, result, places=2)
 
     @for_all_espresso
     def test_nspin(self, version, runtype, test_config):
-        fixture_dir = test_config['base_dir']
-        parser = self._get_parser(fixture_dir, runtype)
-        reference = REFERENCE_VALUES[fixture_dir][runtype]["nspin"]
+        test_property = "nspin"
+        parser, reference = self._get_parser_and_reference(runtype, test_config, test_property)
         if reference != "NOT_TESTED":
             result = parser.nspins()
             self.assertEqual(reference, result)
@@ -78,27 +82,24 @@ class TestEspressoParser(IntegrationTestBase):
 
     @for_all_espresso
     def test_pressure(self, version, runtype, test_config):
-        fixture_dir = test_config['base_dir']
-        parser = self._get_parser(fixture_dir, runtype)
-        reference = REFERENCE_VALUES[fixture_dir][runtype]["pressure"]
+        test_property = "pressure"
+        parser, reference = self._get_parser_and_reference(runtype, test_config, test_property)
         if reference != "NOT_TESTED":
             result = parser.pressure()
             self.assertEqual(reference, result)
 
     @for_all_espresso
     def test_final_realspace_lattice_vectors(self, version, runtype, test_config):
-        fixture_dir = test_config['base_dir']
-        parser = self._get_parser(fixture_dir, runtype)
-        reference = REFERENCE_VALUES[fixture_dir][runtype]["realspace_lattice"]
+        test_property = "realspace_lattice"
+        parser, reference = self._get_parser_and_reference(runtype, test_config, test_property)
         if reference != "NOT_TESTED":
             result = parser.final_lattice_vectors()
             self.assertDeepAlmostEqual(expected=reference, actual=result, places=3)
 
     @for_all_espresso
     def test_final_reciprocal_lattice_vectors(self, version, runtype, test_config):
-        fixture_dir = test_config['base_dir']
-        parser = self._get_parser(fixture_dir, runtype)
-        reference = REFERENCE_VALUES[fixture_dir][runtype]["reciprocal_lattice"]
+        test_property = "reciprocal_lattice"
+        parser, reference = self._get_parser_and_reference(runtype, test_config, test_property)
         if reference != "NOT_TESTED":
             result = parser.xml_parser.final_lattice_vectors(reciprocal=True)
             self.assertDeepAlmostEqual(expected=reference, actual=result)
