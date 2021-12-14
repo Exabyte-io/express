@@ -29,9 +29,6 @@ class TestEspressoLegacyParser(IntegrationTestBase):
     def test_espresso_stress_tensor(self):
         self.assertDeepAlmostEqual(self.parser.stress_tensor(), STRESS_TENSOR, places=2)
 
-    def test_espresso_total_force(self):
-        self.assertAlmostEqual(self.parser.total_force(), TOTAL_FORCE, places=2)
-
     def test_espresso_atomic_forces(self):
         self.assertDeepAlmostEqual(self.parser.atomic_forces(), ATOMIC_FORCES, places=2)
 

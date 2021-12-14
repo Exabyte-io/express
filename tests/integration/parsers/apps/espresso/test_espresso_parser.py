@@ -104,7 +104,13 @@ class TestEspressoParser(IntegrationTestBase):
             result = parser.xml_parser.final_lattice_vectors(reciprocal=True)
             self.assertDeepAlmostEqual(expected=reference, actual=result)
 
-    # total_force
+    @for_all_espresso
+    def test_total_force(self, version, runtype, test_config):
+        test_property = "total_force"
+        parser, reference = self._get_parser_and_reference(runtype, test_config, test_property)
+        if reference != "NOT_TESTED":
+            result = parser.total_force()
+            self.assertEqual(reference, result)
 
     # atomic_forces
 
