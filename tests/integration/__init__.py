@@ -1,4 +1,3 @@
-import functools
 import os
 
 from tests import TestBase
