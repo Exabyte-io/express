@@ -39,179 +39,179 @@ tests:
 
 
 applications: # fixtures/
-  - espresso: # fixtures/espresso/
-      - 5.4.0: # fixtures/espresso/5.4.0/
-          - path: pw.x/pw_scf # fixtures/espresso/5.4.0/pw.x/pw_scf/
-            filename: pw-scf.out
-            tests:
-              # Array elements are a string or object
-              - name: total_energy # TODO: Remove this when we make the final PR, since it's redundant information
-                function: assertAlmostEqual
-              - fermi_energy
-              - nspins
-              - eigenvalues_at_kpoints
-              - ibz_k_points
-              - convergence_electronic
-              - convergence_ionic
-              - stress_tensor
-              - pressure
-              - total_force
-              - atomic_forces
-              - total_energy_contributions
-          - path: projwfc.x/dos
-            filename: projwfc.out
-            tests:
-              - dos
-          - path: matdyn.x/phonon_dos
-            filename: phonon_dos.out
-            tests:
-              - phonon_dos
-          - path: matdyn.x/phonons
-            filename: normal_modes.out
-            tests:
-              - phonon_dispersion
-      - 6.4.1:
-          - path: pw.x/pw_scf
-            filename: pw.out
-            tests:
-              - total_energy
-              - fermi_energy
-              - nspins
-              - pressure
-              - total_force
-              - realspace_lattice
-              - reciprocal_lattice
-          - path: pw.x/pw_vc_relax
-            filename: pw.out
-            tests:
-              - total_energy
-              - fermi_energy
-              - nspins
-              - pressure
-              - total_force
-              - realspace_lattice
-              - reciprocal_lattice
-      - 6.5.0:
-          - path: pw.x/pw_scf
-            filename: pw.out
-            tests:
-              - total_energy
-              - fermi_energy
-              - nspins
-              - pressure
-              - total_force
-              - realspace_lattice
-              - reciprocal_lattice
-          - path: pw.x/pw_vc_relax
-            filename: pw.out
-            tests:
-              - total_energy
-              - fermi_energy
-              - nspins
-              - pressure
-              - total_force
-              - realspace_lattice
-              - reciprocal_lattice
-      - 6.6.0:
-          - path: pw.x/pw_scf
-            filename: pw.out
-            tests:
-              - total_energy
-              - fermi_energy
-              - nspins
-              - pressure
-              - total_force
-              - realspace_lattice
-              - reciprocal_lattice
-          - path: pw.x/pw_vc_relax
-            filename: pw.out
-            tests:
-              - total_energy
-              - fermi_energy
-              - nspins
-              - pressure
-              - total_force
-              - realspace_lattice
-              - reciprocal_lattice
-      - 6.7.0:
-          - path: pw.x/pw_scf
-            filename: pw.out
-            tests:
-              - total_energy
-              - fermi_energy
-              - nspins
-              - pressure
-              - total_force
-              - realspace_lattice
-              - reciprocal_lattice
-          - path: pw.x/pw_vc_relax
-            filename: pw.out
-            tests:
-              - total_energy
-              - fermi_energy
-              - nspins
-              - pressure
-              - total_force
-              - realspace_lattice
-              - reciprocal_lattice
-      - 6.8.0:
-          - path: pw.x/pw_scf
-            filename: pw.out
-            tests:
-              - total_energy
-              - fermi_energy
-              - nspins
-              - pressure
-              - total_force
-              - realspace_lattice
-              - reciprocal_lattice
-          - path: pw.x/pw_vc_relax
-            filename: pw.out
-            tests:
-              - total_energy
-              - fermi_energy
-              - nspins
-              - pressure
-              - total_force
-              - realspace_lattice
-              - reciprocal_lattice
+  espresso: # fixtures/espresso/
+    - 5.4.0: # fixtures/espresso/5.4.0/
+        - path: pw.x/pw_scf # fixtures/espresso/5.4.0/pw.x/pw_scf/
+          filename: pw-scf.out
+          tests:
+            # Array elements are a string or object
+            - name: total_energy # TODO: Remove this when we make the final PR, since it's redundant information
+              function: assertAlmostEqual
+            - fermi_energy
+            - nspins
+            - eigenvalues_at_kpoints
+            - ibz_k_points
+            - convergence_electronic
+            - convergence_ionic
+            - stress_tensor
+            - pressure
+            - total_force
+            - atomic_forces
+            - total_energy_contributions
+        - path: projwfc.x/dos
+          filename: projwfc.out
+          tests:
+            - dos
+        - path: matdyn.x/phonon_dos
+          filename: phonon_dos.out
+          tests:
+            - phonon_dos
+        - path: matdyn.x/phonons
+          filename: normal_modes.out
+          tests:
+            - phonon_dispersion
+    - 6.4.1:
+        - path: pw.x/pw_scf
+          filename: pw.out
+          tests:
+            - total_energy
+            - fermi_energy
+            - nspins
+            - pressure
+            - total_force
+            - realspace_lattice
+            - reciprocal_lattice
+        - path: pw.x/pw_vc_relax
+          filename: pw.out
+          tests:
+            - total_energy
+            - fermi_energy
+            - nspins
+            - pressure
+            - total_force
+            - realspace_lattice
+            - reciprocal_lattice
+    - 6.5.0:
+        - path: pw.x/pw_scf
+          filename: pw.out
+          tests:
+            - total_energy
+            - fermi_energy
+            - nspins
+            - pressure
+            - total_force
+            - realspace_lattice
+            - reciprocal_lattice
+        - path: pw.x/pw_vc_relax
+          filename: pw.out
+          tests:
+            - total_energy
+            - fermi_energy
+            - nspins
+            - pressure
+            - total_force
+            - realspace_lattice
+            - reciprocal_lattice
+    - 6.6.0:
+        - path: pw.x/pw_scf
+          filename: pw.out
+          tests:
+            - total_energy
+            - fermi_energy
+            - nspins
+            - pressure
+            - total_force
+            - realspace_lattice
+            - reciprocal_lattice
+        - path: pw.x/pw_vc_relax
+          filename: pw.out
+          tests:
+            - total_energy
+            - fermi_energy
+            - nspins
+            - pressure
+            - total_force
+            - realspace_lattice
+            - reciprocal_lattice
+    - 6.7.0:
+        - path: pw.x/pw_scf
+          filename: pw.out
+          tests:
+            - total_energy
+            - fermi_energy
+            - nspins
+            - pressure
+            - total_force
+            - realspace_lattice
+            - reciprocal_lattice
+        - path: pw.x/pw_vc_relax
+          filename: pw.out
+          tests:
+            - total_energy
+            - fermi_energy
+            - nspins
+            - pressure
+            - total_force
+            - realspace_lattice
+            - reciprocal_lattice
+    - 6.8.0:
+        - path: pw.x/pw_scf
+          filename: pw.out
+          tests:
+            - total_energy
+            - fermi_energy
+            - nspins
+            - pressure
+            - total_force
+            - realspace_lattice
+            - reciprocal_lattice
+        - path: pw.x/pw_vc_relax
+          filename: pw.out
+          tests:
+            - total_energy
+            - fermi_energy
+            - nspins
+            - pressure
+            - total_force
+            - realspace_lattice
+            - reciprocal_lattice
 
-  - vasp:
-      - 5.3.5:
-          - path: geom_relax
-            filename: OUTCAR
-            tests:
-              - total_energy
-              - fermi_energy
-              - nspins
-              - eigenvalues_at_koints
-              - ibz_k_points
-              - convergence_electronic
-              - convergence_ionic
-              - stress_tensor
-              - pressure
-              - total_force
-              - atomic_forces
-              - total_energy_contributions
-          - path: geom_relax_restart
-            filename: OUTCAR
-            tests:
-              - dos
-          - path: scf_hse06
-            filename: OUTCAR
-            tests:
-          - path: noncollinear_scf
-            filename: OUTCAR
-            tests:
-              - magnetic_moments
+  vasp:
+    - 5.3.5:
+        - path: geom_relax
+          filename: OUTCAR
+          tests:
+            - total_energy
+            - fermi_energy
+            - nspins
+            - eigenvalues_at_koints
+            - ibz_k_points
+            - convergence_electronic
+            - convergence_ionic
+            - stress_tensor
+            - pressure
+            - total_force
+            - atomic_forces
+            - total_energy_contributions
+        - path: geom_relax_restart
+          filename: OUTCAR
+          tests:
+            - dos
+        - path: scf_hse06
+          filename: OUTCAR
+          tests: []
+        - path: noncollinear_scf
+          filename: OUTCAR
+          tests:
+            - magnetic_moments
 
-  - nwchem:
-      - 7.0.0:
-          - path: scf
-            filename: nwchem-total_energy.log
-            tets:
-              - total_energy
-              - total_energy_contributions
+  nwchem:
+    - 7.0.0:
+        - path: scf
+          filename: nwchem-total_energy.log
+          tests:
+            - total_energy
+            - total_energy_contributions
 
 
 # =================================================================================================================
