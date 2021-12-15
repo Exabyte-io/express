@@ -1,10 +1,15 @@
 import os
+import unittest
+
 import yaml
 from express.parsers.apps.espresso.parser import EspressoParser, EspressoLegacyParser
 import tests.fixtures.espresso.references
 from tests import for_all_versions, TestBase
 from tests import __file__ as base_test_file_path
 from tests.integration import IntegrationTestBase
+
+raise unittest.SkipTest
+...
 
 REFERENCE_VALUES = tests.fixtures.espresso.references.REFERENCE_VALUES
 
