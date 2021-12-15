@@ -6,7 +6,6 @@ from express.parsers.molecule import MoleculeParser
 
 
 class TestMoleculeParser(IntegrationTestBase):
-    application = "molecule_parser"
 
     def setUp(self):
         super(IntegrationTestBase, self).setUp()

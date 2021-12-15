@@ -6,7 +6,6 @@ from express.parsers.structure import StructureParser
 
 
 class TestStructureParser(IntegrationTestBase):
-    application = "structure_parser"
 
     def setUp(self):
         super(IntegrationTestBase, self).setUp()

@@ -4,8 +4,6 @@ from express.parsers.apps.espresso.parser import EspressoLegacyParser
 
 
 class TestEspressoLegacyParser(IntegrationTestBase):
-    application = "espresso"
-
     def setUp(self):
         super(TestEspressoLegacyParser, self).setUp()
         self.parser = EspressoLegacyParser(work_dir=self.workDir, stdout_file=self.stdoutFile)

@@ -4,8 +4,6 @@ from express.parsers.apps.nwchem.parser import NwchemParser
 
 
 class TestNwchemParser(IntegrationTestBase):
-    application = "nwchem"
-
     def setUp(self):
         super(TestNwchemParser, self).setUp()
         self.parser = NwchemParser(work_dir=self.workDir, stdout_file=self.stdoutFile)
