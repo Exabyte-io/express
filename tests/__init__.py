@@ -15,6 +15,13 @@ def for_all_versions(test_configurations: dict):
         return inner
     return decorator
 
+@functools.lru_cache(maxsize=1)
+def getTestManifest():
+    rootDir = os.path.dirname(__file__)
+    with open(os.path.join(rootDir, "manifest.yaml")) as fp:
+        manifest = yaml.load(fp, Loader=yaml.FullLoader)
+    return manifest
+
 class TestBase(unittest.TestCase):
     """
     Base class for express tests.
@@ -30,11 +37,9 @@ class TestBase(unittest.TestCase):
         super(TestBase, self).tearDown()
 
     @property
-    @functools.lru_cache()
     def manifest(self):
-        with open(os.path.join(self.rootDir, "manifest.yaml")) as fp:
-            manifest = yaml.load(fp, Loader=yaml.FullLoader)
-        return manifest
+        return getTestManifest()
+
 
     def assertDeepAlmostEqual(self, expected, actual, *args, **kwargs):
         """
