@@ -1,177 +1,181 @@
-applications:
-  espresso:
-    5.4.0:
-      base_dir: v540
-      runtypes:
-        - scf
-    6.4.1:
-      base_dir: v641
-      runtypes:
-        - scf
-        - vc_relax
-    6.5.0:
-      base_dir: v650
-      runtypes:
-        - scf
-        - vc_relax
-    6.6.0:
-      base_dir: v660
-      runtypes:
-        - scf
-        - vc_relax
-    6.7.0:
-      base_dir: v670
-      runtypes:
-        - scf
-        - vc_relax
-    6.8.0:
-      base_dir: v680
-      runtypes:
-        - scf
-        - vc_relax
+applications: # fixtures/
+  - espresso: # fixtures/espresso/
+      - 5.4.0: # fixtures/espresso/5.4.0/
+          - path: pw.x/pw_scf # fixtures/espresso/5.4.0/pw.x/pw_scf/
+            filename: pw-scf.out
+            tests:
+              - total_energy
+              - fermi_energy
+              - nspins
+              - eigenvalues_at_kpoints
+              - ibz_k_points
+              - convergence_electronic
+              - convergence_ionic
+              - stress_tensor
+              - pressure
+              - total_force
+              - atomic_forces
+              - total_energy_contributions
+          - path: projwfc.x/dos
+            filename: projwfc.out
+            tests:
+              - dos
+          - path: matdyn.x/phonon_dos
+            filename: phonon_dos.out
+            tests:
+              - phonon_dos
+          - path: matdyn.x/phonons
+            filename: normal_modes.out
+            tests:
+              - phonon_dispersion
+      - 6.4.1:
+          - path: pw.x/pw_scf
+            filename: pw.out
+            tests:
+              - total_energy
+              - fermi_energy
+              - nspins
+              - pressure
+              - total_force
+              - realspace_lattice
+              - reciprocal_lattice
+          - path: pw.x/pw_vc_relax
+            filename: pw.out
+            tests:
+              - total_energy
+              - fermi_energy
+              - nspins
+              - pressure
+              - total_force
+              - realspace_lattice
+              - reciprocal_lattice
+      - 6.5.0:
+          - path: pw.x/pw_scf
+            filename: pw.out
+            tests:
+              - total_energy
+              - fermi_energy
+              - nspins
+              - pressure
+              - total_force
+              - realspace_lattice
+              - reciprocal_lattice
+          - path: pw.x/pw_vc_relax
+            filename: pw.out
+            tests:
+              - total_energy
+              - fermi_energy
+              - nspins
+              - pressure
+              - total_force
+              - realspace_lattice
+              - reciprocal_lattice
+      - 6.6.0:
+          - path: pw.x/pw_scf
+            filename: pw.out
+            tests:
+              - total_energy
+              - fermi_energy
+              - nspins
+              - pressure
+              - total_force
+              - realspace_lattice
+              - reciprocal_lattice
+          - path: pw.x/pw_vc_relax
+            filename: pw.out
+            tests:
+              - total_energy
+              - fermi_energy
+              - nspins
+              - pressure
+              - total_force
+              - realspace_lattice
+              - reciprocal_lattice
+      - 6.7.0:
+          - path: pw.x/pw_scf
+            filename: pw.out
+            tests:
+              - total_energy
+              - fermi_energy
+              - nspins
+              - pressure
+              - total_force
+              - realspace_lattice
+              - reciprocal_lattice
+          - path: pw.x/pw_vc_relax
+            filename: pw.out
+            tests:
+              - total_energy
+              - fermi_energy
+              - nspins
+              - pressure
+              - total_force
+              - realspace_lattice
+              - reciprocal_lattice
+      - 6.8.0:
+          - path: pw.x/pw_scf
+            filename: pw.out
+            tests:
+              - total_energy
+              - fermi_energy
+              - nspins
+              - pressure
+              - total_force
+              - realspace_lattice
+              - reciprocal_lattice
+          - path: pw.x/pw_vc_relax
+            filename: pw.out
+            tests:
+              - total_energy
+              - fermi_energy
+              - nspins
+              - pressure
+              - total_force
+              - realspace_lattice
+              - reciprocal_lattice
+
+  - vasp:
+      - 5.3.5:
+          - path: geom_relax
+            filename: OUTCAR
+            tests:
+              - total_energy
+              - fermi_energy
+              - nspins
+              - eigenvalues_at_koints
+              - ibz_k_points
+              - convergence_electronic
+              - convergence_ionic
+              - stress_tensor
+              - pressure
+              - total_force
+              - atomic_forces
+              - total_energy_contributions
+          - path: geom_relax_restart
+            filename: OUTCAR
+            tests:
+              - dos
+          - path: scf_hse06
+            filename: OUTCAR
+            tests:
+          - path: noncollinear_scf
+            filename: OUTCAR
+            tests:
+              - magnetic_moments
+
+  - nwchem:
+      - 7.0.0:
+          - path: scf
+            filename: nwchem-total_energy.log
+            tets:
+              - total_energy
+              - total_energy_contributions
 
 
-# =================
-# Quantum Espresso
-#
-# These tests are old, legacy tests that don't utilize the above format for defining tests.
-# Don't add more here. Work should focus on removing as many of these as possible, and implementing them in the
-# above format.
-# =================
-test_espresso_total_energy:
-  workDir: fixtures/espresso/test-001
-  stdoutFile: fixtures/espresso/test-001/pw-scf.out
-
-test_espresso_fermi_energy:
-  workDir: fixtures/espresso/test-001
-  stdoutFile: fixtures/espresso/test-001/pw-scf.out
-
-test_espresso_nspins:
-  workDir: fixtures/espresso/test-001
-  stdoutFile: fixtures/espresso/test-001/pw-scf.out
-
-test_espresso_eigenvalues_at_kpoints:
-  workDir: fixtures/espresso/test-001
-  stdoutFile: fixtures/espresso/test-001/pw-scf.out
-
-test_espresso_ibz_k_points:
-  workDir: fixtures/espresso/test-001
-  stdoutFile: fixtures/espresso/test-001/pw-scf.out
-
-test_espresso_dos:
-  workDir: fixtures/espresso/test-002
-  stdoutFile: fixtures/espresso/test-002/projwfc.out
-
-test_espresso_convergence_electronic:
-  workDir: fixtures/espresso/test-001
-  stdoutFile: fixtures/espresso/test-001/pw-scf.out
-
-test_espresso_convergence_ionic:
-  workDir: fixtures/espresso/test-001
-  stdoutFile: fixtures/espresso/test-001/pw-scf.out
-
-test_espresso_stress_tensor:
-  workDir: fixtures/espresso/test-001
-  stdoutFile: fixtures/espresso/test-001/pw-scf.out
-
-test_espresso_pressure:
-  workDir: fixtures/espresso/test-001
-  stdoutFile: fixtures/espresso/test-001/pw-scf.out
-
-test_espresso_total_force:
-  workDir: fixtures/espresso/test-001
-  stdoutFile: fixtures/espresso/test-001/pw-scf.out
-
-test_espresso_atomic_forces:
-  workDir: fixtures/espresso/test-001
-  stdoutFile: fixtures/espresso/test-001/pw-scf.out
-
-test_espresso_total_energy_contributions:
-  workDir: fixtures/espresso/test-001
-  stdoutFile: fixtures/espresso/test-001/pw-scf.out
-
-test_espresso_phonon_dos:
-  workDir: fixtures/espresso/test-003
-  stdoutFile: fixtures/espresso/test-003/phonon_dos.out
-
-test_espresso_phonon_dispersion:
-  workDir: fixtures/espresso/test-003
-  stdoutFile: fixtures/espresso/test-003/normal_modes.out
-
-# =====
-# VASP
-# =====
-
-test_vasp_total_energy:
-  workDir: fixtures/vasp/test-001
-  stdoutFile: fixtures/vasp/test-001/vasp.out
-
-test_vasp_fermi_energy:
-  workDir: fixtures/vasp/test-001
-  stdoutFile: fixtures/vasp/test-001/vasp.out
-
-test_vasp_nspins:
-  workDir: fixtures/vasp/test-001
-  stdoutFile: fixtures/vasp/test-001/vasp.out
-
-test_vasp_eigenvalues_at_kpoints:
-  workDir: fixtures/vasp/test-001
-  stdoutFile: fixtures/vasp/test-001/vasp.out
-
-test_vasp_ibz_k_points:
-  workDir: fixtures/vasp/test-001
-  stdoutFile: fixtures/vasp/test-001/vasp.out
-
-test_vasp_dos:
-  workDir: fixtures/vasp/test-002
-  stdoutFile: fixtures/vasp/test-001/chgcar.out
-
-test_vasp_convergence_electronic:
-  workDir: fixtures/vasp/test-001
-  stdoutFile: fixtures/vasp/test-001/vasp.out
-
-test_vasp_convergence_ionic:
-  workDir: fixtures/vasp/test-001
-  stdoutFile: fixtures/vasp/test-001/vasp.out
-
-test_vasp_stress_tensor:
-  workDir: fixtures/vasp/test-001
-  stdoutFile: fixtures/vasp/test-001/vasp.out
-
-test_vasp_pressure:
-  workDir: fixtures/vasp/test-001
-  stdoutFile: fixtures/vasp/test-001/vasp.out
-
-test_vasp_total_force:
-  workDir: fixtures/vasp/test-001
-  stdoutFile: fixtures/vasp/test-001/vasp.out
-
-test_vasp_atomic_forces:
-  workDir: fixtures/vasp/test-001
-  stdoutFile: fixtures/vasp/test-001/vasp.out
-
-test_vasp_total_energy_contributions:
-  workDir: fixtures/vasp/test-001
-  stdoutFile: fixtures/vasp/test-001/vasp.out
-
-test_vasp_magnetic_moments:
-  workDir: fixtures/vasp/test-004
-  stdoutFile: fixtures/vasp/test-004/vasp.out
-
-# =======
-# NWChem
-# =======
-test_nwchem_total_energy:
-  workDir: fixtures/nwchem/test-001
-  stdoutFile: fixtures/nwchem/test-001/nwchem-total-energy.log
-
-test_nwchem_total_energy_contributions:
-  workDir: fixtures/nwchem/test-001
-  stdoutFile: fixtures/nwchem/test-001/nwchem-total-energy.log
-
-# ==============
+# =================================================================================================================
 # Miscellaneous
-# ==============
+# These are tests that don't test a particular application, instead testing things like chemical structure parsing
+# =================================================================================================================
 test_molecule_inchi:
   structurePath: fixtures/structural/test-001/POSCAR
 
