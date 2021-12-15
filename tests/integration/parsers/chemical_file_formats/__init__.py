@@ -1,5 +1,5 @@
 from tests.integration import IntegrationTestBase
 
 
-class ApplicationTestsBase(IntegrationTestBase):
+class ChemicalFileFormatTestBase(IntegrationTestBase):
     ...

@@ -1,17 +1,17 @@
 import os
 
 from tests.fixtures.data import SI
-from tests.integration import IntegrationTestBase
 from express.parsers.structure import StructureParser
+from tests.integration.parsers.chemical_file_formats import ChemicalFileFormatTestBase
 
 
-class TestStructureParser(IntegrationTestBase):
+class TestStructureParser(ChemicalFileFormatTestBase):
 
     def setUp(self):
-        super(IntegrationTestBase, self).setUp()
+        super().setUp()
 
     def tearDown(self):
-        super(IntegrationTestBase, self).setUp()
+        super().setUp()
 
     @property
     def parser(self):
