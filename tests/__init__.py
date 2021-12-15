@@ -19,10 +19,12 @@ class TestBase(unittest.TestCase):
     """
     Base class for express tests.
     """
+    @property
+    def rootDir(self):
+        return os.path.dirname(__file__)
 
     def setUp(self):
         super(TestBase, self).setUp()
-        self.rootDir = os.path.dirname(__file__)
 
     def tearDown(self):
         super(TestBase, self).tearDown()
