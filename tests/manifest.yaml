@@ -1,10 +1,52 @@
+tests:
+  # Main definition for tests. An application can override these settings if defined in the `applications` yaml
+  - name: total_energy
+    comparison: assertAlmostEqual
+  - name: fermi_energy
+    comparison: assertAlmostEqual
+  - name: npsins
+    comparison: assertDeepAlmostEqual
+  - name: eigenvalues_at_kpoints
+    comparison: assertDeepAlmostEqual
+  - name: ibz_k_points
+    comparison: assertDeepAlmostEqual
+  - name: convergence_electronic
+    comparison: assertDeepAlmostEqual
+  - name: convergence_ionic
+    comparison: assertDeepAlmostEqual
+  - name: stress_tensor
+    comparison: assertDeepAlmostEqual
+  - name: pressure
+    comparison: assertAlmostEqual
+  - name: total_force
+    comparison: assertAlmostEqual
+  - name: atomic_forces
+    comparison: assertDeepAlmostEqual
+  - name: total_energy_contributions
+    comparison: assertDeepAlmostEqual
+  - name: dos
+    comparison: assertDeepAlmostEqual
+  - name: phonon_dos
+    comparison: assertDeepAlmostEqual
+  - name: phonon_dispersion
+    comparison: assertDeepAlmostEqual
+  - name: magnetic_moments
+    comparison: assertDeepAlmostEqual
+  - name: reciprocal_lattice
+    comparison: assertDeepAlmostEqual
+  - name: realspace_lattice
+    comparison: assertDeepAlmostEqual
+
+
 applications: # fixtures/
   - espresso: # fixtures/espresso/
       - 5.4.0: # fixtures/espresso/5.4.0/
           - path: pw.x/pw_scf # fixtures/espresso/5.4.0/pw.x/pw_scf/
             filename: pw-scf.out
             tests:
-              - total_energy
+              # Array elements are a string or object
+              - name: total_energy # TODO: Remove this when we make the final PR, since it's redundant information
+                function: assertAlmostEqual
               - fermi_energy
               - nspins
               - eigenvalues_at_kpoints
