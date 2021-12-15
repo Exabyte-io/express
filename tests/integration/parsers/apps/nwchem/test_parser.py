@@ -5,11 +5,11 @@ from express.parsers.apps.nwchem.parser import NwchemParser
 
 class TestNwchemParser(IntegrationTestBase):
     def setUp(self):
-        super(TestNwchemParser, self).setUp()
+        super().setUp()
         self.parser = NwchemParser(work_dir=self.workDir, stdout_file=self.stdoutFile)
 
     def tearDown(self):
-        super(TestNwchemParser, self).setUp()
+        super().tearDown()
 
     def test_nwchem_total_energy(self):
         self.assertAlmostEqual(self.parser.total_energy(), TOTAL_ENERGY, places=2)

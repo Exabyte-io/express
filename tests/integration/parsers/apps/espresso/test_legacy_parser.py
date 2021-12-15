@@ -5,11 +5,11 @@ from express.parsers.apps.espresso.parser import EspressoLegacyParser
 
 class TestEspressoLegacyParser(IntegrationTestBase):
     def setUp(self):
-        super(TestEspressoLegacyParser, self).setUp()
+        super().setUp()
         self.parser = EspressoLegacyParser(work_dir=self.workDir, stdout_file=self.stdoutFile)
 
     def tearDown(self):
-        super(TestEspressoLegacyParser, self).setUp()
+        super().setUp()
 
     def test_espresso_total_energy(self):
         self.assertAlmostEqual(self.parser.total_energy(), TOTAL_ENERGY, places=2)

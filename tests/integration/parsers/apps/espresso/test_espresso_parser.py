@@ -13,6 +13,7 @@ with open(manifest_path, "r") as fp:
     test_yaml = yaml.load(fp)
 espresso_configs = test_yaml['applications']['espresso']
 
+
 class TestEspressoParser(IntegrationTestBase):
     def setUp(self):
         super().setUp()

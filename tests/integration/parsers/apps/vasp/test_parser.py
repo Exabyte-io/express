@@ -5,11 +5,11 @@ from express.parsers.apps.vasp.parser import VaspParser
 
 class TestVaspParser(IntegrationTestBase):
     def setUp(self):
-        super(TestVaspParser, self).setUp()
+        super().setUp()
         self.parser = VaspParser(work_dir=self.workDir, stdout_file=self.stdoutFile)
 
     def tearDown(self):
-        super(TestVaspParser, self).setUp()
+        super().setUp()
 
     def test_vasp_total_energy(self):
         self.assertAlmostEqual(self.parser.total_energy(), TOTAL_ENERGY, places=2)
