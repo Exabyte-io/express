@@ -90,11 +90,11 @@ class StructureParser(BaseParser, IonicDataMixin):
         try:
             # try getting the lattice type from the lattice only structure
             return self._lattice_type_from_structure(structure_)
-        except:
+        except Exception:
             try:
                 # try getting the lattice type from the current structure
                 return self._lattice_type_from_structure(self.structure)
-            except:
+            except Exception:
                 return "TRI"
 
     def _lattice_type_from_structure(self, structure_):

@@ -330,8 +330,8 @@ class EspressoLegacyParser(BaseParser, IonicDataMixin, ElectronicDataMixin, Reci
                 basis = self.txt_parser.initial_basis(self._get_file_content(pw_scf_output_file))
                 lattice = self.txt_parser.initial_lattice_vectors(self._get_file_content(pw_scf_output_file))
                 structures.append(lattice_basis_to_poscar(lattice, basis))
-            except:
-                raise
+            except Exception:
+                raise # TODO: this is vacuous
         return structures
 
     def final_structure_strings(self) -> List[str]:
@@ -341,7 +341,7 @@ class EspressoLegacyParser(BaseParser, IonicDataMixin, ElectronicDataMixin, Reci
                 basis = self.txt_parser.final_basis(self._get_file_content(pw_scf_output_file))
                 lattice = self.txt_parser.final_lattice_vectors(self._get_file_content(pw_scf_output_file))
                 structures.append(lattice_basis_to_poscar(lattice, basis))
-            except:
+            except Exception:
                 pass
         return structures
 
