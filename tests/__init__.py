@@ -4,16 +4,6 @@ import yaml
 import unittest
 import numpy as np
 
-def for_all_versions(test_configurations: dict):
-    def decorator(test_function):
-        @functools.wraps(test_function)
-        def inner(self):
-            for test_label, test_config in test_configurations.items():
-                for job_runtype in test_config["runtypes"]:
-                    with self.subTest(version_number=test_label, job_type=job_runtype):
-                        test_function(self, test_label, job_runtype, test_config)
-        return inner
-    return decorator
 
 @functools.lru_cache(maxsize=1)
 def get_test_manifest():
@@ -21,6 +11,7 @@ def get_test_manifest():
     with open(os.path.join(rootDir, "manifest.yaml")) as fp:
         manifest = yaml.load(fp, Loader=yaml.FullLoader)
     return manifest
+
 
 class TestBase(unittest.TestCase):
     """
@@ -39,7 +30,6 @@ class TestBase(unittest.TestCase):
     @property
     def manifest(self):
         return get_test_manifest()
-
 
     def assertDeepAlmostEqual(self, expected, actual, *args, **kwargs):
         """

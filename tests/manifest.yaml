@@ -47,6 +47,7 @@ applications: # fixtures/
           # Array elements are a string or object
           - name: total_energy # TODO: Remove this when we make the final PR, since it's redundant information
             comparison: assertAlmostEqual
+            places: 3
           - fermi_energy
           - nspins
           - eigenvalues_at_kpoints
@@ -177,7 +178,7 @@ applications: # fixtures/
         filename: OUTCAR
         tests:
           - dos
-      - path: scf_hse06
+      - path: hse06
         filename: OUTCAR
         tests: []
       - path: noncollinear_scf

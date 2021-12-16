@@ -67,3 +67,13 @@ BASIS = {
         }
     ]
 }
+
+
+REFERENCE_VALUES = {
+    "7.0.0": {
+        "scf": {
+            "total_energy": TOTAL_ENERGY,
+            "total_energy_contributions": TOTAL_ENERGY_CONTRIBUTION,
+        }
+    }
+}
