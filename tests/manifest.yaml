@@ -62,7 +62,7 @@ applications: # fixtures/
           filename: projwfc.out
           tests:
             - dos
-        - path: matdyn.x/phonon_dos
+        - path: matdyn.x/phonons
           filename: phonon_dos.out
           tests:
             - phonon_dos
@@ -178,7 +178,7 @@ applications: # fixtures/
 
   vasp:
     - 5.3.5:
-        - path: geom_relax
+        - path: scf
           filename: OUTCAR
           tests:
             - total_energy
@@ -193,7 +193,7 @@ applications: # fixtures/
             - total_force
             - atomic_forces
             - total_energy_contributions
-        - path: geom_relax_restart
+        - path: dos
           filename: OUTCAR
           tests:
             - dos
