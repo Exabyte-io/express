@@ -56,33 +56,6 @@ class NWChemTestBase(IntegrationTestBase):
     testNWChemParser = testApplicationParsers
 
 
-def get_application_config(cls):
-    config = {}
-    application_name = cls.application_name
-    if application_name:
-        for version_config in tests.get_test_manifest()['applications'][application_name]:
-            config.update(version_config)
-    return config
-
-
-def create_test(cls,
-                version: str,
-                work_dir: str,
-                stdout_file: str,
-                properties_to_test: List[Union[str, Dict[str, str]]]):
-    for test in properties_to_test:
-        property_to_test, comparison, places = generate_test_config(test)
-        fixture_dir = os.path.join(os.path.dirname(tests.__file__), "fixtures", cls.application_name, version, work_dir)
-
-        def fun(self):
-            parser = self.parser(work_dir=fixture_dir, stdout_file=stdout_file)
-            result_fun = operator.attrgetter(property_to_test)(parser)
-
-        fun_name = f"test_{cls.application_name}_{version}_{property_to_test}".replace(".", "-")
-
-        setattr(cls, fun_name, copy.deepcopy(fun))
-
-
 @functools.singledispatch
 def generate_test_config(test, verbose=True):
     raise ValueError("Test type must be a member of Union[str, Dict]")
