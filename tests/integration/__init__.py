@@ -58,8 +58,7 @@ class IntegrationTestBase(TestBase):
     def testApplicationParsers(self):
         if getattr(self, "application_name", None) not in self.manifest["applications"]:
             return
-        all_versions = self.manifest["applications"][self.application_name]
-        for version, fixtures in all_versions.items():
+        for version, fixtures in self.manifest["applications"][self.application_name].items():
             for fixture in fixtures:
                 for test in fixture["tests"]:
                     test_config = self.get_test_config(test)
@@ -73,16 +72,17 @@ class IntegrationTestBase(TestBase):
                             work_dir=self.work_dir(version, fixture["path"]),
                             stdout_file=fixture["filename"]
                         )
+                        print(test_config)
                         actual = getattr(parser, property)()
                         actual_index = test_config.pop("actual_index", None)
                         if actual_index is not None:
-                            actual = actual[0]
+                            actual = actual[actual_index]
                         expected = self.get_reference_value(version, fixture["path"], property, test_config)
                         comparison = test_config.pop("comparison")
                         getattr(self, comparison)(actual, expected, **test_config)
 
 
-from express.parsers.apps.espresso.parser import EspressoLegacyParser, EspressoParser
+from express.parsers.apps.espresso.parser import EspressoParser
 from express.parsers.apps.vasp.parser import VaspParser
 from express.parsers.apps.nwchem.parser import NwchemParser
 
@@ -91,9 +91,9 @@ from tests.fixtures.espresso import references as espresso_references
 from tests.fixtures.nwchem import references as nwchem_references
 
 
-class LegacyEspressoTest(IntegrationTestBase):
+class EspressoTest(IntegrationTestBase):
     application_name = "espresso"
-    parser = EspressoLegacyParser
+    parser = EspressoParser
     references = espresso_references.REFERENCE_VALUES
 
 
