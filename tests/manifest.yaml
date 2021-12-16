@@ -222,15 +222,15 @@ test_molecule_inchi:
   structurePath: fixtures/structural/test-001/POSCAR
 
 test_structure_vasp_basis:
-  structurePath: fixtures/vasp/test-001/POSCAR
+  structurePath: fixtures/vasp/5.3.5/scf/POSCAR
 
 test_structure_vasp_lattice_bravais:
-  structurePath: fixtures/vasp/test-001/POSCAR
+  structurePath: fixtures/vasp/5.3.5/scf/POSCAR
 
 test_structure_espresso_basis:
-  structurePath: fixtures/espresso/test-001/pw-scf.in
+  structurePath: fixtures/espresso/5.4.0/pw.x/pw_scf/pw-scf.in
   structureFormat: espresso-in
 
 test_structure_espresso_lattice_bravais:
-  structurePath: fixtures/espresso/test-001/pw-scf.in
+  structurePath: fixtures/espresso/5.4.0/pw.x/pw_scf/pw-scf.in
   structureFormat: espresso-in

@@ -1,11 +1,12 @@
 import functools
+import os
 from typing import List, Dict, Union
 
 from express.parsers.apps.espresso.parser import EspressoParser
 from express.parsers.apps.nwchem.parser import NwchemParser
 from express.parsers.apps.vasp.parser import VaspParser
 from tests.integration import IntegrationTestBase
-from tests import get_test_manifest
+import tests
 
 
 class ApplicationTestsBase(IntegrationTestBase):
@@ -31,7 +32,7 @@ def get_application_config(cls):
     config = {}
     application_name = cls.application_name
     if application_name:
-        for version_config in get_test_manifest()['applications'][application_name]:
+        for version_config in tests.get_test_manifest()['applications'][application_name]:
             config.update(version_config)
     return config
 
@@ -43,10 +44,13 @@ def create_test(cls,
                 properties_to_test: List[Union[str, Dict[str, str]]]):
     for test in properties_to_test:
         property_to_test, comparison, places = generate_test_config(test)
+        fixture_dir = os.path.join(os.path.dirname(tests.__file__), "fixtures", cls.application_name, version, work_dir)
 
         def fun(self):
-            parser = self.parser(work_dir=work_dir, stdout_file = stdout_file)
-            raise NotImplementedError
+            parser = self.parser(work_dir=fixture_dir, stdout_file=stdout_file)
+            if not os.path.exists(fixture_dir):
+                print(fixture_dir)
+
 
         fun_name = f"test_{cls.application_name}_{version}_{property_to_test}".replace(".", "-")
         setattr(cls, fun_name, fun)
@@ -61,7 +65,7 @@ def generate_test_config(test, verbose=True):
 def _(test: dict):
     test_config = test
     property_to_test = test['name']
-    default_test_config = get_test_manifest()['tests'][property_to_test]
+    default_test_config = tests.get_test_manifest()['tests'][property_to_test]
     comparison = test_config.get("comparison", default_test_config.get("comparison", "assertDeepAlmostEqual"))
     places = test_config.get("places", default_test_config.get("places", 2))
     return property_to_test, comparison, places
@@ -70,7 +74,7 @@ def _(test: dict):
 @generate_test_config.register
 def _(test: str):
     property_to_test = test
-    default_test_config = get_test_manifest()['tests'][property_to_test]
+    default_test_config = tests.get_test_manifest()['tests'][property_to_test]
     comparison = default_test_config.get("comparison", "assertDeepAlmostEqual")
     places = default_test_config.get("places", 2)
     return property_to_test, comparison, places
