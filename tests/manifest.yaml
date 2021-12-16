@@ -167,7 +167,7 @@ applications: # fixtures/
   vasp:
     5.3.5:
       - path: scf
-        filename: OUTCAR
+        filename: vasp.out
         tests:
           - total_energy
           - fermi_energy
@@ -183,14 +183,14 @@ applications: # fixtures/
           - atomic_forces
           - total_energy_contributions
       - path: dos
-        filename: OUTCAR
+        filename: chgcar.out
         tests:
           - dos
       - path: hse06
-        filename: OUTCAR
+        filename: vasp.out
         tests: []
       - path: noncollinear_scf
-        filename: OUTCAR
+        filename: vasp.out
         tests:
           - magnetic_moments
 
