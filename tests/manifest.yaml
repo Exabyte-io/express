@@ -1,40 +1,40 @@
 tests:
   # Main definition for tests. An application can override these settings if defined in the `applications` yaml
-  - name: total_energy
+  total_energy:
     comparison: assertAlmostEqual
-  - name: fermi_energy
+  fermi_energy:
     comparison: assertAlmostEqual
-  - name: npsins
+  nspins:
     comparison: assertDeepAlmostEqual
-  - name: eigenvalues_at_kpoints
+  eigenvalues_at_kpoints:
     comparison: assertDeepAlmostEqual
-  - name: ibz_k_points
+  ibz_k_points:
     comparison: assertDeepAlmostEqual
-  - name: convergence_electronic
+  convergence_electronic:
     comparison: assertDeepAlmostEqual
-  - name: convergence_ionic
+  convergence_ionic:
     comparison: assertDeepAlmostEqual
-  - name: stress_tensor
+  stress_tensor:
     comparison: assertDeepAlmostEqual
-  - name: pressure
+  pressure:
     comparison: assertAlmostEqual
-  - name: total_force
+  total_force:
     comparison: assertAlmostEqual
-  - name: atomic_forces
+  atomic_forces:
     comparison: assertDeepAlmostEqual
-  - name: total_energy_contributions
+  total_energy_contributions:
     comparison: assertDeepAlmostEqual
-  - name: dos
+  dos:
     comparison: assertDeepAlmostEqual
-  - name: phonon_dos
+  phonon_dos:
     comparison: assertDeepAlmostEqual
-  - name: phonon_dispersion
+  phonon_dispersion:
     comparison: assertDeepAlmostEqual
-  - name: magnetic_moments
+  magnetic_moments:
     comparison: assertDeepAlmostEqual
-  - name: reciprocal_lattice
+  reciprocal_lattice:
     comparison: assertDeepAlmostEqual
-  - name: realspace_lattice
+  realspace_lattice:
     comparison: assertDeepAlmostEqual
 
 
@@ -46,7 +46,7 @@ applications: # fixtures/
           tests:
             # Array elements are a string or object
             - name: total_energy # TODO: Remove this when we make the final PR, since it's redundant information
-              function: assertAlmostEqual
+              comparison: assertAlmostEqual
             - fermi_energy
             - nspins
             - eigenvalues_at_kpoints
@@ -184,7 +184,7 @@ applications: # fixtures/
             - total_energy
             - fermi_energy
             - nspins
-            - eigenvalues_at_koints
+            - eigenvalues_at_kpoints
             - ibz_k_points
             - convergence_electronic
             - convergence_ionic

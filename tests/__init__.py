@@ -16,7 +16,7 @@ def for_all_versions(test_configurations: dict):
     return decorator
 
 @functools.lru_cache(maxsize=1)
-def getTestManifest():
+def get_test_manifest():
     rootDir = os.path.dirname(__file__)
     with open(os.path.join(rootDir, "manifest.yaml")) as fp:
         manifest = yaml.load(fp, Loader=yaml.FullLoader)
@@ -38,7 +38,7 @@ class TestBase(unittest.TestCase):
 
     @property
     def manifest(self):
-        return getTestManifest()
+        return get_test_manifest()
 
 
     def assertDeepAlmostEqual(self, expected, actual, *args, **kwargs):
