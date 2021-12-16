@@ -1,4 +1,6 @@
+import copy
 import functools
+import operator
 import os
 from typing import List, Dict, Union
 
@@ -48,12 +50,12 @@ def create_test(cls,
 
         def fun(self):
             parser = self.parser(work_dir=fixture_dir, stdout_file=stdout_file)
-            if not os.path.exists(fixture_dir):
-                print(fixture_dir)
+            result_fun = operator.attrgetter(property_to_test)(parser)
 
 
         fun_name = f"test_{cls.application_name}_{version}_{property_to_test}".replace(".", "-")
-        setattr(cls, fun_name, fun)
+
+        setattr(cls, fun_name, copy.deepcopy(fun))
 
 
 @functools.singledispatch

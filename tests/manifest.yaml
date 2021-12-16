@@ -28,7 +28,7 @@ tests:
     comparison: assertDeepAlmostEqual
   phonon_dos:
     comparison: assertDeepAlmostEqual
-  phonon_dispersion:
+  phonon_dispersions:
     comparison: assertDeepAlmostEqual
   magnetic_moments:
     comparison: assertDeepAlmostEqual
@@ -69,7 +69,7 @@ applications: # fixtures/
         - path: matdyn.x/phonons
           filename: normal_modes.out
           tests:
-            - phonon_dispersion
+            - phonon_dispersions
     - 6.4.1:
         - path: pw.x/pw_scf
           filename: pw.out
@@ -79,8 +79,6 @@ applications: # fixtures/
             - nspins
             - pressure
             - total_force
-            - realspace_lattice
-            - reciprocal_lattice
         - path: pw.x/pw_vc_relax
           filename: pw.out
           tests:
@@ -89,8 +87,6 @@ applications: # fixtures/
             - nspins
             - pressure
             - total_force
-            - realspace_lattice
-            - reciprocal_lattice
     - 6.5.0:
         - path: pw.x/pw_scf
           filename: pw.out
@@ -100,8 +96,6 @@ applications: # fixtures/
             - nspins
             - pressure
             - total_force
-            - realspace_lattice
-            - reciprocal_lattice
         - path: pw.x/pw_vc_relax
           filename: pw.out
           tests:
@@ -110,8 +104,6 @@ applications: # fixtures/
             - nspins
             - pressure
             - total_force
-            - realspace_lattice
-            - reciprocal_lattice
     - 6.6.0:
         - path: pw.x/pw_scf
           filename: pw.out
@@ -121,8 +113,6 @@ applications: # fixtures/
             - nspins
             - pressure
             - total_force
-            - realspace_lattice
-            - reciprocal_lattice
         - path: pw.x/pw_vc_relax
           filename: pw.out
           tests:
@@ -131,8 +121,6 @@ applications: # fixtures/
             - nspins
             - pressure
             - total_force
-            - realspace_lattice
-            - reciprocal_lattice
     - 6.7.0:
         - path: pw.x/pw_scf
           filename: pw.out
@@ -142,8 +130,6 @@ applications: # fixtures/
             - nspins
             - pressure
             - total_force
-            - realspace_lattice
-            - reciprocal_lattice
         - path: pw.x/pw_vc_relax
           filename: pw.out
           tests:
@@ -152,8 +138,6 @@ applications: # fixtures/
             - nspins
             - pressure
             - total_force
-            - realspace_lattice
-            - reciprocal_lattice
     - 6.8.0:
         - path: pw.x/pw_scf
           filename: pw.out
@@ -163,8 +147,6 @@ applications: # fixtures/
             - nspins
             - pressure
             - total_force
-            - realspace_lattice
-            - reciprocal_lattice
         - path: pw.x/pw_vc_relax
           filename: pw.out
           tests:
@@ -173,8 +155,6 @@ applications: # fixtures/
             - nspins
             - pressure
             - total_force
-            - realspace_lattice
-            - reciprocal_lattice
 
   vasp:
     - 5.3.5:
@@ -202,13 +182,13 @@ applications: # fixtures/
           tests: []
         - path: noncollinear_scf
           filename: OUTCAR
-          tests:
-            - magnetic_moments
+          tests: []
+#            - magnetic_moments
 
   nwchem:
     - 7.0.0:
         - path: scf
-          filename: nwchem-total_energy.log
+          filename: nwchem-total-energy.log
           tests:
             - total_energy
             - total_energy_contributions
