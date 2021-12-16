@@ -1,3 +1,5 @@
+import unittest
+
 from mock import MagicMock
 
 from tests import TestBase
