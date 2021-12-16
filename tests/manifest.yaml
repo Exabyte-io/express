@@ -37,6 +37,12 @@ tests:
   realspace_lattice:
     comparison: assertDeepAlmostEqual
 
+test_config_schema:
+  name: name of property to test
+  comparison: assertion method to use to compare actual to expected
+  places: number of decimal places to use in comparison
+  reference_index: index of nested reference structure to use for comparison
+  actual_index: index of nested actual parsed data to use for comparison
 
 applications: # fixtures/
   espresso: # fixtures/espresso/
@@ -45,12 +51,13 @@ applications: # fixtures/
         filename: pw-scf.out
         tests:
           # Array elements are a string or object
-          - name: total_energy # TODO: Remove this when we make the final PR, since it's redundant information
+          - name: total_energy
             comparison: assertAlmostEqual
             places: 3
           - fermi_energy
           - nspins
-          - eigenvalues_at_kpoints
+          - name: eigenvalues_at_kpoints
+            actual_index: 0
           - ibz_k_points
           - convergence_electronic
           - convergence_ionic
@@ -165,7 +172,8 @@ applications: # fixtures/
           - total_energy
           - fermi_energy
           - nspins
-          - eigenvalues_at_kpoints
+          - name: eigenvalues_at_kpoints
+            actual_index: 0
           - ibz_k_points
           - convergence_electronic
           - convergence_ionic
@@ -183,8 +191,8 @@ applications: # fixtures/
         tests: []
       - path: noncollinear_scf
         filename: OUTCAR
-        tests: []
-  #            - magnetic_moments
+        tests:
+          - magnetic_moments
 
   nwchem:
     7.0.0:

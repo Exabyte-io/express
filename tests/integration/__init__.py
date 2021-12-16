@@ -26,6 +26,12 @@ class IntegrationTestBase(TestBase):
         """If specified at the individual test level, construct a granular test
         configuration, otherwise provide a default test configuration from the
         manifest.yaml.
+
+        Note:
+            See also the test_config_schema in the manifest.yaml file and
+            example test_configs for usage. Test config keys that are not recognized
+            as keyword args to comparison methods must be popped during processing
+            or the comparison method will throw an unrecognized argument error.
         """
         places = 2
         if isinstance(test_config, str):
@@ -35,15 +41,19 @@ class IntegrationTestBase(TestBase):
                 **self.manifest["tests"][test_config],
             }
         return {
+            **self.manifest["tests"][test_config["name"]],
             "property": test_config.pop("name"),
             "places": places,
-            **self.manifest["tests"][test_config["name"]],
             **test_config,
         }
 
-    def get_reference_value(self, version: str, path: str, property: str):
+    def get_reference_value(self, version: str, path: str, property: str, test_config: dict):
         sub_path = path.split("/")[-1]
-        return self.references[version][sub_path][property]
+        expected = self.references[version][sub_path][property]
+        reference_index = test_config.pop("reference_index", None)
+        if reference_index is not None:
+            return expected[reference_index]
+        return expected
 
     def testApplicationParsers(self):
         if getattr(self, "application_name", None) not in self.manifest["applications"]:
@@ -64,7 +74,10 @@ class IntegrationTestBase(TestBase):
                             stdout_file=fixture["filename"]
                         )
                         actual = getattr(parser, property)()
-                        expected = self.get_reference_value(version, fixture["path"], property)
+                        actual_index = test_config.pop("actual_index", None)
+                        if actual_index is not None:
+                            actual = actual[0]
+                        expected = self.get_reference_value(version, fixture["path"], property, test_config)
                         comparison = test_config.pop("comparison")
                         getattr(self, comparison)(actual, expected, **test_config)
 
@@ -77,10 +90,12 @@ from tests.fixtures.vasp import references as vasp_references
 from tests.fixtures.espresso import references as espresso_references
 from tests.fixtures.nwchem import references as nwchem_references
 
+
 class LegacyEspressoTest(IntegrationTestBase):
     application_name = "espresso"
     parser = EspressoLegacyParser
     references = espresso_references.REFERENCE_VALUES
+
 
 class VaspTestBase(IntegrationTestBase):
     application_name = "vasp"
