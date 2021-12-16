@@ -113,7 +113,6 @@ class Espresso640XMLParser(BaseXMLParser):
             # the list slicing.
             if has_multiple_bands:
                 nband_up = int(bandstructure_node.find("nbnd_up").text)
-                nbnd_down = int(bandstructure_node.find("nbnd_dwn").text)
                 eigenvalues_up = {
                     "energies": energies[0:nband_up],
                     "occupations": occupations[0:nband_up],
