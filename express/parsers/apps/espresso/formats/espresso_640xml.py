@@ -1,6 +1,7 @@
-from typing import List, Dict, Union, Optional, Any
+from typing import List, Dict, Union
 
 from express.parsers.formats.xml import BaseXMLParser
+from express.parsers.utils import string_to_vec
 from express.parsers.settings import Constant
 
 
@@ -33,6 +34,32 @@ class Espresso640XMLParser(BaseXMLParser):
         result = float(fermi_node.text) * Constant.HARTREE
         return result
 
+    def nspins(self):
+        """
+        Extracts the number of number of spin components.
+        Unfortunately, due to changes in the XML we can no longer directly get this. We can only indirectly infer it
+        based on what the values of LSDA and Noncolin are.
+
+        The alternative is to assume that we have an input file and write a parser for the input file, since that will
+        have the actual number of spins specified.
+
+        Returns:
+             int
+        """
+        spin_input_node = self.traverse_xml(self.root, ("input", "spin"))
+        is_lsda = spin_input_node.find("lsda").text == "true"
+        is_noncolin = spin_input_node.find("noncolin") == "true"
+
+        if is_noncolin:
+            nspin = 4
+        elif is_lsda:
+            nspin = 2
+        else:
+            nspin = 1
+
+        return nspin
+
+
     def final_lattice_vectors(self, reciprocal=False) -> Dict[str, Dict[str, Union[float, List[float]]]]:
         """
         Extracts lattice.
@@ -53,19 +80,24 @@ class Espresso640XMLParser(BaseXMLParser):
                 }
              }
         """
-        vectors = {}
+        vectors = {"alat": 1.0}
+        result = {"vectors": vectors}
         if reciprocal:
-            raise NotImplementedError
-
+            cell_node = self.traverse_xml(self.root, ("output", "basis_set", "reciprocal_lattice"))
+            scale_factor = 1.0
+            tags = ("b1", "b2", "b3")
         else:
             cell_node = self.traverse_xml(self.root, ("output", "atomic_structure", "cell"))
-            for key, tag in (("a", "a1"), ("b", "a2"), ("c", "a3")):
-                vector = self.string_to_vec(cell_node.find(tag).text, dtype=float)
-                vector = [component * Constant.BOHR for component in vector]
-                vectors[key] = vector
+            scale_factor = Constant.BOHR
+            tags = ("a1", "a2", "a3")
+            result["units"] = "angstrom"
 
-        vectors["alat"] = 1.0
-        return {"vectors": vectors, "units": "angstrom"}
+        for key, tag in zip(("a", "b", "c"), tags):
+            vector = string_to_vec(cell_node.find(tag).text, dtype=float)
+            vector = [component * scale_factor for component in vector]
+            vectors[key] = vector
+
+        return result
 
     def final_basis(self) -> Dict[str, Union[str, Dict]]:
         """
@@ -91,25 +123,10 @@ class Espresso640XMLParser(BaseXMLParser):
         for atom in atoms:
             atom_id = float(atom.get("index"))
             symbol = atom.get("name")
-            coords = self.string_to_vec(atom.text, dtype=float)
+            coords = string_to_vec(atom.text, dtype=float)
             coords = [component * Constant.BOHR for component in coords]
 
             result["elements"].append({"id": atom_id, "value": symbol})
             result["coordinates"].append({"id": atom_id, "value": coords})
 
-        return result
-
-    @staticmethod
-    def string_to_vec(string: str, dtype: type = float, sep: Optional[str] = None) -> List[Any]:
-        """
-        Given a string and some delimiter, will create a vector with the specified type.
-
-        Args:
-            string (str): The string to convert, for example "6.022e23 2.718 3.14159"
-            dtype (type): The type to convert into. Must support conversion from a string. Defaults to `float`
-            sep (Optional[str]): Delimiter for the the string. Defaults to whitespace.
-        Returns:
-            List[Any]: A list that has the correct type, for example [6.022e23, 2.718, 3.14159]
-        """
-        result = [dtype(component) for component in string.split(sep)]
         return result
