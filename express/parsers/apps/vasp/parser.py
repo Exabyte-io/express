@@ -45,7 +45,7 @@ class VaspParser(BaseParser, IonicDataMixin, ElectronicDataMixin, ReciprocalData
         Reference:
             func: express.parsers.mixins.electronic.ElectronicDataMixin.total_energy
         """
-        return self.txt_parser.total_energy(self._get_file_content(self.full_stdout_file_path))
+        return self.txt_parser.total_energy(self._get_file_content(self.stdout_file))
 
     def fermi_energy(self):
         """
@@ -122,7 +122,7 @@ class VaspParser(BaseParser, IonicDataMixin, ElectronicDataMixin, ReciprocalData
             func: express.parsers.mixins.electronic.ElectronicDataMixin.convergence_electronic
         """
         outcar = self._get_outcar_content()
-        stdout = self._get_file_content(self.full_stdout_file_path)
+        stdout = self._get_file_content(self.stdout_file)
         try:
             atom_names = self.xml_parser.atom_names()
         except Exception:
@@ -138,7 +138,7 @@ class VaspParser(BaseParser, IonicDataMixin, ElectronicDataMixin, ReciprocalData
             func: express.parsers.mixins.ionic.IonicDataMixin.convergence_ionic
         """
         outcar = self._get_outcar_content()
-        stdout = self._get_file_content(self.full_stdout_file_path)
+        stdout = self._get_file_content(self.stdout_file)
         return self.txt_parser.convergence_ionic(outcar, stdout, self.xml_parser.atom_names())
 
     def stress_tensor(self):

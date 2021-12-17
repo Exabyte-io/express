@@ -6,17 +6,9 @@ class BaseParser(object):
     Base Parser class.
     """
 
-    # TODO: This looks dangerous
     def __init__(self, *args, **kwargs):
         self.args = args
         self.kwargs = kwargs
-
-    @property
-    def full_stdout_file_path(self):
-        return os.path.join(
-            self.kwargs.get("work_dir", ""),
-            self.kwargs.get("stdout_file", "")
-        )
 
     def _get_file_content(self, file_path):
         """

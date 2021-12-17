@@ -76,7 +76,7 @@ class EspressoParser(BaseParser, IonicDataMixin, ElectronicDataMixin, Reciprocal
         Reference:
             func: express.parsers.mixins.electronic.ElectronicDataMixin.total_energy
         """
-        return self.txt_parser.total_energy(self._get_file_content(self.full_stdout_file_path))
+        return self.txt_parser.total_energy(self._get_file_content(self.stdout_file))
 
     def fermi_energy(self) -> float:
         """
@@ -107,8 +107,8 @@ class EspressoParser(BaseParser, IonicDataMixin, ElectronicDataMixin, Reciprocal
         Returns:
              bool
         """
-        if os.path.exists(self.full_stdout_file_path):
-            with open(self.full_stdout_file_path, "r") as f:
+        if os.path.exists(self.stdout_file):
+            with open(self.stdout_file, "r") as f:
                 for index, line in enumerate(f):
                     if index > 50:
                         return False
@@ -126,7 +126,7 @@ class EspressoParser(BaseParser, IonicDataMixin, ElectronicDataMixin, Reciprocal
         """
         if self._is_sternheimer_gw_calculation():
             # TODO: Right above this it says don't read the whole file into memory
-            text = self._get_file_content(self.full_stdout_file_path)
+            text = self._get_file_content(self.stdout_file)
             inverse_reciprocal_lattice_vectors = self.xml_parser.get_inverse_reciprocal_lattice_vectors()
             return self.txt_parser.eigenvalues_at_kpoints_from_sternheimer_gw_stdout(text,
                                                                                      inverse_reciprocal_lattice_vectors)
@@ -162,7 +162,7 @@ class EspressoParser(BaseParser, IonicDataMixin, ElectronicDataMixin, Reciprocal
         Reference:
             func: express.parsers.mixins.ionic.IonicDataMixin.initial_basis
         """
-        return self.txt_parser.initial_basis(self._get_file_content(self.full_stdout_file_path))
+        return self.txt_parser.initial_basis(self._get_file_content(self.stdout_file))
 
     def initial_lattice_vectors(self) -> Dict[str, Dict[str, Union[List[float], int]]]:
         """
@@ -171,7 +171,7 @@ class EspressoParser(BaseParser, IonicDataMixin, ElectronicDataMixin, Reciprocal
         Reference:
             func: express.parsers.mixins.ionic.IonicDataMixin.initial_lattice_vectors
         """
-        return self.txt_parser.initial_lattice_vectors(self._get_file_content(self.full_stdout_file_path))
+        return self.txt_parser.initial_lattice_vectors(self._get_file_content(self.stdout_file))
 
     def final_basis(self) -> Dict[str, Union[str, list]]:
         """
@@ -198,7 +198,7 @@ class EspressoParser(BaseParser, IonicDataMixin, ElectronicDataMixin, Reciprocal
         Reference:
             func: express.parsers.mixins.electronic.ElectronicDataMixin.convergence_electronic
         """
-        return self.txt_parser.convergence_electronic(self._get_file_content(self.full_stdout_file_path))
+        return self.txt_parser.convergence_electronic(self._get_file_content(self.stdout_file))
 
     def convergence_ionic(self) -> List[Dict]:
         """
@@ -207,7 +207,7 @@ class EspressoParser(BaseParser, IonicDataMixin, ElectronicDataMixin, Reciprocal
         Reference:
             func: express.parsers.mixins.ionic.IonicDataMixin.convergence_ionic
         """
-        return self.txt_parser.convergence_ionic(self._get_file_content(self.full_stdout_file_path))
+        return self.txt_parser.convergence_ionic(self._get_file_content(self.stdout_file))
 
     def stress_tensor(self) -> List:
         """
@@ -216,7 +216,7 @@ class EspressoParser(BaseParser, IonicDataMixin, ElectronicDataMixin, Reciprocal
         Reference:
             func: express.parsers.mixins.ionic.IonicDataMixin.stress_tensor
         """
-        return self.txt_parser.stress_tensor(self._get_file_content(self.full_stdout_file_path))
+        return self.txt_parser.stress_tensor(self._get_file_content(self.stdout_file))
 
     def pressure(self) -> float:
         """
@@ -225,7 +225,7 @@ class EspressoParser(BaseParser, IonicDataMixin, ElectronicDataMixin, Reciprocal
         Reference:
             func: express.parsers.mixins.ionic.IonicDataMixin.pressure
         """
-        return self.txt_parser.pressure(self._get_file_content(self.full_stdout_file_path))
+        return self.txt_parser.pressure(self._get_file_content(self.stdout_file))
 
     def total_force(self) -> float:
         """
@@ -234,7 +234,7 @@ class EspressoParser(BaseParser, IonicDataMixin, ElectronicDataMixin, Reciprocal
         Reference:
             func: express.parsers.mixins.ionic.IonicDataMixin.total_force
         """
-        return self.txt_parser.total_force(self._get_file_content(self.full_stdout_file_path))
+        return self.txt_parser.total_force(self._get_file_content(self.stdout_file))
 
     def atomic_forces(self) -> List:
         """
@@ -243,7 +243,7 @@ class EspressoParser(BaseParser, IonicDataMixin, ElectronicDataMixin, Reciprocal
         Reference:
             func: express.parsers.mixins.ionic.IonicDataMixin.atomic_forces
         """
-        return self.txt_parser.atomic_forces(self._get_file_content(self.full_stdout_file_path))
+        return self.txt_parser.atomic_forces(self._get_file_content(self.stdout_file))
 
     def total_energy_contributions(self) -> Dict:
         """
@@ -252,7 +252,7 @@ class EspressoParser(BaseParser, IonicDataMixin, ElectronicDataMixin, Reciprocal
         Reference:
             func: express.parsers.mixins.electronic.ElectronicDataMixin.total_energy_contributions
         """
-        return self.txt_parser.total_energy_contributions(self._get_file_content(self.full_stdout_file_path))
+        return self.txt_parser.total_energy_contributions(self._get_file_content(self.stdout_file))
 
     def zero_point_energy(self) -> float:
         """
@@ -261,7 +261,7 @@ class EspressoParser(BaseParser, IonicDataMixin, ElectronicDataMixin, Reciprocal
         Reference:
             func: express.parsers.mixins.ionic.IonicDataMixin.zero_point_energy
         """
-        return self.txt_parser.zero_point_energy(self._get_file_content(self.full_stdout_file_path))
+        return self.txt_parser.zero_point_energy(self._get_file_content(self.stdout_file))
 
     def phonon_dos(self) -> Dict[str, List[float]]:
         """
