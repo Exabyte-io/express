@@ -364,28 +364,3 @@ class EspressoParser(BaseParser, IonicDataMixin, ElectronicDataMixin, Reciprocal
             except Exception:
                 pass
         return structures
-
-
-#class EspressoParser(EspressoLegacyParser):
-#
-#    def __init__(self, *args, **kwargs):
-#        super().__init__(*args, **kwargs)
-#        self.xml_data_file = "data-file-schema.xml"
-#
-#    def _is_sternheimer_gw_calculation(self):
-#        """
-#        Sternheimer GW is not maintained anymore in Espresso, and breaks compilation in recent versions.
-#        The versions of express we use this parser with cannot run Sternheimer GW, therefore this is always false.
-#
-#        Returns:
-#            False
-#        """
-#        return False
-#
-#    @property
-#    def xml_parser(self):
-#        if self._xml_parser is None:
-#            xml_file = self.find_xml_file()
-#            print("Hello from xml_parser", self.__class__.__name__, self.find_xml_file())
-#            self._xml_parser = Espresso640XMLParser(xml_file)
-#        return self._xml_parser

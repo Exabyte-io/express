@@ -17,6 +17,8 @@ class TestBase(unittest.TestCase):
     """
     Base class for express tests.
     """
+    manifest = get_test_manifest()
+
     @property
     def rootDir(self):
         return os.path.dirname(__file__)
@@ -26,10 +28,6 @@ class TestBase(unittest.TestCase):
 
     def tearDown(self):
         super(TestBase, self).tearDown()
-
-    @property
-    def manifest(self):
-        return get_test_manifest()
 
     def assertDeepAlmostEqual(self, expected, actual, *args, **kwargs):
         """

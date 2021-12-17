@@ -1,17 +1,12 @@
 import os
-import functools
-from typing import Union, Any
+from typing import Union
 
-import unittest
-from tests import TestBase, get_test_manifest
-
-
-manifest = get_test_manifest()
+from tests import TestBase
 
 
 class IntegrationTestBase(TestBase):
     """
-    Test class for express integration tests.
+    Base class for express integration tests.
     """
 
     def work_dir(self, version: str, subdir: str):
@@ -46,10 +41,10 @@ def get_test_config(test_config: Union[str, dict]) -> dict:
         return {
             "property": test_config,
             "places": places,
-            **manifest["tests"][test_config],
+            **TestBase.manifest["tests"][test_config],
         }
     return {
-        **manifest["tests"][test_config["name"]],
+        **TestBase.manifest["tests"][test_config["name"]],
         "property": test_config.pop("name"),
         "places": places,
         **test_config,
@@ -107,7 +102,7 @@ def add_tests(cls: IntegrationTestBase, application_name: str):
     and an application specified in the manifest.yaml and this should
     do the rest.
     """
-    for application, all_versions in manifest["applications"].items():
+    for application, all_versions in TestBase.manifest["applications"].items():
         if application != application_name:
             continue
         for version, fixtures in all_versions.items():
