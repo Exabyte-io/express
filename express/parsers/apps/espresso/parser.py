@@ -364,3 +364,4 @@ class EspressoParser(BaseParser, IonicDataMixin, ElectronicDataMixin, Reciprocal
             except Exception:
                 pass
         return structures
+
