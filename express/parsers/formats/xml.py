@@ -16,7 +16,7 @@ class BaseXMLParser(object):
             try:
                 self.xml_dir_name = os.path.dirname(self.xml_path)
                 self.root = ET.parse(self.xml_path).getroot()
-            except:
+            except Exception:
                 # safely ignore broken xml file
                 pass
 

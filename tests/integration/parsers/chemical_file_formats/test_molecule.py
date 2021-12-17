@@ -1,21 +1,21 @@
 import os
 
 from tests.fixtures.structural.references import INCHI_DATA
-from tests.integration import IntegrationTestBase
 from express.parsers.molecule import MoleculeParser
+from tests.integration.parsers.chemical_file_formats import ChemicalFileFormatTestBase
 
 
-class TestMoleculeParser(IntegrationTestBase):
+class TestMoleculeParser(ChemicalFileFormatTestBase):
 
     def setUp(self):
-        super(IntegrationTestBase, self).setUp()
+        super().setUp()
 
     def tearDown(self):
-        super(IntegrationTestBase, self).setUp()
+        super().tearDown()
 
     @property
     def parser(self):
-        manifest = self.getManifest()
+        manifest = self.manifest[self._testMethodName]
         with open(os.path.join(self.rootDir, manifest["structurePath"])) as f:
             kwargs = {
                 "cell_type": manifest.get("cell_type", "original"),
