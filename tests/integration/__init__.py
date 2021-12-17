@@ -2,29 +2,32 @@ import os
 import functools
 from typing import Union, Any
 
-from express.parsers.apps.espresso.parser import EspressoParser
-from express.parsers.apps.vasp.parser import VaspParser
-from express.parsers.apps.nwchem.parser import NwchemParser
-
 import unittest
 from tests import TestBase, get_test_manifest
-from tests.fixtures.vasp import references as vasp_references
-from tests.fixtures.espresso import references as espresso_references
-from tests.fixtures.nwchem import references as nwchem_references
 
 
-# Dynamically generate all our tests from these 3 objects
 manifest = get_test_manifest()
-parser_classes = {
-    "espresso": EspressoParser,
-    "nwchem": NwchemParser,
-    "vasp": VaspParser,
-}
-references = {
-    "espresso": espresso_references.REFERENCE_VALUES,
-    "nwchem": nwchem_references.REFERENCE_VALUES,
-    "vasp": vasp_references.REFERENCE_VALUES,
-}
+
+
+class IntegrationTestBase(TestBase):
+    """
+    Test class for express integration tests.
+    """
+
+    def work_dir(self, version: str, subdir: str):
+        return os.path.join(
+            self.rootDir, "fixtures", self.application, version, subdir
+        )
+
+    def get_reference_value(self):
+        """Obtain the appropriate reference value to use as an expected value for the
+        parser extraction."""
+        sub_path = self.subdir.split("/")[-1]
+        expected = self.references[self.version][sub_path][self.property]
+        reference_index = self.test_config.pop("reference_index", None)
+        if reference_index is not None:
+            return expected[reference_index]
+        return expected
 
 
 def get_test_config(test_config: Union[str, dict]) -> dict:
@@ -53,38 +56,38 @@ def get_test_config(test_config: Union[str, dict]) -> dict:
     }
 
 
-class IntegrationTestBase(TestBase):
+def create_test(params: dict):
+    """Function factory that generates a uniquely named TestCase method
+    based on the required input parameters:
+
+    Args:
+        params(dict): {
+            "application": application name,
+            "version": version string,
+            "subdir": subdir to fixture,
+            "filename": test filename,
+            "property": test property,
+            "test_config": test config from manifest,
+        }
+
+    Returns:
+        func(function): a unittest.TestCase.test_method
+
     """
-    Test class for express integration tests.
-    """
-
-    def work_dir(self, version: str, subdir: str):
-        return os.path.join(
-            self.rootDir, "fixtures", self.application, version, subdir
-        )
-
-    def get_reference_value(self):
-        """Obtain the appropriate reference value to use as an expected value for the
-        parser extraction."""
-        sub_path = self.subdir.split("/")[-1]
-        expected = references[self.application][self.version][sub_path][self.property]
-        reference_index = self.test_config.pop("reference_index", None)
-        if reference_index is not None:
-            return expected[reference_index]
-        return expected
-
-
-class IntegrationTest(IntegrationTestBase):
-    pass
-
-
-def create_test(params):
+    clean = lambda s: s.replace(".", "_").replace("/", "_").replace("-", "_")
+    test_names = ["test"]
+    for k, v in params.items():
+        if isinstance(v, str):
+            if k == "version":
+                test_names.append(clean(v.replace(".", "")))
+            else:
+                test_names.append(clean(v))
     def do_test(self):
         for k, v in params.items():
             setattr(self, k, v)
         work_dir = self.work_dir(self.version, self.subdir)
         # TODO: os.path.join(workdir, self.filename) should not be necessary
-        parser = parser_classes[self.application](
+        parser = self.parser(
             work_dir=work_dir, stdout_file=os.path.join(work_dir, self.filename)
         )
         actual = getattr(parser, self.property)()
@@ -94,23 +97,33 @@ def create_test(params):
         expected = self.get_reference_value()
         comparison = self.test_config.pop("comparison")
         getattr(self, comparison)(actual, expected, **self.test_config)
+    do_test.__name__ = "_".join(test_names)
     return do_test
 
 
-for application, all_versions in manifest["applications"].items():
-    for version, fixtures in all_versions.items():
-        for fixture in fixtures:
-            for test in fixture["tests"]:
-                test_config = get_test_config(test)
-                test_property = test_config.pop("property")
-                test_method = create_test({
-                    "application": application,
-                    "version": version,
-                    "subdir": fixture["subdir"],
-                    "filename": fixture["filename"],
-                    "property": test_property,
-                    "test_config": test_config,
-                })
-                test_name = f"test_{application}_{version}_{test_property}"
-                test_method.__name__ = test_name
-                setattr(IntegrationTest, test_name, test_method)
+def add_tests(cls: IntegrationTestBase, application_name: str):
+    """Centralize create_test addition for application parser
+    test classes. Just provide the named subclass of IntegrationTestBase
+    and an application specified in the manifest.yaml and this should
+    do the rest.
+    """
+    for application, all_versions in manifest["applications"].items():
+        if application != application_name:
+            continue
+        for version, fixtures in all_versions.items():
+            for fixture in fixtures:
+                subdir = fixture["subdir"]
+                filename = fixture["filename"]
+                for test in fixture["tests"]:
+                    test_config = get_test_config(test)
+                    test_property = test_config.pop("property")
+                    params = {
+                        "application": application,
+                        "version": version,
+                        "subdir": subdir,
+                        "filename": filename,
+                        "property": test_property,
+                        "test_config": test_config,
+                    }
+                    test_method = create_test(params)
+                    setattr(cls, test_method.__name__, test_method)
