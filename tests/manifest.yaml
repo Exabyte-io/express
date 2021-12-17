@@ -47,7 +47,7 @@ test_config_schema:
 applications: # fixtures/
   espresso: # fixtures/espresso/
     5.4.0: # fixtures/espresso/5.4.0/
-      - path: pw.x/pw_scf # fixtures/espresso/5.4.0/pw.x/pw_scf/
+      - subdir: pw.x/pw_scf # fixtures/espresso/5.4.0/pw.x/pw_scf/
         filename: pw-scf.out
         tests:
           # Array elements are a string or object
@@ -66,20 +66,20 @@ applications: # fixtures/
           - total_force
           - atomic_forces
           - total_energy_contributions
-      - path: projwfc.x/dos
+      - subdir: projwfc.x/dos
         filename: projwfc.out
         tests:
           - dos
-      - path: matdyn.x/phonons
+      - subdir: matdyn.x/phonons
         filename: phonon_dos.out
         tests:
           - phonon_dos
-      - path: matdyn.x/phonons
+      - subdir: matdyn.x/phonons
         filename: normal_modes.out
         tests:
           - phonon_dispersions
     6.4.1:
-      - path: pw.x/pw_scf
+      - subdir: pw.x/pw_scf
         filename: pw.out
         tests:
           - total_energy
@@ -87,7 +87,7 @@ applications: # fixtures/
           - nspins
           - pressure
           - total_force
-      - path: pw.x/pw_vc_relax
+      - subdir: pw.x/pw_vc_relax
         filename: pw.out
         tests:
           - total_energy
@@ -96,7 +96,7 @@ applications: # fixtures/
           - pressure
           - total_force
     6.5.0:
-      - path: pw.x/pw_scf
+      - subdir: pw.x/pw_scf
         filename: pw.out
         tests:
           - total_energy
@@ -104,7 +104,7 @@ applications: # fixtures/
           - nspins
           - pressure
           - total_force
-      - path: pw.x/pw_vc_relax
+      - subdir: pw.x/pw_vc_relax
         filename: pw.out
         tests:
           - total_energy
@@ -113,7 +113,7 @@ applications: # fixtures/
           - pressure
           - total_force
     6.6.0:
-      - path: pw.x/pw_scf
+      - subdir: pw.x/pw_scf
         filename: pw.out
         tests:
           - total_energy
@@ -121,7 +121,7 @@ applications: # fixtures/
           - nspins
           - pressure
           - total_force
-      - path: pw.x/pw_vc_relax
+      - subdir: pw.x/pw_vc_relax
         filename: pw.out
         tests:
           - total_energy
@@ -130,7 +130,7 @@ applications: # fixtures/
           - pressure
           - total_force
     6.7.0:
-      - path: pw.x/pw_scf
+      - subdir: pw.x/pw_scf
         filename: pw.out
         tests:
           - total_energy
@@ -138,7 +138,7 @@ applications: # fixtures/
           - nspins
           - pressure
           - total_force
-      - path: pw.x/pw_vc_relax
+      - subdir: pw.x/pw_vc_relax
         filename: pw.out
         tests:
           - total_energy
@@ -147,7 +147,7 @@ applications: # fixtures/
           - pressure
           - total_force
     6.8.0:
-      - path: pw.x/pw_scf
+      - subdir: pw.x/pw_scf
         filename: pw.out
         tests:
           - total_energy
@@ -155,7 +155,7 @@ applications: # fixtures/
           - nspins
           - pressure
           - total_force
-      - path: pw.x/pw_vc_relax
+      - subdir: pw.x/pw_vc_relax
         filename: pw.out
         tests:
           - total_energy
@@ -166,7 +166,7 @@ applications: # fixtures/
 
   vasp:
     5.3.5:
-      - path: scf
+      - subdir: scf
         filename: vasp.out
         tests:
           - total_energy
@@ -182,21 +182,21 @@ applications: # fixtures/
           - total_force
           - atomic_forces
           - total_energy_contributions
-      - path: dos
+      - subdir: dos
         filename: chgcar.out
         tests:
           - dos
-      - path: hse06
+      - subdir: hse06
         filename: vasp.out
         tests: []
-      - path: noncollinear_scf
+      - subdir: noncollinear_scf
         filename: vasp.out
         tests:
           - magnetic_moments
 
   nwchem:
     7.0.0:
-      - path: scf
+      - subdir: scf
         filename: nwchem-total-energy.log
         tests:
           - total_energy
