@@ -8,7 +8,7 @@ class IntegrationTestBase(TestBase):
 
 class ApplicationTestBase(TestBase):
     """
-    Base class for express integration tests.
+    Base class for express application parser tests.
     """
 
     def __init__(
@@ -87,16 +87,13 @@ class ApplicationTestBase(TestBase):
     @staticmethod
     def get_test_name(test_params: dict):
         """Construct a unique test name based on the parameters of the test."""
-        clean = lambda s: s.replace(".", "_").replace("/", "_").replace("-", "_")
-        test_name = ["test"]
-        for attr, value in test_params.items():
-            if not isinstance(value, str):
-                continue
-            if attr == "version":
-                test_name.append(clean(test_params[attr].replace(".", "")))
-            else:
-                test_name.append(clean(test_params[attr]))
-        return "_".join(test_name)
+        def clean(s: str):
+            return s.replace(".", "").replace("/", "_").replace("-", "_")
+        test_names = [
+            clean(value) for value in test_params.values()
+            if isinstance(value, str)
+        ]
+        return "_".join(["test"] + test_names)
 
     @staticmethod
     def create_test(test_params: dict):
@@ -104,7 +101,7 @@ class ApplicationTestBase(TestBase):
         based on the required input parameters:
 
         Args:
-            params(dict): {
+            test_params(dict): {
                 "application": application name,
                 "version": version string,
                 "subdir": subdir to fixture,
@@ -126,7 +123,7 @@ class ApplicationTestBase(TestBase):
             getattr(self, comparison)(actual, expected, **self.test_config)
         return do_test
 
-def add_tests(cls: ApplicationTestBase):
+def add_tests_from_manifest(cls: ApplicationTestBase):
     """Class decorator for ApplicationTestBase subclasses to leverage
     the test manifest specification. Just decorate the named subclass
     of ApplicationTestBase and fill in the manifest.yaml.
