@@ -3,11 +3,32 @@ from typing import Union
 
 from tests import TestBase
 
-
 class IntegrationTestBase(TestBase):
+    pass
+
+class ApplicationTestBase(TestBase):
     """
     Base class for express integration tests.
     """
+
+    def __init__(
+        self,
+        *args,
+        application=None,
+        version=None,
+        subdir=None,
+        filename=None,
+        property=None,
+        test_config=None,
+        **kwargs
+    ):
+        super(ApplicationTestBase, self).__init__(*args, **kwargs)
+        self.application = application
+        self.version = version
+        self.subdir = subdir
+        self.filename = filename
+        self.property = property
+        self.test_config = test_config
 
     def work_dir(self, version: str, subdir: str):
         return os.path.join(
@@ -24,62 +45,9 @@ class IntegrationTestBase(TestBase):
             return expected[reference_index]
         return expected
 
-
-def get_test_config(test_config: Union[str, dict]) -> dict:
-    """If specified at the individual test level, construct a granular test
-    configuration, otherwise provide a default test configuration from the
-    manifest.yaml.
-
-    Note:
-        See also the test_config_schema in the manifest.yaml file and
-        example test_configs for usage. Test config keys that are not recognized
-        as keyword args to comparison methods must be popped during processing
-        or the comparison method will throw an unrecognized argument error.
-    """
-    places = 2
-    if isinstance(test_config, str):
-        return {
-            "property": test_config,
-            "places": places,
-            **TestBase.manifest["tests"][test_config],
-        }
-    return {
-        **TestBase.manifest["tests"][test_config["name"]],
-        "property": test_config.pop("name"),
-        "places": places,
-        **test_config,
-    }
-
-
-def create_test(params: dict):
-    """Function factory that generates a uniquely named TestCase method
-    based on the required input parameters:
-
-    Args:
-        params(dict): {
-            "application": application name,
-            "version": version string,
-            "subdir": subdir to fixture,
-            "filename": test filename,
-            "property": test property,
-            "test_config": test config from manifest,
-        }
-
-    Returns:
-        func(function): a unittest.TestCase.test_method
-
-    """
-    clean = lambda s: s.replace(".", "_").replace("/", "_").replace("-", "_")
-    test_names = ["test"]
-    for k, v in params.items():
-        if isinstance(v, str):
-            if k == "version":
-                test_names.append(clean(v.replace(".", "")))
-            else:
-                test_names.append(clean(v))
-    def do_test(self):
-        for k, v in params.items():
-            setattr(self, k, v)
+    def get_actual_value(self):
+        """Obtain the output value from a parser extraction to be compared
+        with a reference value."""
         work_dir = self.work_dir(self.version, self.subdir)
         # TODO: os.path.join(workdir, self.filename) should not be necessary
         parser = self.parser(
@@ -89,36 +57,101 @@ def create_test(params: dict):
         actual_index = self.test_config.pop("actual_index", None)
         if actual_index is not None:
             actual = actual[actual_index]
-        expected = self.get_reference_value()
-        comparison = self.test_config.pop("comparison")
-        getattr(self, comparison)(actual, expected, **self.test_config)
-    do_test.__name__ = "_".join(test_names)
-    return do_test
+        return actual
 
+    def get_test_config(self, test_config: Union[str, dict]) -> dict:
+        """If specified at the individual test level, construct a granular test
+        configuration, otherwise provide a default test configuration from the
+        manifest.yaml.
 
-def add_tests(cls: IntegrationTestBase, application_name: str):
-    """Centralize create_test addition for application parser
-    test classes. Just provide the named subclass of IntegrationTestBase
-    and an application specified in the manifest.yaml and this should
-    do the rest.
+        Note:
+            See also the test_config_schema in the manifest.yaml file and
+            example test_configs for usage. Test config keys that are not recognized
+            as keyword args to comparison methods must be popped during processing
+            or the comparison method will throw an unrecognized argument error.
+        """
+        places = 2
+        if isinstance(test_config, str):
+            return {
+                "property": test_config,
+                "places": places,
+                **self.manifest["tests"][test_config],
+            }
+        return {
+            **self.manifest["tests"][test_config["name"]],
+            "property": test_config.pop("name"),
+            "places": places,
+            **test_config,
+        }
+
+    @staticmethod
+    def get_test_name(test_params: dict):
+        """Construct a unique test name based on the parameters of the test."""
+        clean = lambda s: s.replace(".", "_").replace("/", "_").replace("-", "_")
+        test_name = ["test"]
+        for attr, value in test_params.items():
+            if not isinstance(value, str):
+                continue
+            if attr == "version":
+                test_name.append(clean(test_params[attr].replace(".", "")))
+            else:
+                test_name.append(clean(test_params[attr]))
+        return "_".join(test_name)
+
+    @staticmethod
+    def create_test(test_params: dict):
+        """Function factory that generates a uniquely named TestCase method
+        based on the required input parameters:
+
+        Args:
+            params(dict): {
+                "application": application name,
+                "version": version string,
+                "subdir": subdir to fixture,
+                "filename": test filename,
+                "property": test property,
+                "test_config": test config from manifest,
+            }
+
+        Returns:
+            func(function): a unittest.TestCase.test_method
+
+        """
+        def do_test(self):
+            for k, v in test_params.items():
+                setattr(self, k, v)
+            expected = self.get_reference_value()
+            actual = self.get_actual_value()
+            comparison = self.test_config.pop("comparison")
+            getattr(self, comparison)(actual, expected, **self.test_config)
+        return do_test
+
+def add_tests(cls: ApplicationTestBase):
+    """Class decorator for ApplicationTestBase subclasses to leverage
+    the test manifest specification. Just decorate the named subclass
+    of ApplicationTestBase and fill in the manifest.yaml.
+
+    Note: subclasses must specify the following attributes
+        application(str): name of the application
+        parser(cls): application parser class
+        references(dict): reference values
+
     """
-    for application, all_versions in TestBase.manifest["applications"].items():
-        if application != application_name:
-            continue
-        for version, fixtures in all_versions.items():
-            for fixture in fixtures:
-                subdir = fixture["subdir"]
-                filename = fixture["filename"]
-                for test in fixture["tests"]:
-                    test_config = get_test_config(test)
-                    test_property = test_config.pop("property")
-                    params = {
-                        "application": application,
-                        "version": version,
-                        "subdir": subdir,
-                        "filename": filename,
-                        "property": test_property,
-                        "test_config": test_config,
-                    }
-                    test_method = create_test(params)
-                    setattr(cls, test_method.__name__, test_method)
+    test_manifest = cls.manifest["applications"][cls.application]
+    for version, fixtures in test_manifest.items():
+        for fixture in fixtures:
+            for test in fixture["tests"]:
+                test_config = cls.get_test_config(cls, test)
+                test_params = {
+                    "application": cls.application,
+                    "version": version,
+                    "subdir": fixture["subdir"],
+                    "filename": fixture["filename"],
+                    "property": test_config.pop("property"),
+                    "test_config": test_config,
+                }
+                test_method = cls.create_test(test_params)
+                test_name = cls.get_test_name(test_params)
+                test_method.__name__ = test_name
+                setattr(cls, test_name, test_method)
+    return cls
