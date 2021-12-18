@@ -99,7 +99,9 @@ class Espresso640XMLParser(BaseXMLParser):
             # Basic information about the kpoint
             kpoint = {}
             kpoint_node = ks_energy_node.find("k_point")
-            kpoint["kpoint"] = string_to_vec(kpoint_node.text)  # Coordinates
+            cartesian_kpoint = string_to_vec(kpoint_node.text, container=np.ndarray),
+            crystal_kpoint = np.dot(cartesian_kpoint, self.get_inverse_reciprocal_lattice_vectors())
+            kpoint["kpoint"] = crystal_kpoint  # Coordinates
             kpoint["weight"] = float(kpoint_node.get("weight"))
 
             # Extract eigenvalues
@@ -172,6 +174,21 @@ class Espresso640XMLParser(BaseXMLParser):
             vectors[key] = vector
 
         return result
+
+    def final_reciprocal_lattice_vectors(self) -> Dict[str, Dict[str, Union[float, List[float]]]]:
+        """
+        Convenient alias for final_lattice_vectors with reciprocal set to true
+        """
+        return self.final_lattice_vectors(reciprocal=True)
+
+    def get_inverse_reciprocal_lattice_vectors(self) -> np.ndarray:
+        """
+        Computes the inverse reciprocal lattice vector
+        """
+        reciprocal_lattice = self.final_reciprocal_lattice_vectors()
+        lattice_array = np.array([reciprocal_lattice['vectors'][i] for i in ('a', 'b', 'c')])
+        inverted_lattice_array = np.linalg.inv(lattice_array)
+        return inverted_lattice_array
 
     def final_basis(self) -> Dict[str, Union[str, Dict]]:
         """
