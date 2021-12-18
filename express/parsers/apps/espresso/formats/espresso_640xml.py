@@ -99,9 +99,9 @@ class Espresso640XMLParser(BaseXMLParser):
             # Basic information about the kpoint
             kpoint = {}
             kpoint_node = ks_energy_node.find("k_point")
-            cartesian_kpoint = string_to_vec(kpoint_node.text, container=np.ndarray),
+            cartesian_kpoint = np.array(string_to_vec(kpoint_node.text))
             crystal_kpoint = np.dot(cartesian_kpoint, self.get_inverse_reciprocal_lattice_vectors())
-            kpoint["kpoint"] = crystal_kpoint  # Coordinates
+            kpoint["kpoint"] = crystal_kpoint.tolist()  # Coordinates
             kpoint["weight"] = float(kpoint_node.get("weight"))
 
             # Extract eigenvalues
