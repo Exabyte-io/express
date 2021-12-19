@@ -35,7 +35,7 @@ class EspressoParser(BaseParser, IonicDataMixin, ElectronicDataMixin, Reciprocal
     def xml_parser(self):
         if self._xml_parser is None:
             xml_path = self.find_xml_file()
-            dirname, basename = self.unix_path_names(xml_path)
+            _, basename = self.unix_path_names(xml_path)
             self._xml_parser = self._xml_parsers[basename](xml_path)
         return self._xml_parser
 
