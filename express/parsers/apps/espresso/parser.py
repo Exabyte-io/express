@@ -1,4 +1,5 @@
 import os
+import logging
 import numpy as np
 from typing import List, Dict, Union, Any
 
@@ -28,24 +29,14 @@ class EspressoParser(BaseParser, IonicDataMixin, ElectronicDataMixin, Reciprocal
         self.work_dir = self.kwargs["work_dir"]
         self.stdout_file = self.kwargs["stdout_file"]
         self.txt_parser = EspressoTXTParser(self.work_dir)
-        self._xml_full_file_path = None
-        self._xml_data_file = None
         self._xml_parser = None
-
-    @property
-    def xml_data_file(self):
-        return os.path.split(self.xml_full_file_path)[-1]
-
-    @property
-    def xml_full_file_path(self):
-        if self._xml_full_file_path is None:
-            self._xml_full_file_path = self.find_xml_file()
-        return self._xml_full_file_path
 
     @property
     def xml_parser(self):
         if self._xml_parser is None:
-            self._xml_parser = self._xml_parsers[self.xml_data_file](self.xml_full_file_path)
+            xml_path = self.find_xml_file()
+            dirname, basename = self.unix_path_names(xml_path)
+            self._xml_parser = self._xml_parsers[basename](xml_path)
         return self._xml_parser
 
     def find_xml_file(self):
@@ -350,7 +341,8 @@ class EspressoParser(BaseParser, IonicDataMixin, ElectronicDataMixin, Reciprocal
                 basis = self.txt_parser.initial_basis(self._get_file_content(pw_scf_output_file))
                 lattice = self.txt_parser.initial_lattice_vectors(self._get_file_content(pw_scf_output_file))
                 structures.append(lattice_basis_to_poscar(lattice, basis))
-            except Exception:
+            except Exception as e:
+                logging.error(f"unhandled exception: {repr(e)}")
                 raise # TODO: this is vacuous
         return structures
 
@@ -362,6 +354,7 @@ class EspressoParser(BaseParser, IonicDataMixin, ElectronicDataMixin, Reciprocal
                 lattice = self.txt_parser.final_lattice_vectors(self._get_file_content(pw_scf_output_file))
                 structures.append(lattice_basis_to_poscar(lattice, basis))
             except Exception:
+                logging.error(f"exception finalizing structure: {repr(e)}")
                 pass
         return structures
 
