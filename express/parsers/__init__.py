@@ -12,8 +12,10 @@ class BaseParser(object):
         self.args = args
         self.kwargs = kwargs
 
-    def unix_path_names(self, full_path: str) -> Tuple[str, str]:
-        """Return unix-like dirname and basename from a full path"""
+    def get_unix_path_names(self, full_path: str) -> Tuple[str, str]:
+        """
+        Return unix-like dirname and basename from a full path
+        """
         *dirname, basename = os.path.split(full_path)
         return os.sep.join(dirname), basename
 
