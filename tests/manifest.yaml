@@ -38,11 +38,21 @@ tests:
     comparison: assertDeepAlmostEqual
 
 test_config_schema:
-  name: name of property to test
-  comparison: assertion method to use to compare actual to expected
-  places: number of decimal places to use in comparison
-  reference_index: index of nested reference structure to use for comparison
-  actual_index: index of nested actual parsed data to use for comparison
+  - name: name
+    description: name of property to test
+    type: string
+  - name: comparison
+    description: assertion method to use to compare actual to expected
+    type: string
+  - name: places
+    description: number of decimal places to use in comparison
+    type: int
+  - name: reference_index
+    description: index of nested reference structure to use for comparison
+    type: int
+  - name: actual_index
+    description: index of nested actual parsed data to use for comparison
+    type: int
 
 applications: # fixtures/
   espresso: # fixtures/espresso/

@@ -86,7 +86,20 @@ class ApplicationTestBase(TestBase):
 
     @staticmethod
     def get_test_name(test_params: dict):
-        """Construct a unique test name based on the parameters of the test."""
+        """
+        Construct a unique test name based on the parameters of the test.
+
+        Example:
+            test_params = {
+                "application": "espresso",
+                "version": "5.4.0",
+                "subdir": "pw.x/pw_scf",
+                "filename": "pw-scf.out",
+                "property": "total_energy",
+            }
+            =>
+            test_name = "espresso_540_pwx_pw_scf_pw_scf_out_total_energy"
+        """
         def clean(s: str):
             return s.replace(".", "").replace("/", "_").replace("-", "_")
         test_names = [
