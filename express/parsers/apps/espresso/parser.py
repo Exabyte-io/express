@@ -343,6 +343,7 @@ class EspressoParser(BaseParser, IonicDataMixin, ElectronicDataMixin, Reciprocal
                 structures.append(lattice_basis_to_poscar(lattice, basis))
             except Exception as e:
                 logging.error(f"unhandled exception: {repr(e)}")
+                print(f"unhandled exception: {repr(e)}")
                 raise # TODO: this is vacuous
         return structures
 
@@ -355,6 +356,7 @@ class EspressoParser(BaseParser, IonicDataMixin, ElectronicDataMixin, Reciprocal
                 structures.append(lattice_basis_to_poscar(lattice, basis))
             except Exception:
                 logging.error(f"exception finalizing structure: {repr(e)}")
+                print(f"exception finalizing structures: {repr(e)}")
                 pass
         return structures
 

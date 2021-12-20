@@ -82,6 +82,7 @@ class Material(BaseProperty):
         # TODO: Determine how to avoid an eternal pass when one derived property fails
         except:
             logging.info("Derived properties array empty due to failure to caluclate one (or more) values.")
+            print("Derived properties array empty due to failure to calculate one (or more) values.")
             pass
         return derived_properties
 
