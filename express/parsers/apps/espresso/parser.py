@@ -57,7 +57,8 @@ class EspressoParser(BaseParser, IonicDataMixin, ElectronicDataMixin, Reciprocal
             for file_ in files:
                 if file_ in self._xml_parsers.keys():
                     file_path = os.path.join(root, file_)
-                    if not is_sternheimer_gw or (is_sternheimer_gw and settings.STERNHEIMER_GW0_DIR_PATTERN in file_path):
+                    if not is_sternheimer_gw or (
+                            is_sternheimer_gw and settings.STERNHEIMER_GW0_DIR_PATTERN in file_path):
                         return file_path
 
     def total_energy(self) -> float:

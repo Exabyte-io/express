@@ -34,7 +34,7 @@ tests:
     comparison: assertDeepAlmostEqual
   reciprocal_lattice:
     comparison: assertDeepAlmostEqual
-  realspace_lattice:
+  final_lattice_vectors:
     comparison: assertDeepAlmostEqual
 
 test_config_schema:
@@ -76,6 +76,7 @@ applications: # fixtures/
           - total_force
           - atomic_forces
           - total_energy_contributions
+          - final_lattice_vectors
       - subdir: projwfc.x/dos
         filename: projwfc.out
         tests:
@@ -97,6 +98,9 @@ applications: # fixtures/
           - nspins
           - pressure
           - total_force
+          - final_lattice_vectors
+          - name: eigenvalues_at_kpoints
+            actual_index: 0
       - subdir: pw.x/pw_vc_relax
         filename: pw.out
         tests:
@@ -105,6 +109,9 @@ applications: # fixtures/
           - nspins
           - pressure
           - total_force
+          - final_lattice_vectors
+          - name: eigenvalues_at_kpoints
+            actual_index: 0
     6.5.0:
       - subdir: pw.x/pw_scf
         filename: pw.out
@@ -114,6 +121,9 @@ applications: # fixtures/
           - nspins
           - pressure
           - total_force
+          - final_lattice_vectors
+          - name: eigenvalues_at_kpoints
+            actual_index: 0
       - subdir: pw.x/pw_vc_relax
         filename: pw.out
         tests:
@@ -122,6 +132,9 @@ applications: # fixtures/
           - nspins
           - pressure
           - total_force
+          - final_lattice_vectors
+          - name: eigenvalues_at_kpoints
+            actual_index: 0
     6.6.0:
       - subdir: pw.x/pw_scf
         filename: pw.out
@@ -131,6 +144,9 @@ applications: # fixtures/
           - nspins
           - pressure
           - total_force
+          - final_lattice_vectors
+          - name: eigenvalues_at_kpoints
+            actual_index: 0
       - subdir: pw.x/pw_vc_relax
         filename: pw.out
         tests:
@@ -139,6 +155,9 @@ applications: # fixtures/
           - nspins
           - pressure
           - total_force
+          - final_lattice_vectors
+          - name: eigenvalues_at_kpoints
+            actual_index: 0
     6.7.0:
       - subdir: pw.x/pw_scf
         filename: pw.out
@@ -148,6 +167,9 @@ applications: # fixtures/
           - nspins
           - pressure
           - total_force
+          - final_lattice_vectors
+          - name: eigenvalues_at_kpoints
+            actual_index: 0
       - subdir: pw.x/pw_vc_relax
         filename: pw.out
         tests:
@@ -156,6 +178,9 @@ applications: # fixtures/
           - nspins
           - pressure
           - total_force
+          - final_lattice_vectors
+          - name: eigenvalues_at_kpoints
+            actual_index: 0
     6.8.0:
       - subdir: pw.x/pw_scf
         filename: pw.out
@@ -165,6 +190,9 @@ applications: # fixtures/
           - nspins
           - pressure
           - total_force
+          - final_lattice_vectors
+          - name: eigenvalues_at_kpoints
+            actual_index: 0
       - subdir: pw.x/pw_vc_relax
         filename: pw.out
         tests:
@@ -173,6 +201,9 @@ applications: # fixtures/
           - nspins
           - pressure
           - total_force
+          - final_lattice_vectors
+          - name: eigenvalues_at_kpoints
+            actual_index: 0
 
   vasp:
     5.3.5:
