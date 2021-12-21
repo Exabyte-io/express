@@ -1,11 +1,11 @@
 import os
 
+from tests import TestBase
 from tests.fixtures.data import SI
 from express.parsers.structure import StructureParser
-from tests.integration.parsers.chemical_file_formats import ChemicalFileFormatTestBase
 
 
-class TestStructureParser(ChemicalFileFormatTestBase):
+class TestStructureParser(TestBase):
 
     def setUp(self):
         super().setUp()

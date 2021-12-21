@@ -3,8 +3,6 @@ from typing import Union
 
 from tests import TestBase
 
-class IntegrationTestBase(TestBase):
-    pass
 
 class ApplicationTestBase(TestBase):
     """
@@ -36,8 +34,10 @@ class ApplicationTestBase(TestBase):
         )
 
     def get_reference_value(self):
-        """Obtain the appropriate reference value to use as an expected value for the
-        parser extraction."""
+        """
+        Obtain the appropriate reference value to use as an expected value for the
+        parser extraction.
+        """
         sub_path = self.subdir.split("/")[-1]
         expected = self.references[self.version][sub_path][self.property]
         reference_index = self.test_config.pop("reference_index", None)
@@ -46,8 +46,10 @@ class ApplicationTestBase(TestBase):
         return expected
 
     def get_actual_value(self):
-        """Obtain the output value from a parser extraction to be compared
-        with a reference value."""
+        """
+        Obtain the output value from a parser extraction to be compared
+        with a reference value.
+        """
         work_dir = self.work_dir(self.version, self.subdir)
         # TODO: os.path.join(workdir, self.filename) should not be necessary
         parser = self.parser(
@@ -60,7 +62,8 @@ class ApplicationTestBase(TestBase):
         return actual
 
     def get_test_config(self, test_config: Union[str, dict]) -> dict:
-        """If specified at the individual test level, construct a granular test
+        """
+        If specified at the individual test level, construct a granular test
         configuration, otherwise provide a default test configuration from the
         manifest.yaml.
 
@@ -110,7 +113,8 @@ class ApplicationTestBase(TestBase):
 
     @staticmethod
     def create_test(test_params: dict):
-        """Function factory that generates a uniquely named TestCase method
+        """
+        Function factory that generates a uniquely named TestCase method
         based on the required input parameters:
 
         Args:
@@ -137,7 +141,8 @@ class ApplicationTestBase(TestBase):
         return do_test
 
 def add_tests_from_manifest(cls: ApplicationTestBase):
-    """Class decorator for ApplicationTestBase subclasses to leverage
+    """
+    Class decorator for ApplicationTestBase subclasses to leverage
     the test manifest specification. Just decorate the named subclass
     of ApplicationTestBase and fill in the manifest.yaml.
 
