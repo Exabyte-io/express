@@ -45,6 +45,16 @@ class EspressoLegacyXMLParser(BaseXMLParser):
         result = TAG_VALUE_CAST_MAP[type](tag.text, size, columns)
         return result[0][0] if size == 1 and type not in ['logical', 'character'] else result
 
+    def application_version(self) -> str:
+        """
+        Returns the version of Espresso found in the XML file.
+        Returns:
+            str: The version of the application
+        """
+        creator_node = self.traverse_xml(self.root, ("HEADER", "CREATOR"))
+        creator_version = creator_node.get("VERSION", default="VERSION_NOT_FOUND")
+        return creator_version
+
     def fermi_energy(self):
         """
         Extracts fermi energy.
