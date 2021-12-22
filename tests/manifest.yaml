@@ -36,6 +36,8 @@ tests:
     comparison: assertDeepAlmostEqual
   final_lattice_vectors:
     comparison: assertDeepAlmostEqual
+  application_version:
+    comparison: assertDeepAlmostEqual
 
 test_config_schema:
   - name: name
@@ -77,6 +79,7 @@ applications: # fixtures/
           - atomic_forces
           - total_energy_contributions
           - final_lattice_vectors
+          - application_version
       - subdir: projwfc.x/dos
         filename: projwfc.out
         tests:
@@ -101,6 +104,7 @@ applications: # fixtures/
           - final_lattice_vectors
           - name: eigenvalues_at_kpoints
             actual_index: 0
+          - application_version
       - subdir: pw.x/pw_vc_relax
         filename: pw.out
         tests:
@@ -112,6 +116,7 @@ applications: # fixtures/
           - final_lattice_vectors
           - name: eigenvalues_at_kpoints
             actual_index: 0
+          - application_version
     6.5.0:
       - subdir: pw.x/pw_scf
         filename: pw.out
@@ -124,6 +129,7 @@ applications: # fixtures/
           - final_lattice_vectors
           - name: eigenvalues_at_kpoints
             actual_index: 0
+          - application_version
       - subdir: pw.x/pw_vc_relax
         filename: pw.out
         tests:
@@ -135,6 +141,7 @@ applications: # fixtures/
           - final_lattice_vectors
           - name: eigenvalues_at_kpoints
             actual_index: 0
+          - application_version
     6.6.0:
       - subdir: pw.x/pw_scf
         filename: pw.out
@@ -147,6 +154,7 @@ applications: # fixtures/
           - final_lattice_vectors
           - name: eigenvalues_at_kpoints
             actual_index: 0
+          - application_version
       - subdir: pw.x/pw_vc_relax
         filename: pw.out
         tests:
@@ -158,6 +166,7 @@ applications: # fixtures/
           - final_lattice_vectors
           - name: eigenvalues_at_kpoints
             actual_index: 0
+          - application_version
     6.7.0:
       - subdir: pw.x/pw_scf
         filename: pw.out
@@ -170,6 +179,7 @@ applications: # fixtures/
           - final_lattice_vectors
           - name: eigenvalues_at_kpoints
             actual_index: 0
+          - application_version
       - subdir: pw.x/pw_vc_relax
         filename: pw.out
         tests:
@@ -181,6 +191,7 @@ applications: # fixtures/
           - final_lattice_vectors
           - name: eigenvalues_at_kpoints
             actual_index: 0
+          - application_version
     6.8.0:
       - subdir: pw.x/pw_scf
         filename: pw.out
@@ -193,6 +204,7 @@ applications: # fixtures/
           - final_lattice_vectors
           - name: eigenvalues_at_kpoints
             actual_index: 0
+          - application_version
       - subdir: pw.x/pw_vc_relax
         filename: pw.out
         tests:
@@ -204,6 +216,7 @@ applications: # fixtures/
           - final_lattice_vectors
           - name: eigenvalues_at_kpoints
             actual_index: 0
+          - application_version
 
   vasp:
     5.3.5:
