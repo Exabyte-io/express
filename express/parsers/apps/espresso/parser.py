@@ -1,4 +1,5 @@
 import os
+import logging
 import numpy as np
 from typing import List, Dict, Union, Any
 
@@ -14,10 +15,14 @@ from express.parsers.apps.espresso.formats.espresso_640xml import Espresso640XML
 from express.parsers.apps.espresso.formats.espresso_legacyxml import EspressoLegacyXMLParser
 
 
-class EspressoLegacyParser(BaseParser, IonicDataMixin, ElectronicDataMixin, ReciprocalDataMixin):
+class EspressoParser(BaseParser, IonicDataMixin, ElectronicDataMixin, ReciprocalDataMixin):
     """
     Espresso parser class.
     """
+    _xml_parsers = {
+        "data-file.xml": EspressoLegacyXMLParser,
+        "data-file-schema.xml": Espresso640XMLParser,
+    }
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -29,7 +34,9 @@ class EspressoLegacyParser(BaseParser, IonicDataMixin, ElectronicDataMixin, Reci
     @property
     def xml_parser(self):
         if self._xml_parser is None:
-            self._xml_parser = EspressoLegacyXMLParser(self.find_xml_file())
+            xml_path = self.find_xml_file()
+            _, basename = self.get_unix_path_names(xml_path)
+            self._xml_parser = self._xml_parsers[basename](xml_path)
         return self._xml_parser
 
     def find_xml_file(self):
@@ -38,15 +45,20 @@ class EspressoLegacyParser(BaseParser, IonicDataMixin, ElectronicDataMixin, Reci
 
         Note: Sternheimer GW XML file of the first process (gw0) is returned if this a Sternheimer GW calculation.
 
+        Note:
+            Sternheimer GW is not maintained anymore in recent versions of Espresso, and breaks compilation.
+            If recent XML file format is detected then is_sternheimer_gw should be False anyway
+
         Returns:
             str
         """
         is_sternheimer_gw = self._is_sternheimer_gw_calculation()
         for root, dirs, files in os.walk(self.work_dir, followlinks=True):
-            for file_ in [f for f in files if settings.XML_DATA_FILE == f]:
-                file_path = os.path.join(root, file_)
-                if not is_sternheimer_gw or (is_sternheimer_gw and settings.STERNHEIMER_GW0_DIR_PATTERN in file_path):
-                    return file_path
+            for file_ in files:
+                if file_ in self._xml_parsers.keys():
+                    file_path = os.path.join(root, file_)
+                    if not is_sternheimer_gw or (is_sternheimer_gw and settings.STERNHEIMER_GW0_DIR_PATTERN in file_path):
+                        return file_path
 
     def total_energy(self) -> float:
         """
@@ -104,6 +116,7 @@ class EspressoLegacyParser(BaseParser, IonicDataMixin, ElectronicDataMixin, Reci
             func: express.parsers.mixins.electronic.ElectronicDataMixin.eigenvalues_at_kpoints
         """
         if self._is_sternheimer_gw_calculation():
+            # TODO: Right above this it says don't read the whole file into memory
             text = self._get_file_content(self.stdout_file)
             inverse_reciprocal_lattice_vectors = self.xml_parser.get_inverse_reciprocal_lattice_vectors()
             return self.txt_parser.eigenvalues_at_kpoints_from_sternheimer_gw_stdout(text,
@@ -328,8 +341,10 @@ class EspressoLegacyParser(BaseParser, IonicDataMixin, ElectronicDataMixin, Reci
                 basis = self.txt_parser.initial_basis(self._get_file_content(pw_scf_output_file))
                 lattice = self.txt_parser.initial_lattice_vectors(self._get_file_content(pw_scf_output_file))
                 structures.append(lattice_basis_to_poscar(lattice, basis))
-            except:
-                raise
+            except Exception as e:
+                logging.error(f"unhandled exception: {repr(e)}")
+                print(f"unhandled exception: {repr(e)}")
+                raise # TODO: this is vacuous
         return structures
 
     def final_structure_strings(self) -> List[str]:
@@ -339,31 +354,9 @@ class EspressoLegacyParser(BaseParser, IonicDataMixin, ElectronicDataMixin, Reci
                 basis = self.txt_parser.final_basis(self._get_file_content(pw_scf_output_file))
                 lattice = self.txt_parser.final_lattice_vectors(self._get_file_content(pw_scf_output_file))
                 structures.append(lattice_basis_to_poscar(lattice, basis))
-            except:
+            except Exception:
+                logging.error(f"exception finalizing structure: {repr(e)}")
+                print(f"exception finalizing structures: {repr(e)}")
                 pass
         return structures
 
-
-class EspressoParser(EspressoLegacyParser):
-
-    def _is_sternheimer_gw_calculation(self):
-        """
-        Sternheimer GW is not maintained anymore in Espresso, and breaks compilation in recent versions.
-        The versions of express we use this parser with cannot run Sternheimer GW, therefore this is always false.
-
-        Returns:
-            False
-        """
-        return False
-
-    def xml_parser(self):
-        if self._xml_parser is None:
-            self._xml_parser = Espresso640XMLParser(self.find_xml_file())
-        return self._xml_parser
-
-
-    def fermi_energy(self):
-        return self.ase_parser.fermi_energy()
-
-    def eigenvalues_at_kpoints(self) -> List:
-        return self.ase_parser.eigenvalues_at_kpoints()

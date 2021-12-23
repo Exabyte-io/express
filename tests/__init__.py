@@ -1,30 +1,33 @@
+import functools
 import os
 import yaml
 import unittest
 import numpy as np
 
 
+@functools.lru_cache(maxsize=1)
+def get_test_manifest():
+    rootDir = os.path.dirname(__file__)
+    with open(os.path.join(rootDir, "manifest.yaml")) as fp:
+        manifest = yaml.load(fp, Loader=yaml.FullLoader)
+    return manifest
+
+
 class TestBase(unittest.TestCase):
     """
     Base class for express tests.
     """
+    manifest = get_test_manifest()
+
+    @property
+    def rootDir(self):
+        return os.path.dirname(__file__)
 
     def setUp(self):
         super(TestBase, self).setUp()
-        self.rootDir = os.path.dirname(__file__)
 
     def tearDown(self):
         super(TestBase, self).tearDown()
-
-    def getManifest(self):
-        """
-        Returns test's manifest.
-
-        Returns:
-            dict
-        """
-        with open(os.path.join(self.rootDir, "manifest.yaml")) as f:
-            return yaml.load(f.read(), Loader=yaml.FullLoader)[self._testMethodName]
 
     def assertDeepAlmostEqual(self, expected, actual, *args, **kwargs):
         """
