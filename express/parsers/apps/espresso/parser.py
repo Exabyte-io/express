@@ -61,6 +61,27 @@ class EspressoParser(BaseParser, IonicDataMixin, ElectronicDataMixin, Reciprocal
                             is_sternheimer_gw and settings.STERNHEIMER_GW0_DIR_PATTERN in file_path):
                         return file_path
 
+    def application_version(self) -> str:
+        """
+        Returns the version of Espresso found in the XML file.
+        Returns:
+            str: The version of the application
+        """
+        # This dict maps the version reported by the XML parser to the full version number, for use in the rest of
+        # our platform
+        versions_map = {
+            "6.5": "6.5.0",
+            "6.6": "6.6.0",
+            "6.7MaX": "6.7.0",
+            "6.7": "6.7.0",
+            "6.8": "6.8.0"
+
+        }
+        parsed_version = self.xml_parser.application_version()
+        version = versions_map.get(parsed_version, parsed_version)
+        return version
+
+
     def total_energy(self) -> float:
         """
         Returns total energy.
@@ -360,3 +381,4 @@ class EspressoParser(BaseParser, IonicDataMixin, ElectronicDataMixin, Reciprocal
                 print(f"exception finalizing structures: {repr(e)}")
                 pass
         return structures
+

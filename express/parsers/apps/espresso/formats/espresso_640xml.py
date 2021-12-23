@@ -25,6 +25,16 @@ class Espresso640XMLParser(BaseXMLParser):
             self._steps = sorted(self.root.findall("step"), key=lambda node: int(node.get("n_step")))
         return self._steps
 
+    def application_version(self) -> str:
+        """
+        Returns the version of Espresso found in the XML file.
+        Returns:
+            str: The version of the application
+        """
+        creator_node = self.traverse_xml(self.root, ("general_info", "creator"))
+        creator_version = creator_node.get("VERSION", default="VERSION_NOT_FOUND")
+        return creator_version
+
     def fermi_energy(self) -> float:
         """
         Extracts fermi energy.
