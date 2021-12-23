@@ -1,11 +1,11 @@
 import os
 
+from tests import TestBase
 from tests.fixtures.structural.references import INCHI_DATA
 from express.parsers.molecule import MoleculeParser
-from tests.integration.parsers.chemical_file_formats import ChemicalFileFormatTestBase
 
 
-class TestMoleculeParser(ChemicalFileFormatTestBase):
+class TestMoleculeParser(TestBase):
 
     def setUp(self):
         super().setUp()

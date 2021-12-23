@@ -1,4 +1,5 @@
 import os
+import logging
 import numpy as np
 
 from express.parsers import BaseParser
@@ -126,6 +127,7 @@ class VaspParser(BaseParser, IonicDataMixin, ElectronicDataMixin, ReciprocalData
         try:
             atom_names = self.xml_parser.atom_names()
         except Exception:
+            logging.error("atom_names can not be extracted")
             print("atom_names can not be extracted")
             atom_names = []
         return self.txt_parser.convergence_electronic(outcar, stdout, atom_names)
