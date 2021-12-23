@@ -1,6 +1,9 @@
 from typing import List, Dict, Union
 
+import numpy as np
+
 from express.parsers.formats.xml import BaseXMLParser
+from express.parsers.utils import string_to_vec
 from express.parsers.settings import Constant
 
 
@@ -58,6 +61,80 @@ class Espresso640XMLParser(BaseXMLParser):
 
         return nspin
 
+    def eigenvalues_at_kpoints(self):
+        """
+        Returns eigenvalues for all kpoints.
+
+        Returns:
+             list
+
+        Example:
+            [
+                {
+                    'kpoint': [-0.5, 0.5, 0.5],
+                    'weight': 9.5238095E-002,
+                    'eigenvalues': [
+                        {
+                            'energies': [-1.4498446E-001, ..., 4.6507387E-001],
+                            'occupations': [1, ... , 0],
+                            'spin': 0.5
+                        }
+                    ]
+                },
+                ...
+            ]
+        """
+
+        # Determine if we have multiple spin states
+        # We're doing it this way to avoid coupling to the `self.nspins()` behavior. If there are up/down bands, then
+        # we know there are multiple spins. Otherwise, it only makes sense to treet it as having a single spin state.
+        bandstructure_node = self.traverse_xml(self.root, ("output", "band_structure"))
+        if bandstructure_node.find("nbnd_up"):
+            has_multiple_bands = True
+        else:
+            has_multiple_bands = False
+
+        kpoints = []
+        for ks_energy_node in bandstructure_node.findall("ks_energies"):
+            # Basic information about the kpoint
+            kpoint = {}
+            kpoint_node = ks_energy_node.find("k_point")
+            cartesian_kpoint = np.array(string_to_vec(kpoint_node.text))
+            crystal_kpoint = np.dot(cartesian_kpoint, self.get_inverse_reciprocal_lattice_vectors())
+            kpoint["kpoint"] = crystal_kpoint.tolist()  # Coordinates
+            kpoint["weight"] = float(kpoint_node.get("weight"))
+
+            # Extract eigenvalues
+            eigenvalue_text = ks_energy_node.find("eigenvalues").text
+            occupation_text = ks_energy_node.find("occupations").text
+            energies = [component * Constant.HARTREE for component in string_to_vec(eigenvalue_text)]
+            occupations = string_to_vec(occupation_text, dtype=float)
+
+            # Split into up/down spin if we need to
+            # In the case of having multiple spins, the spin up states are listed before the spin down states, hence
+            # the list slicing.
+            if has_multiple_bands:
+                nband_up = int(bandstructure_node.find("nbnd_up").text)
+                eigenvalues_up = {
+                    "energies": energies[0:nband_up],
+                    "occupations": occupations[0:nband_up],
+                    "spin": 0.5,
+                }
+                eigenvalues_down = {
+                    "energies": energies[nband_up:-1],
+                    "occupations": occupations[nband_up:-1],
+                    "spin": -0.5,
+                }
+                eigenvalues = [eigenvalues_up, eigenvalues_down]
+            else:
+                eigenvalues = [{
+                    "energies": energies,
+                    "occupations": occupations,
+                    "spin": 0.5,  # ToDo: Is this the value we expect for when there is only one spin?
+                }]
+            kpoint["eigenvalues"] = eigenvalues
+            kpoints.append(kpoint)
+        return kpoints
 
     def final_lattice_vectors(self, reciprocal=False) -> Dict[str, Dict[str, Union[float, List[float]]]]:
         """
@@ -92,11 +169,26 @@ class Espresso640XMLParser(BaseXMLParser):
             result["units"] = "angstrom"
 
         for key, tag in zip(("a", "b", "c"), tags):
-            vector = self.string_to_vec(cell_node.find(tag).text, dtype=float)
+            vector = string_to_vec(cell_node.find(tag).text, dtype=float)
             vector = [component * scale_factor for component in vector]
             vectors[key] = vector
 
         return result
+
+    def final_reciprocal_lattice_vectors(self) -> Dict[str, Dict[str, Union[float, List[float]]]]:
+        """
+        Convenient alias for final_lattice_vectors with reciprocal set to true
+        """
+        return self.final_lattice_vectors(reciprocal=True)
+
+    def get_inverse_reciprocal_lattice_vectors(self) -> np.ndarray:
+        """
+        Computes the inverse reciprocal lattice vector
+        """
+        reciprocal_lattice = self.final_reciprocal_lattice_vectors()
+        lattice_array = np.array([reciprocal_lattice['vectors'][i] for i in ('a', 'b', 'c')])
+        inverted_lattice_array = np.linalg.inv(lattice_array)
+        return inverted_lattice_array
 
     def final_basis(self) -> Dict[str, Union[str, Dict]]:
         """
@@ -122,7 +214,7 @@ class Espresso640XMLParser(BaseXMLParser):
         for atom in atoms:
             atom_id = float(atom.get("index"))
             symbol = atom.get("name")
-            coords = self.string_to_vec(atom.text, dtype=float)
+            coords = string_to_vec(atom.text, dtype=float)
             coords = [component * Constant.BOHR for component in coords]
 
             result["elements"].append({"id": atom_id, "value": symbol})
