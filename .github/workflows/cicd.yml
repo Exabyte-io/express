@@ -32,6 +32,8 @@ jobs:
         uses: ./actions/py/test
         with:
           python-version: ${{ matrix.python-version }}
+          unit-test-directory: tests/unit
+          integration-test-directory: tests/integration
 
 
   publish:
