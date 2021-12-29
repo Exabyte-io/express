@@ -23,7 +23,8 @@ jobs:
       - name: Checkout actions repository
         uses: actions/checkout@v2
         with:
-          repository: Exabyte-io/actions@feature/SOF-5449
+          repository: Exabyte-io/actions
+          ref: feature/SOF-5449
           token: ${{ secrets.BOT_GITHUB_TOKEN }}
           path: actions
 
