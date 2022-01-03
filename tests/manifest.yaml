@@ -141,3 +141,6 @@ test_molecule_inchi:
 
 test_molecule_point_group:
   structurePath: fixtures/structural/test-001/POSCAR
+
+test_molecular_weight:
+  structurePath: fixtures/structural/test-001/POSCAR

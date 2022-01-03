@@ -1,5 +1,6 @@
 import ase.io
 import rdkit.Chem
+import rdkit.Chem.Descriptors
 from io import StringIO
 from typing import Dict, Tuple
 import pymatgen
@@ -103,4 +104,12 @@ class MoleculeParser(StructureParser):
         return {
             "value": pymatgen.symmetry.analyzer.PointGroupAnalyzer(mol).sch_symbol,
             "tolerance": 0.3
+        }
+
+    def molecular_weight(self):
+        rdkit_mol_object = self.get_rdkit_mol()
+        return {
+            "name": "molecular_weight",
+            "value": rdkit.Chem.Descriptors.ExactMolWt(rdkit_mol_object),
+            "units": "g/mol"
         }

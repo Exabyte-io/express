@@ -34,3 +34,7 @@ class TestMoleculeParser(IntegrationTestBase):
     def test_molecule_point_group(self):
         point_group = self.parser.point_group_symbol()
         self.assertEqual(point_group["value"], CH4_DATA["point_group"])
+
+    def test_molecular_weight(self):
+        molecular_weight = self.parser.molecular_weight()
+        self.assertDeepAlmostEqual(molecular_weight, CH4_DATA["molecular_weight"], places=4)

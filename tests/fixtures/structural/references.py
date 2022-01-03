@@ -8,5 +8,6 @@ INCHI_DATA = {
 
 CH4_DATA = {
     "formula": "CH4",
-    "point_group": "Td"
+    "point_group": "Td",
+    "molecular_weight": 16.0313
 }
