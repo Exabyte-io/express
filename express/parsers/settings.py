@@ -38,5 +38,6 @@ GENERAL_REGEX.update({
 ASE_FORMATS = {
     "poscar": "vasp",
     "cif": "cif",
-    "espresso-in": "espresso-in"
+    "espresso-in": "espresso-in",
+    "xyz": "xyz"
 }

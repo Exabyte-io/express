@@ -64,7 +64,7 @@ class Material(BaseProperty):
     def derived_properties(self):
         derived_properties = []
         try:
-            symmetry = Symmetry("symmetry", self.parser).serialize_and_validate()
+            symmetry = Symmetry("symmetry", self.parser, self.is_non_periodic).serialize_and_validate()
             if self.is_non_periodic:
                 inchi = Inchi("inchi", self.parser).serialize_and_validate()
                 inchi_key = InchiKey("inchi_key", self.parser).serialize_and_validate()
@@ -81,7 +81,7 @@ class Material(BaseProperty):
             derived_properties.extend(self._p_norms())
         # TODO: Determine how to avoid an eternal pass when one derived property fails
         except:
-            logging.info("Derived properties array empty due to failure to caluclate one (or more) values.")
+            logging.debug("Derived properties array empty due to failure to calculate one (or more) values.")
             pass
         return derived_properties
 

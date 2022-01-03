@@ -138,3 +138,6 @@ test_structure_vasp_lattice_bravais:
 
 test_molecule_inchi:
   structurePath: fixtures/structural/test-001/POSCAR
+
+test_molecule_point_group:
+  structurePath: fixtures/structural/test-001/POSCAR

@@ -1,6 +1,7 @@
 import os
 
 from tests.fixtures.structural.references import INCHI_DATA
+from tests.fixtures.structural.references import CH4_DATA
 from tests.integration import IntegrationTestBase
 from express.parsers.molecule import MoleculeParser
 
@@ -29,3 +30,7 @@ class TestMoleculeParser(IntegrationTestBase):
         self.inchi_key = self.parser.get_inchi_key()
         self.assertEqual(self.inchi["value"], INCHI_DATA["inchi"])
         self.assertEqual(self.inchi_key["value"], INCHI_DATA["inchi_key"])
+
+    def test_molecule_point_group(self):
+        point_group = self.parser.point_group_symbol()
+        self.assertEqual(point_group["value"], CH4_DATA["point_group"])

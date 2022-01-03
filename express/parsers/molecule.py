@@ -2,7 +2,7 @@ import ase.io
 import rdkit.Chem
 from io import StringIO
 from typing import Dict, Tuple
-
+import pymatgen
 from express.parsers.structure import StructureParser
 from express.parsers.utils import convert_to_ase_format
 
@@ -21,16 +21,21 @@ class MoleculeParser(StructureParser):
         self.ase_format = convert_to_ase_format(self.structure_format)
         self.inchi_long, self.inchi = self.get_inchi()
 
+    def get_ase_obj(self, format):
+        """
+        Function returns an ase molecule object that can be used with RDKit or Pymatgen
+        """
+        ase_obj = StringIO()
+        material_file_string = StringIO(self.structure_string)
+        ase_atoms = ase.io.read(material_file_string, format=self.ase_format)
+        ase.io.write(ase_obj, ase_atoms, format=format)
+        return ase_obj
+
     def get_rdkit_mol(self) -> rdkit.Chem.Mol:
         """
         Function to create an RDKit molecule object from a structure string
         """
-        ase_pdb = StringIO()
-
-        material_file_string = StringIO(self.structure_string)
-        ase_atoms = ase.io.read(material_file_string, format=self.ase_format)
-
-        ase.io.write(ase_pdb, ase_atoms, format="proteindatabank")
+        ase_pdb = self.get_ase_obj("proteindatabank")
         rdkit_mol_object = rdkit.Chem.rdmolfiles.MolFromPDBBlock(ase_pdb.getvalue())
         return rdkit_mol_object
 
@@ -85,3 +90,17 @@ class MoleculeParser(StructureParser):
             "value": inchi_key_val
         }
         return inchi_key
+
+    def point_group_symbol(self):
+        """
+        Returns point group symbol.
+
+        Reference:
+            func: express.parsers.mixins.ionic.IonicDataMixin.point_group_symbol
+        """
+        ase_xyz = self.get_ase_obj("xyz")
+        mol = pymatgen.Molecule.from_str(ase_xyz.getvalue(), "xyz")
+        return {
+            "value": pymatgen.symmetry.analyzer.PointGroupAnalyzer(mol).sch_symbol,
+            "tolerance": 0.3
+        }
