@@ -37,4 +37,5 @@ class TestMoleculeParser(IntegrationTestBase):
 
     def test_molecular_weight(self):
         molecular_weight = self.parser.molecular_weight()
-        self.assertDeepAlmostEqual(molecular_weight, CH4_DATA["molecular_weight"], places=4)
+        print(molecular_weight)
+        self.assertDeepAlmostEqual(molecular_weight["value"], CH4_DATA["molecular_weight"], places=4)
