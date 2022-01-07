@@ -1,9 +1,13 @@
 import io
+import ase.io
 import pymatgen as mg
+from io import StringIO
 from ase.io import read, write
 
 from express.parsers import BaseParser
 from express.parsers.mixins.ionic import IonicDataMixin
+from express.parsers.utils import convert_to_ase_format
+
 
 STRUCTURE_MAP = {
     "primitive": lambda s: mg.symmetry.analyzer.SpacegroupAnalyzer(s).get_primitive_standard_structure(),
@@ -26,6 +30,8 @@ class StructureParser(BaseParser, IonicDataMixin):
         super().__init__(*args, **kwargs)
         self.structure_string = kwargs.get("structure_string")
         self.structure_format = kwargs.get("structure_format")
+        self.ase_format = convert_to_ase_format(self.structure_format)
+
 
         # convert espresso input into poscar
         if self.structure_format == "espresso-in":
@@ -41,6 +47,15 @@ class StructureParser(BaseParser, IonicDataMixin):
         self.lattice_only_structure = mg.Structure.from_str(self.structure_string, self.structure_format)  # deepcopy
         self.lattice_only_structure.remove_sites(range(1, len(self.structure.sites)))
 
+    def get_ase_obj(self, format):
+        """
+        Function returns an ase molecule object that can be used with RDKit or Pymatgen
+        """
+        ase_obj = StringIO()
+        material_file_string = StringIO(self.structure_string)
+        ase_atoms = ase.io.read(material_file_string, format=self.ase_format)
+        ase.io.write(ase_obj, ase_atoms, format=format)
+        return ase_obj
 
     def lattice_vectors(self):
         """
@@ -153,6 +168,32 @@ class StructureParser(BaseParser, IonicDataMixin):
             'units': 'crystal',
             'elements': [{'id': i + 1, 'value': v.species_string} for i, v in enumerate(self.structure.sites)],
             'coordinates': [{'id': i + 1, 'value': v.frac_coords.tolist()} for i, v in enumerate(self.structure.sites)]
+        }
+
+    def space_group_symbol(self):
+        """
+        Returns space group symbol.
+
+        Reference:
+            func: express.parsers.mixins.ionic.IonicDataMixin.space_group_symbol
+        """
+        return {
+            "value": mg.symmetry.analyzer.SpacegroupAnalyzer(self.structure).get_space_group_symbol(),
+            "tolerance": 0.3
+        }
+
+    def point_group_symbol(self):
+        """
+        Returns point group symbol.
+
+        Reference:
+            func: express.parsers.mixins.ionic.IonicDataMixin.point_group_symbol
+        """
+        ase_xyz = self.get_ase_obj("xyz")
+        mol = mg.Molecule.from_str(ase_xyz.getvalue(), "xyz")
+        return {
+            "value": mg.symmetry.analyzer.PointGroupAnalyzer(mol).sch_symbol,
+            "tolerance": 0.3
         }
 
     def formula(self):

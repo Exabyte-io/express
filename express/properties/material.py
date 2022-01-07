@@ -67,7 +67,7 @@ class Material(BaseProperty):
     def derived_properties(self):
         derived_properties = []
         try:
-            symmetry = Symmetry("symmetry", self.parser, self.is_non_periodic).serialize_and_validate()
+            symmetry = Symmetry("symmetry", self.parser).serialize_and_validate()
             if self.is_non_periodic:
                 molecular_weight = MolecularWeight("molecular_weight", self.parser).serialize_and_validate()
                 inchi = Inchi("inchi", self.parser).serialize_and_validate()

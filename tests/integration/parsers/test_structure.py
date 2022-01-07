@@ -1,6 +1,7 @@
 import os
 
 from tests.fixtures.data import SI
+from tests.fixtures.structural.references import CH4_DATA
 from tests.integration import IntegrationTestBase
 from express.parsers.structure import StructureParser
 
@@ -35,3 +36,11 @@ class TestStructureParser(IntegrationTestBase):
 
     def test_structure_vasp_lattice_bravais(self):
         self.assertDeepAlmostEqual(self.parser.lattice_bravais(), SI["lattice"], places=2)
+
+    def test_structure_point_group(self):
+        point_group = self.parser.point_group_symbol()
+        self.assertEqual(point_group["value"], CH4_DATA["point_group"])
+
+    def test_structure_space_group(self):
+        point_group = self.parser.space_group_symbol()
+        self.assertEqual(point_group["value"], CH4_DATA["space_group"])
