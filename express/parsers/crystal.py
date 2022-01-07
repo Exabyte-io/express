@@ -1,5 +1,5 @@
 import io
-import pymatgen
+import pymatgen as mg
 from ase.io import read, write
 
 from express.parsers.structure import StructureParser

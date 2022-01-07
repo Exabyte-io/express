@@ -32,7 +32,6 @@ class StructureParser(BaseParser, IonicDataMixin):
         self.structure_format = kwargs.get("structure_format")
         self.ase_format = convert_to_ase_format(self.structure_format)
 
-
         # convert espresso input into poscar
         if self.structure_format == "espresso-in":
             self.structure_format = "poscar"
