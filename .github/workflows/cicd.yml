@@ -1,4 +1,4 @@
-name: CICD
+name: Continuous Testing and Publication from 'dev'
 
 on: [push]
 
@@ -24,7 +24,6 @@ jobs:
         uses: actions/checkout@v2
         with:
           repository: Exabyte-io/actions
-          ref: feature/SOF-5449
           token: ${{ secrets.BOT_GITHUB_TOKEN }}
           path: actions
 
