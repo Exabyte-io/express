@@ -1,6 +1,11 @@
 import warnings
 import importlib
 
+try:
+    from ._version import version as __version__
+except ModuleNotFoundError:
+    __version__ = None
+
 from express import settings
 from express.properties import BaseProperty
 from typing import Type, Optional
