@@ -6,7 +6,8 @@ coverage==5.3
 cycler==0.10.0
 decorator==4.4.2
 #esse==2021.09.09
--e ../esse/
+#-e ../esse/
+git+file:///stack/lib/esse@acf1a005c32fd1c46346bd6d8d905d7aafd1b4f6
 exabyte-json-include==2021.05.06
 flask==1.0.2
 idna==2.7
