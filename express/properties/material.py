@@ -4,17 +4,18 @@ import logging
 from express.properties import BaseProperty
 from express.properties.scalar.p_norm import PNorm
 from express.properties.scalar.volume import Volume
-from express.parsers.structure import StructureParser
 from express.properties.scalar.density import Density
 from express.parsers.apps.vasp.parser import VaspParser
 from express.parsers.utils import lattice_basis_to_poscar
-from express.properties.non_scalar.symmetry import Symmetry
 from express.properties.scalar.elemental_ratio import ElementalRatio
 from express.properties.structural.inchi import Inchi
 from express.properties.structural.inchi_key import InchiKey
 from express.properties.structural.molecular_weight import MolecularWeight
 from express.parsers.molecule import MoleculeParser
 from express.parsers.crystal import CrystalParser
+from express.properties.structural.point_group_symmetry import PointGroupSymmetry
+from express.properties.structural.space_group_symmetry import SpaceGroupSymmetry
+from express.properties.non_scalar.symmetry import Symmetry
 
 class Material(BaseProperty):
     """
@@ -68,15 +69,17 @@ class Material(BaseProperty):
         derived_properties = []
         try:
             symmetry = Symmetry("symmetry", self.parser).serialize_and_validate()
+            point_group_symmetry = PointGroupSymmetry("point_group_symmetry", self.parser).serialize_and_validate()
+            space_group_symmetry = SpaceGroupSymmetry("space_group_symmetry", self.parser).serialize_and_validate()
             if self.is_non_periodic:
                 molecular_weight = MolecularWeight("molecular_weight", self.parser).serialize_and_validate()
                 inchi = Inchi("inchi", self.parser).serialize_and_validate()
                 inchi_key = InchiKey("inchi_key", self.parser).serialize_and_validate()
-                derived_properties = [symmetry, molecular_weight, inchi, inchi_key]
+                derived_properties = [symmetry, point_group_symmetry, space_group_symmetry, molecular_weight, inchi, inchi_key]
             else:
                 volume = Volume("volume", self.parser).serialize_and_validate()
                 density = Density("density", self.parser).serialize_and_validate()
-                derived_properties = [volume, density, symmetry]
+                derived_properties = [volume, density, symmetry, space_group_symmetry, point_group_symmetry]
             derived_properties.extend(self._elemental_ratios())
             derived_properties.extend(self._p_norms())
         # TODO: Determine how to avoid an eternal pass when one derived property fails
