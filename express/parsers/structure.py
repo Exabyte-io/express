@@ -178,7 +178,10 @@ class StructureParser(BaseParser, IonicDataMixin):
         """
         return {
             "value": mg.symmetry.analyzer.SpacegroupAnalyzer(self.structure).get_space_group_symbol(),
-            "tolerance": 0.3
+            "tolerance": {
+                "value": 0.3,
+                "units": "angstrom"
+            }
         }
 
     def point_group_symbol(self):
@@ -192,7 +195,10 @@ class StructureParser(BaseParser, IonicDataMixin):
         mol = mg.Molecule.from_str(ase_xyz.getvalue(), "xyz")
         return {
             "value": mg.symmetry.analyzer.PointGroupAnalyzer(mol).sch_symbol,
-            "tolerance": 0.3
+            "tolerance": {
+                "value": 0.3,
+                "units": "angstrom"
+            }
         }
 
     def formula(self):

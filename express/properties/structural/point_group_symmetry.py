@@ -12,10 +12,7 @@ class PointGroupSymmetry(NonScalarProperty):
     def _serialize(self):
         return {
             "value": self.parser.point_group_symbol()["value"],
-            "tolerance": {
-                "value": self.parser.point_group_symbol()["tolerance"],
-                "units": "angstrom",
-            },
+            "tolerance": self.parser.point_group_symbol()["tolerance"],
             "name": self.name
         }
 
