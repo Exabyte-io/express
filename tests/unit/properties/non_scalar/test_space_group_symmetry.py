@@ -3,12 +3,12 @@ from tests.fixtures.data import SPACE_GROUP_SYMBOL
 from express.properties.structural.space_group_symmetry import SpaceGroupSymmetry
 
 SPACE_GROUP_SYMMETRY = {
+    "name": "symmetry_symbol_space_group",
     "value": "Fd-3m",
     "tolerance": {
         "value": 0.3,
-        "units": "angstrom",
-    },
-    "name": "symmetry_symbol_space_group"
+        "units": "angstrom"
+    }
 }
 
 

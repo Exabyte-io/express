@@ -3,12 +3,12 @@ from tests.fixtures.data import POINT_GROUP_SYMBOL
 from express.properties.structural.point_group_symmetry import PointGroupSymmetry
 
 POINT_GROUP_SYMMETRY = {
+    "name": "symmetry_symbol_point_group",
     "value": "Cv2",
     "tolerance": {
         "value": 0.3,
         "units": "angstrom"
-    },
-    "name": "symmetry_symbol_point_group"
+    }
 }
 
 
