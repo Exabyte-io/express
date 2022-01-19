@@ -14,8 +14,8 @@ class SpaceGroupSymmetry(NonScalarProperty):
             "value": self.parser.space_group_symbol()["value"],
             "tolerance": {
                 "value": self.parser.space_group_symbol()["tolerance"],
+                "units": "angstrom",
             },
-            "units": "angstrom",
             "name": self.name
         }
 

@@ -6,9 +6,9 @@ POINT_GROUP_SYMMETRY = {
     "value": "Cv2",
     "tolerance": {
         "value": 0.3,
+        "units": "angstrom"
     },
-    "units": "angstrom",
-    "name": "point_group_symmetry"
+    "name": "symmetry_symbol_point_group"
 }
 
 
@@ -21,5 +21,5 @@ class PointGroupSymmetryTest(UnitTestBase):
 
     def test_point_group_symmetry(self):
         parser = self.get_mocked_parser("point_group_symbol", POINT_GROUP_SYMBOL)
-        property_ = PointGroupSymmetry("point_group_symmetry", parser)
+        property_ = PointGroupSymmetry("symmetry_symbol_point_group", parser)
         self.assertDeepAlmostEqual(property_.serialize_and_validate(), POINT_GROUP_SYMMETRY)

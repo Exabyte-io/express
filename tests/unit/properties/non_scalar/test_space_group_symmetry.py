@@ -6,9 +6,9 @@ SPACE_GROUP_SYMMETRY = {
     "value": "Fd-3m",
     "tolerance": {
         "value": 0.3,
+        "units": "angstrom",
     },
-    "units": "angstrom",
-    "name": "space_group_symmetry"
+    "name": "symmetry_symbol_space_group"
 }
 
 
@@ -21,5 +21,5 @@ class SpaceGroupSymmetryTest(UnitTestBase):
 
     def test_space_group_symmetry(self):
         parser = self.get_mocked_parser("space_group_symbol", SPACE_GROUP_SYMBOL)
-        property_ = SpaceGroupSymmetry("space_group_symmetry", parser)
+        property_ = SpaceGroupSymmetry("symmetry_symbol_space_group", parser)
         self.assertDeepAlmostEqual(property_.serialize_and_validate(), SPACE_GROUP_SYMMETRY)
