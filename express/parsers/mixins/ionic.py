@@ -283,7 +283,7 @@ class IonicDataMixin(object):
         pass
 
     @abstractmethod
-    def space_group_symbol(self):
+    def symmetry_symbol_space_group(self):
         """
         Returns space group symbol.
 
@@ -299,7 +299,7 @@ class IonicDataMixin(object):
         pass
 
     @abstractmethod
-    def point_group_symbol(self):
+    def symmetry_symbol_point_groupl(self):
         """
         Returns point group symbol.
 

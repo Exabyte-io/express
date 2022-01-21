@@ -169,12 +169,12 @@ class StructureParser(BaseParser, IonicDataMixin):
             'coordinates': [{'id': i + 1, 'value': v.frac_coords.tolist()} for i, v in enumerate(self.structure.sites)]
         }
 
-    def space_group_symbol(self):
+    def symmetry_symbol_space_group(self):
         """
         Returns space group symbol.
 
         Reference:
-            func: express.parsers.mixins.ionic.IonicDataMixin.space_group_symbol
+            func: express.parsers.mixins.ionic.IonicDataMixin.symmetry_symbol_space_group
         """
         return {
             "value": mg.symmetry.analyzer.SpacegroupAnalyzer(self.structure).get_space_group_symbol(),
@@ -184,12 +184,12 @@ class StructureParser(BaseParser, IonicDataMixin):
             }
         }
 
-    def point_group_symbol(self):
+    def symmetry_symbol_point_group(self):
         """
         Returns point group symbol.
 
         Reference:
-            func: express.parsers.mixins.ionic.IonicDataMixin.point_group_symbol
+            func: express.parsers.mixins.ionic.IonicDataMixin.symmetry_symbol_point_group
         """
         ase_xyz = self.get_ase_obj("xyz")
         mol = mg.Molecule.from_str(ase_xyz.getvalue(), "xyz")

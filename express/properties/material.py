@@ -13,8 +13,8 @@ from express.properties.structural.inchi_key import InchiKey
 from express.properties.structural.molecular_weight import MolecularWeight
 from express.parsers.molecule import MoleculeParser
 from express.parsers.crystal import CrystalParser
-from express.properties.structural.point_group_symmetry import PointGroupSymmetry
-from express.properties.structural.space_group_symmetry import SpaceGroupSymmetry
+from express.properties.structural.symmetry_symbol_point_group import SymmetrySymbolPointGroup
+from express.properties.structural.symmetry_symbol_space_group import SymmetrySymbolSpaceGroup
 
 class Material(BaseProperty):
     """
@@ -67,17 +67,17 @@ class Material(BaseProperty):
     def derived_properties(self):
         derived_properties = []
         try:
-            point_group_symmetry = PointGroupSymmetry("symmetry_symbol_point_group", self.parser).serialize_and_validate()
-            space_group_symmetry = SpaceGroupSymmetry("symmetry_symbol_space_group", self.parser).serialize_and_validate()
+            symmetry_symbol_point_group = SymmetrySymbolPointGroup("symmetry_symbol_point_group", self.parser).serialize_and_validate()
+            symmetry_symbol_space_group = SymmetrySymbolSpaceGroup("symmetry_symbol_space_group", self.parser).serialize_and_validate()
             if self.is_non_periodic:
                 molecular_weight = MolecularWeight("molecular_weight", self.parser).serialize_and_validate()
                 inchi = Inchi("inchi", self.parser).serialize_and_validate()
                 inchi_key = InchiKey("inchi_key", self.parser).serialize_and_validate()
-                derived_properties = [point_group_symmetry, space_group_symmetry, molecular_weight, inchi, inchi_key]
+                derived_properties = [symmetry_symbol_point_group, symmetry_symbol_space_group, molecular_weight, inchi, inchi_key]
             else:
                 volume = Volume("volume", self.parser).serialize_and_validate()
                 density = Density("density", self.parser).serialize_and_validate()
-                derived_properties = [volume, density, space_group_symmetry, point_group_symmetry]
+                derived_properties = [volume, density, symmetry_symbol_space_group, symmetry_symbol_point_group]
             derived_properties.extend(self._elemental_ratios())
             derived_properties.extend(self._p_norms())
         # TODO: Determine how to avoid an eternal pass when one derived property fails

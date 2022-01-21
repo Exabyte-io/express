@@ -38,9 +38,9 @@ class TestStructureParser(IntegrationTestBase):
         self.assertDeepAlmostEqual(self.parser.lattice_bravais(), SI["lattice"], places=2)
 
     def test_structure_point_group(self):
-        point_group = self.parser.point_group_symbol()
+        point_group = self.parser.symmetry_symbol_point_group()
         self.assertEqual(point_group["value"], CH4_DATA["point_group"])
 
     def test_structure_space_group(self):
-        point_group = self.parser.space_group_symbol()
-        self.assertEqual(point_group["value"], CH4_DATA["space_group"])
+        space_group = self.parser.symmetry_symbol_space_group()
+        self.assertEqual(space_group["value"], CH4_DATA["space_group"])
