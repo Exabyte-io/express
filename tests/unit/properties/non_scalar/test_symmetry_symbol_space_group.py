@@ -1,6 +1,6 @@
 from tests.unit import UnitTestBase
 from tests.fixtures.data import SPACE_GROUP_SYMBOL
-from express.properties.structural.symmetry_symbol_space_group import SymmetrySymbolSpaceGroup
+from express.properties.scalar.symmetry_symbol_space_group import SymmetrySymbolSpaceGroup
 
 SPACE_GROUP_SYMMETRY = {
     "name": "symmetry_symbol_space_group",

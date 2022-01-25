@@ -1,7 +1,7 @@
-from express.properties.non_scalar import NonScalarProperty
+from express.properties.scalar import ScalarProperty
 
 
-class MolecularWeight(NonScalarProperty):
+class MolecularWeight(ScalarProperty):
     """
     Molecular Weight property class.
     """

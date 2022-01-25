@@ -1,6 +1,6 @@
 from tests.unit import UnitTestBase
 from tests.fixtures.data import POINT_GROUP_SYMBOL
-from express.properties.structural.symmetry_symbol_point_group import SymmetrySymbolPointGroup
+from express.properties.scalar.symmetry_symbol_point_group import SymmetrySymbolPointGroup
 
 POINT_GROUP_SYMMETRY = {
     "name": "symmetry_symbol_point_group",

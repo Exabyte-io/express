@@ -1,7 +1,7 @@
-from express.properties.non_scalar import NonScalarProperty
+from express.properties.scalar import ScalarProperty
 
 
-class SymmetrySymbolPointGroup(NonScalarProperty):
+class SymmetrySymbolPointGroup(ScalarProperty):
     """
     Point Group Symmetry property class.
     """

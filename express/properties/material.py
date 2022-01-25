@@ -13,8 +13,8 @@ from express.properties.structural.inchi_key import InchiKey
 from express.properties.structural.molecular_weight import MolecularWeight
 from express.parsers.molecule import MoleculeParser
 from express.parsers.crystal import CrystalParser
-from express.properties.structural.symmetry_symbol_point_group import SymmetrySymbolPointGroup
-from express.properties.structural.symmetry_symbol_space_group import SymmetrySymbolSpaceGroup
+from express.properties.scalar.symmetry_symbol_point_group import SymmetrySymbolPointGroup
+from express.properties.scalar.symmetry_symbol_space_group import SymmetrySymbolSpaceGroup
 
 class Material(BaseProperty):
     """
