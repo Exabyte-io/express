@@ -10,7 +10,7 @@ from express.parsers.utils import lattice_basis_to_poscar
 from express.properties.scalar.elemental_ratio import ElementalRatio
 from express.properties.structural.inchi import Inchi
 from express.properties.structural.inchi_key import InchiKey
-from express.properties.structural.molecular_weight import MolecularWeight
+from express.properties.scalar.molecular_weight import MolecularWeight
 from express.parsers.molecule import MoleculeParser
 from express.parsers.crystal import CrystalParser
 from express.properties.scalar.symmetry_symbol_point_group import SymmetrySymbolPointGroup
