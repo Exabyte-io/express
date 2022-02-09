@@ -1,6 +1,7 @@
 import os
 
 from tests.fixtures.structural.references import INCHI_DATA
+from tests.fixtures.structural.references import CH4_DATA
 from tests.integration import IntegrationTestBase
 from express.parsers.molecule import MoleculeParser
 
@@ -29,3 +30,7 @@ class TestMoleculeParser(IntegrationTestBase):
         self.inchi_key = self.parser.get_inchi_key()
         self.assertEqual(self.inchi["value"], INCHI_DATA["inchi"])
         self.assertEqual(self.inchi_key["value"], INCHI_DATA["inchi_key"])
+
+    def test_molecular_weight(self):
+        molecular_weight = self.parser.molecular_weight()
+        self.assertDeepAlmostEqual(molecular_weight["value"], CH4_DATA["molecular_weight"], places=4)

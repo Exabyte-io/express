@@ -1,8 +1,6 @@
-import ase.io
 import rdkit.Chem
-from io import StringIO
+import rdkit.Chem.Descriptors
 from typing import Dict, Tuple
-
 from express.parsers.structure import StructureParser
 from express.parsers.utils import convert_to_ase_format
 
@@ -25,12 +23,7 @@ class MoleculeParser(StructureParser):
         """
         Function to create an RDKit molecule object from a structure string
         """
-        ase_pdb = StringIO()
-
-        material_file_string = StringIO(self.structure_string)
-        ase_atoms = ase.io.read(material_file_string, format=self.ase_format)
-
-        ase.io.write(ase_pdb, ase_atoms, format="proteindatabank")
+        ase_pdb = self.get_ase_obj("proteindatabank")
         rdkit_mol_object = rdkit.Chem.rdmolfiles.MolFromPDBBlock(ase_pdb.getvalue())
         return rdkit_mol_object
 
@@ -85,3 +78,11 @@ class MoleculeParser(StructureParser):
             "value": inchi_key_val
         }
         return inchi_key
+
+    def molecular_weight(self):
+        rdkit_mol_object = self.get_rdkit_mol()
+        return {
+            "name": "molecular_weight",
+            "value": rdkit.Chem.Descriptors.ExactMolWt(rdkit_mol_object),
+            "units": "g/mol"
+        }

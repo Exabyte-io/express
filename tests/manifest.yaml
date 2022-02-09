@@ -136,5 +136,14 @@ test_structure_vasp_basis:
 test_structure_vasp_lattice_bravais:
   structurePath: fixtures/vasp/test-001/POSCAR
 
+test_structure_space_group:
+  structurePath: fixtures/structural/test-001/POSCAR
+
+test_structure_point_group:
+  structurePath: fixtures/structural/test-001/POSCAR
+
 test_molecule_inchi:
+  structurePath: fixtures/structural/test-001/POSCAR
+
+test_molecular_weight:
   structurePath: fixtures/structural/test-001/POSCAR

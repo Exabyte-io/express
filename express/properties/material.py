@@ -4,16 +4,17 @@ import logging
 from express.properties import BaseProperty
 from express.properties.scalar.p_norm import PNorm
 from express.properties.scalar.volume import Volume
-from express.parsers.structure import StructureParser
 from express.properties.scalar.density import Density
 from express.parsers.apps.vasp.parser import VaspParser
 from express.parsers.utils import lattice_basis_to_poscar
-from express.properties.non_scalar.symmetry import Symmetry
 from express.properties.scalar.elemental_ratio import ElementalRatio
 from express.properties.structural.inchi import Inchi
 from express.properties.structural.inchi_key import InchiKey
+from express.properties.scalar.molecular_weight import MolecularWeight
 from express.parsers.molecule import MoleculeParser
 from express.parsers.crystal import CrystalParser
+from express.properties.scalar.symmetry_symbol_point_group import SymmetrySymbolPointGroup
+from express.properties.scalar.symmetry_symbol_space_group import SymmetrySymbolSpaceGroup
 
 class Material(BaseProperty):
     """
@@ -48,9 +49,11 @@ class Material(BaseProperty):
                     structure_string = lattice_basis_to_poscar(lattice, basis)
 
         if self.is_non_periodic == False:
-            self.parser = CrystalParser(structure_string=structure_string, structure_format=structure_format, cell_type=cell_type)
+            self.parser = CrystalParser(structure_string=structure_string, structure_format=structure_format,
+                                        cell_type=cell_type)
         else:
-            self.parser = MoleculeParser(structure_string=structure_string, structure_format=structure_format, cell_type=cell_type)
+            self.parser = MoleculeParser(structure_string=structure_string, structure_format=structure_format,
+                                         cell_type=cell_type)
 
     @property
     def formula(self):
@@ -64,24 +67,22 @@ class Material(BaseProperty):
     def derived_properties(self):
         derived_properties = []
         try:
-            symmetry = Symmetry("symmetry", self.parser).serialize_and_validate()
+            symmetry_symbol_point_group = SymmetrySymbolPointGroup("symmetry_symbol_point_group", self.parser).serialize_and_validate()
+            symmetry_symbol_space_group = SymmetrySymbolSpaceGroup("symmetry_symbol_space_group", self.parser).serialize_and_validate()
             if self.is_non_periodic:
+                molecular_weight = MolecularWeight("molecular_weight", self.parser).serialize_and_validate()
                 inchi = Inchi("inchi", self.parser).serialize_and_validate()
                 inchi_key = InchiKey("inchi_key", self.parser).serialize_and_validate()
-                volume = None
-                density = None
-                derived_properties = [symmetry, inchi, inchi_key]
+                derived_properties = [symmetry_symbol_point_group, symmetry_symbol_space_group, molecular_weight, inchi, inchi_key]
             else:
-                inchi = None
-                inchi_key = None
                 volume = Volume("volume", self.parser).serialize_and_validate()
                 density = Density("density", self.parser).serialize_and_validate()
-                derived_properties = [volume, density, symmetry]
+                derived_properties = [volume, density, symmetry_symbol_space_group, symmetry_symbol_point_group]
             derived_properties.extend(self._elemental_ratios())
             derived_properties.extend(self._p_norms())
         # TODO: Determine how to avoid an eternal pass when one derived property fails
         except:
-            logging.info("Derived properties array empty due to failure to caluclate one (or more) values.")
+            logging.debug("Derived properties array empty due to failure to calculate one (or more) values.")
             pass
         return derived_properties
 
