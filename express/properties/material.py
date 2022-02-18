@@ -121,7 +121,7 @@ class Material(BaseProperty):
                 "slug": ""
             },
             "schemaVersion": "0.2.0",
-            "isNonPeriodic": False,
+            "isNonPeriodic": self.is_non_periodic,
         }
 
     def _elemental_ratios(self):
