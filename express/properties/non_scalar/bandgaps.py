@@ -63,24 +63,27 @@ class BandGaps(NonScalarProperty):
             gap, k1, k2 = self._find_gap(N_sk[0], ev_sk[0], ec_sk[0], type=type_)
         else:
             gap, k1, k2 = self._find_gap(N_sk.ravel(), ev_sk.ravel(), ec_sk.ravel(), type=type_)
-            k1 = divmod(k1, nk)
-            k2 = divmod(k2, nk)
+            k1 = divmod(k1, nk)[1]
+            k2 = divmod(k2, nk)[1]
 
         result = self._serialize_band_gaps(gap, type_)
         if k1 is not None and k2 is not None:
             result.update({
-                'kpointValence': self._round(self.ibz_k_points[k1[1] if isinstance(k1, tuple) else k1]),
-                'kpointConduction': self._round(self.ibz_k_points[k2[1] if isinstance(k2, tuple) else k2])
+                "kpointValence": self._round(self.ibz_k_points[k1]),
+                "kpointConduction": self._round(self.ibz_k_points[k2]),
+                "eigenvalueValence": self._get_eigenvalues_from_band(e_sk=ev_sk, k=k1),
+                "eigenvalueConduction": self._get_eigenvalues_from_band(e_sk=ec_sk, k=k2),
             })
+        #print(result)
         return result
 
     def _get_bands_info(self):
         """
         Extracts bands information:
-            - number of kpoints (nk)
-            - number of spins (ns)
-            - eigenvalue mesh (e_skn)
-            - number of occupied bands (N_sk)
+            - number of kpoints (nk) - int
+            - number of spins (ns) - int
+            - eigenvalue mesh (e_skn) - 3D array
+            - number of occupied bands per spin and k-point (N_sk) - 2D array
 
         Returns:
             tuple: bands information containing nk, ns, e_skn and N_sk explained above.
@@ -91,6 +94,7 @@ class BandGaps(NonScalarProperty):
         e_skn = np.array([[eigenvalues(self.eigenvalues_at_kpoints, k, s) for k in range(nk)] for s in range(ns)])
         e_skn -= self.fermi_energy
         N_sk = (e_skn < 0.0).sum(2)
+        # select highest occupied and lowest unoccupied bands
         e_skn = np.array([[e_skn[s, k, N_sk[s, k] - 1:N_sk[s, k] + 1] for k in range(nk)] for s in range(ns)])
         return nk, ns, N_sk, e_skn
 
@@ -132,7 +136,7 @@ class BandGaps(NonScalarProperty):
 
     def _eigenvalues(self):
         """
-        Extracts eigenvalues between last value in occupation 1 and first value in occupation 0.
+        Extracts eigenvalues around Fermi level, i.e. last two values in occupation 1 and first two values in occupation 0.
 
         Returns:
              dict
@@ -153,3 +157,21 @@ class BandGaps(NonScalarProperty):
 
     def _round(self, array):
         return np.round(array, settings.PRECISION).tolist()
+
+    def _get_eigenvalues_from_band(self, e_sk, k, absolute=True):
+        """
+        Returns the absolute or shifted eigenvalue for a given k-point
+
+        Args:
+            e_sk: eigenvalue per spin and k-point (2D-array)
+            k: index for k-point of interest
+            absolute: whether to return absolute eigenvalues, i.e. without Fermi energy shift (default: True)
+
+        Returns:
+            List containing the eigenvalue (n_spin == 1) or eigenvalues (per spin) of the band e_sk at k-point k
+        """
+        n_spin = e_sk.shape[0]
+        e_fermi = self.fermi_energy if absolute else 0
+
+        return [e_sk[s, k] + e_fermi for s in range(n_spin)]
+

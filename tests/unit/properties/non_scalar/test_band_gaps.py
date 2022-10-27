@@ -171,7 +171,9 @@ BAND_GAPS = {
                 0.0,
                 0.0,
                 0.0
-            ]
+            ],
+            "eigenvalueValence": [6.26934533],
+            "eigenvalueConduction": [8.71135349]
         },
         {
             "units": "eV",
@@ -186,7 +188,9 @@ BAND_GAPS = {
                 0.0,
                 0.0,
                 0.0
-            ]
+            ],
+            "eigenvalueValence": [6.26934533],
+            "eigenvalueConduction": [6.91957625]
         }
     ],
     "name": "band_gaps"
