@@ -1,6 +1,5 @@
 import numpy as np
 from scipy.signal import find_peaks
-from express.parsers.settings import Constant
 from express.properties.non_scalar import NonScalarProperty
 
 
@@ -12,12 +11,7 @@ class AveragedPotential(NonScalarProperty):
 
     def __init__(self, name, parser, *args, **kwargs):
         super(AveragedPotential, self).__init__(name, parser, *args, **kwargs)
-
-        self.data = self.safely_invoke_parser_method("averaged_quantity")
-        self.data["x"] *= Constant.BOHR  # convert to angstrom
-        self.data["p_x"] *= Constant.RYDBERG  # convert to eV
-        self.data["m_x"] *= Constant.RYDBERG  # convert to eV
-
+        self.data = self.safely_invoke_parser_method("averaged_potential")
         self.peak_prominence = [0.3, None]  # minimum and maximum required prominence (see _find_minima)
 
     def _serialize(self) -> dict:
