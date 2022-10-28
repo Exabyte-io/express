@@ -32,5 +32,5 @@ class AveragedPotential(NonScalarProperty):
 
         return {
             "xDataArray": [self.data["x"][i] for i in np.nditer(peaks)],
-            "yDataSeries": [array[i] for i in np.nditer(peaks)]
+            "yDataSeries": [[array[i] for i in np.nditer(peaks)]],
         }
