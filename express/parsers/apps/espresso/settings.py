@@ -5,6 +5,7 @@ NEB_PATH_FILE_SUFFIX = ".path"
 XML_DATA_FILE = "data-file.xml"
 PHONON_DOS_FILE = "phonon_dos.out"
 PHONON_MODES_FILE = "normal_modes.out"
+AVERAGE_FILE = "avg.dat"
 
 COMMON_REGEX = r"{0}\s+[=:<>]\s*([-+]?\d*\.?\d*([Ee][+-]?\d+)?)"
 DOUBLE_REGEX = GENERAL_REGEX.double_number
@@ -138,6 +139,9 @@ REGEX = {
         "regex": r"^\s+GW qp energy \(eV\)(.*)",
         "occurrences": 0,
         "output_type": "str",
+    },
+    "averaged_quantity": {
+        "regex": r"\s*({0})\s+({0})\s+({0})".format(DOUBLE_REGEX),
     },
 }
 

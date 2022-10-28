@@ -809,3 +809,31 @@ class EspressoTXTParser(BaseTXTParser):
         cell_parameters_last_index = text.rfind("CELL_PARAMETERS (angstrom)")
         if cell_parameters_last_index < 0: return self.initial_lattice_vectors(text)
         return self._extract_lattice(text[cell_parameters_last_index:])
+
+    def averaged_quantity(self):
+        """
+        Extract planar and macroscopic averages of a quantity from the output of average.x (output file or avg.dat)
+        The format is as follows:
+        x  p(x)  m(x)
+        whereby:
+           x    = coordinate (a.u) along direction idir
+                  x runs from 0 to the length of primitive vector idir
+           p(x) = planar average, as defined above
+           m(x) = macroscopic average, as defined above
+
+
+        Example input:
+             0.000000000    0.265457609    0.265456764
+             0.017892431    0.265457604    0.265456756
+             0.035784862    0.265457529    0.265456749
+             0.053677293    0.265457391    0.265456743
+             0.071569724    0.265457202    0.265456738
+        """
+        average_file = find_file(settings.AVERAGE_FILE, self.work_dir)
+        # backup in case avg.dat doesn't exist
+        if type(average_file) != str:
+            average_file = find_file("average.out", self.work_dir)
+        if type(average_file) == str and os.path.isfile(average_file):
+            dtype = np.dtype([("x", float), ("p_x", float), ("m_x", float)])
+            data = np.fromregex(average_file, settings.REGEX["averaged_quantity"]["regex"], dtype)
+            return data

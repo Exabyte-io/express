@@ -91,6 +91,9 @@ NON_SCALAR_PROPERTIES_MANIFEST = {
     'file_content': {
         'reference': 'express.properties.non_scalar.file_content.FileContent'
     },
+    'averaged_electrostatic_potential': {
+        'reference': 'express.properties.non_scalar.averaged_potential.AveragedPotential'
+    },
 }
 
 CONVERGENCE_PROPERTIES = {

@@ -331,3 +331,6 @@ class EspressoParser(BaseParser, IonicDataMixin, ElectronicDataMixin, Reciprocal
             except:
                 pass
         return structures
+
+    def averaged_quantity(self):
+        return self.txt_parser.averaged_quantity()
