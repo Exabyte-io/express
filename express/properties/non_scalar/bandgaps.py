@@ -1,5 +1,5 @@
 import numpy as np
-
+from typing import Tuple
 from copy import deepcopy
 from express import settings
 from express.properties.utils import eigenvalues
@@ -32,101 +32,128 @@ class BandGaps(NonScalarProperty):
                 self._serialize_band_gaps(self.band_gaps_indirect, "indirect")
             ]
 
-    def _serialize(self):
+    def _serialize(self) -> dict:
         return {
-            'name': self.name,
-            'values': self.values if self.values else [self.compute_on_mesh(type_) for type_ in ["direct", "indirect"]],
-            'eigenvalues': self._eigenvalues() if not self.values else []
+            "name": self.name,
+            "values": self.values if self.values else self.get_band_gaps_from_mesh(),
+            "eigenvalues": self._eigenvalues() if not self.values else []
         }
 
-    def _serialize_band_gaps(self, gap, type_):
+    def _serialize_band_gaps(self, gap: float, gap_type: str, spin: float = 1/2) -> dict:
         return {
-            'type': type_,
-            'units': self.manifest["defaults"]["units"],
-            'value': gap
+            "type": gap_type,
+            "units": self.manifest["defaults"]["units"],
+            "value": gap,
+            "spin": spin,
         }
 
-    def compute_on_mesh(self, type_="indirect"):
+    def get_band_gaps_from_mesh(self) -> list:
         """
-        Calculates the band gap on the material's mesh.
+        Compute direct and indirect band gaps for all available spins
+        """
+        occ_sk, e_skn = self._get_bands_info()
+
+        gap_types = ["direct", "indirect"]
+        computed_gaps = []
+
+        for s in range(self.nspins):
+            for gap_type in gap_types:
+                computed_gaps.append(
+                    self.compute_on_mesh(
+                        eigenvalue_mesh=e_skn,
+                        occupations=occ_sk,
+                        spin_channel=s,
+                        gap_type=gap_type
+                    )
+                )
+        return computed_gaps
+
+    def compute_on_mesh(self,
+                        eigenvalue_mesh: np.ndarray,
+                        occupations: np.ndarray,
+                        spin_channel: int = 0,
+                        gap_type: str = "indirect",
+                        absolute_eigenvalues: bool = True) -> dict:
+        """
+        Calculates the band gap on the material's mesh for a given gap type and spin channel.
 
         Args:
-            type_ (str): band gap type, either direct or indirect.
+            eigenvalue_mesh:      3D array of eigenvalues with indices in following order: spin, kpoint, eigenvalue
+            occupations:          2D array of number of occupied bands per spin and k-point (order: spin, kpoint)
+            spin_channel:         spin index (0 -> 1/2, 1 -> -1/2)
+            gap_type:             band gap type, either direct or indirect
+            absolute_eigenvalues: whether to unshift the eigenvalues (applies to band edge values only)
 
         Returns:
-            dict
+            band gap dictionary
         """
-        nk, ns, N_sk, e_skn = self._get_bands_info()
-        ev_sk, ec_sk = self._get_valence_conduction_bands(e_skn)
+        ev_k = eigenvalue_mesh[spin_channel, :, 0]  # valence band of current spin channel
+        ec_k = eigenvalue_mesh[spin_channel, :, 1]  # conduction band of current spin channel
+        occ_k = occupations[spin_channel]           # band occupations for current spin channel
+        spin = 1/2*(-1)**spin_channel               # spin value
 
-        if ns == 1:
-            gap, k1, k2 = self._find_gap(N_sk[0], ev_sk[0], ec_sk[0], type=type_)
-        else:
-            gap, k1, k2 = self._find_gap(N_sk.ravel(), ev_sk.ravel(), ec_sk.ravel(), type=type_)
-            k1 = divmod(k1, nk)[1]
-            k2 = divmod(k2, nk)[1]
+        gap, k_val, k_cond = BandGaps._find_gap(occ_k, ev_k, ec_k, gap_type=gap_type)
+        result = self._serialize_band_gaps(gap=gap, gap_type=gap_type, spin=spin)
 
-        result = self._serialize_band_gaps(gap, type_)
-        if k1 is not None and k2 is not None:
+        # value for shifting back eigenvalues (see also _get_bands_info)
+        e_fermi = self.fermi_energy if absolute_eigenvalues else 0
+
+        if k_val is not None and k_cond is not None:
             result.update({
-                "kpointValence": self._round(self.ibz_k_points[k1]),
-                "kpointConduction": self._round(self.ibz_k_points[k2]),
-                "eigenvalueValence": self._get_eigenvalues_from_band(e_sk=ev_sk, k=k1),
-                "eigenvalueConduction": self._get_eigenvalues_from_band(e_sk=ec_sk, k=k2),
+                "kpointValence": self._round(self.ibz_k_points[k_val]),
+                "kpointConduction": self._round(self.ibz_k_points[k_cond]),
+                "eigenvalueValence": ev_k[k_val] + e_fermi,
+                "eigenvalueConduction": ec_k[k_cond] + e_fermi,
             })
-        #print(result)
         return result
 
-    def _get_bands_info(self):
+    def _get_bands_info(self) -> Tuple[np.ndarray, np.ndarray]:
         """
         Extracts bands information:
             - number of kpoints (nk) - int
             - number of spins (ns) - int
-            - eigenvalue mesh (e_skn) - 3D array
-            - number of occupied bands per spin and k-point (N_sk) - 2D array
+            - eigenvalue mesh (e_skn) of valence and conduction band shifted by Fermi energy - 3D array
+            - number of occupied bands per spin and k-point (occ_sk) - 2D array
+
+        Note: spin indices correspond to spin value as follows (see also utils.eigenvalues function)
+              s = 0  <->  1/2
+              s = 1  <-> -1/2
 
         Returns:
-            tuple: bands information containing nk, ns, e_skn and N_sk explained above.
+            tuple: bands information containing e_skn and occ_sk explained above.
 
         """
         nk = len(self.ibz_k_points)
         ns = self.nspins
         e_skn = np.array([[eigenvalues(self.eigenvalues_at_kpoints, k, s) for k in range(nk)] for s in range(ns)])
         e_skn -= self.fermi_energy
-        N_sk = (e_skn < 0.0).sum(2)
+        occ_sk = (e_skn < 0.0).sum(2)
         # select highest occupied and lowest unoccupied bands
-        e_skn = np.array([[e_skn[s, k, N_sk[s, k] - 1:N_sk[s, k] + 1] for k in range(nk)] for s in range(ns)])
-        return nk, ns, N_sk, e_skn
+        e_skn = np.array([[e_skn[s, k, occ_sk[s, k] - 1:occ_sk[s, k] + 1] for k in range(nk)] for s in range(ns)])
+        return occ_sk, e_skn
 
-    def _get_valence_conduction_bands(self, e_skn):
-        """
-        Extracts valence and conduction bands.
-
-        Returns:
-            tuple: ev_sk (valence) and ec_sk (conduction) bands.
-        """
-        ev_sk = e_skn[:, :, 0]  # valence band
-        ec_sk = e_skn[:, :, 1]  # conduction band
-        return ev_sk, ec_sk
-
-    def _find_gap(self, N_k, ev_k, ec_k, type="indirect"):
+    @staticmethod
+    def _find_gap(occ_k: np.ndarray,
+                  ev_k: np.ndarray,
+                  ec_k: np.ndarray,
+                  gap_type: str = "indirect") -> Tuple[float, int, int]:
         """
         Computes the difference in energy between the highest valence band and the lowest conduction band.
 
         Args:
-            N_k (ndarray): numbers of occupied bands.
-            ev_k (ndarray): valence band.
-            ec_k (ndarray): conduction band.
-            type (str): band gap type, either direct or indirect.
+            occ_k: numbers of occupied bands.
+            ev_k: valence band.
+            ec_k: conduction band.
+            gap_type: band gap type, either direct or indirect.
 
         Returns:
             tuple: a (gap, k1, k2) tuple where k1 and k2 are the indices of the valence and conduction k-points.
         """
-        if N_k.ptp() > 0:
+        if occ_k.ptp() > 0:
             # Some band must be crossing fermi-level. Hence we return zero for band gap and the actual k-points
-            kv = kc = np.argmax(N_k)
+            kv = kc = occ_k.argmax()
             return 0.0, kv, kc
-        if type == "direct":
+        if gap_type == "direct":
             gap_k = ec_k - ev_k
             k = gap_k.argmin()
             return gap_k[k], k, k
@@ -134,7 +161,7 @@ class BandGaps(NonScalarProperty):
         kc = ec_k.argmin()
         return ec_k[kc] - ev_k[kv], kv, kc
 
-    def _eigenvalues(self):
+    def _eigenvalues(self) -> list:
         """
         Extracts eigenvalues around Fermi level, i.e. last two values in occupation 1 and first two values in occupation 0.
 
@@ -148,7 +175,8 @@ class BandGaps(NonScalarProperty):
                 eigens_at_spin["energies"] = self._round(eigens_at_spin["energies"])
                 eigens_at_spin["occupations"] = self._round(eigens_at_spin["occupations"])
                 # occupations are empty in case of QE GW, hence sending all values.
-                if len(eigens_at_spin["occupations"]) == 0: continue
+                if len(eigens_at_spin["occupations"]) == 0:
+                    continue
                 start = max(0, len(eigens_at_spin["occupations"]) - eigens_at_spin["occupations"][::-1].index(1.0) - 2)
                 end = min(len(eigens_at_spin["occupations"]), eigens_at_spin["occupations"].index(0.0) + 2)
                 eigens_at_spin["energies"] = eigens_at_spin["energies"][start:end]
@@ -157,21 +185,3 @@ class BandGaps(NonScalarProperty):
 
     def _round(self, array):
         return np.round(array, settings.PRECISION).tolist()
-
-    def _get_eigenvalues_from_band(self, e_sk, k, absolute=True):
-        """
-        Returns the absolute or shifted eigenvalue for a given k-point
-
-        Args:
-            e_sk: eigenvalue per spin and k-point (2D-array)
-            k: index for k-point of interest
-            absolute: whether to return absolute eigenvalues, i.e. without Fermi energy shift (default: True)
-
-        Returns:
-            List containing the eigenvalue (n_spin == 1) or eigenvalues (per spin) of the band e_sk at k-point k
-        """
-        n_spin = e_sk.shape[0]
-        e_fermi = self.fermi_energy if absolute else 0
-
-        return [e_sk[s, k] + e_fermi for s in range(n_spin)]
-
