@@ -11,4 +11,4 @@ class AveragedPotentialProfile(TwoDimensionalPlotProperty):
 
         self.data = self.safely_invoke_parser_method("averaged_potential")
         self.xDataArray = self.data["x"].tolist()
-        self.yDataSeries = [self.data["p_x"].tolist(), self.data["m_x"].tolist()]
+        self.yDataSeries = [self.data["planar_average"].tolist(), self.data["macroscopic_average"].tolist()]

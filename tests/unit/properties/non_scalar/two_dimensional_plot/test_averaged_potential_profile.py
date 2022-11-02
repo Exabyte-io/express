@@ -30,13 +30,13 @@ class AveragedPotentialProfileTest(UnitTestBase):
         """
         Creates mock potential data based on cosine in the range [0, 2*pi].
         Exact minimum is at
-          x   = pi
-          m_x = -1
+          x                   = pi
+          macroscopic_average = -1
         """
         x = np.linspace(0, 2*np.pi, n_points)
         p_x = np.zeros(n_points)  # ignored for now
         m_x = np.cos(x)
-        dtype = np.dtype([("x", float), ("p_x", float), ("m_x", float)])
+        dtype = np.dtype([("x", float), ("planar_average", float), ("macroscopic_average", float)])
         return np.array(list(zip(x, p_x, m_x)), dtype=dtype)
 
     def test_averaged_potential(self):
