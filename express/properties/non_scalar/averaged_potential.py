@@ -12,7 +12,7 @@ class AveragedPotential(NonScalarProperty):
     def __init__(self, name, parser, *args, **kwargs):
         super(AveragedPotential, self).__init__(name, parser, *args, **kwargs)
         self.data = self.safely_invoke_parser_method("averaged_potential")
-        self.peak_prominence = [0.3, None]  # minimum and maximum required prominence (see _find_minima)
+        self.peak_prominence = [0.3, None]  # minimum and maximum required prominence (see _find_minima) in eV
 
     def _serialize(self) -> dict:
         return {
