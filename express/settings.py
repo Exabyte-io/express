@@ -34,6 +34,9 @@ SCALAR_PROPERTIES_MANIFEST = {
     'reaction_energy_barrier': {
         'reference': 'express.properties.scalar.reaction_energy_barrier.ReactionEnergyBarrier'
     },
+    "valence_band_offset": {
+        "reference": "express.properties.scalar.scalar_property_context.ScalarPropertyFromContext"
+    },
 }
 
 NON_SCALAR_PROPERTIES_MANIFEST = {
