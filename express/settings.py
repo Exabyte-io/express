@@ -29,7 +29,7 @@ SCALAR_PROPERTIES_MANIFEST = {
         'reference': 'express.properties.scalar.zero_point_energy.ZeroPointEnergy'
     },
     'surface_energy': {
-        'reference': 'express.properties.scalar.surface_energy.SurfaceEnergy'
+        "reference": "express.properties.scalar.scalar_property_context.ScalarPropertyFromContext"
     },
     'reaction_energy_barrier': {
         'reference': 'express.properties.scalar.reaction_energy_barrier.ReactionEnergyBarrier'
