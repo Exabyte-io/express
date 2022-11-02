@@ -5,7 +5,7 @@ click==7.0
 coverage==5.3
 cycler==0.10.0
 decorator==4.4.2
-git+https://github.com/Exabyte-io/esse.git@4fbb1f5ec5b8e1628607a8435b1e0e1ba48ae7a1#egg=esse
+git+https://github.com/Exabyte-io/esse.git@dd64968d153c4b11f8ff2687ed1b45d4ce53ad6d#egg=esse
 exabyte-json-include==2021.05.06
 flask==1.0.2
 idna==2.7
