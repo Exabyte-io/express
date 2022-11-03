@@ -1,20 +1,23 @@
 import os
+from typing import Optional, List
 from express.parsers.settings import ASE_FORMATS
 
-def find_file(name, path):
+
+def find_file(name: str, path: str) -> Optional[str]:
     """
     Finds file with the specified name in the given path.
 
     Args:
-        name (str): file name.
+        name (str): file name or absolute path
         path (str): starting path for search.
 
     Returns:
         str: absolute file path (if found)
     """
+    basename = os.path.basename(name)
     for root, dirs, files in os.walk(path, followlinks=True):
         for file in files:
-            if name in file:
+            if basename in file:
                 return os.path.join(root, file)
 
 
