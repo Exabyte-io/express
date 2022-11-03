@@ -21,7 +21,7 @@ def find_file(name: str, path: str) -> Optional[str]:
                 return os.path.join(root, file)
 
 
-def find_files_by_name_substring(name, path):
+def find_files_by_name_substring(name: str, path: str) -> List[str]:
     matches = []
     for root, dirs, files in os.walk(path, followlinks=True):
         for file_ in files:
@@ -30,7 +30,7 @@ def find_files_by_name_substring(name, path):
     return matches
 
 
-def get_element_counts(basis):
+def get_element_counts(basis: dict) -> List[dict]:
     """
     Returns chemical elements with their count wrt their original order in the basis.
     Note: entries for the same element separated by another element are considered separately.
@@ -50,7 +50,7 @@ def get_element_counts(basis):
     return element_counts
 
 
-def lattice_basis_to_poscar(lattice, basis, basis_units="cartesian"):
+def lattice_basis_to_poscar(lattice: dict, basis: dict, basis_units: str = "cartesian") -> str:
     element_counts = get_element_counts(basis)
     return "\n".join([
         "material",
