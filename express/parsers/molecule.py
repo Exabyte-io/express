@@ -4,7 +4,7 @@ from io import StringIO
 from typing import Dict, Tuple
 
 from express.parsers.structure import StructureParser
-from express.parsers.utils import convert_to_ase_format
+from express.parsers.settings import ASE_FORMATS
 
 
 class MoleculeParser(StructureParser):
@@ -18,7 +18,7 @@ class MoleculeParser(StructureParser):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.ase_format = convert_to_ase_format(self.structure_format)
+        self.ase_format = ASE_FORMATS[self.structure_format]
         self.inchi_long, self.inchi = self.get_inchi()
 
     def get_rdkit_mol(self) -> rdkit.Chem.Mol:

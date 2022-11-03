@@ -1,6 +1,5 @@
 import os
 from typing import Optional, List
-from express.parsers.settings import ASE_FORMATS
 
 
 def find_file(name: str, path: str) -> Optional[str]:
@@ -63,17 +62,3 @@ def lattice_basis_to_poscar(lattice: dict, basis: dict, basis_units: str = "cart
         basis_units,
         "\n".join([" ".join(["{0:14.9f}".format(v) for v in x["value"]]) for x in basis["coordinates"]])
     ])
-
-def convert_to_ase_format(format):
-    """
-    Function converts the format keywords used in this code to their
-    corresponding ase keywords based on a predisposed dictionary of values.
-
-    Returns:
-        Str
-
-    Example:
-        format="poscar" --> format="vasp"
-    """
-    ase_format = ASE_FORMATS[format]
-    return ase_format

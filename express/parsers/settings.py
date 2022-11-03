@@ -35,6 +35,8 @@ GENERAL_REGEX.update({
     'int_number': r'[+-]?\d+'
 })
 
+
+# Maps the format keywords used in this code to their corresponding ase keywords.
 ASE_FORMATS = {
     "poscar": "vasp",
     "cif": "cif",
