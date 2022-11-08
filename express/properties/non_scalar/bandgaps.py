@@ -51,7 +51,7 @@ class BandGaps(NonScalarProperty):
         """
         Compute direct and indirect band gaps for all available spins
         """
-        occ_sk, e_skn = self._get_bands_info()
+        occupations, eigenvalue_mesh = self._get_bands_info()
 
         gap_types = ["direct", "indirect"]
         computed_gaps = []
@@ -60,8 +60,8 @@ class BandGaps(NonScalarProperty):
             for gap_type in gap_types:
                 computed_gaps.append(
                     self.compute_on_mesh(
-                        eigenvalue_mesh=e_skn,
-                        occupations=occ_sk,
+                        eigenvalue_mesh=eigenvalue_mesh,
+                        occupations=occupations,
                         spin_channel=s,
                         gap_type=gap_type
                     )
@@ -116,6 +116,7 @@ class BandGaps(NonScalarProperty):
             - number of occupied bands per spin and k-point (occ_sk) - 2D array
 
         Note: spin indices correspond to spin value as follows (see also utils.eigenvalues function)
+              index       value
               s = 0  <->  1/2
               s = 1  <-> -1/2
 
@@ -133,33 +134,33 @@ class BandGaps(NonScalarProperty):
         return occ_sk, e_skn
 
     @staticmethod
-    def _find_gap(occ_k: np.ndarray,
-                  ev_k: np.ndarray,
-                  ec_k: np.ndarray,
+    def _find_gap(occupations: np.ndarray,
+                  valence_band: np.ndarray,
+                  conduction_band: np.ndarray,
                   gap_type: str = "indirect") -> Tuple[float, int, int]:
         """
         Computes the difference in energy between the highest valence band and the lowest conduction band.
 
         Args:
-            occ_k: numbers of occupied bands.
-            ev_k: valence band.
-            ec_k: conduction band.
-            gap_type: band gap type, either direct or indirect.
+            occupations:     numbers of occupied bands per k-point.
+            valence_band:    eigenvalues of valence band per k-point.
+            conduction_band: eiganvalues of conduction band per k-point.
+            gap_type:        band gap type, either direct or indirect.
 
         Returns:
             tuple: a (gap, k1, k2) tuple where k1 and k2 are the indices of the valence and conduction k-points.
         """
-        if occ_k.ptp() > 0:
-            # Some band must be crossing fermi-level. Hence we return zero for band gap and the actual k-points
-            kv = kc = occ_k.argmax()
+        if occupations.ptp() > 0:
+            # Some band must be crossing fermi-level. Hence, we return zero for band gap and the actual k-points
+            kv = kc = occupations.argmax()
             return 0.0, kv, kc
         if gap_type == "direct":
-            gap_k = ec_k - ev_k
-            k = gap_k.argmin()
-            return gap_k[k], k, k
-        kv = ev_k.argmax()
-        kc = ec_k.argmin()
-        return ec_k[kc] - ev_k[kv], kv, kc
+            direct_gaps = conduction_band - valence_band
+            k = direct_gaps.argmin()
+            return direct_gaps[k], k, k
+        kv = valence_band.argmax()
+        kc = conduction_band.argmin()
+        return conduction_band[kc] - valence_band[kv], kv, kc
 
     def _eigenvalues(self) -> list:
         """
