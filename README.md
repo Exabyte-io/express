@@ -161,6 +161,8 @@ Parsers functionality is tested through integration tests. The parsers are initi
 
 ### Run Tests
 
+> Note that the CI tests are run using a github action in `.github`, and not using the script below, so there could be discrepancies.
+
 Run the following commands to run the tests.
 
 ```bash
