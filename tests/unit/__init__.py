@@ -12,7 +12,7 @@ class UnitTestBase(TestBase):
         super(UnitTestBase, self).setUp()
 
     def tearDown(self):
-        super(UnitTestBase, self).setUp()
+        super(UnitTestBase, self).tearDown()
 
     def get_mocked_parser(self, method_name, return_value):
         parser = MagicMock()

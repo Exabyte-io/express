@@ -29,10 +29,13 @@ SCALAR_PROPERTIES_MANIFEST = {
         'reference': 'express.properties.scalar.zero_point_energy.ZeroPointEnergy'
     },
     'surface_energy': {
-        'reference': 'express.properties.scalar.surface_energy.SurfaceEnergy'
+        "reference": "express.properties.scalar.scalar_property_context.ScalarPropertyFromContext"
     },
     'reaction_energy_barrier': {
         'reference': 'express.properties.scalar.reaction_energy_barrier.ReactionEnergyBarrier'
+    },
+    "valence_band_offset": {
+        "reference": "express.properties.scalar.scalar_property_context.ScalarPropertyFromContext"
     },
 }
 
@@ -90,6 +93,9 @@ NON_SCALAR_PROPERTIES_MANIFEST = {
     },
     'file_content': {
         'reference': 'express.properties.non_scalar.file_content.FileContent'
+    },
+    'averaged_potential_profile': {
+        'reference': 'express.properties.non_scalar.two_dimensional_plot.averaged_potential_profile.AveragedPotentialProfile'
     },
 }
 

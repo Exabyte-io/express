@@ -8,7 +8,8 @@ except ModuleNotFoundError:
 
 from express import settings
 from express.properties import BaseProperty
-from typing import Type, Optional
+from express.parsers import BaseParser
+from typing import Type, Optional, Union
 
 # disable pymatgen warnings
 warnings.filterwarnings("ignore")
@@ -39,7 +40,7 @@ class ExPrESS(object):
         else:
             self.parser = None
 
-    def _get_parser_class(self, parser_name: str) -> Optional[Type[BaseProperty]]:
+    def _get_parser_class(self, parser_name: str) -> Optional[Type[BaseParser]]:
         """
         Returns parser class for a given parser name.
 
@@ -58,7 +59,7 @@ class ExPrESS(object):
 
         return parser_class
 
-    def _get_class_by_reference(self, reference: str) -> Type[BaseProperty]:
+    def _get_class_by_reference(self, reference: str) -> Union[Type[BaseProperty], Type[BaseParser]]:
         """
         Returns class by reference.
 

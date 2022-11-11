@@ -166,12 +166,15 @@ BAND_GAPS = {
                 0.0
             ],
             "type": "direct",
+            "spin": 0.5,
             "value": 2.4420081600000003,
             "kpointValence": [
                 0.0,
                 0.0,
                 0.0
-            ]
+            ],
+            "eigenvalueValence": 6.26934533,
+            "eigenvalueConduction": 8.71135349
         },
         {
             "units": "eV",
@@ -181,12 +184,15 @@ BAND_GAPS = {
                 -0.5000000000000001
             ],
             "type": "indirect",
+            "spin": 0.5,
             "value": 0.65023092000000027,
             "kpointValence": [
                 0.0,
                 0.0,
                 0.0
-            ]
+            ],
+            "eigenvalueValence": 6.26934533,
+            "eigenvalueConduction": 6.91957625
         }
     ],
     "name": "band_gaps"

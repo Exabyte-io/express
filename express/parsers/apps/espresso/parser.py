@@ -2,6 +2,7 @@ import os
 import numpy as np
 
 from express.parsers import BaseParser
+from express.parsers.settings import Constant
 from express.parsers.apps.espresso import settings
 from express.parsers.mixins.ionic import IonicDataMixin
 from express.parsers.mixins.reciprocal import ReciprocalDataMixin
@@ -331,3 +332,10 @@ class EspressoParser(BaseParser, IonicDataMixin, ElectronicDataMixin, Reciprocal
             except:
                 pass
         return structures
+
+    def averaged_potential(self):
+        data = self.txt_parser.averaged_quantity(self.stdout_file)
+        data["x"] *= Constant.BOHR  # convert to angstrom
+        data["planar_average"] *= Constant.RYDBERG  # convert to eV
+        data["macroscopic_average"] *= Constant.RYDBERG  # convert to eV
+        return data

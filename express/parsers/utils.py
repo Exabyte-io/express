@@ -1,24 +1,26 @@
 import os
-from express.parsers.settings import ASE_FORMATS
+from typing import Optional, List
 
-def find_file(name, path):
+
+def find_file(name: str, path: str) -> Optional[str]:
     """
     Finds file with the specified name in the given path.
 
     Args:
-        name (str): file name.
+        name (str): file name or absolute path
         path (str): starting path for search.
 
     Returns:
         str: absolute file path (if found)
     """
+    basename = os.path.basename(name)
     for root, dirs, files in os.walk(path, followlinks=True):
         for file in files:
-            if name in file:
+            if basename in file:
                 return os.path.join(root, file)
 
 
-def find_files_by_name_substring(name, path):
+def find_files_by_name_substring(name: str, path: str) -> List[str]:
     matches = []
     for root, dirs, files in os.walk(path, followlinks=True):
         for file_ in files:
@@ -27,7 +29,7 @@ def find_files_by_name_substring(name, path):
     return matches
 
 
-def get_element_counts(basis):
+def get_element_counts(basis: dict) -> List[dict]:
     """
     Returns chemical elements with their count wrt their original order in the basis.
     Note: entries for the same element separated by another element are considered separately.
@@ -47,7 +49,7 @@ def get_element_counts(basis):
     return element_counts
 
 
-def lattice_basis_to_poscar(lattice, basis, basis_units="cartesian"):
+def lattice_basis_to_poscar(lattice: dict, basis: dict, basis_units: str = "cartesian") -> str:
     element_counts = get_element_counts(basis)
     return "\n".join([
         "material",
@@ -60,17 +62,3 @@ def lattice_basis_to_poscar(lattice, basis, basis_units="cartesian"):
         basis_units,
         "\n".join([" ".join(["{0:14.9f}".format(v) for v in x["value"]]) for x in basis["coordinates"]])
     ])
-
-def convert_to_ase_format(format):
-    """
-    Function converts the format keywords used in this code to their
-    corresponding ase keywords based on a predisposed dictionary of values.
-
-    Returns:
-        Str
-
-    Example:
-        format="poscar" --> format="vasp"
-    """
-    ase_format = ASE_FORMATS[format]
-    return ase_format

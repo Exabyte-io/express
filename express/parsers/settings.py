@@ -18,10 +18,10 @@ class Constant(object):
     _Nav = 6.0221367e23  # Avogadro number
     _k = 1.380658e-23  # Boltzmann constant, J/K
     _amu = 1.6605402e-27  # atomic mass unit, kg
-    BOHR = 4e10 * pi * _eps0 * _hbar ** 2 / _me / _e ** 2  # Bohr radius
+    BOHR = 4e10 * pi * _eps0 * _hbar ** 2 / _me / _e ** 2  # Bohr radius in angstrom
     eV = 1.0
-    HARTREE = _me * _e ** 3 / 16 / pi ** 2 / _eps0 ** 2 / _hbar ** 2
-    RYDBERG = 0.5 * HARTREE
+    HARTREE = _me * _e ** 3 / 16 / pi ** 2 / _eps0 ** 2 / _hbar ** 2  # in eV
+    RYDBERG = 0.5 * HARTREE  # in eV
     Ry = RYDBERG
     Ha = HARTREE
     kJ = 1000.0 / _e
@@ -35,6 +35,8 @@ GENERAL_REGEX.update({
     'int_number': r'[+-]?\d+'
 })
 
+
+# Maps the format keywords used in this code to their corresponding ase keywords.
 ASE_FORMATS = {
     "poscar": "vasp",
     "cif": "cif",
