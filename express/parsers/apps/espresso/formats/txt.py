@@ -810,7 +810,7 @@ class EspressoTXTParser(BaseTXTParser):
         if cell_parameters_last_index < 0: return self.initial_lattice_vectors(text)
         return self._extract_lattice(text[cell_parameters_last_index:])
 
-    def averaged_quantity(self, stdout_file: str) -> np.ndarray:
+    def average_quantity(self, stdout_file: str) -> np.ndarray:
         """
         Extract planar and macroscopic averages of a quantity from the output of average.x (output file or avg.dat)
         The format is as follows:
@@ -835,5 +835,5 @@ class EspressoTXTParser(BaseTXTParser):
             average_file = find_file(stdout_file, self.work_dir)
         if type(average_file) == str and os.path.isfile(average_file):
             dtype = np.dtype([("x", float), ("planar_average", float), ("macroscopic_average", float)])
-            data = np.fromregex(average_file, settings.REGEX["averaged_quantity"]["regex"], dtype)
+            data = np.fromregex(average_file, settings.REGEX["average_quantity"]["regex"], dtype)
             return data

@@ -94,8 +94,8 @@ NON_SCALAR_PROPERTIES_MANIFEST = {
     'file_content': {
         'reference': 'express.properties.non_scalar.file_content.FileContent'
     },
-    'averaged_potential_profile': {
-        'reference': 'express.properties.non_scalar.two_dimensional_plot.averaged_potential_profile.AveragedPotentialProfile'
+    'average_potential_profile': {
+        'reference': 'express.properties.non_scalar.two_dimensional_plot.average_potential_profile.AveragePotentialProfile'
     },
 }
 

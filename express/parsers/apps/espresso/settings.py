@@ -140,7 +140,7 @@ REGEX = {
         "occurrences": 0,
         "output_type": "str",
     },
-    "averaged_quantity": {
+    "average_quantity": {
         "regex": r"\s*({0})\s+({0})\s+({0})".format(DOUBLE_REGEX),
     },
 }
