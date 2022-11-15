@@ -333,8 +333,8 @@ class EspressoParser(BaseParser, IonicDataMixin, ElectronicDataMixin, Reciprocal
                 pass
         return structures
 
-    def averaged_potential(self):
-        data = self.txt_parser.averaged_quantity(self.stdout_file)
+    def average_potential(self):
+        data = self.txt_parser.average_quantity(self.stdout_file)
         data["x"] *= Constant.BOHR  # convert to angstrom
         data["planar_average"] *= Constant.RYDBERG  # convert to eV
         data["macroscopic_average"] *= Constant.RYDBERG  # convert to eV
