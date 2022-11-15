@@ -5,7 +5,7 @@ click==7.0
 coverage==5.3
 cycler==0.10.0
 decorator==4.4.2
-git+https://github.com/Exabyte-io/esse@b43e68f38b957464b05eba5ef882c774bfd2cb20#egg=esse
+esse==2022.11.15.post0
 exabyte-json-include==2021.05.06
 flask==1.0.2
 idna==2.7
@@ -35,7 +35,6 @@ requests==2.26.0
 retrying==1.3.3
 ruamel.yaml==0.15.89
 scipy==1.3.2
-setuptools<58.0.0
 six==1.12.0
 spglib==1.12.2.post0
 sympy==1.3
