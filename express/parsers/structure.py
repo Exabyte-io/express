@@ -1,5 +1,6 @@
 import io
 import pymatgen as mg
+from pymatgen.core.structure import Structure
 from ase.io import read, write
 
 from express.parsers import BaseParser
@@ -34,11 +35,11 @@ class StructureParser(BaseParser, IonicDataMixin):
 
         # cell_type is either original, primitive or conventional
         self.cell_type = kwargs["cell_type"]
-        self.structure = mg.Structure.from_str(self.structure_string, self.structure_format)
+        self.structure = Structure.from_str(self.structure_string, self.structure_format)
         if self.cell_type != "original": self.structure = STRUCTURE_MAP[self.cell_type](self.structure)
 
         # keep only one atom inside the basis in order to have the original lattice type
-        self.lattice_only_structure = mg.Structure.from_str(self.structure_string, self.structure_format)  # deepcopy
+        self.lattice_only_structure = Structure.from_str(self.structure_string, self.structure_format)  # deepcopy
         self.lattice_only_structure.remove_sites(range(1, len(self.structure.sites)))
 
 
