@@ -1,5 +1,5 @@
 import numpy as np
-import pymatgen as mg
+from pymatgen.core.structure import Structure
 
 from abc import abstractmethod
 
@@ -257,7 +257,7 @@ class ElectronicDataMixin(object):
         Returns:
              list
         """
-        structures = [mg.Structure.from_str(poscar, "poscar") for poscar in poscars]
+        structures = [Structure.from_str(poscar, "poscar") for poscar in poscars]
         prev = structures[0]
         reaction_coordinates = [0]
         for structure in structures[1:]:
