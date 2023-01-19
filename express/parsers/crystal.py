@@ -1,10 +1,4 @@
-import io
-import pymatgen as mg
-from ase.io import read, write
-
 from express.parsers.structure import StructureParser
-
-
 class CrystalParser(StructureParser):
     """
     Crystal  parser class.
