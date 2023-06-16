@@ -10,8 +10,4 @@ class ConvergenceIonic(NonScalarProperty):
         super(ConvergenceIonic, self).__init__(name, parser, *args, **kwargs)
 
     def _serialize(self):
-        return {
-            'name': self.name,
-            'units': self.manifest["defaults"]["units"],
-            'data': self.parser.convergence_ionic()
-        }
+        return {"name": self.name, "units": self.manifest["defaults"]["units"], "data": self.parser.convergence_ionic()}

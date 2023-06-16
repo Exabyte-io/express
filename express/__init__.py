@@ -69,8 +69,8 @@ class ExPrESS(object):
         Returns:
              class
         """
-        class_name = reference.split('.')[-1]
-        module_name = '.'.join(reference.split('.')[:-1])
+        class_name = reference.split(".")[-1]
+        module_name = ".".join(reference.split(".")[:-1])
         return getattr(importlib.import_module(module_name), class_name)
 
     def _get_property_class(self, property_name: str) -> Type[BaseProperty]:

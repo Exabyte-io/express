@@ -39,5 +39,5 @@ OBJECT_STORAGE_DATA = {
     "CONTAINER": _object_storage_container,
     "NAME": "",
     "PROVIDER": _object_storage_provider,
-    "REGION": _object_storage_region
+    "REGION": _object_storage_region,
 }

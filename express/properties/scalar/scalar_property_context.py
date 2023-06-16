@@ -4,12 +4,6 @@ from express.parsers import BaseParser
 
 
 class ScalarPropertyFromContext(ScalarProperty):
-
-    def __init__(self,
-                 name: str,
-                 parser: Type[BaseParser],
-                 value: Any,
-                 *args,
-                 **kwargs):
+    def __init__(self, name: str, parser: Type[BaseParser], value: Any, *args, **kwargs):
         super().__init__(name, parser, *args, **kwargs)
         self.value = value

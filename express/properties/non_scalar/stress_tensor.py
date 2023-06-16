@@ -10,8 +10,4 @@ class StressTensor(NonScalarProperty):
         super(StressTensor, self).__init__(name, parser, *args, **kwargs)
 
     def _serialize(self):
-        return {
-            'name': self.name,
-            "units": self.manifest["defaults"]["units"],
-            "value": self.parser.stress_tensor()
-        }
+        return {"name": self.name, "units": self.manifest["defaults"]["units"], "value": self.parser.stress_tensor()}

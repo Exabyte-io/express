@@ -22,7 +22,7 @@ class BaseTXTParser(object):
             regex (str): regex pattern.
             output_type (str): output type.
             start_flag (str): a symbol in the output file to be used as the starting point (for speedup and accuracy).
-            occurrences (int): number of desired line counts to be processed. If negative, last occurrences is extracted:
+            occurrences (int): number of desired line counts to be processed. If negative, last occurrence is extracted:
                                 - N < 0: extract the last N instance(s). Forms a list if |N| > 1
                                 - N = 0: extract all of of the occurred instances and forms a list.
                                 - N > 0: extract the first N instance(s). Forms a list if |N| > 1

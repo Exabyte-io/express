@@ -29,17 +29,17 @@ class BandGaps(NonScalarProperty):
         if self.band_gaps_direct is not None and self.band_gaps_indirect is not None:
             self.values = [
                 self._serialize_band_gaps(self.band_gaps_direct, "direct"),
-                self._serialize_band_gaps(self.band_gaps_indirect, "indirect")
+                self._serialize_band_gaps(self.band_gaps_indirect, "indirect"),
             ]
 
     def _serialize(self) -> dict:
         return {
             "name": self.name,
             "values": self.values if self.values else self.get_band_gaps_from_mesh(),
-            "eigenvalues": self._eigenvalues() if not self.values else []
+            "eigenvalues": self._eigenvalues() if not self.values else [],
         }
 
-    def _serialize_band_gaps(self, gap: float, gap_type: str, spin: float = 1/2) -> dict:
+    def _serialize_band_gaps(self, gap: float, gap_type: str, spin: float = 1 / 2) -> dict:
         return {
             "type": gap_type,
             "units": self.manifest["defaults"]["units"],
@@ -60,20 +60,19 @@ class BandGaps(NonScalarProperty):
             for gap_type in gap_types:
                 computed_gaps.append(
                     self.compute_on_mesh(
-                        eigenvalue_mesh=eigenvalue_mesh,
-                        occupations=occupations,
-                        spin_channel=s,
-                        gap_type=gap_type
+                        eigenvalue_mesh=eigenvalue_mesh, occupations=occupations, spin_channel=s, gap_type=gap_type
                     )
                 )
         return computed_gaps
 
-    def compute_on_mesh(self,
-                        eigenvalue_mesh: np.ndarray,
-                        occupations: np.ndarray,
-                        spin_channel: int = 0,
-                        gap_type: str = "indirect",
-                        absolute_eigenvalues: bool = True) -> dict:
+    def compute_on_mesh(
+        self,
+        eigenvalue_mesh: np.ndarray,
+        occupations: np.ndarray,
+        spin_channel: int = 0,
+        gap_type: str = "indirect",
+        absolute_eigenvalues: bool = True,
+    ) -> dict:
         """
         Calculates the band gap on the material's mesh for a given gap type and spin channel.
 
@@ -89,8 +88,8 @@ class BandGaps(NonScalarProperty):
         """
         ev_k = eigenvalue_mesh[spin_channel, :, 0]  # valence band of current spin channel
         ec_k = eigenvalue_mesh[spin_channel, :, 1]  # conduction band of current spin channel
-        occ_k = occupations[spin_channel]           # band occupations for current spin channel
-        spin = 1/2*(-1)**spin_channel               # spin value
+        occ_k = occupations[spin_channel]  # band occupations for current spin channel
+        spin = 1 / 2 * (-1) ** spin_channel  # spin value
 
         gap, k_val, k_cond = BandGaps._find_gap(occ_k, ev_k, ec_k, gap_type=gap_type)
         result = self._serialize_band_gaps(gap=gap, gap_type=gap_type, spin=spin)
@@ -99,12 +98,14 @@ class BandGaps(NonScalarProperty):
         e_fermi = self.fermi_energy if absolute_eigenvalues else 0
 
         if k_val is not None and k_cond is not None:
-            result.update({
-                "kpointValence": self._round(self.ibz_k_points[k_val]),
-                "kpointConduction": self._round(self.ibz_k_points[k_cond]),
-                "eigenvalueValence": ev_k[k_val] + e_fermi,
-                "eigenvalueConduction": ec_k[k_cond] + e_fermi,
-            })
+            result.update(
+                {
+                    "kpointValence": self._round(self.ibz_k_points[k_val]),
+                    "kpointConduction": self._round(self.ibz_k_points[k_cond]),
+                    "eigenvalueValence": ev_k[k_val] + e_fermi,
+                    "eigenvalueConduction": ec_k[k_cond] + e_fermi,
+                }
+            )
         return result
 
     def _get_bands_info(self) -> Tuple[np.ndarray, np.ndarray]:
@@ -130,14 +131,13 @@ class BandGaps(NonScalarProperty):
         e_skn -= self.fermi_energy
         occ_sk = (e_skn < 0.0).sum(2)
         # select highest occupied and lowest unoccupied bands
-        e_skn = np.array([[e_skn[s, k, occ_sk[s, k] - 1:occ_sk[s, k] + 1] for k in range(nk)] for s in range(ns)])
+        e_skn = np.array([[e_skn[s, k, occ_sk[s, k] - 1 : occ_sk[s, k] + 1] for k in range(nk)] for s in range(ns)])
         return occ_sk, e_skn
 
     @staticmethod
-    def _find_gap(occupations: np.ndarray,
-                  valence_band: np.ndarray,
-                  conduction_band: np.ndarray,
-                  gap_type: str = "indirect") -> Tuple[float, int, int]:
+    def _find_gap(
+        occupations: np.ndarray, valence_band: np.ndarray, conduction_band: np.ndarray, gap_type: str = "indirect"
+    ) -> Tuple[float, int, int]:
         """
         Computes the difference in energy between the highest valence band and the lowest conduction band.
 
@@ -164,7 +164,8 @@ class BandGaps(NonScalarProperty):
 
     def _eigenvalues(self) -> list:
         """
-        Extracts eigenvalues around Fermi level, i.e. last two values in occupation 1 and first two values in occupation 0.
+        Extract eigenvalues around Fermi level.
+        i.e., last two values in occupation 1 and first two values in occupation 0.
 
         Returns:
              dict

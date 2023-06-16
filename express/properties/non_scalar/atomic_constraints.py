@@ -11,7 +11,4 @@ class AtomicConstraints(NonScalarProperty):
         super(AtomicConstraints, self).__init__(name, parser, *args, **kwargs)
 
     def _serialize(self):
-        return {
-            'name': self.name,
-            "values": to_array_with_ids(self.parser.atomic_constraints())
-        }
+        return {"name": self.name, "values": to_array_with_ids(self.parser.atomic_constraints())}

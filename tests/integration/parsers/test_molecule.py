@@ -6,7 +6,6 @@ from express.parsers.molecule import MoleculeParser
 
 
 class TestMoleculeParser(IntegrationTestBase):
-
     def setUp(self):
         super(IntegrationTestBase, self).setUp()
 
@@ -20,7 +19,7 @@ class TestMoleculeParser(IntegrationTestBase):
             kwargs = {
                 "cell_type": manifest.get("cell_type", "original"),
                 "structure_string": f.read(),
-                "structure_format": "poscar"
+                "structure_format": "poscar",
             }
             return MoleculeParser(**kwargs)
 

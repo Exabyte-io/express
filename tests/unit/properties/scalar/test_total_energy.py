@@ -1,11 +1,7 @@
 from tests.unit import UnitTestBase
 from express.properties.scalar.total_energy import TotalEnergy
 
-TOTAL_ENERGY = {
-    "units": "eV",
-    "name": "total_energy",
-    "value": 1
-}
+TOTAL_ENERGY = {"units": "eV", "name": "total_energy", "value": 1}
 
 
 class TotalEnergyTest(UnitTestBase):

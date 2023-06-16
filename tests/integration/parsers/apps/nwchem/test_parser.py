@@ -1,3 +1,4 @@
+# ruff: noqa: F403,F405
 from tests.fixtures.nwchem.references import *
 from tests.integration import IntegrationTestBase
 from express.parsers.apps.nwchem.parser import NwchemParser

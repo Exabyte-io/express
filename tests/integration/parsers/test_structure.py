@@ -6,7 +6,6 @@ from express.parsers.structure import StructureParser
 
 
 class TestStructureParser(IntegrationTestBase):
-
     def setUp(self):
         super(IntegrationTestBase, self).setUp()
 
@@ -20,7 +19,7 @@ class TestStructureParser(IntegrationTestBase):
             kwargs = {
                 "structure_string": f.read(),
                 "cell_type": manifest.get("cell_type", "original"),
-                "structure_format": manifest.get("structureFormat", "poscar")
+                "structure_format": manifest.get("structureFormat", "poscar"),
             }
             return StructureParser(**kwargs)
 

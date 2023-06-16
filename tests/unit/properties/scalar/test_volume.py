@@ -1,11 +1,7 @@
 from tests.unit import UnitTestBase
 from express.properties.scalar.volume import Volume
 
-VOLUME = {
-    "units": "angstrom^3",
-    "name": "volume",
-    "value": 1
-}
+VOLUME = {"units": "angstrom^3", "name": "volume", "value": 1}
 
 
 class VolumeTest(UnitTestBase):

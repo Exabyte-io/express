@@ -11,7 +11,7 @@ class DensityOfStates(TwoDimensionalPlotProperty):
     def __init__(self, name, parser, *args, **kwargs):
         super(DensityOfStates, self).__init__(name, parser, *args, **kwargs)
         dos = self.parser.dos()
-        self.xDataArray = [dos['energy']]
-        self.yDataSeries = [dos['total']]
-        self.legend = [{}] + dos['partial_info']
-        self.yDataSeries.extend([pdos for pdos in dos['partial']])
+        self.xDataArray = [dos["energy"]]
+        self.yDataSeries = [dos["total"]]
+        self.legend = [{}] + dos["partial_info"]
+        self.yDataSeries.extend([pdos for pdos in dos["partial"]])

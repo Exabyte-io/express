@@ -1,11 +1,7 @@
 from tests.unit import UnitTestBase
 from express.properties.scalar.density import Density
 
-DENSITY = {
-    "units": "g/cm^3",
-    "name": "density",
-    "value": 1
-}
+DENSITY = {"units": "g/cm^3", "name": "density", "value": 1}
 
 
 class DensityTest(UnitTestBase):

@@ -1,5 +1,3 @@
-
-
 import os
 import xml.etree.ElementTree as ET
 
@@ -17,6 +15,6 @@ class BaseXMLParser(object):
             try:
                 self.xml_dir_name = os.path.dirname(self.xml_path)
                 self.root = ET.parse(self.xml_path).getroot()
-            except:
+            except ET.ParseError:
                 # safely ignore broken xml file
                 pass

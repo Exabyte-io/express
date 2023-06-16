@@ -2,27 +2,7 @@ from tests.unit import UnitTestBase
 from tests.fixtures.data import STRESS_TENSOR_RAW_DATA
 from express.properties.non_scalar.stress_tensor import StressTensor
 
-STRESS_TENSOR = {
-    "name": "stress_tensor",
-    "value": [
-        [
-            3,
-            0,
-            0
-        ],
-        [
-            0,
-            3,
-            0
-        ],
-        [
-            0,
-            0,
-            3
-        ]
-    ],
-    "units": "kbar"
-}
+STRESS_TENSOR = {"name": "stress_tensor", "value": [[3, 0, 0], [0, 3, 0], [0, 0, 3]], "units": "kbar"}
 
 
 class StressTensorTest(UnitTestBase):

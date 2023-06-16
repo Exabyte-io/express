@@ -4,17 +4,9 @@ from operator import itemgetter
 
 from express.parsers.formats.xml import BaseXMLParser
 
-SPIN_MAP_COLLINEAR = {
-    1: 'up',
-    2: 'down'
-}
+SPIN_MAP_COLLINEAR = {1: "up", 2: "down"}
 
-SPIN_MAP_NON_COLLINEAR = {
-    1: 'total',
-    2: 'x',
-    3: 'y',
-    4: 'z'
-}
+SPIN_MAP_NON_COLLINEAR = {1: "total", 2: "x", 3: "y", 4: "z"}
 
 EXTRACT_PARTIAL_DOS_FOR_ALL_SPINS = False
 
@@ -53,8 +45,8 @@ class VaspXMLParser(BaseXMLParser):
                 ...
             ]
         """
-        kpoints_list = self.root.find('kpoints').find('.//varray[@name="kpointlist"]')
-        kpoints_weight = self.root.find('kpoints').find('.//varray[@name="weights"]')
+        kpoints_list = self.root.find("kpoints").find('.//varray[@name="kpointlist"]')
+        kpoints_weight = self.root.find("kpoints").find('.//varray[@name="weights"]')
         eigenvalues, occupations = self._parse_eigenvalues_occupations()
 
         eigenvalues_at_kpoints = []
@@ -62,14 +54,16 @@ class VaspXMLParser(BaseXMLParser):
             eigenvalues_at_kpoint = {
                 "kpoint": [float(x) for x in kpoint.text.split()],
                 "weight": float(weight.text),
-                "eigenvalues": []
+                "eigenvalues": [],
             }
             for spin in eigenvalues:
-                eigenvalues_at_kpoint['eigenvalues'].append({
-                    'energies': eigenvalues[spin][kp_id].tolist(),
-                    'occupations': occupations[spin][kp_id].tolist(),
-                    'spin': 0.5 if spin == 0 else -0.5
-                })
+                eigenvalues_at_kpoint["eigenvalues"].append(
+                    {
+                        "energies": eigenvalues[spin][kp_id].tolist(),
+                        "occupations": occupations[spin][kp_id].tolist(),
+                        "spin": 0.5 if spin == 0 else -0.5,
+                    }
+                )
             eigenvalues_at_kpoints.append(eigenvalues_at_kpoint)
 
         return eigenvalues_at_kpoints
@@ -83,7 +77,7 @@ class VaspXMLParser(BaseXMLParser):
         """
         eigenvalues = {}
         occupations = {}
-        eigenvalues_tag = self.root.findall('calculation')[-1].find('eigenvalues/array/set')
+        eigenvalues_tag = self.root.findall("calculation")[-1].find("eigenvalues/array/set")
         for id_spin, eigen_spin in enumerate(eigenvalues_tag):
             eigenvalues[id_spin] = {}
             occupations[id_spin] = {}
@@ -104,7 +98,7 @@ class VaspXMLParser(BaseXMLParser):
         Returns:
             float
         """
-        tag = self.root.findall('calculation')[-1].find('dos/i')
+        tag = self.root.findall("calculation")[-1].find("dos/i")
         return float(tag.text)
 
     def nspins(self):
@@ -114,7 +108,7 @@ class VaspXMLParser(BaseXMLParser):
         Returns:
              int
         """
-        tag = self.root.find('parameters').find('.//separator[@name="electronic spin"]').find('.//i[@name="ISPIN"]')
+        tag = self.root.find("parameters").find('.//separator[@name="electronic spin"]').find('.//i[@name="ISPIN"]')
         return int(tag.text)
 
     def dos(self, combined=True):
@@ -155,22 +149,24 @@ class VaspXMLParser(BaseXMLParser):
                 for elec_state in electronic_states:
                     matched_pdos = []
                     for pdos_idx, pdos_info_item in enumerate(partial_dos_infos):
-                        if pdos_info_item['electronicState'] == elec_state and atom_type == pdos_info_item['element']:
+                        if pdos_info_item["electronicState"] == elec_state and atom_type == pdos_info_item["element"]:
                             matched_pdos.append(partial_dos_values[pdos_idx])
                     combined_pdos_values.append(np.sum(matched_pdos, axis=0).tolist())
-                    combined_pdos_infos.append({
-                        'element': atom_type,
-                        'electronicState': elec_state,
-                        'spin': 0.5 if 'up' in elec_state else -0.5
-                    })
+                    combined_pdos_infos.append(
+                        {
+                            "element": atom_type,
+                            "electronicState": elec_state,
+                            "spin": 0.5 if "up" in elec_state else -0.5,
+                        }
+                    )
             partial_dos_values, partial_dos_infos = combined_pdos_values, combined_pdos_infos
 
         # TODO: extract and return total dos for all the spins
         return {
-            'energy': total_dos[0]["energy"].tolist(),
-            'total': np.sum([dos["total"] for dos in total_dos], axis=0).tolist(),
-            'partial': partial_dos_values,
-            'partial_info': partial_dos_infos
+            "energy": total_dos[0]["energy"].tolist(),
+            "total": np.sum([dos["total"] for dos in total_dos], axis=0).tolist(),
+            "partial": partial_dos_values,
+            "partial_info": partial_dos_infos,
         }
 
     def atom_names(self):
@@ -180,30 +176,25 @@ class VaspXMLParser(BaseXMLParser):
         Returns:
             list: list of atom names.
         """
-        return [atom.find('c').text.strip() for atom in self.root.find('atominfo/array/set').findall('rc')]
+        return [atom.find("c").text.strip() for atom in self.root.find("atominfo/array/set").findall("rc")]
 
     def _extract_total_dos(self, dos_root):
         total_dos = []
-        total_dos_root = dos_root.find('total/array/set')
+        total_dos_root = dos_root.find("total/array/set")
         for index, spin in enumerate(total_dos_root):
-            tdos_spin_as_float = [[float(x) for x in tdos.text.split()] for tdos in spin.findall('r')]
+            tdos_spin_as_float = [[float(x) for x in tdos.text.split()] for tdos in spin.findall("r")]
             tdos_spin = np.array(tdos_spin_as_float)
-            total_dos.append({
-                "spin": index + 1,
-                "energy": tdos_spin[:, 0],
-                "total": tdos_spin[:, 1]
-            })
+            total_dos.append({"spin": index + 1, "energy": tdos_spin[:, 0], "total": tdos_spin[:, 1]})
         return total_dos
 
     def _extract_dos(self):
-
         """
         Extracts density of states (total and partial) from xml output.
 
         Returns:
             tuple: energy levels, total dos, partial dos and electronic states values
         """
-        dos_root = self.root.findall('calculation')[-1].find('dos')
+        dos_root = self.root.findall("calculation")[-1].find("dos")
         total_dos = self._extract_total_dos(dos_root)
         partial_dos_values, partial_dos_infos, electronic_states = self._partial_dos(dos_root)
         return total_dos, partial_dos_values, partial_dos_infos, electronic_states
@@ -236,30 +227,33 @@ class VaspXMLParser(BaseXMLParser):
         partial_dos_values = []
         partial_dos_infos = []
         electronic_states = set()
-        if dos_root.find('partial') is not None:
-            orbit_symbols = [orbit.text.strip() for orbit in dos_root.find('partial/array').findall('field')[1:]]
-            partial_root = dos_root.find('partial/array/set')
+        if dos_root.find("partial") is not None:
+            orbit_symbols = [orbit.text.strip() for orbit in dos_root.find("partial/array").findall("field")[1:]]
+            partial_root = dos_root.find("partial/array/set")
             for atom_id, atom in enumerate(partial_root):
                 for spin_id, spin in enumerate(atom):
                     # extract partial dos only for the first spin in case of non-collinear calculation
-                    if spin_id > 0 and len(atom) == 4 and not EXTRACT_PARTIAL_DOS_FOR_ALL_SPINS: continue
-                    pdos_spin = np.array([[float(x) for x in pdos.text.split()[1:]] for pdos in spin.findall('r')])
+                    if spin_id > 0 and len(atom) == 4 and not EXTRACT_PARTIAL_DOS_FOR_ALL_SPINS:
+                        continue
+                    pdos_spin = np.array([[float(x) for x in pdos.text.split()[1:]] for pdos in spin.findall("r")])
                     for column_id, column in enumerate(pdos_spin.T):
                         elec_state = orbit_symbols[column_id - 1]
                         if len(atom) == 2:
-                            elec_state = '{0}-{1}'.format(orbit_symbols[column_id], SPIN_MAP_COLLINEAR[spin_id + 1])
+                            elec_state = "{0}-{1}".format(orbit_symbols[column_id], SPIN_MAP_COLLINEAR[spin_id + 1])
                         elif len(atom) == 4:
-                            elec_state = '{0}-{1}'.format(orbit_symbols[column_id], SPIN_MAP_NON_COLLINEAR[spin_id + 1])
+                            elec_state = "{0}-{1}".format(orbit_symbols[column_id], SPIN_MAP_NON_COLLINEAR[spin_id + 1])
                         # orbit_symbol is missed in VASP 5.4.4, hence the below
                         elec_state = "".join(("d", elec_state)) if "x2-y2" in elec_state else elec_state
                         electronic_states.add(elec_state)
                         partial_dos_values.append(column.tolist())
-                        partial_dos_infos.append({
-                            'element': self.atom_names()[atom_id],
-                            'index': atom_id,
-                            'electronicState': elec_state,
-                            'spin': 0.5 if spin_id == 0 else -0.5
-                        })
+                        partial_dos_infos.append(
+                            {
+                                "element": self.atom_names()[atom_id],
+                                "index": atom_id,
+                                "electronicState": elec_state,
+                                "spin": 0.5 if spin_id == 0 else -0.5,
+                            }
+                        )
         return partial_dos_values, partial_dos_infos, electronic_states
 
     def final_lattice_vectors(self):
@@ -281,15 +275,12 @@ class VaspXMLParser(BaseXMLParser):
         """
         vectors = {}
         for idx, vector in enumerate(
-                self._parse_varray(self.root.find('structure[@name="finalpos"]/crystal/varray[@name="basis"]'))):
-            vectors.update({
-                string.ascii_lowercase[idx]: vector.tolist()
-            })
-        vectors.update({'alat': 1.0, 'units': 'angstrom'})
+            self._parse_varray(self.root.find('structure[@name="finalpos"]/crystal/varray[@name="basis"]'))
+        ):
+            vectors.update({string.ascii_lowercase[idx]: vector.tolist()})
+        vectors.update({"alat": 1.0, "units": "angstrom"})
 
-        return {
-            'vectors': vectors
-        }
+        return {"vectors": vectors}
 
     def final_basis(self):
         """
@@ -307,24 +298,16 @@ class VaspXMLParser(BaseXMLParser):
         """
         lattice = self.final_lattice_vectors()
         lattice_matrix = np.array([lattice["vectors"][key] for key in ["a", "b", "c"]], dtype=np.float64).reshape(
-            (3, 3))
+            (3, 3)
+        )
         elements, coordinates = [], []
         for idx, vector in enumerate(
-                self._parse_varray(self.root.find('structure[@name="finalpos"]/varray[@name="positions"]'))):
-            elements.append({
-                'id': idx,
-                'value': self.atom_names()[idx]
-            })
-            coordinates.append({
-                'id': idx,
-                'value': np.dot(vector, lattice_matrix).tolist()
-            })
+            self._parse_varray(self.root.find('structure[@name="finalpos"]/varray[@name="positions"]'))
+        ):
+            elements.append({"id": idx, "value": self.atom_names()[idx]})
+            coordinates.append({"id": idx, "value": np.dot(vector, lattice_matrix).tolist()})
 
-        return {
-            'units': 'angstrom',
-            'elements': elements,
-            'coordinates': coordinates
-        }
+        return {"units": "angstrom", "elements": elements, "coordinates": coordinates}
 
     def _parse_varray(self, varray):
         """
@@ -346,8 +329,11 @@ class VaspXMLParser(BaseXMLParser):
         Returns:
             ndarray: a matrix containing all the values found in the varray.
         """
-        return np.array([v.text.split() for v in varray.findall('v')],
-                        dtype=np.float32) if varray is not None else np.array([])
+        return (
+            np.array([v.text.split() for v in varray.findall("v")], dtype=np.float32)
+            if varray is not None
+            else np.array([])
+        )
 
     def stress_tensor(self):
         """
@@ -356,7 +342,7 @@ class VaspXMLParser(BaseXMLParser):
         Returns:
             list
         """
-        return self._parse_varray(self.root.findall('calculation')[-1].find('.//varray[@name="stress"]')).tolist()
+        return self._parse_varray(self.root.findall("calculation")[-1].find('.//varray[@name="stress"]')).tolist()
 
     def atomic_forces(self):
         """
@@ -365,4 +351,4 @@ class VaspXMLParser(BaseXMLParser):
         Returns:
             list
         """
-        return self._parse_varray(self.root.findall('calculation')[-1].find('.//varray[@name="forces"]')).tolist()
+        return self._parse_varray(self.root.findall("calculation")[-1].find('.//varray[@name="forces"]')).tolist()

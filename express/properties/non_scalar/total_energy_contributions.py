@@ -10,9 +10,6 @@ class TotalEnergyContributions(NonScalarProperty):
         super(TotalEnergyContributions, self).__init__(name, parser, *args, **kwargs)
 
     def _serialize(self):
-        data = {
-            'name': self.name,
-            'units': self.manifest["defaults"]["units"]
-        }
+        data = {"name": self.name, "units": self.manifest["defaults"]["units"]}
         data.update(self.parser.total_energy_contributions())
         return data

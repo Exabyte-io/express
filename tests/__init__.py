@@ -39,8 +39,8 @@ class TestBase(unittest.TestCase):
             expected (dict|list|tuple): expected complex object.
             actual (dict|list|tuple): actual complex object.
         """
-        is_root = '__trace' not in kwargs
-        trace = kwargs.pop('__trace', 'ROOT')
+        is_root = "__trace" not in kwargs
+        trace = kwargs.pop("__trace", "ROOT")
         try:
             if isinstance(expected, (int, float, complex)):
                 self.assertAlmostEqual(expected, actual, *args, **kwargs)
@@ -56,8 +56,8 @@ class TestBase(unittest.TestCase):
                 for key in expected:
                     self.assertDeepAlmostEqual(expected[key], actual[key], __trace=repr(key), *args, **kwargs)
         except AssertionError as exc:
-            exc.__dict__.setdefault('traces', []).append(trace)
+            exc.__dict__.setdefault("traces", []).append(trace)
             if is_root:
-                trace = ' -> '.join(reversed(exc.traces))
+                trace = " -> ".join(reversed(exc.traces))
                 exc = AssertionError("%s\nTRACE: %s" % (str(exc), trace))
             raise exc

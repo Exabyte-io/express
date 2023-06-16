@@ -8,11 +8,7 @@ from express.parsers.settings import Constant
 from express.parsers.apps.espresso import settings
 from express.parsers.formats.txt import BaseTXTParser
 
-ORBITS = {
-    's': [''],
-    'p': ['z', 'x', 'y'],
-    'd': ['z2', 'zx', 'zy', 'x2-y2', 'xy']
-}
+ORBITS = {"s": [""], "p": ["z", "x", "y"], "d": ["z2", "zx", "zy", "x2-y2", "xy"]}
 
 
 class EspressoTXTParser(BaseTXTParser):
@@ -68,10 +64,10 @@ class EspressoTXTParser(BaseTXTParser):
         energy_levels, total_dos = self._total_dos(dos_tot_file)
         partial_dos_values, partial_dos_infos = self._partial_dos(len(energy_levels))
         return {
-            'energy': energy_levels.tolist(),
-            'total': total_dos.tolist(),
-            'partial': partial_dos_values,
-            'partial_info': partial_dos_infos
+            "energy": energy_levels.tolist(),
+            "total": total_dos.tolist(),
+            "partial": partial_dos_values,
+            "partial_info": partial_dos_infos,
         }
 
     def _total_dos(self, dos_tot_file):
@@ -135,20 +131,21 @@ class EspressoTXTParser(BaseTXTParser):
         # ['B', 'D', 'a', 'c']
         for file_name in sorted(os.listdir(self.work_dir)):
             file_path = os.path.join(self.work_dir, file_name)
-            match = re.compile(settings.REGEX['pdos_file']['regex']).match(file_name)
+            match = re.compile(settings.REGEX["pdos_file"]["regex"]).match(file_name)
             if match:
-                atm_pdos = self._extract_partial_dos(file_path, len(ORBITS[match.group('orbit_symbol')]))
+                atm_pdos = self._extract_partial_dos(file_path, len(ORBITS[match.group("orbit_symbol")]))
                 atm_pdos = atm_pdos.T if atm_pdos.shape[0] > 1 else atm_pdos
                 for idx, orbit_pdos in enumerate(atm_pdos):
-                    orbit_idx = ORBITS[match.group('orbit_symbol')][idx] if match.group('orbit_symbol') != 's' else ''
-                    pdos_id = "{0}_{1}{2}{3}".format(match.group('atom_name'), match.group('orbit_num'),
-                                                     match.group('orbit_symbol'), orbit_idx)  # e.g. C_1s, C_2px, C_2dz2
-                    if not pdos_id in pdos.keys():
+                    orbit_idx = ORBITS[match.group("orbit_symbol")][idx] if match.group("orbit_symbol") != "s" else ""
+                    pdos_id = "{0}_{1}{2}{3}".format(
+                        match.group("atom_name"), match.group("orbit_num"), match.group("orbit_symbol"), orbit_idx
+                    )  # e.g. C_1s, C_2px, C_2dz2
+                    if pdos_id not in pdos.keys():
                         pdos[pdos_id] = np.zeros(num_levels)
                     pdos[pdos_id] += orbit_pdos
 
         pdos_values = [pdos[item].tolist() for item in pdos]
-        pdos_infos = [{'element': item.split('_')[0], 'electronicState': item.split('_')[1]} for item in pdos]
+        pdos_infos = [{"element": item.split("_")[0], "electronicState": item.split("_")[1]} for item in pdos]
         return pdos_values, pdos_infos
 
     def _extract_partial_dos(self, pdos_file, orbit_num):
@@ -190,7 +187,7 @@ class EspressoTXTParser(BaseTXTParser):
                     -99.889  0.000E+00  0.000E+00
         """
         with open(dos_file) as f:
-            return '\n'.join(re.findall('^ *[-+]?\d*\.\d+(?:[eE][-+]?\d+)?.*$', f.read(), re.MULTILINE))
+            return "\n".join(re.findall("^ *[-+]?\d*\.\d+(?:[eE][-+]?\d+)?.*$", f.read(), re.MULTILINE))
 
     def convergence_electronic(self, text):
         """
@@ -205,8 +202,9 @@ class EspressoTXTParser(BaseTXTParser):
         data = self._general_output_parser(text, **settings.REGEX["convergence_electronic"])
         # The next 3 lines are necessary to have realtime data
         ionic_data = [_["electronic"]["data"] for _ in self.convergence_ionic(text)]
-        last_step_data = data[sum([len(_) for _ in ionic_data]): len(data)]
-        if last_step_data: ionic_data.append(last_step_data)
+        last_step_data = data[sum([len(_) for _ in ionic_data]) : len(data)]
+        if last_step_data:
+            ionic_data.append(last_step_data)
         return [(np.array(_) * Constant.RYDBERG).tolist() for _ in ionic_data]
 
     def convergence_ionic(self, text):
@@ -224,38 +222,33 @@ class EspressoTXTParser(BaseTXTParser):
         for idx, block in enumerate(blocks):
             energies = self._general_output_parser(block, **settings.REGEX["convergence_ionic_energies"])
             energies = (np.array(energies) * Constant.RYDBERG).tolist()
-            data.append({
-                "energy": energies[-1],
-                "electronic": {
-                    "units": "eV",
-                    "data": self._general_output_parser(block, **settings.REGEX["convergence_electronic"])
-                },
-            })
+            data.append(
+                {
+                    "energy": energies[-1],
+                    "electronic": {
+                        "units": "eV",
+                        "data": self._general_output_parser(block, **settings.REGEX["convergence_electronic"]),
+                    },
+                }
+            )
 
-        if not data: return []
+        if not data:
+            return []
 
         # last structure is used for the next ionic step, hence [:max(0, len(data) - 1)]
-        lattice_convergence = self._lattice_convergence(text)[:max(0, len(data) - 1)]
-        basis_convergence = self._basis_convergence(text)[:max(0, len(data) - 1)]
+        lattice_convergence = self._lattice_convergence(text)[: max(0, len(data) - 1)]
+        basis_convergence = self._basis_convergence(text)[: max(0, len(data) - 1)]
         for idx, structure in enumerate(zip(lattice_convergence, basis_convergence)):
             structure[1]["units"] = "angstrom"
             lattice_matrix = np.array([structure[0]["vectors"][key] for key in ["a", "b", "c"]]).reshape((3, 3))
             for coordinate in structure[1]["coordinates"]:
                 coordinate["value"] = np.dot(coordinate["value"], lattice_matrix).tolist()
-            data[idx + 1].update({
-                'structure': {
-                    'lattice': structure[0],
-                    'basis': structure[1]
-                }
-            })
+            data[idx + 1].update({"structure": {"lattice": structure[0], "basis": structure[1]}})
 
         # inject initial structure
-        data[0].update({
-            "structure": {
-                "basis": self.initial_basis(text),
-                "lattice": self.initial_lattice_vectors(text)
-            }
-        })
+        data[0].update(
+            {"structure": {"basis": self.initial_basis(text), "lattice": self.initial_lattice_vectors(text)}}
+        )
 
         return data
 
@@ -291,7 +284,9 @@ class EspressoTXTParser(BaseTXTParser):
         alat = self._get_alat(text)
         lattice_in_alat_units = self._extract_lattice(text, regex="lattice_alat")
         for key in ["a", "b", "c"]:
-            lattice_in_alat_units["vectors"][key] = [e * alat * Constant.BOHR for e in lattice_in_alat_units["vectors"][key]]
+            lattice_in_alat_units["vectors"][key] = [
+                e * alat * Constant.BOHR for e in lattice_in_alat_units["vectors"][key]
+            ]
         return lattice_in_alat_units
 
     def _extract_basis(self, text, number_of_atoms):
@@ -342,7 +337,7 @@ class EspressoTXTParser(BaseTXTParser):
         """
         alat = self._get_alat(text)
         number_of_atoms = self._number_of_atoms(text)
-        basis_in_alat_units = self._extract_basis(text[text.find("positions (alat units)"):], number_of_atoms)
+        basis_in_alat_units = self._extract_basis(text[text.find("positions (alat units)") :], number_of_atoms)
         for coordinate in basis_in_alat_units["coordinates"]:
             coordinate["value"] = [x * alat * Constant.BOHR for x in coordinate["value"]]
         return basis_in_alat_units
@@ -423,14 +418,7 @@ class EspressoTXTParser(BaseTXTParser):
         match = re.search(settings.REGEX[regex]["regex"], text)
         if match:
             lattice = [float(_) for _ in match.groups(1)]
-            return {
-                'vectors': {
-                    'a': lattice[0:3],
-                    'b': lattice[3:6],
-                    'c': lattice[6:9],
-                    'alat': 1
-                }
-            }
+            return {"vectors": {"a": lattice[0:3], "b": lattice[3:6], "c": lattice[6:9], "alat": 1}}
 
     def _basis_convergence(self, text):
         """
@@ -476,22 +464,12 @@ class EspressoTXTParser(BaseTXTParser):
                 'coordinates': [{'id': 1, 'value': [0.0, 0.0, 0.0]}, {'id': 2, 'value': [0.0, 0.0, 0.0]}]
              }
         """
-        basis = {
-            "units": "crystal",
-            "elements": [],
-            "coordinates": []
-        }
+        basis = {"units": "crystal", "elements": [], "coordinates": []}
         matches = re.findall(settings.REGEX["ion_position"]["regex"], text)
         if matches:
             for idx, match in enumerate(matches):
-                basis["elements"].append({
-                    "id": idx,
-                    "value": match[0]
-                })
-                basis["coordinates"].append({
-                    "id": idx,
-                    "value": [float(match[1]), float(match[2]), float(match[3])]
-                })
+                basis["elements"].append({"id": idx, "value": match[0]})
+                basis["coordinates"].append({"id": idx, "value": [float(match[1]), float(match[2]), float(match[3])]})
 
             return basis
 
@@ -538,7 +516,7 @@ class EspressoTXTParser(BaseTXTParser):
         Returns:
             list
         """
-        forces = self._general_output_parser(text, **settings.REGEX['forces_on_atoms'])
+        forces = self._general_output_parser(text, **settings.REGEX["forces_on_atoms"])
         return (np.array(forces) * Constant.ry_bohr_to_eV_A).tolist()
 
     def total_energy_contributions(self, text):
@@ -555,10 +533,7 @@ class EspressoTXTParser(BaseTXTParser):
         for contribution in settings.TOTAL_ENERGY_CONTRIBUTIONS:
             value = self._general_output_parser(text, **settings.TOTAL_ENERGY_CONTRIBUTIONS[contribution])
             if value is not None:
-                energy_contributions.update({contribution: {
-                    'name': contribution,
-                    'value': value * Constant.RYDBERG
-                }})
+                energy_contributions.update({contribution: {"name": contribution, "value": value * Constant.RYDBERG}})
         return energy_contributions
 
     def zero_point_energy(self, text):
@@ -568,8 +543,9 @@ class EspressoTXTParser(BaseTXTParser):
         Returns:
              float
         """
-        data = self._general_output_parser(text, **settings.REGEX['zero_point_energy'])
-        if len(data): return (sum(data) / 2) * Constant.cm_inv_to_ev
+        data = self._general_output_parser(text, **settings.REGEX["zero_point_energy"])
+        if len(data):
+            return (sum(data) / 2) * Constant.cm_inv_to_ev
 
     def phonon_dos(self):
         """
@@ -586,10 +562,7 @@ class EspressoTXTParser(BaseTXTParser):
         """
         phonon_dos_tot_file = find_file(settings.PHONON_DOS_FILE, self.work_dir)
         frequencies, total_phonon_dos = self._total_dos(phonon_dos_tot_file)
-        return {
-            'frequency': frequencies.tolist(),
-            'total': total_phonon_dos.tolist()
-        }
+        return {"frequency": frequencies.tolist(), "total": total_phonon_dos.tolist()}
 
     def phonon_dispersions(self):
         """
@@ -607,10 +580,7 @@ class EspressoTXTParser(BaseTXTParser):
         """
         modes_file = find_file(settings.PHONON_MODES_FILE, self.work_dir)
         qpoints, frequencies = self.phonon_frequencies(modes_file)
-        return {
-            'qpoints': qpoints.tolist(),
-            'frequencies': frequencies.tolist()
-        }
+        return {"qpoints": qpoints.tolist(), "frequencies": frequencies.tolist()}
 
     def phonon_frequencies(self, modes_file):
         """
@@ -659,10 +629,12 @@ class EspressoTXTParser(BaseTXTParser):
                 [4.5469E+02, 4.5469E+02]
             ])
         """
-        with open(modes_file, 'r') as f:
+        with open(modes_file, "r") as f:
             text = f.read()
         qpoints = np.array(re.compile(settings.REGEX["qpoints"]["regex"]).findall(text), dtype=np.float32)
-        frequencies = np.array(re.compile(settings.REGEX["phonon_frequencies"]["regex"]).findall(text), dtype=np.float32)
+        frequencies = np.array(
+            re.compile(settings.REGEX["phonon_frequencies"]["regex"]).findall(text), dtype=np.float32
+        )
         frequencies = np.transpose(frequencies.reshape(qpoints.shape[0], frequencies.shape[0] // qpoints.shape[0]))
         return qpoints, frequencies
 
@@ -771,26 +743,29 @@ class EspressoTXTParser(BaseTXTParser):
         """
         kpoints = self._general_output_parser(text, **settings.REGEX["sternheimer_gw_kpoint"])
         eigenvalues = self._general_output_parser(text, **settings.REGEX["sternheimer_gw_eigenvalues"])
-        eigenvalues = [[float(x) for x in re.sub(' +', ' ', e).strip(" ").split(" ")] for e in eigenvalues]
+        eigenvalues = [[float(x) for x in re.sub(" +", " ", e).strip(" ").split(" ")] for e in eigenvalues]
         return [
             {
-                'kpoint': np.dot(point, inverse_reciprocal_lattice_vectors).tolist(),
-                'weight': 1.0 / len(kpoints),  # uniformly set the weights as they are not extractable.
-                'eigenvalues': [
+                "kpoint": np.dot(point, inverse_reciprocal_lattice_vectors).tolist(),
+                "weight": 1.0 / len(kpoints),  # uniformly set the weights as they are not extractable.
+                "eigenvalues": [
                     {
-                        'energies': eigenvalues[index],
-                        'occupations': [],  # set occupations empty as they are not extractable.
-                        'spin': 0.5  # spin-polarized calculation is not supported yet, hence 0.5
+                        "energies": eigenvalues[index],
+                        "occupations": [],  # set occupations empty as they are not extractable.
+                        "spin": 0.5,  # spin-polarized calculation is not supported yet, hence 0.5
                     }
-                ]
-            } for index, point in enumerate(kpoints)]
+                ],
+            }
+            for index, point in enumerate(kpoints)
+        ]
 
     def final_basis(self, text):
         """
         Extracts final basis in angstrom units.
         """
         atomic_position_last_index = text.rfind("ATOMIC_POSITIONS (crystal)")
-        if atomic_position_last_index < 0: return self.initial_basis(text)
+        if atomic_position_last_index < 0:
+            return self.initial_basis(text)
         number_of_atoms = self._number_of_atoms(text)
         basis = self._extract_basis(text[atomic_position_last_index:], number_of_atoms)
 
@@ -807,7 +782,8 @@ class EspressoTXTParser(BaseTXTParser):
         Extracts final lattice in angstrom units.
         """
         cell_parameters_last_index = text.rfind("CELL_PARAMETERS (angstrom)")
-        if cell_parameters_last_index < 0: return self.initial_lattice_vectors(text)
+        if cell_parameters_last_index < 0:
+            return self.initial_lattice_vectors(text)
         return self._extract_lattice(text[cell_parameters_last_index:])
 
     def average_quantity(self, stdout_file: str) -> np.ndarray:

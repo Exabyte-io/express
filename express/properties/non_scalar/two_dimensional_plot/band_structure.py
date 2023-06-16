@@ -20,7 +20,9 @@ class BandStructure(TwoDimensionalPlotProperty):
 
         self.eigenvalues_at_kpoints = self.parser.eigenvalues_at_kpoints()
         if kwargs.get("remove_non_zero_weight_kpoints", False):
-            self.eigenvalues_at_kpoints = [e for e in self.eigenvalues_at_kpoints if e['weight'] <= ZERO_WEIGHT_KPOINT_THRESHOLD]
+            self.eigenvalues_at_kpoints = [
+                e for e in self.eigenvalues_at_kpoints if e["weight"] <= ZERO_WEIGHT_KPOINT_THRESHOLD
+            ]
 
         self.nkpoints = len(self.eigenvalues_at_kpoints)
         self.bands = self._get_band()
@@ -29,7 +31,7 @@ class BandStructure(TwoDimensionalPlotProperty):
 
     def _serialize(self):
         data = super(BandStructure, self)._serialize()
-        data.update({'spin': [0.5, -0.5] * len(self.bands) if self.nspins > 1 else [0.5] * len(self.bands)})
+        data.update({"spin": [0.5, -0.5] * len(self.bands) if self.nspins > 1 else [0.5] * len(self.bands)})
         return data
 
     def _get_band(self):
@@ -39,6 +41,8 @@ class BandStructure(TwoDimensionalPlotProperty):
         Returns:
             ndarray
         """
-        bands = np.array([[eigenvalues(self.eigenvalues_at_kpoints, k, s) for s in range(self.nspins)] for k in range(self.nkpoints)])
+        bands = np.array(
+            [[eigenvalues(self.eigenvalues_at_kpoints, k, s) for s in range(self.nspins)] for k in range(self.nkpoints)]
+        )
         bands = np.transpose(bands).reshape(len(bands[0][0]) * self.nspins, self.nkpoints)
         return bands

@@ -12,7 +12,7 @@ class AtomicForces(NonScalarProperty):
 
     def _serialize(self):
         return {
-            'name': self.name,
+            "name": self.name,
             "units": self.manifest["defaults"]["units"],
-            "values": to_array_with_ids(self.parser.atomic_forces())
+            "values": to_array_with_ids(self.parser.atomic_forces()),
         }

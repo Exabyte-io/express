@@ -1,11 +1,7 @@
 from tests.unit import UnitTestBase
 from express.properties.scalar.pressure import Pressure
 
-PRESSURE = {
-    "units": "kbar",
-    "name": "pressure",
-    "value": 1
-}
+PRESSURE = {"units": "kbar", "name": "pressure", "value": 1}
 
 
 class PressureTest(UnitTestBase):

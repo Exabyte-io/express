@@ -2,14 +2,7 @@ from tests.unit import UnitTestBase
 from tests.fixtures.data import SPACE_GROUP_SYMBOL
 from express.properties.non_scalar.symmetry import Symmetry
 
-SYMMETRY = {
-    "spaceGroupSymbol": "Fd-3m",
-    "tolerance": {
-        "value": 0.3,
-        "units": "angstrom"
-    },
-    "name": "symmetry"
-}
+SYMMETRY = {"spaceGroupSymbol": "Fd-3m", "tolerance": {"value": 0.3, "units": "angstrom"}, "name": "symmetry"}
 
 
 class SymmetryTest(UnitTestBase):
