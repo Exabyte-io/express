@@ -661,8 +661,8 @@ class EspressoTXTParser(BaseTXTParser):
         """
         with open(modes_file, 'r') as f:
             text = f.read()
-        qpoints = np.array(re.compile(settings.REGEX["qpoints"]["regex"]).findall(text), dtype=np.float)
-        frequencies = np.array(re.compile(settings.REGEX["phonon_frequencies"]["regex"]).findall(text), dtype=np.float)
+        qpoints = np.array(re.compile(settings.REGEX["qpoints"]["regex"]).findall(text), dtype=np.float32)
+        frequencies = np.array(re.compile(settings.REGEX["phonon_frequencies"]["regex"]).findall(text), dtype=np.float32)
         frequencies = np.transpose(frequencies.reshape(qpoints.shape[0], frequencies.shape[0] // qpoints.shape[0]))
         return qpoints, frequencies
 

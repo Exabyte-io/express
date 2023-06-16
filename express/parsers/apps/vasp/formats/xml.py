@@ -347,7 +347,7 @@ class VaspXMLParser(BaseXMLParser):
             ndarray: a matrix containing all the values found in the varray.
         """
         return np.array([v.text.split() for v in varray.findall('v')],
-                        dtype=np.float) if varray is not None else np.array([])
+                        dtype=np.float32) if varray is not None else np.array([])
 
     def stress_tensor(self):
         """
