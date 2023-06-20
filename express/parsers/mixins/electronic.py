@@ -262,7 +262,7 @@ class ElectronicDataMixin(object):
         reaction_coordinates = [0]
         for structure in structures[1:]:
             dists = np.array([s2.distance(s1) for s1, s2 in zip(prev, structure)])
-            reaction_coordinates.append(np.sqrt(np.sum(dists ** 2)))
+            reaction_coordinates.append(np.sqrt(np.sum(dists**2)))
             prev = structure
         reaction_coordinates = np.cumsum(reaction_coordinates)
         return ((1 / reaction_coordinates[-1]) * reaction_coordinates).tolist()

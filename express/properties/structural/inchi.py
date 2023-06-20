@@ -5,6 +5,7 @@ class Inchi(NonScalarProperty):
     """
     Inchi property class.
     """
+
     def __init__(self, name, parser, *args, **kwargs):
         super(Inchi, self).__init__(name, parser, *args, **kwargs)
         self.name = name

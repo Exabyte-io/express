@@ -41,24 +41,23 @@ def get_element_counts(basis: dict) -> List[dict]:
         if previous_element and previous_element["value"] == element["value"]:
             element_counts[-1]["count"] += 1
         else:
-            element_counts.append({
-                "count": 1,
-                "value": element["value"]
-            })
+            element_counts.append({"count": 1, "value": element["value"]})
         previous_element = basis["elements"][index]
     return element_counts
 
 
 def lattice_basis_to_poscar(lattice: dict, basis: dict, basis_units: str = "cartesian") -> str:
     element_counts = get_element_counts(basis)
-    return "\n".join([
-        "material",
-        "1.0",
-        "\t".join(["{0:14.9f}".format(x) for x in lattice["vectors"]["a"]]),
-        "\t".join(["{0:14.9f}".format(x) for x in lattice["vectors"]["b"]]),
-        "\t".join(["{0:14.9f}".format(x) for x in lattice["vectors"]["c"]]),
-        " ".join((e["value"] for e in element_counts)),
-        " ".join((str(e["count"]) for e in element_counts)),
-        basis_units,
-        "\n".join([" ".join(["{0:14.9f}".format(v) for v in x["value"]]) for x in basis["coordinates"]])
-    ])
+    return "\n".join(
+        [
+            "material",
+            "1.0",
+            "\t".join(["{0:14.9f}".format(x) for x in lattice["vectors"]["a"]]),
+            "\t".join(["{0:14.9f}".format(x) for x in lattice["vectors"]["b"]]),
+            "\t".join(["{0:14.9f}".format(x) for x in lattice["vectors"]["c"]]),
+            " ".join((e["value"] for e in element_counts)),
+            " ".join((str(e["count"]) for e in element_counts)),
+            basis_units,
+            "\n".join([" ".join(["{0:14.9f}".format(v) for v in x["value"]]) for x in basis["coordinates"]]),
+        ]
+    )

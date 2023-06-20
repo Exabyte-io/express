@@ -82,7 +82,8 @@ class EspressoParser(BaseParser, IonicDataMixin, ElectronicDataMixin, Reciprocal
         if os.path.exists(self.stdout_file):
             with open(self.stdout_file, "r") as f:
                 for index, line in enumerate(f):
-                    if index > 50: return False
+                    if index > 50:
+                        return False
                     if settings.STERNHEIMER_GW_TITLE in line:
                         return True
 
@@ -98,8 +99,9 @@ class EspressoParser(BaseParser, IonicDataMixin, ElectronicDataMixin, Reciprocal
         if self._is_sternheimer_gw_calculation():
             text = self._get_file_content(self.stdout_file)
             inverse_reciprocal_lattice_vectors = self.xml_parser.get_inverse_reciprocal_lattice_vectors()
-            return self.txt_parser.eigenvalues_at_kpoints_from_sternheimer_gw_stdout(text,
-                                                                                     inverse_reciprocal_lattice_vectors)
+            return self.txt_parser.eigenvalues_at_kpoints_from_sternheimer_gw_stdout(
+                text, inverse_reciprocal_lattice_vectors
+            )
         else:
             return self.xml_parser.eigenvalues_at_kpoints()
 
@@ -253,7 +255,8 @@ class EspressoParser(BaseParser, IonicDataMixin, ElectronicDataMixin, Reciprocal
 
     def _find_neb_dat_file(self):
         neb_path_file = find_file(NEB_PATH_FILE_SUFFIX, self.work_dir)
-        if neb_path_file: return "{}.dat".format(neb_path_file[:neb_path_file.rfind(".")])
+        if neb_path_file:
+            return "{}.dat".format(neb_path_file[: neb_path_file.rfind(".")])
 
     def reaction_coordinates(self):
         """
@@ -298,7 +301,8 @@ class EspressoParser(BaseParser, IonicDataMixin, ElectronicDataMixin, Reciprocal
         if os.path.exists(path):
             with open(path, "r") as f:
                 for index, line in enumerate(f):
-                    if index > 50: return False
+                    if index > 50:
+                        return False
                     if settings.PWSCF_OUTPUT_FILE_REGEX in line:
                         return True
 
@@ -329,7 +333,7 @@ class EspressoParser(BaseParser, IonicDataMixin, ElectronicDataMixin, Reciprocal
                 basis = self.txt_parser.final_basis(self._get_file_content(pw_scf_output_file))
                 lattice = self.txt_parser.final_lattice_vectors(self._get_file_content(pw_scf_output_file))
                 structures.append(lattice_basis_to_poscar(lattice, basis))
-            except:
+            except Exception:
                 pass
         return structures
 

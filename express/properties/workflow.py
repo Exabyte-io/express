@@ -2,7 +2,6 @@ from express.properties import BaseProperty
 import os
 import copy
 from typing import Dict, Any
-from abc import abstractmethod
 
 
 class WorkflowProperty(BaseProperty):
@@ -35,16 +34,8 @@ class WorkflowProperty(BaseProperty):
         config = {
             "name": self.name,
             "displayName": self.display_name,
-            "creator": {
-                "_id": "",
-                "cls": "User",
-                "slug": ""
-            },
-            "owner": {
-                "_id": "",
-                "cls": "Account",
-                "slug": ""
-            },
+            "creator": {"_id": "", "cls": "User", "slug": ""},
+            "owner": {"_id": "", "cls": "Account", "slug": ""},
             "schemaVersion": "0.2.0",
             "exabyteId": "",
             "hash": "",
@@ -86,14 +77,18 @@ class PyMLTrainAndPredictWorkflow(WorkflowProperty):
         - pyml:post_processing:parity_plot:matplotlib: Creates a parity plot if the workflow is in "Training" mode.
     """
 
-    def __init__(self, name: str, parser,
-                 *args,
-                 work_dir: str,
-                 upload_dir: str,
-                 object_storage_data: Dict[str, str],
-                 context_dir_relative_path: str,
-                 workflow: Dict[str, Any],
-                 **kwargs):
+    def __init__(
+        self,
+        name: str,
+        parser,
+        *args,
+        work_dir: str,
+        upload_dir: str,
+        object_storage_data: Dict[str, str],
+        context_dir_relative_path: str,
+        workflow: Dict[str, Any],
+        **kwargs,
+    ):
         """
         Constructor for PyMLTrainAndPredictWorkflow
 
@@ -137,7 +132,7 @@ class PyMLTrainAndPredictWorkflow(WorkflowProperty):
             "basename": basename,
             "pathname": self.context_dir_relative_path,
             "overwrite": False,
-            "objectData": object_storage_data
+            "objectData": object_storage_data,
         }
         return io_unit_input
 
@@ -186,16 +181,18 @@ class PyMLTrainAndPredictWorkflow(WorkflowProperty):
                     unit["value"] = "True"
 
                 # Set download-from-object-storage units
-                if 'set-io-unit-filenames' in tags:
+                if "set-io-unit-filenames" in tags:
                     self.set_io_unit_filenames(unit)
 
                 # Set predictors to print their predictions to the results tab during the predict phase
-                if 'creates-predictions-csv-during-predict-phase' in tags:
-                    unit["results"] = [{
-                        "name": "file_content",
-                        "basename": "predictions.csv",  # todo: We shouldn't be hardcoding this in to the flavors
-                        "filetype": "csv"
-                    }]
+                if "creates-predictions-csv-during-predict-phase" in tags:
+                    unit["results"] = [
+                        {
+                            "name": "file_content",
+                            "basename": "predictions.csv",  # todo: We shouldn't be hardcoding this in to the flavors
+                            "filetype": "csv",
+                        }
+                    ]
 
         return predict_subworkflows
 
@@ -258,7 +255,7 @@ class ExabyteMLPredictWorkflow(WorkflowProperty):
                     "name": "ml_predict_subworkflow",
                     "type": "subworkflow",
                     "flowchartId": "subworkflow",
-                    "head": True
+                    "head": True,
                 }
             ],
             "subworkflows": [
@@ -270,7 +267,7 @@ class ExabyteMLPredictWorkflow(WorkflowProperty):
                         "summary": "Exabyte Machine Learning Engine",
                         "name": "exabyteml",
                         "shortName": "ml",
-                        "build": "Default"
+                        "build": "Default",
                     },
                     "units": [
                         {
@@ -284,7 +281,7 @@ class ExabyteMLPredictWorkflow(WorkflowProperty):
                                 "summary": "Exabyte Machine Learning Engine",
                                 "name": "exabyteml",
                                 "shortName": "ml",
-                                "build": "Default"
+                                "build": "Default",
                             },
                             "results": [],
                             "next": "data_transformation_manipulation",
@@ -297,19 +294,15 @@ class ExabyteMLPredictWorkflow(WorkflowProperty):
                                     "endpoint": "dataframe",
                                     "endpoint_options": {
                                         "headers": {},
-                                        "data": {
-                                            "features": self.features,
-                                            "ids": [],
-                                            "targets": self.targets
-                                        },
+                                        "data": {"features": self.features, "ids": [], "targets": self.targets},
                                         "method": "POST",
                                         "params": {},
-                                        "jobId": ""
-                                    }
+                                        "jobId": "",
+                                    },
                                 }
                             ],
                             "type": "io",
-                            "monitors": []
+                            "monitors": [],
                         },
                         {
                             "status": "idle",
@@ -325,7 +318,7 @@ class ExabyteMLPredictWorkflow(WorkflowProperty):
                                 "summary": "Exabyte Machine Learning Engine",
                                 "name": "exabyteml",
                                 "shortName": "ml",
-                                "build": "Default"
+                                "build": "Default",
                             },
                             "postProcessors": [],
                             "preProcessors": [],
@@ -335,8 +328,8 @@ class ExabyteMLPredictWorkflow(WorkflowProperty):
                             "inputData": {
                                 "cleanMissingData": True,
                                 "replaceNoneValuesWith": 0,
-                                "removeDuplicateRows": True
-                            }
+                                "removeDuplicateRows": True,
+                            },
                         },
                         {
                             "status": "idle",
@@ -352,7 +345,7 @@ class ExabyteMLPredictWorkflow(WorkflowProperty):
                                 "build": "Default",
                                 "name": "exabyteml",
                                 "shortName": "ml",
-                                "summary": "Exabyte Machine Learning Engine"
+                                "summary": "Exabyte Machine Learning Engine",
                             },
                             "postProcessors": [],
                             "preProcessors": [],
@@ -362,49 +355,37 @@ class ExabyteMLPredictWorkflow(WorkflowProperty):
                             "inputData": {
                                 "scaler": "standard_scaler",
                                 "perFeature": self.scaling_params_per_feature,
-                            }
+                            },
                         },
                         {
                             "status": "idle",
                             "statusTrack": [],
-                            "executable": {
-                                "name": "score"
-                            },
+                            "executable": {"name": "score"},
                             "flowchartId": "score",
                             "name": "score",
                             "head": False,
-                            "results": [
-                                {
-                                    "name": "predicted_properties"
-                                }
-                            ],
+                            "results": [{"name": "predicted_properties"}],
                             "application": {
                                 "version": "0.2.0",
                                 "build": "Default",
                                 "name": "exabyteml",
                                 "shortName": "ml",
-                                "summary": "Exabyte Machine Learning Engine"
+                                "summary": "Exabyte Machine Learning Engine",
                             },
                             "postProcessors": [],
                             "preProcessors": [],
                             "context": {},
                             "input": [],
-                            "flavor": {
-                                "name": "score"
-                            },
+                            "flavor": {"name": "score"},
                             "type": "execution",
-                            "monitors": [
-                                {
-                                    "name": "standard_output"
-                                }
-                            ]
-                        }
+                            "monitors": [{"name": "standard_output"}],
+                        },
                     ],
                     "model": self.model,
                     "_id": "LCthJ6E2QabYCZqf4",
-                    "properties": self.targets
+                    "properties": self.targets,
                 }
             ],
-            "properties": self.targets
+            "properties": self.targets,
         }
         return specific_config

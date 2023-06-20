@@ -1,11 +1,7 @@
 from tests.unit import UnitTestBase
 from express.properties.scalar.zero_point_energy import ZeroPointEnergy
 
-ZERO_POINT_ENERGY = {
-    "units": "eV",
-    "name": "zero_point_energy",
-    "value": 1
-}
+ZERO_POINT_ENERGY = {"units": "eV", "name": "zero_point_energy", "value": 1}
 
 
 class TotalZeroPointTest(UnitTestBase):

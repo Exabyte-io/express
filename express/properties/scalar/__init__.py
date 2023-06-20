@@ -13,7 +13,7 @@ class ScalarProperty(BaseProperty):
 
     def _serialize(self):
         return {
-            'name': self.name,
-            'units': self.manifest["defaults"]["units"],
-            'value': self.value,
+            "name": self.name,
+            "units": self.manifest["defaults"]["units"],
+            "value": self.value,
         }

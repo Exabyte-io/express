@@ -20,10 +20,17 @@ class FileContent(NonScalarProperty):
             - REGION (str): the cloud provider region in which the container exists
     """
 
-    def __init__(self, name: str, parser: Any,
-                 *args,
-                 basename: str, filetype: str, upload_dir: str, object_storage_data: Dict[str, str],
-                 **kwargs):
+    def __init__(
+        self,
+        name: str,
+        parser: Any,
+        *args,
+        basename: str,
+        filetype: str,
+        upload_dir: str,
+        object_storage_data: Dict[str, str],
+        **kwargs,
+    ):
         super().__init__(name, parser, *args, **kwargs)
         self.basename = basename
         self.filetype = filetype
@@ -36,9 +43,9 @@ class FileContent(NonScalarProperty):
             "basename": self.basename,
             "filetype": self.filetype,
             "objectData": {
-                "CONTAINER": self.object_storage_data['CONTAINER'],
+                "CONTAINER": self.object_storage_data["CONTAINER"],
                 "NAME": os.path.join(self.upload_dir, self.basename),
-                "PROVIDER": self.object_storage_data['PROVIDER'],
-                "REGION": self.object_storage_data['REGION'],
-            }
+                "PROVIDER": self.object_storage_data["PROVIDER"],
+                "REGION": self.object_storage_data["REGION"],
+            },
         }

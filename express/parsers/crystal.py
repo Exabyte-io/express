@@ -1,4 +1,6 @@
 from express.parsers.structure import StructureParser
+
+
 class CrystalParser(StructureParser):
     """
     Crystal  parser class.
@@ -12,7 +14,6 @@ class CrystalParser(StructureParser):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-
 
     def volume(self):
         """

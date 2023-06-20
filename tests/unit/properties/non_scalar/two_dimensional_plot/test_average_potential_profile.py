@@ -8,14 +8,8 @@ AVG_POTENTIAL = {
     "name": "average_potential_profile",
     "xDataArray": [0, 2.0943951, 4.1887902, 6.28318531],
     "yDataSeries": [[0, 0, 0, 0], [1.0, -0.5, -0.5, 1.0]],
-    "yAxis": {
-        "label": "energy",
-        "units": "eV"
-    },
-    "xAxis": {
-        "label": "z coordinate",
-        "units": "angstrom"
-    },
+    "yAxis": {"label": "energy", "units": "eV"},
+    "xAxis": {"label": "z coordinate", "units": "angstrom"},
 }
 
 
@@ -33,7 +27,7 @@ class AveragePotentialProfileTest(UnitTestBase):
           x                   = pi
           macroscopic_average = -1
         """
-        x = np.linspace(0, 2*np.pi, n_points)
+        x = np.linspace(0, 2 * np.pi, n_points)
         p_x = np.zeros(n_points)  # ignored for now
         m_x = np.cos(x)
         dtype = np.dtype([("x", float), ("planar_average", float), ("macroscopic_average", float)])

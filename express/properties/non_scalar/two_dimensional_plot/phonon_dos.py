@@ -9,5 +9,5 @@ class PhononDOS(TwoDimensionalPlotProperty):
     def __init__(self, name, parser, *args, **kwargs):
         super(PhononDOS, self).__init__(name, parser, *args, **kwargs)
         phonon_dos = self.parser.phonon_dos()
-        self.xDataArray = [phonon_dos['frequency']]
-        self.yDataSeries = [phonon_dos['total']]
+        self.xDataArray = [phonon_dos["frequency"]]
+        self.yDataSeries = [phonon_dos["total"]]

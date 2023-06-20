@@ -2,11 +2,7 @@ from tests.unit import UnitTestBase
 from express.properties.scalar.p_norm import PNorm
 from tests.fixtures.data import ELEMENTAL_RATIOS_RAW_DATA
 
-P_NORM = {
-    "degree": 0,
-    "name": "p-norm",
-    "value": 2
-}
+P_NORM = {"degree": 0, "name": "p-norm", "value": 2}
 
 
 class PNormTest(UnitTestBase):

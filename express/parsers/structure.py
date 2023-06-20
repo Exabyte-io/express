@@ -8,7 +8,7 @@ from express.parsers.mixins.ionic import IonicDataMixin
 
 STRUCTURE_MAP = {
     "primitive": lambda s: mg.symmetry.analyzer.SpacegroupAnalyzer(s).get_primitive_standard_structure(),
-    "conventional": lambda s: mg.symmetry.analyzer.SpacegroupAnalyzer(s).get_conventional_standard_structure()
+    "conventional": lambda s: mg.symmetry.analyzer.SpacegroupAnalyzer(s).get_conventional_standard_structure(),
 }
 
 
@@ -36,12 +36,12 @@ class StructureParser(BaseParser, IonicDataMixin):
         # cell_type is either original, primitive or conventional
         self.cell_type = kwargs["cell_type"]
         self.structure = Structure.from_str(self.structure_string, self.structure_format)
-        if self.cell_type != "original": self.structure = STRUCTURE_MAP[self.cell_type](self.structure)
+        if self.cell_type != "original":
+            self.structure = STRUCTURE_MAP[self.cell_type](self.structure)
 
         # keep only one atom inside the basis in order to have the original lattice type
         self.lattice_only_structure = Structure.from_str(self.structure_string, self.structure_format)  # deepcopy
         self.lattice_only_structure.remove_sites(range(1, len(self.structure.sites)))
-
 
     def lattice_vectors(self):
         """
@@ -51,11 +51,11 @@ class StructureParser(BaseParser, IonicDataMixin):
             func: express.parsers.mixins.ionic.IonicDataMixin.lattice_vectors
         """
         return {
-            'vectors': {
-                'a': self.structure.lattice.matrix.tolist()[0],
-                'b': self.structure.lattice.matrix.tolist()[1],
-                'c': self.structure.lattice.matrix.tolist()[2],
-                'alat': 1.0
+            "vectors": {
+                "a": self.structure.lattice.matrix.tolist()[0],
+                "b": self.structure.lattice.matrix.tolist()[1],
+                "c": self.structure.lattice.matrix.tolist()[2],
+                "alat": 1.0,
             }
         }
 
@@ -74,10 +74,7 @@ class StructureParser(BaseParser, IonicDataMixin):
             "alpha": self.structure.lattice.alpha,
             "beta": self.structure.lattice.beta,
             "gamma": self.structure.lattice.gamma,
-            "units": {
-                "length": "angstrom",
-                "angle": "degree"
-            }
+            "units": {"length": "angstrom", "angle": "degree"},
         }
 
     def _lattice_type(self):
@@ -91,11 +88,11 @@ class StructureParser(BaseParser, IonicDataMixin):
         try:
             # try getting the lattice type from the lattice only structure
             return self._lattice_type_from_structure(structure_)
-        except:
+        except Exception:
             try:
                 # try getting the lattice type from the current structure
                 return self._lattice_type_from_structure(self.structure)
-            except:
+            except Exception:
                 return "TRI"
 
     def _lattice_type_from_structure(self, structure_):
@@ -151,9 +148,9 @@ class StructureParser(BaseParser, IonicDataMixin):
             func: express.parsers.mixins.ionic.IonicDataMixin.basis
         """
         return {
-            'units': 'crystal',
-            'elements': [{'id': i + 1, 'value': v.species_string} for i, v in enumerate(self.structure.sites)],
-            'coordinates': [{'id': i + 1, 'value': v.frac_coords.tolist()} for i, v in enumerate(self.structure.sites)]
+            "units": "crystal",
+            "elements": [{"id": i + 1, "value": v.species_string} for i, v in enumerate(self.structure.sites)],
+            "coordinates": [{"id": i + 1, "value": v.frac_coords.tolist()} for i, v in enumerate(self.structure.sites)],
         }
 
     def space_group_symbol(self):
@@ -165,7 +162,7 @@ class StructureParser(BaseParser, IonicDataMixin):
         """
         return {
             "value": mg.symmetry.analyzer.SpacegroupAnalyzer(self.structure).get_space_group_symbol(),
-            "tolerance": 0.3
+            "tolerance": 0.3,
         }
 
     def formula(self):

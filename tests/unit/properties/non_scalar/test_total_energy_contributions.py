@@ -4,19 +4,10 @@ from express.properties.non_scalar.total_energy_contributions import TotalEnergy
 
 TOTAL_ENERGY_CONTRIBUTIONS = {
     "name": "total_energy_contributions",
-    "ewald": {
-        "name": "ewald",
-        "value": 128376.45871064
-    },
-    "hartree": {
-        "name": "hartree",
-        "value": -145344.66902862
-    },
-    "exchangeCorrelation": {
-        "name": "exchange_correlation",
-        "value": 41.63693035
-    },
-    "units": "eV"
+    "ewald": {"name": "ewald", "value": 128376.45871064},
+    "hartree": {"name": "hartree", "value": -145344.66902862},
+    "exchangeCorrelation": {"name": "exchange_correlation", "value": 41.63693035},
+    "units": "eV",
 }
 
 

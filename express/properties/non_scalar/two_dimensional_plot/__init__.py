@@ -14,11 +14,11 @@ class TwoDimensionalPlotProperty(NonScalarProperty):
 
     def _serialize(self):
         serialized_data = {
-            'name': self.name,
-            'xAxis': self.manifest["defaults"]["xAxis"],
-            'yAxis': self.manifest["defaults"]["yAxis"],
-            'xDataArray': self.xDataArray,
-            'yDataSeries': self.yDataSeries,
+            "name": self.name,
+            "xAxis": self.manifest["defaults"]["xAxis"],
+            "yAxis": self.manifest["defaults"]["yAxis"],
+            "xDataArray": self.xDataArray,
+            "yDataSeries": self.yDataSeries,
         }
         if self.legend:
             serialized_data.update({"legend": self.legend})

@@ -11,11 +11,9 @@ class PNorm(ScalarProperty):
         super(PNorm, self).__init__(name, parser, *args, **kwargs)
         self.degree = kwargs["degree"]
         ratios = self.parser.elemental_ratios().values()
-        self.value = math.pow(sum((math.pow(v, self.degree) for v in ratios)), 1.0 / self.degree) if self.degree else len(ratios)
+        self.value = (
+            math.pow(sum((math.pow(v, self.degree) for v in ratios)), 1.0 / self.degree) if self.degree else len(ratios)
+        )
 
     def _serialize(self):
-        return {
-            'name': self.name,
-            'value': self.value,
-            "degree": self.degree
-        }
+        return {"name": self.name, "value": self.value, "degree": self.degree}

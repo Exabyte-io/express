@@ -12,8 +12,8 @@ def eigenvalues(eigenvalues_at_kpoints, kpoint_index=0, spin_index=0):
     """
     spin_map = {0: 0.5, 1: -0.5}
     for eigenvalue in eigenvalues_at_kpoints[kpoint_index]["eigenvalues"]:
-        if eigenvalue['spin'] == spin_map[spin_index]:
-            return eigenvalue['energies']
+        if eigenvalue["spin"] == spin_map[spin_index]:
+            return eigenvalue["energies"]
 
 
 def to_array_with_ids(array):

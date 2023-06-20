@@ -2,11 +2,7 @@ from tests.unit import UnitTestBase
 from tests.fixtures.data import ELEMENTAL_RATIOS_RAW_DATA
 from express.properties.scalar.elemental_ratio import ElementalRatio
 
-ELEMENTAL_RATIO = {
-    "name": "elemental_ratio",
-    "value": 0.4,
-    "element": "Ge"
-}
+ELEMENTAL_RATIO = {"name": "elemental_ratio", "value": 0.4, "element": "Ge"}
 
 
 class ElementalRatioTest(UnitTestBase):

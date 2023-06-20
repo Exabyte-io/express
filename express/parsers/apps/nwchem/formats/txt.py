@@ -1,4 +1,4 @@
-from express.parsers.settings import Constant
+from express.parsers.settings import Constant  # noqa: F401
 from express.parsers.apps.nwchem import settings
 from express.parsers.formats.txt import BaseTXTParser
 
@@ -37,9 +37,5 @@ class NwchemTXTParser(BaseTXTParser):
         for contribution in settings.TOTAL_ENERGY_CONTRIBUTIONS:
             value = self._general_output_parser(text, **settings.TOTAL_ENERGY_CONTRIBUTIONS[contribution])
             if value is not None:
-                energy_contributions.update({contribution: {
-                    'name': contribution,
-                    'value': value
-                }})
+                energy_contributions.update({contribution: {"name": contribution, "value": value}})
         return energy_contributions
-

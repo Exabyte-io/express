@@ -1,11 +1,7 @@
 from tests.unit import UnitTestBase
 from express.properties.scalar.total_force import TotalForce
 
-TOTAL_FORCE = {
-    "units": "eV/angstrom",
-    "name": "total_force",
-    "value": 1
-}
+TOTAL_FORCE = {"units": "eV/angstrom", "name": "total_force", "value": 1}
 
 
 class TotalForceTest(UnitTestBase):

@@ -11,8 +11,4 @@ class ElementalRatio(ScalarProperty):
         self.value = self.parser.elemental_ratios()[kwargs["element"]]
 
     def _serialize(self):
-        return {
-            'name': self.name,
-            'value': self.value,
-            "element": self.kwargs["element"]
-        }
+        return {"name": self.name, "value": self.value, "element": self.kwargs["element"]}

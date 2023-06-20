@@ -5,24 +5,7 @@ from express.properties.non_scalar.atomic_forces import AtomicForces
 ATOMIC_FORCES = {
     "units": "eV/angstrom",
     "name": "atomic_forces",
-    "values": [
-        {
-            "id": 1,
-            "value": [
-                -3.9e-07,
-                -2.4e-07,
-                0.0
-            ]
-        },
-        {
-            "id": 2,
-            "value": [
-                3.9e-07,
-                2.4e-07,
-                0.0
-            ]
-        }
-    ]
+    "values": [{"id": 1, "value": [-3.9e-07, -2.4e-07, 0.0]}, {"id": 2, "value": [3.9e-07, 2.4e-07, 0.0]}],
 }
 
 

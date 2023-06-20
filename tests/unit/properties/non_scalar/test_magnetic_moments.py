@@ -5,24 +5,7 @@ from express.properties.non_scalar.magnetic_moments import MagneticMoments
 MAGNETIC_MOMENTS = {
     "units": "uB",
     "name": "magnetic_moments",
-    "values": [
-        {
-            "id": 1,
-            "value": [
-                0,
-                0,
-                1.235
-            ]
-        },
-        {
-            "id": 2,
-            "value": [
-                0,
-                0,
-                -1.235
-            ]
-        }
-    ]
+    "values": [{"id": 1, "value": [0, 0, 1.235]}, {"id": 2, "value": [0, 0, -1.235]}],
 }
 
 

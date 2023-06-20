@@ -1,3 +1,4 @@
+# ruff: noqa: F403,F405
 from tests.fixtures.vasp.references import *
 from tests.integration import IntegrationTestBase
 from express.parsers.apps.vasp.parser import VaspParser

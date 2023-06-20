@@ -1,11 +1,7 @@
 from tests.unit import UnitTestBase
 from express.properties.scalar.fermi_energy import FermiEnergy
 
-FERMI_ENERGY = {
-    "units": "eV",
-    "name": "fermi_energy",
-    "value": 1
-}
+FERMI_ENERGY = {"units": "eV", "name": "fermi_energy", "value": 1}
 
 
 class FermiEnergyTest(UnitTestBase):

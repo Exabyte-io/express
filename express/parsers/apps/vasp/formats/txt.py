@@ -26,17 +26,11 @@ class VaspTXTParser(BaseTXTParser):
             ndarray
         """
         text_range = {
-            'cartesian': {
-                'start': 'Following cartesian coordinates',
-                'end': 'Dimension of arrays'
-            },
-            'crystal': {
-                'start': 'Following reciprocal coordinates',
-                'end': 'Following cartesian coordinates'
-            }
+            "cartesian": {"start": "Following cartesian coordinates", "end": "Dimension of arrays"},
+            "crystal": {"start": "Following reciprocal coordinates", "end": "Following cartesian coordinates"},
         }
-        start_index = text.find(text_range[space]['start'])
-        end_index = text.find(text_range[space]['end'])
+        start_index = text.find(text_range[space]["start"])
+        end_index = text.find(text_range[space]["end"])
         ibz_kpts = re.findall(settings.REGEX["ibz_kpoints"]["regex"], text[start_index:end_index])
         ibz_kpts = [[float(x) for x in kp] for kp in ibz_kpts]
         return np.array(ibz_kpts)
@@ -90,14 +84,16 @@ class VaspTXTParser(BaseTXTParser):
         if match:
             for lattice in match:
                 lattice = [float(_) for _ in lattice]
-                lattices.append({
-                    'vectors': {
-                        'a': lattice[0:3],
-                        'b': lattice[3:6],
-                        'c': lattice[6:9],
-                        'alat': 1.0  # abc vectors are expected in absolute units (eg. bohr)
+                lattices.append(
+                    {
+                        "vectors": {
+                            "a": lattice[0:3],
+                            "b": lattice[3:6],
+                            "c": lattice[6:9],
+                            "alat": 1.0,  # abc vectors are expected in absolute units (eg. bohr)
+                        }
                     }
-                })
+                )
         return lattices
 
     def _basis_convergence(self, text, atom_names):
@@ -131,17 +127,19 @@ class VaspTXTParser(BaseTXTParser):
         if matches:
             for match in matches:
                 ions = re.findall(settings.REGEX["basis_vectors"]["regex"], match)
-                results.append({
-                    "units": "angstrom",
-                    "elements": [{"id": idx, "value": atom_names[idx]} for idx in range(len(ions))],
-                    "coordinates": [{"id": idx, "value": [float(x) for x in ion]} for idx, ion in enumerate(ions)]
-                })
+                results.append(
+                    {
+                        "units": "angstrom",
+                        "elements": [{"id": idx, "value": atom_names[idx]} for idx in range(len(ions))],
+                        "coordinates": [{"id": idx, "value": [float(x) for x in ion]} for idx, ion in enumerate(ions)],
+                    }
+                )
             return results
 
     def convergence_electronic(self, outcar, stdout, atom_names):
         """
         Extracts convergence electronic.
-            1. Extract all energies (from dE column) along with the corresponding step [(1, 0.69948E+04), (2, -0.73973E+04)]
+            1. Extract all energies (from dE column) along with corresponding step [(1, 0.69948E+04), (2, -0.73973E+04)]
             2. Group the energies for each ionic step
 
         Sample input:
@@ -175,7 +173,7 @@ class VaspTXTParser(BaseTXTParser):
             if ind + 1 == len(first_step_indices):
                 energies = matches[first_step_index:]
             else:
-                energies = matches[first_step_index:first_step_indices[ind + 1]]
+                energies = matches[first_step_index : first_step_indices[ind + 1]]
             data.append([energy[1] for energy in energies])  # strip out the step numbers
         return data
 
@@ -194,27 +192,23 @@ class VaspTXTParser(BaseTXTParser):
         data = []
         convergence_electronic_data = self.convergence_electronic(outcar, stdout, atom_names)
         for ind, energies in enumerate(convergence_electronic_data):
-            data.append({
-                "energy": sum([sum(e) for e in convergence_electronic_data[0:ind + 1]]),
-                "electronic": {
-                    "units": "eV",
-                    "data": energies
-                },
-            })
+            data.append(
+                {
+                    "energy": sum([sum(e) for e in convergence_electronic_data[0 : ind + 1]]),
+                    "electronic": {"units": "eV", "data": energies},
+                }
+            )
 
-        if not data: return []
+        if not data:
+            return []
 
         lattice_convergence = self._lattice_convergence(outcar)
         basis_convergence = self._basis_convergence(outcar, atom_names)
-        data = data[0:len(lattice_convergence)]  # strip out the last non-complete step
-        if not data: return []
+        data = data[0 : len(lattice_convergence)]  # strip out the last non-complete step
+        if not data:
+            return []
         for idx, structure in enumerate(zip(lattice_convergence, basis_convergence)):
-            data[idx].update({
-                'structure': {
-                    'lattice': structure[0],
-                    'basis': structure[1]
-                }
-            })
+            data[idx].update({"structure": {"lattice": structure[0], "basis": structure[1]}})
 
         return data
 
@@ -240,7 +234,7 @@ class VaspTXTParser(BaseTXTParser):
         Returns:
             float
         """
-        total_force = self._general_output_parser(text, **settings.REGEX['total_force'])
+        total_force = self._general_output_parser(text, **settings.REGEX["total_force"])
         return np.sqrt(np.sum(np.square(total_force)))
 
     def total_energy_contributions(self, text):
@@ -257,10 +251,9 @@ class VaspTXTParser(BaseTXTParser):
         for contribution in settings.TOTAL_ENERGY_CONTRIBUTIONS:
             value = self._general_output_parser(text, **settings.TOTAL_ENERGY_CONTRIBUTIONS[contribution])
             if value:
-                energy_contributions.update({contribution: {
-                    'name': contribution,
-                    'value': np.sqrt(np.sum(np.square(value)))
-                }})
+                energy_contributions.update(
+                    {contribution: {"name": contribution, "value": np.sqrt(np.sum(np.square(value)))}}
+                )
         return energy_contributions
 
     def zero_point_energy(self, text):
@@ -270,8 +263,9 @@ class VaspTXTParser(BaseTXTParser):
         Returns:
              float
         """
-        data = self._general_output_parser(text, **settings.REGEX['zero_point_energy'])
-        if len(data): return sum(data) / 2 / 1000
+        data = self._general_output_parser(text, **settings.REGEX["zero_point_energy"])
+        if len(data):
+            return sum(data) / 2 / 1000
 
     def magnetic_moments(self, outcar):
         """
@@ -281,4 +275,4 @@ class VaspTXTParser(BaseTXTParser):
              list
         """
         mag = Outcar(outcar).magnetization
-        return [[0, 0, ion['tot']] if isinstance(ion['tot'], float) else ion['tot'].moment.tolist() for ion in mag]
+        return [[0, 0, ion["tot"]] if isinstance(ion["tot"], float) else ion["tot"].moment.tolist() for ion in mag]

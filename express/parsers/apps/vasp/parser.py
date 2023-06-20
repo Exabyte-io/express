@@ -31,7 +31,7 @@ class VaspParser(BaseParser, IonicDataMixin, ElectronicDataMixin, ReciprocalData
         Returns:
             str
         """
-        outcar_content = ''
+        outcar_content = ""
         outcar_path = os.path.join(self.work_dir, "OUTCAR")
         if os.path.exists(outcar_path):
             with open(outcar_path) as f:
@@ -125,7 +125,7 @@ class VaspParser(BaseParser, IonicDataMixin, ElectronicDataMixin, ReciprocalData
         stdout = self._get_file_content(self.stdout_file)
         try:
             atom_names = self.xml_parser.atom_names()
-        except:
+        except Exception:
             print("atom_names can not be extracted")
             atom_names = []
         return self.txt_parser.convergence_electronic(outcar, stdout, atom_names)

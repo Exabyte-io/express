@@ -59,10 +59,7 @@ class MoleculeParser(StructureParser):
         else:
             inchi_long = rdkit.Chem.inchi.MolToInchi(rdkit_mol_object)
             inchi_short = inchi_long.split("=")[1]
-        inchi = {
-            "name": "inchi",
-            "value": inchi_short
-        }
+        inchi = {"name": "inchi", "value": inchi_short}
         return inchi_long, inchi
 
     def get_inchi_key(self) -> Dict[str, str]:
@@ -80,8 +77,5 @@ class MoleculeParser(StructureParser):
                   }
         """
         inchi_key_val: str = rdkit.Chem.inchi.InchiToInchiKey(self.inchi_long)
-        inchi_key = {
-            "name": "inchi_key",
-            "value": inchi_key_val
-        }
+        inchi_key = {"name": "inchi_key", "value": inchi_key_val}
         return inchi_key
