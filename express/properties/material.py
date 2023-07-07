@@ -49,11 +49,11 @@ class Material(BaseProperty):
                     structure_string = lattice_basis_to_poscar(lattice, basis)
 
         if self.is_non_periodic:
-            self.parser = CrystalParser(
+            self.parser = MoleculeParser(
                 structure_string=structure_string, structure_format=structure_format, cell_type=cell_type
             )
         else:
-            self.parser = MoleculeParser(
+            self.parser = CrystalParser(
                 structure_string=structure_string, structure_format=structure_format, cell_type=cell_type
             )
 
