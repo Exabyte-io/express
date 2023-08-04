@@ -138,3 +138,19 @@ test_structure_vasp_lattice_bravais:
 
 test_molecule_inchi:
   structurePath: fixtures/structural/test-001/POSCAR
+
+test_material_vasp_initial_structure:
+  workDir: fixtures/vasp/test-001
+  stdoutFile: fixtures/vasp/test-001/vasp.out
+
+test_material_vasp_final_structure:
+  workDir: fixtures/vasp/test-001
+  stdoutFile: fixtures/vasp/test-001/vasp.out
+
+test_material_espresso_initial_structure:
+  workDir: fixtures/espresso/test-001
+  stdoutFile: fixtures/espresso/test-001/pw-scf.out
+
+test_material_espresso_final_structure:
+  workDir: fixtures/espresso/test-001
+  stdoutFile: fixtures/espresso/test-001/pw-scf.out
