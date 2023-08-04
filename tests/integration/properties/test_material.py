@@ -1,4 +1,5 @@
 import os
+from copy import deepcopy
 from typing import Dict, List
 
 from express.parsers.apps.espresso.parser import EspressoParser
@@ -43,8 +44,9 @@ class MaterialTest(IntegrationTestBase):
     def assertJsonEqual(self, material: Material) -> bool:
         """Assert serialzed material matches expected JSON."""
         derived_props = self.filter_derived_props(material.is_non_periodic)
-        data["derivedProperties"] = derived_props
-        self.assertDeepAlmostEqual(material.serialize_and_validate(), data, places=2)
+        json = deepcopy(data)
+        json["derivedProperties"] = derived_props
+        self.assertDeepAlmostEqual(material.serialize_and_validate(), json, places=2)
         return True
 
     def filter_derived_props(self, is_non_periodic: bool = False) -> List[Dict]:
