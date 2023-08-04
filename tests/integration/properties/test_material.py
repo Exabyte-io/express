@@ -47,7 +47,7 @@ class MaterialTest(IntegrationTestBase):
         self.assertDeepAlmostEqual(material.serialize_and_validate(), data, places=2)
         return True
 
-    def filter_derived_props(self, is_non_periodic: bool) -> List[Dict]:
+    def filter_derived_props(self, is_non_periodic: bool = False) -> List[Dict]:
         derived_props = sorted(data["derivedProperties"], key=lambda x: x["name"])
         if is_non_periodic:
             # remove volume and density from fixtures since they are not calculated if non-periodic
