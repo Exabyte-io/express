@@ -88,7 +88,7 @@ class Material(BaseProperty):
         except Exception:
             logging.info("Derived properties array empty due to failure to calculate one (or more) values.")
             pass
-        return derived_properties
+        return sorted(derived_properties, key=lambda x: x["name"])
 
     @property
     def basis(self):

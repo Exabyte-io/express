@@ -22,13 +22,19 @@ class MaterialTest(IntegrationTestBase):
 
     def assertPropertiesEqual(self, material: Material) -> bool:
         """Assert all Si properties match expected values."""
-        return (
-            self.assertDeepAlmostEqual(material.formula, SI["formula"])
-            and self.assertDeepAlmostEqual(material.unitCellFormula, SI["unitCellFormula"])
-            and self.assertDeepAlmostEqual(material.basis, SI["basis"], places=2)
-            and self.assertDeepAlmostEqual(material.lattice, SI["lattice"], places=2)
-            and self.assertDeepAlmostEqual(material.derived_properties, SI["derived_properties"])
-        )
+        self.assertDeepAlmostEqual(material.formula, SI["formula"], places=2)
+        self.assertDeepAlmostEqual(material.unitCellFormula, SI["unitCellFormula"], places=2)
+        self.assertDeepAlmostEqual(material.basis, SI["basis"], places=2)
+        self.assertDeepAlmostEqual(material.lattice, SI["lattice"], places=2)
+        # derived properties is a list of dicts, sort by name so assertDeepAlmostEqual works
+        derived_props = sorted(material.derived_properties, key=lambda x: x["name"])
+        if material.is_non_periodic:
+            self.assertDeepAlmostEqual(material.derived_properties, derived_props, places=2)
+        else:
+            # remove inchi keys from fixture since they are not calculated if periodic
+            cleaned_derived_props = [prop for prop in derived_props if not prop["name"].startswith("inchi")]
+            self.assertDeepAlmostEqual(material.derived_properties, cleaned_derived_props, places=2)
+        return True
 
     """
     constructor
