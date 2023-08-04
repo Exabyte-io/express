@@ -154,3 +154,11 @@ test_material_espresso_initial_structure:
 test_material_espresso_final_structure:
   workDir: fixtures/espresso/test-001
   stdoutFile: fixtures/espresso/test-001/pw-scf.out
+
+test_material_is_periodic:
+  workDir: fixtures/vasp/test-001
+  stdoutFile: fixtures/vasp/test-001/vasp.out
+
+test_material_from_structure:
+  structurePath: fixtures/espresso/test-001/pw-scf.in
+  structureFormat: espresso-in
