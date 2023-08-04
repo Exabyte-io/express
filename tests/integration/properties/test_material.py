@@ -14,7 +14,7 @@ class MaterialTest(IntegrationTestBase):
         super(MaterialTest, self).setUp()
 
     def tearDown(self):
-        super(MaterialTest, self).setUp()
+        super(MaterialTest, self).tearDown()
 
     @property
     def vasp_parser(self):

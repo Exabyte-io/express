@@ -1,7 +1,7 @@
 # ruff: noqa: F403,F405
+from express.parsers.apps.vasp.parser import VaspParser
 from tests.fixtures.vasp.references import *
 from tests.integration import IntegrationTestBase
-from express.parsers.apps.vasp.parser import VaspParser
 
 
 class TestVaspParser(IntegrationTestBase):
@@ -10,7 +10,7 @@ class TestVaspParser(IntegrationTestBase):
         self.parser = VaspParser(work_dir=self.workDir, stdout_file=self.stdoutFile)
 
     def tearDown(self):
-        super(TestVaspParser, self).setUp()
+        super(TestVaspParser, self).tearDown()
 
     def test_vasp_total_energy(self):
         self.assertAlmostEqual(self.parser.total_energy(), TOTAL_ENERGY, places=2)

@@ -1,7 +1,7 @@
 # ruff: noqa: F403,F405
+from express.parsers.apps.espresso.parser import EspressoParser
 from tests.fixtures.espresso.references import *
 from tests.integration import IntegrationTestBase
-from express.parsers.apps.espresso.parser import EspressoParser
 
 
 class TestEspressoParser(IntegrationTestBase):
@@ -10,7 +10,7 @@ class TestEspressoParser(IntegrationTestBase):
         self.parser = EspressoParser(work_dir=self.workDir, stdout_file=self.stdoutFile)
 
     def tearDown(self):
-        super(TestEspressoParser, self).setUp()
+        super(TestEspressoParser, self).tearDown()
 
     def test_espresso_total_energy(self):
         self.assertAlmostEqual(self.parser.total_energy(), TOTAL_ENERGY, places=2)
