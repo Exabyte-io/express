@@ -155,10 +155,14 @@ test_material_espresso_final_structure:
   workDir: fixtures/espresso/test-001
   stdoutFile: fixtures/espresso/test-001/pw-scf.out
 
-test_material_is_periodic:
+test_material_is_non_periodic:
   workDir: fixtures/vasp/test-001
   stdoutFile: fixtures/vasp/test-001/vasp.out
 
 test_material_from_structure:
   structurePath: fixtures/espresso/test-001/pw-scf.in
   structureFormat: espresso-in
+
+test_material_serialize_and_validate:
+  workDir: fixtures/vasp/test-001
+  stdoutFile: fixtures/vasp/test-001/vasp.out

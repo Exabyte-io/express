@@ -1,9 +1,10 @@
 import os
+from typing import Dict, List
 
 from express.parsers.apps.espresso.parser import EspressoParser
 from express.parsers.apps.vasp.parser import VaspParser
 from express.properties.material import Material
-from tests.fixtures.data import SI
+from tests.fixtures.data import SI as data
 from tests.integration import IntegrationTestBase
 
 
@@ -30,45 +31,31 @@ class MaterialTest(IntegrationTestBase):
 
     def assertPropertiesEqual(self, material: Material) -> bool:
         """Assert all Si properties match expected values."""
-        self.assertDeepAlmostEqual(material.formula, SI["formula"], places=2)
-        self.assertDeepAlmostEqual(material.unitCellFormula, SI["unitCellFormula"], places=2)
-        self.assertDeepAlmostEqual(material.basis, SI["basis"], places=2)
-        self.assertDeepAlmostEqual(material.lattice, SI["lattice"], places=2)
+        self.assertDeepAlmostEqual(material.formula, data["formula"], places=2)
+        self.assertDeepAlmostEqual(material.unitCellFormula, data["unitCellFormula"], places=2)
+        self.assertDeepAlmostEqual(material.basis, data["basis"], places=2)
+        self.assertDeepAlmostEqual(material.lattice, data["lattice"], places=2)
         # derived properties is a list of dicts, sort by name so assertDeepAlmostEqual works
-        derived_props = sorted(material.derived_properties, key=lambda x: x["name"])
-        if material.is_non_periodic:
-            self.assertDeepAlmostEqual(material.derived_properties, derived_props, places=2)
-        else:
-            # remove inchi keys from fixture since they are not calculated if periodic
-            cleaned_derived_props = [prop for prop in derived_props if not prop["name"].startswith("inchi")]
-            self.assertDeepAlmostEqual(material.derived_properties, cleaned_derived_props, places=2)
+        derived_props = self.filter_derived_props(material.is_non_periodic)
+        self.assertDeepAlmostEqual(material.derived_properties, derived_props, places=2)
         return True
 
-    """
-    constructor
-        if not structure string, build structure string in VASP format based on application
-            is intial structure:
-                vasp -> read poscar
-                espresso -> initial_basis + initial_lattice_vectors = poscar
-            else is final structure:
-                vasp -> read contcar
-                espresso -> final_basis + final_lattice_vectors = POSCAR
+    def assertJsonEqual(self, material: Material) -> bool:
+        """Assert serialzed material matches expected JSON."""
+        derived_props = self.filter_derived_props(material.is_non_periodic)
+        data["derivedProperties"] = derived_props
+        self.assertDeepAlmostEqual(material.serialize_and_validate(), data, places=2)
+        return True
 
-        if non-periodic:
-            parse using MoleculeParser
-
+    def filter_derived_props(self, is_non_periodic: bool) -> List[Dict]:
+        derived_props = sorted(data["derivedProperties"], key=lambda x: x["name"])
+        if is_non_periodic:
+            # remove volume and density from fixtures since they are not calculated if non-periodic
+            filtered_derived_props = [prop for prop in derived_props if prop["name"] not in ["volume", "density"]]
         else:
-            parse using CrystalParser
-
-    test properties match expected output
-        formula
-        unitCellFormula
-        basis
-        lattice
-        derived_properties
-
-    test serialize_and_validate
-    """
+            # remove inchi keys from fixture since they are not calculated if periodic
+            filtered_derived_props = [prop for prop in derived_props if not prop["name"].startswith("inchi")]
+        return filtered_derived_props
 
     def test_material_vasp_initial_structure(self):
         material = Material("material", self.vasp_parser, is_initial_structure=True)
@@ -86,7 +73,7 @@ class MaterialTest(IntegrationTestBase):
         material = Material("material", self.espresso_parser, is_final_structure=True)
         self.assertPropertiesEqual(material)
 
-    def test_material_is_periodic(self):
+    def test_material_is_non_periodic(self):
         material = Material("material", self.vasp_parser, is_initial_structure=True, is_non_periodic=True)
         self.assertPropertiesEqual(material)
 
@@ -100,3 +87,7 @@ class MaterialTest(IntegrationTestBase):
             is_non_periodic=True,
         )
         self.assertPropertiesEqual(material)
+
+    def test_material_serialize_and_validate(self):
+        material = Material("material", self.vasp_parser, is_initial_structure=True, is_non_periodic=True)
+        self.assertJsonEqual(material)
