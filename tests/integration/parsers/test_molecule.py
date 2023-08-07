@@ -1,8 +1,8 @@
 import os
 
+from express.parsers.molecule import MoleculeParser
 from tests.fixtures.structural.references import INCHI_DATA
 from tests.integration import IntegrationTestBase
-from express.parsers.molecule import MoleculeParser
 
 
 class TestMoleculeParser(IntegrationTestBase):
@@ -10,7 +10,7 @@ class TestMoleculeParser(IntegrationTestBase):
         super(IntegrationTestBase, self).setUp()
 
     def tearDown(self):
-        super(IntegrationTestBase, self).setUp()
+        super(IntegrationTestBase, self).tearDown()
 
     @property
     def parser(self):

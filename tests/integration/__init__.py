@@ -12,7 +12,7 @@ class IntegrationTestBase(TestBase):
         super(IntegrationTestBase, self).setUp()
 
     def tearDown(self):
-        super(IntegrationTestBase, self).setUp()
+        super(IntegrationTestBase, self).tearDown()
 
     @property
     def workDir(self):

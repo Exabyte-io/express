@@ -1,8 +1,8 @@
 import os
 
+from express.parsers.structure import StructureParser
 from tests.fixtures.data import SI
 from tests.integration import IntegrationTestBase
-from express.parsers.structure import StructureParser
 
 
 class TestStructureParser(IntegrationTestBase):
@@ -10,7 +10,7 @@ class TestStructureParser(IntegrationTestBase):
         super(IntegrationTestBase, self).setUp()
 
     def tearDown(self):
-        super(IntegrationTestBase, self).setUp()
+        super(IntegrationTestBase, self).tearDown()
 
     @property
     def parser(self):

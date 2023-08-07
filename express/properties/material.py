@@ -1,19 +1,19 @@
-import os
 import logging
+import os
 
+from express.parsers.apps.vasp.parser import VaspParser
+from express.parsers.crystal import CrystalParser
+from express.parsers.molecule import MoleculeParser
+from express.parsers.structure import StructureParser  # noqa: F401
+from express.parsers.utils import lattice_basis_to_poscar
 from express.properties import BaseProperty
+from express.properties.non_scalar.symmetry import Symmetry
+from express.properties.scalar.density import Density
+from express.properties.scalar.elemental_ratio import ElementalRatio
 from express.properties.scalar.p_norm import PNorm
 from express.properties.scalar.volume import Volume
-from express.parsers.structure import StructureParser  # noqa: F401
-from express.properties.scalar.density import Density
-from express.parsers.apps.vasp.parser import VaspParser
-from express.parsers.utils import lattice_basis_to_poscar
-from express.properties.non_scalar.symmetry import Symmetry
-from express.properties.scalar.elemental_ratio import ElementalRatio
 from express.properties.structural.inchi import Inchi
 from express.properties.structural.inchi_key import InchiKey
-from express.parsers.molecule import MoleculeParser
-from express.parsers.crystal import CrystalParser
 
 
 class Material(BaseProperty):
@@ -88,7 +88,7 @@ class Material(BaseProperty):
         except Exception:
             logging.info("Derived properties array empty due to failure to calculate one (or more) values.")
             pass
-        return derived_properties
+        return sorted(derived_properties, key=lambda x: x["name"])
 
     @property
     def basis(self):
