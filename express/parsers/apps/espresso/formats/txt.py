@@ -2,8 +2,10 @@ import os
 import re
 import io
 import numpy as np
+from pathlib import Path
+from typing import Optional
 
-from express.parsers.utils import find_file
+from express.parsers.utils import find_file, find_files_by_regex
 from express.parsers.settings import Constant
 from express.parsers.apps.espresso import settings
 from express.parsers.formats.txt import BaseTXTParser
@@ -813,3 +815,21 @@ class EspressoTXTParser(BaseTXTParser):
             dtype = np.dtype([("x", float), ("planar_average", float), ("macroscopic_average", float)])
             data = np.fromregex(average_file, settings.REGEX["average_quantity"]["regex"], dtype)
             return data
+
+    def dielectric_tensor_generic(self, dat_file: Path) -> Optional[np.ndarray]:
+        """Extract the dielectric tensor (real or imaginary) produced by epsilon.x.
+
+        Example input:
+        # energy grid [eV]     epsr_x  epsr_y  epsr_z
+        # plasmon frequences [eV]:    17.763649847   17.763705060   17.763291644
+            0.000000000   20.137876673   20.137876704   20.137849785
+            0.060120240   20.143821034   20.143821066   20.143794147
+            0.120240481   20.161680126   20.161680158   20.161653237
+            0.180360721   20.191532277   20.191532311   20.191505388
+        """
+        data = None
+        try:
+            data = np.loadtxt(dat_file, dtype=np.dtype([("energy", float), ("eps", (float, 3))]))
+        except Exception as e:
+            print(e)
+        return data

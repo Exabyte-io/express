@@ -137,6 +137,9 @@ REGEX = {
     "average_quantity": {
         "regex": r"\s*({0})\s+({0})\s+({0})".format(DOUBLE_REGEX),
     },
+    "epsilon_filenames": {
+        "regex": r"^(?P<spin>[du])?(epsi|espr)(_.*)?.dat$"
+    }
 }
 
 TOTAL_ENERGY_CONTRIBUTIONS = {
