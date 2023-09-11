@@ -1,4 +1,4 @@
-import mock
+from unittest import mock
 
 from tests.unit import UnitTestBase
 from express.properties.workflow import PyMLTrainAndPredictWorkflow
