@@ -13,9 +13,9 @@ MOCK_DATA = [
 ]
 
 
-class BandGapsTest(UnitTestBase):
+class DielectricTensorTest(UnitTestBase):
     def setUp(self):
-        super(BandGapsTest, self).setUp()
+        super().setUp()
         self.mock_parsed_tensor = {
             "depsi_prefix.dat": self.mock_loadtxt(MOCK_DATA),
             "depsr_prefix.dat": self.mock_loadtxt(MOCK_DATA),
@@ -24,15 +24,15 @@ class BandGapsTest(UnitTestBase):
         }
 
     def tearDown(self):
-        super(BandGapsTest, self).tearDown()
+        super().tearDown()
 
-    def mock_loadtxt(self, data: List[List[float, float, float, float]]):
+    def mock_loadtxt(self, data: List[List[float]]):
         dtype = np.dtype([("energy", float), ("eps", (float, 3))])
-        return np.array([(data[0], tuple(data[1:]))], dtype=dtype)
+        return np.array([(row[0], tuple(row[1:])) for row in data], dtype=dtype)
 
-    def test_band_gaps(self):
+    def test_dielectric_tensor(self):
         parser = MagicMock()
-        parser.attach_mock(MagicMock(return_value=DIELECTRIC_TENSOR), "dielectric_tensor")
+        parser.attach_mock(MagicMock(return_value=self.mock_parsed_tensor), "dielectric_tensor")
         property_ = DielectricTensor("dielectric_tensor", parser)
         self.assertDeepAlmostEqual(property_.serialize_and_validate(), DIELECTRIC_TENSOR)
 
