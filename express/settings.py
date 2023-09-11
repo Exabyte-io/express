@@ -49,6 +49,9 @@ NON_SCALAR_PROPERTIES_MANIFEST = {
     "average_potential_profile": {
         "reference": "express.properties.non_scalar.two_dimensional_plot.average_potential_profile.AveragePotentialProfile"  # noqa: E501
     },
+    "dielectric_tensor": {
+        "reference": "express.properties.non_scalar.dielectric_tensor.DielectricTensor"
+    }
 }
 
 CONVERGENCE_PROPERTIES = {
