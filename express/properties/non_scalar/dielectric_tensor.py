@@ -35,7 +35,7 @@ class DielectricTensor(NonScalarProperty):
             }
             tensor.update(self.filename_to_tensor_type(key))
             values.append(tensor)
-        return sorted(values, key=lambda x: x.get("spin", 0), reverse=True)
+        return sorted(values, key=lambda x: (-x.get("spin", 0), x.get("part") == "imaginary"))
 
     def _serialize(self):
         return {
