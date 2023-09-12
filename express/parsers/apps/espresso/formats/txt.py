@@ -826,10 +826,13 @@ class EspressoTXTParser(BaseTXTParser):
             0.060120240   20.143821034   20.143821066   20.143794147
             0.120240481   20.161680126   20.161680158   20.161653237
             0.180360721   20.191532277   20.191532311   20.191505388
+
+        Note:
+            Values can be "NaN" which numpy interprets as np.nan. Hence the np.nan_to_num() call at the end.
         """
         data = None
         try:
             data = np.loadtxt(dat_file, dtype=np.dtype([("energy", float), ("eps", (float, 3))]))
         except Exception as e:
             print(e)
-        return data
+        return np.nan_to_num(data)
