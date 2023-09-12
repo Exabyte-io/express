@@ -1,5 +1,5 @@
 munch==2.5.0
 pymatgen==2023.7.14
 ase==3.17.0
-esse>=2020.10.19
+esse>=2023.9.12.post0
 rdkit-pypi>=2022.3.5
