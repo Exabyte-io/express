@@ -832,7 +832,8 @@ class EspressoTXTParser(BaseTXTParser):
         """
         data = None
         try:
-            data = np.loadtxt(dat_file, dtype=np.dtype([("energy", float), ("eps", (float, 3))]))
+            data = np.loadtxt(dat_file, dtype=np.dtype([("energy", float), ("eps", (float, 3))]),
+                              converters=lambda x: np.nan_to_num(float(x)))
         except Exception as e:
             print(e)
-        return np.nan_to_num(data)
+        return data
