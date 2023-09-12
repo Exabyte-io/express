@@ -5,7 +5,7 @@ import numpy as np
 from pathlib import Path
 from typing import Optional
 
-from express.parsers.utils import find_file, find_files_by_regex
+from express.parsers.utils import find_file
 from express.parsers.settings import Constant
 from express.parsers.apps.espresso import settings
 from express.parsers.formats.txt import BaseTXTParser
