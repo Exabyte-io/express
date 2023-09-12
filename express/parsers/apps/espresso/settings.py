@@ -138,7 +138,7 @@ REGEX = {
         "regex": r"\s*({0})\s+({0})\s+({0})".format(DOUBLE_REGEX),
     },
     "epsilon_filenames": {
-        "regex": r"^(?P<spin>[du])?(epsi|espr)(_.*)?.dat$"
+        "regex": r"^(?P<spin>[du])?(epsi|epsr)(_.*)?\.dat$"
     }
 }
 
