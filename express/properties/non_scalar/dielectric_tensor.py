@@ -20,9 +20,9 @@ class DielectricTensor(NonScalarProperty):
         elif name[0].lower() == "d":
             tensor_type["spin"] = -1 * 1/2
 
-        if re.match(r"^[ud]?(epsr)(_.*).dat$", name):
+        if re.match(r"^[ud]?(epsr)(_.*)?\.dat$", name):
             tensor_type["part"] = "real"
-        elif re.match(r"^[ud]?(epsi)(_.*).dat$", name):
+        elif re.match(r"^[ud]?(epsi)(_.*)?\.dat$", name):
             tensor_type["part"] = "imaginary"
         return tensor_type
 
