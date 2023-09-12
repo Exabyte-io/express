@@ -1,4 +1,4 @@
-from mock import MagicMock
+from unittest.mock import MagicMock
 
 from tests.unit import UnitTestBase
 from express.properties.non_scalar.two_dimensional_plot.band_structure import BandStructure

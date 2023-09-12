@@ -1,5 +1,8 @@
 import os
+from pathlib import Path
+
 import numpy as np
+from typing import Dict, Optional
 
 from express.parsers import BaseParser
 from express.parsers.settings import Constant
@@ -7,7 +10,7 @@ from express.parsers.apps.espresso import settings
 from express.parsers.mixins.ionic import IonicDataMixin
 from express.parsers.mixins.reciprocal import ReciprocalDataMixin
 from express.parsers.mixins.electronic import ElectronicDataMixin
-from express.parsers.utils import find_file, lattice_basis_to_poscar
+from express.parsers.utils import find_file, lattice_basis_to_poscar, find_files_by_regex
 from express.parsers.apps.espresso.settings import NEB_PATH_FILE_SUFFIX
 from express.parsers.apps.espresso.formats.txt import EspressoTXTParser
 from express.parsers.apps.espresso.formats.xml import EspressoXMLParser
@@ -343,3 +346,21 @@ class EspressoParser(BaseParser, IonicDataMixin, ElectronicDataMixin, Reciprocal
         data["planar_average"] *= Constant.RYDBERG  # convert to eV
         data["macroscopic_average"] *= Constant.RYDBERG  # convert to eV
         return data
+
+    def dielectric_tensor(self) -> Dict[str, Optional[np.ndarray]]:
+        """Parse all dielectric tensors (as a function of frequency) in current working directory.
+
+        This function attempts to parse the real (`epsr.dat`) and imaginary (`epsi.dat`) parts of the diagonal
+        components of the dielectric tensor. In the case of collinear spin mode, two versions per file are parsed, i.e.,
+        `uepsr.dat`, depsr.dat`, `uepsi.dat`, `depsi.dat`.
+
+        Returns:
+            Dictionary mapping
+        """
+        epsilon_dat_files = find_files_by_regex(settings.REGEX["epsilon_filenames"]["regex"], Path(self.work_dir))
+        tensor_by_filename = {}
+        for dat_file in epsilon_dat_files:
+            tensor_by_filename[dat_file.name] = self.txt_parser.dielectric_tensor_generic(dat_file)
+        return tensor_by_filename
+
+

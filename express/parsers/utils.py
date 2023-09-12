@@ -1,5 +1,7 @@
 import os
+import re
 from typing import Optional, List
+from pathlib import Path
 
 
 def find_file(name: str, path: str) -> Optional[str]:
@@ -14,7 +16,7 @@ def find_file(name: str, path: str) -> Optional[str]:
         str: absolute file path (if found)
     """
     basename = os.path.basename(name)
-    for root, dirs, files in os.walk(path, followlinks=True):
+    for root, _, files in os.walk(path, followlinks=True):
         for file in files:
             if basename in file:
                 return os.path.join(root, file)
@@ -22,10 +24,27 @@ def find_file(name: str, path: str) -> Optional[str]:
 
 def find_files_by_name_substring(name: str, path: str) -> List[str]:
     matches = []
-    for root, dirs, files in os.walk(path, followlinks=True):
+    for root, _, files in os.walk(path, followlinks=True):
         for file_ in files:
             if name in file_:
                 matches.append(os.path.join(root, file_))
+    return matches
+
+
+def find_files_by_regex(regex: str, path: Path) -> List[Path]:
+    """Find files using a regular expression for the filename.
+
+    This function walks through subdirectories and matches filenames (not absolute path)
+    against a regular expression.
+
+    Returns:
+        A list of Path objects with filenames matching the provided regular expression.
+    """
+    pattern = re.compile(regex)
+    matches = []
+    for p in path.rglob("*"):
+        if p.is_file() and pattern.match(p.name):
+            matches.append(p.resolve())
     return matches
 
 

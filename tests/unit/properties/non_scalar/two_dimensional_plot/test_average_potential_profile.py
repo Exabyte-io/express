@@ -1,4 +1,4 @@
-from mock import MagicMock
+from unittest.mock import MagicMock
 import numpy as np
 from tests.unit import UnitTestBase
 from express.properties.non_scalar.two_dimensional_plot.average_potential_profile import AveragePotentialProfile
