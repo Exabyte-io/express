@@ -837,3 +837,78 @@ class EspressoTXTParser(BaseTXTParser):
         except Exception as e:
             print(e)
         return data
+
+    def parse_hubbard(self) -> list:
+        """
+        Extract Hubbard parameters produced by hp.x
+
+        filename: __prefix__.Hubbard_parameters.dat
+
+        Example input content:
+        =-------------------------------------------------------------------------------=
+
+                                        Hubbard U parameters:
+
+            site n.  type  label  spin  new_type  new_label  manifold  Hubbard U (eV)
+                1        1    Co1     1      1         Co1        3d       6.7553
+                2        2    Co2    -1      1         Co1        3d       6.7553
+
+        =-------------------------------------------------------------------------------=
+
+
+        returns list of following (example) data:
+        [
+            {
+                "atomicSpecies": "Co1",
+                "orbitalName": "3d",
+                "value": 6.7553,
+            },
+            {
+                "atomicSpecies": "Co2",
+                "orbitalName": "3d",
+                "value": 6.7553,
+            },
+        ]
+        """
+        dat_file = find_file(settings.HP_FILE, self.work_dir)
+        with open(dat_file, "r", encoding="utf-8") as fp:
+            data = fp.read()
+
+        RE_HP_HEADER = (
+            r"\s*({0})\s*({1})\s+({2})\s+({3})\s+({4})\s+({5})\s+({6})\s+({7})"
+            r"\s+({8})\s*"
+        ).format(
+            "Hubbard U parameters:",
+            "site n.",
+            "type",
+            "label",
+            "spin",
+            "new_type",
+            "new_label",
+            "manifold",
+            "Hubbard U \(eV\)",
+        )
+        RE_HP_DATA = r"\s*{0}\s+{0}\s+{1}\s+{0}\s+{0}\s+{1}\s+{2}\s+{3}".format(
+            settings.HUBBARD_REGEX["int_number"],
+            settings.HUBBARD_REGEX["atomicSpecies"],
+            settings.HUBBARD_REGEX["orbitalName"],
+            settings.HUBBARD_REGEX["dbl_number"],
+        )
+        RE_HP_BLOCK = r"{0}({1})+".format(RE_HP_HEADER, RE_HP_DATA)
+
+        data_hp_block = re.search(RE_HP_BLOCK, data, re.MULTILINE).group()
+        hp_data = re.findall(r"^{0}".format(RE_HP_DATA), data_hp_block, re.MULTILINE)
+
+        result = []
+
+        for line in hp_data:
+            cols = re.sub(r"([\s\t\r\n])+", " ", line.strip()).split(" ")
+            result.append(
+                {
+                    "atomicSpecies": cols[2],
+                    "orbitalName": cols[6],
+                    "value": float(cols[7]),
+                }
+            )
+
+        return result

@@ -6,6 +6,7 @@ XML_DATA_FILE = "data-file.xml"
 PHONON_DOS_FILE = "phonon_dos.out"
 PHONON_MODES_FILE = "normal_modes.out"
 AVERAGE_FILE = "avg.dat"
+HP_FILE = "__prefix__.Hubbard_parameters.dat"
 
 COMMON_REGEX = r"{0}\s+[=:<>]\s*([-+]?\d*\.?\d*([Ee][+-]?\d+)?)"
 DOUBLE_REGEX = GENERAL_REGEX.double_number
@@ -179,4 +180,11 @@ TOTAL_ENERGY_CONTRIBUTIONS = {
         "occurrences": -1,
         "output_type": "float",
     },
+}
+
+HUBBARD_REGEX = {
+    "dbl_number": GENERAL_REGEX.double_number,
+    "int_number": GENERAL_REGEX.int_number,
+    "orbitalName": r"[1-9][sSpPdDfF]",
+    "atomicSpecies": r"[a-zA-Z]{1,2}[\d+]?",
 }
