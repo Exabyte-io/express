@@ -56,3 +56,6 @@ class TestEspressoParser(IntegrationTestBase):
 
     def test_espresso_phonon_dispersion(self):
         self.assertDeepAlmostEqual(self.parser.phonon_dispersions(), PHONON_DISPERSIONS, places=2)
+
+    def test_espresso_hubbard_parameters(self):
+        self.assertDeepAlmostEqual(self.parser.hubbard_parameters(), HUBBARD_PARAMS, places=2)
