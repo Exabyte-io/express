@@ -9,6 +9,7 @@ class BaseParser(object):
     def __init__(self, *args, **kwargs):
         self.args = args
         self.kwargs = kwargs
+        self.version = kwargs.get("version", None)
 
     def _get_file_content(self, file_path):
         """

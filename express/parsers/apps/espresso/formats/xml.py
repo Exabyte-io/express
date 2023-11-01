@@ -53,18 +53,25 @@ class EspressoXMLParser(BaseXMLParser):
         Returns:
             float
         """
-        bs_tag = self.root.find("BAND_STRUCTURE_INFO")
-        return self._get_xml_tag_value(bs_tag.find("FERMI_ENERGY")) * Constant.HARTREE
+        bs_tag = self.root.find("band_structure")
+        return self._get_xml_tag_value(bs_tag.find("fermi_energy")) * Constant.HARTREE
 
     def nspins(self):
         """
-        Extracts the number of number of spin components.
+        Extracts the number of spin components.
 
         Returns:
              int
         """
-        bs_tag = self.root.find("BAND_STRUCTURE_INFO")
-        return self._get_xml_tag_value(bs_tag.find("NUMBER_OF_SPIN_COMPONENTS"))
+        bs_tag = self.root.find("band_structure")
+        lsda_tag = bs_tag.find("lsda")
+        noncolin_tag = bs_tag.find("noncolin")
+        result = 1
+        if lsda_tag is not False:
+            result = 2
+        elif noncolin_tag is not False:
+            result = 4
+        return result
 
     def final_lattice_vectors(self, reciprocal=False):
         """
@@ -87,13 +94,11 @@ class EspressoXMLParser(BaseXMLParser):
              }
         """
         vector_tag = "a"
-        lattice_tag = "DIRECT_LATTICE_VECTORS"
-        # units_tag = "UNITS_FOR_DIRECT_LATTICE_VECTORS"
+        lattice_tag = "cell"
 
         if reciprocal:
             vector_tag = "b"
-            lattice_tag = "RECIPROCAL_LATTICE_VECTORS"
-            # units_tag = "UNITS_FOR_RECIPROCAL_LATTICE_VECTORS"
+            lattice_tag = "reciprocal_lattice"
 
         vectors = {}
         cell_tag = self.root.find("CELL")
