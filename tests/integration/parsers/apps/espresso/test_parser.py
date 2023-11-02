@@ -25,6 +25,9 @@ class TestEspressoParser(IntegrationTestBase):
     def test_espresso_nspins(self):
         self.assertEqual(self.parser.nspins(), NSPIN)
 
+    def test_espresso_nspins_v7(self):
+        self.assertEqual(self.parser_v7.nspins(), NSPIN)
+
     def test_espresso_eigenvalues_at_kpoints(self):
         self.assertDeepAlmostEqual(self.parser.eigenvalues_at_kpoints()[0], EIGENVALUES_AT_KPOINTS_ZERO, places=2)
 

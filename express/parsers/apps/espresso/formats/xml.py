@@ -25,7 +25,7 @@ class EspressoXMLParser(BaseXMLParser):
         "real": lambda v, s, c: np.array([float(_) for _ in re.findall(GENERAL_REGEX.double_number, v)]).reshape(
             [s // c, c]
         ),
-        "logical": lambda v, s, c: False if "F" in v else True,
+        "logical": lambda v, s, c: False if v in ["F", "false"] else True,
     }
 
     band_structure_tag = "BAND_STRUCTURE_INFO"

@@ -1,4 +1,4 @@
-from typing import Any
+from typing import Union
 from xml.etree.ElementTree import Element
 
 from .xml import EspressoXMLParser
@@ -22,7 +22,17 @@ class EspressoXMLParserV7(EspressoXMLParser):
             "type_": "real",
             "size": 1,
             "columns": 1,
-        }
+        },
+        "lsda": {
+            "type_": "logical",
+            "size": 1,
+            "columns": 1,
+        },
+        "noncolin": {
+            "type_": "logical",
+            "size": 1,
+            "columns": 1,
+        },
     }
 
     def __init__(self, *args, **kwargs):
@@ -30,18 +40,19 @@ class EspressoXMLParserV7(EspressoXMLParser):
         #
         self.root = self.root.find("output")
 
-    def nspins(self):
+    def nspins(self) -> int:
         bs_tag = self.root.find(self.band_structure_tag)
-        lsda_tag = bs_tag.find("lsda")
-        noncolin_tag = bs_tag.find("noncolin")
-        result = 1
-        if lsda_tag is not False:
-            result = 2
-        elif noncolin_tag is not False:
-            result = 4
-        return result
+        lsda_tag = self._get_xml_tag_value(bs_tag.find("lsda"))
+        noncolin_tag = self._get_xml_tag_value(bs_tag.find("noncolin"))
 
-    def _get_xml_tag_value(self, tag: Element, **kwargs) -> Any:
+        if lsda_tag:
+            return 2
+        elif noncolin_tag:
+            return 4
+
+        return 1
+
+    def _get_xml_tag_value(self, tag: Element) -> Union[str, float, int, bool]:
         """
         Returns the value of a given xml tag. QE7.2 XML does not contain the type attribute.
 

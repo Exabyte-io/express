@@ -22,6 +22,10 @@ test_espresso_nspins:
   workDir: fixtures/espresso/test-001
   stdoutFile: fixtures/espresso/test-001/pw-scf.out
 
+test_espresso_nspins_v7:
+  workDir: fixtures/espresso/test-004
+  stdoutFile: fixtures/espresso/test-001/pw-scf.out
+
 test_espresso_eigenvalues_at_kpoints:
   workDir: fixtures/espresso/test-001
   stdoutFile: fixtures/espresso/test-001/pw-scf.out
