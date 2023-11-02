@@ -855,7 +855,6 @@ class EspressoTXTParser(BaseTXTParser):
 
         =-------------------------------------------------------------------------------=
 
-
         returns list of following (example) data:
         [
             {
@@ -896,8 +895,8 @@ class EspressoTXTParser(BaseTXTParser):
         )
         RE_HP_BLOCK = r"{0}({1})+".format(RE_HP_HEADER, RE_HP_DATA)
 
-        data_hp_block = re.search(RE_HP_BLOCK, data, re.MULTILINE).group()
-        hp_data = re.findall(r"^{0}".format(RE_HP_DATA), data_hp_block, re.MULTILINE)
+        hp_block = re.search(RE_HP_BLOCK, data, re.MULTILINE).group()
+        hp_data = re.findall(r"^{0}".format(RE_HP_DATA), hp_block, re.MULTILINE)
 
         result = []
 

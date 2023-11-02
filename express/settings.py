@@ -51,6 +51,9 @@ NON_SCALAR_PROPERTIES_MANIFEST = {
     },
     "dielectric_tensor": {
         "reference": "express.properties.non_scalar.dielectric_tensor.DielectricTensor"
+    },
+    "hubbard_parameters": {
+        "reference": "express.properties.non_scalar.hubbard_parameters.HubbardParameters"
     }
 }
 
