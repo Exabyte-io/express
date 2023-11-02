@@ -8,6 +8,7 @@ class TestEspressoParser(IntegrationTestBase):
     def setUp(self):
         super(TestEspressoParser, self).setUp()
         self.parser = EspressoParser(work_dir=self.workDir, stdout_file=self.stdoutFile)
+        self.parser_v7 = EspressoParser(work_dir=self.workDir, stdout_file=self.stdoutFile, version="7.2.0")
 
     def tearDown(self):
         super(TestEspressoParser, self).tearDown()
@@ -17,6 +18,9 @@ class TestEspressoParser(IntegrationTestBase):
 
     def test_espresso_fermi_energy(self):
         self.assertAlmostEqual(self.parser.fermi_energy(), FERMI_ENERGY, places=2)
+
+    def test_espresso_fermi_energy_v7(self):
+        self.assertAlmostEqual(self.parser_v7.fermi_energy(), FERMI_ENERGY, places=2)
 
     def test_espresso_nspins(self):
         self.assertEqual(self.parser.nspins(), NSPIN)
