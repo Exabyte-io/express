@@ -46,8 +46,7 @@ class EspressoXMLParserV7(EspressoXMLParser):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        #
-        self.root = self.root.find("output")
+        self.root = self.root.find("output") if self.root else None
 
     def nspins(self) -> int:
         bs_tag = self.root.find(self.band_structure_tag)
