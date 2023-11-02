@@ -1,6 +1,10 @@
 from typing import Union
 from xml.etree.ElementTree import Element
 
+import numpy as np
+
+from express.parsers.settings import Constant
+
 from .xml import EspressoXMLParser
 
 
@@ -52,7 +56,52 @@ class EspressoXMLParserV7(EspressoXMLParser):
 
         return 1
 
-    def _get_xml_tag_value(self, tag: Element) -> Union[str, float, int, bool]:
+    def final_lattice_vectors(self, reciprocal=False):
+        """
+        Extract lattice vectors
+
+        Args:
+            reciprocal (bool, optional): Whether to extract reciprocal lattice. Defaults to False.
+
+        Returns:
+            dict: lattice vectors
+        {
+            "vectors: {
+                "a": [float, float, float],
+                "b": [float, float, float],
+                "c": [float, float, float],
+                "alat": float
+            }
+            Optional["units": "angstrom"]
+        }
+        """
+        vectors = {}
+        structure = self.root.find("atomic_structure")
+        lattice_constant = structure.attrib.get("alat", 1)
+
+        if reciprocal:
+            lattice = self.root.find("basis_set").find(self.reciprocal_lattice_tag)
+            constant = 1.0
+        else:
+            lattice = structure.find(self.lattice_tag)
+            constant = Constant.BOHR
+            vectors.update({"units": "angstrom"})
+
+        values = np.array([[float(v) for v in vector.text.split()] for vector in lattice]) * constant
+        vectors.update(
+            {
+                "vectors": {
+                    "a": values[0].tolist(),
+                    "b": values[1].tolist(),
+                    "c": values[2].tolist(),
+                    "alat": float(lattice_constant) * constant,
+                }
+            }
+        )
+
+        return vectors
+
+    def _get_xml_tag_value(self, tag: Element) -> Union[str, float, int, bool, np.ndarray]:
         """
         Returns the value of a given xml tag. QE7.2 XML does not contain the type attribute.
 
