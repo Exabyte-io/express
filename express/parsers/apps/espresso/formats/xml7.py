@@ -37,6 +37,11 @@ class EspressoXMLParserV7(EspressoXMLParser):
             "size": 1,
             "columns": 1,
         },
+        "k_point": {
+            "type_": "real",
+            "size": 3,
+            "columns": 3,
+        },
     }
 
     def __init__(self, *args, **kwargs):
@@ -100,6 +105,52 @@ class EspressoXMLParserV7(EspressoXMLParser):
         )
 
         return vectors
+
+    def eigenvalues_at_kpoints(self) -> list:
+        """
+        Return list of eigenvalue data for all kpoints.
+
+        Returns:
+            list: [
+                {
+                    "kpoint": [float, float, float],
+                    "weight": "float",
+                    "eigenvalues": [
+                        {
+                            "energies": [float, ..., float],
+                            "occupations": [float, ..., float],
+                            "spin": float(0.5 or -0.5)
+                        }
+                    ]
+                }
+            ]
+        """
+        all_kpoints = []
+        bs_tag = self.root.find(self.band_structure_tag)
+        for ks_entry in bs_tag.iterfind("ks_energies"):
+            all_kpoints.append(self.__process_ks_energies(ks_entry))
+        return all_kpoints
+
+    def __process_ks_energies(self, ks_entry: Element) -> dict:
+        """Process a single ks_energies tag, under band_structure tag"""
+        k_point = ks_entry.find("k_point")
+        cartesian_coords = self._get_xml_tag_value(k_point)[0]
+        crystal_coords = np.dot(cartesian_coords, self.get_inverse_reciprocal_lattice_vectors())
+        kpoint_dict = {
+            "kpoint": crystal_coords.tolist(),
+            "weight": float(k_point.attrib.get("weight")),
+            "eigenvalues": [],
+        }
+        # TODO: previous format has (potentially) multiple linked datafiles. What is the equivalent now?
+        kpoint_dict["eigenvalues"].append(
+            {
+                "energies": [float(eigenvalue) for eigenvalue in ks_entry.find("eigenvalues").text.split()],
+                "occupations": [float(occ) for occ in ks_entry.find("occupations").text.split()],
+                "spin": 0.5,  # TODO: where does this come from in the new datafile format?
+            }
+        )
+
+        return kpoint_dict
 
     def _get_xml_tag_value(self, tag: Element) -> Union[str, float, int, bool, np.ndarray]:
         """
