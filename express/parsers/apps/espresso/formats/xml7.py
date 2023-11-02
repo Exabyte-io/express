@@ -85,6 +85,7 @@ class EspressoXMLParserV7(EspressoXMLParser):
         lattice_constant = structure.attrib.get("alat", 1)
 
         if reciprocal:
+            # use basis_set tag as atomic structure tag does not contain reciprocal lattice
             lattice = self.root.find("basis_set").find(self.reciprocal_lattice_tag)
             constant = 1.0
         else:
@@ -151,6 +152,24 @@ class EspressoXMLParserV7(EspressoXMLParser):
         )
 
         return kpoint_dict
+
+    def final_basis(self) -> dict:
+        elements, coordinates = [], []
+        atomic_positions = self.root.find("atomic_structure").find("atomic_positions")
+        for atom in atomic_positions.iterfind("atom"):
+            elements.append(
+                {
+                    "id": int(atom.attrib.get("index")),
+                    "value": atom.attrib.get("name"),
+                }
+            )
+            coordinates.append(
+                {
+                    "id": int(atom.attrib.get("index")),
+                    "value": (Constant.BOHR * np.array(atom.text.split()).astype(np.float32)).tolist(),
+                }
+            )
+        return {"units": "angstrom", "elements": elements, "coordinates": coordinates}
 
     def _get_xml_tag_value(self, tag: Element) -> Union[str, float, int, bool, np.ndarray]:
         """
