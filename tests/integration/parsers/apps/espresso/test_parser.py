@@ -75,5 +75,10 @@ class TestEspressoParser(IntegrationTestBase):
     def test_espresso_eigenvalues_at_kpoints_v7(self):
         self.assertDeepAlmostEqual(self.parser_v7.eigenvalues_at_kpoints()[0], EIGENVALUES_AT_KPOINTS_ZERO_v7, places=2)
 
+    def test_espresso_eigenvalues_at_kpoints_lsda_v7(self):
+        self.assertDeepAlmostEqual(
+            self.parser_v7.eigenvalues_at_kpoints()[0], EIGENVALUES_AT_KPOINTS_ZERO_LSDA_v7, places=2
+        )
+
     def test_espresso_final_basis_v7(self):
         self.assertDeepAlmostEqual(self.parser_v7.final_basis(), FINAL_BASIS_v7, places=2)

@@ -42,6 +42,10 @@ test_espresso_eigenvalues_at_kpoints_v7:
   workDir: fixtures/espresso/test-004
   stdoutFile: fixtures/espresso/test-001/pw-scf.out
 
+test_espresso_eigenvalues_at_kpoints_lsda_v7:
+  workDir: fixtures/espresso/test-005
+  stdoutFile: fixtures/espresso/test-001/pw-scf.out
+
 test_espresso_final_basis_v7:
   workDir: fixtures/espresso/test-004
   stdoutFile: fixtures/espresso/test-001/pw-scf.out

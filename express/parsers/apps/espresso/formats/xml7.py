@@ -10,7 +10,7 @@ from .xml import EspressoXMLParser
 
 class EspressoXMLParserV7(EspressoXMLParser):
     """
-    XML parser overrides for espresso >= v7.
+    XML parser overrides for espresso > v6.4.
 
     QE7.2 XML output does not contain the type, size, (len/columns) attributes so the parser is not as generalizable.
     """
@@ -127,30 +127,73 @@ class EspressoXMLParserV7(EspressoXMLParser):
         """
         all_kpoints = []
         bs_tag = self.root.find(self.band_structure_tag)
+        is_lsda = self._get_xml_tag_value(bs_tag.find("lsda"))
+        is_noncolinear = self._get_xml_tag_value(bs_tag.find("noncolin"))
+
+        if is_lsda:
+            nband = int(bs_tag.find("nbnd_up").text)
+        else:
+            nband = int(bs_tag.find("nbnd").text)
+
         for ks_entry in bs_tag.iterfind("ks_energies"):
-            all_kpoints.append(self.__process_ks_energies(ks_entry))
+            k_point = ks_entry.find("k_point")
+            cartesian_coords = self._get_xml_tag_value(k_point)[0]
+            crystal_coords = np.dot(cartesian_coords, self.get_inverse_reciprocal_lattice_vectors())
+            kpoint_dict = {
+                "kpoint": crystal_coords.tolist(),
+                "weight": float(k_point.attrib.get("weight")),
+            }
+            if is_lsda:
+                kpoint_dict["eigenvalues"] = self.__process_ks_lsda(ks_entry, nband)
+
+            # TODO: implement noncolinear spin magnetization case, values come in pairs
+            elif is_noncolinear:
+                raise NotImplementedError("Noncolinear spin magnetization case not implemented")
+            else:
+                kpoint_dict["eigenvalues"] = self.__process_ks_non_mag(ks_entry)
+
+            all_kpoints.append(kpoint_dict)
         return all_kpoints
 
-    def __process_ks_energies(self, ks_entry: Element) -> dict:
-        """Process a single ks_energies tag, under band_structure tag"""
-        k_point = ks_entry.find("k_point")
-        cartesian_coords = self._get_xml_tag_value(k_point)[0]
-        crystal_coords = np.dot(cartesian_coords, self.get_inverse_reciprocal_lattice_vectors())
-        kpoint_dict = {
-            "kpoint": crystal_coords.tolist(),
-            "weight": float(k_point.attrib.get("weight")),
-            "eigenvalues": [],
-        }
-        # TODO: previous format has (potentially) multiple linked datafiles. What is the equivalent now?
-        kpoint_dict["eigenvalues"].append(
+    def __process_ks_lsda(self, ks_entry: Element, nband: int) -> list:
+        """Process local spin density approximation (LSDA) eigenvalues.
+
+        Assume the first nband entries are spin 0.5 and the next nband entries are spin -0.5.
+        """
+        energies = (
+            np.array([float(eigenvalue) for eigenvalue in ks_entry.find("eigenvalues").text.split()]) * Constant.HARTREE
+        ).tolist()
+        occupations = [float(occ) for occ in ks_entry.find("occupations").text.split()]
+        eigenvalues = []
+        eigenvalues.append(
             {
-                "energies": [float(eigenvalue) for eigenvalue in ks_entry.find("eigenvalues").text.split()],
-                "occupations": [float(occ) for occ in ks_entry.find("occupations").text.split()],
-                "spin": 0.5,  # TODO: where does this come from in the new datafile format?
+                "energies": energies[:nband],
+                "occupations": occupations[:nband],
+                "spin": 0.5,
             }
         )
+        eigenvalues.append(
+            {
+                "energies": energies[nband:],
+                "occupations": occupations[nband:],
+                "spin": -0.5,
+            }
+        )
+        return eigenvalues
 
-        return kpoint_dict
+    def __process_ks_non_mag(self, ks_entry: Element) -> list:
+        eigenvalues = []
+        eigenvalues.append(
+            {
+                "energies": (
+                    np.array([float(eigenvalue) for eigenvalue in ks_entry.find("eigenvalues").text.split()])
+                    * Constant.HARTREE
+                ).tolist(),
+                "occupations": [float(occ) for occ in ks_entry.find("occupations").text.split()],
+                "spin": 0.5,
+            }
+        )
+        return eigenvalues
 
     def final_basis(self) -> dict:
         elements, coordinates = [], []

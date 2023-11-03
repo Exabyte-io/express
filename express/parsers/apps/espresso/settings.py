@@ -3,6 +3,7 @@ from express.parsers.settings import GENERAL_REGEX
 PDOS_TOT_FILE = "pdos_tot"
 NEB_PATH_FILE_SUFFIX = ".path"
 XML_DATA_FILE = "data-file.xml"
+XML_DATA_FILE_NEW = "__prefix__.xml"
 PHONON_DOS_FILE = "phonon_dos.out"
 PHONON_MODES_FILE = "normal_modes.out"
 AVERAGE_FILE = "avg.dat"
@@ -137,9 +138,7 @@ REGEX = {
     "average_quantity": {
         "regex": r"\s*({0})\s+({0})\s+({0})".format(DOUBLE_REGEX),
     },
-    "epsilon_filenames": {
-        "regex": r"^(?P<spin>[du])?(epsi|epsr)(_.*)?\.dat$"
-    }
+    "epsilon_filenames": {"regex": r"^(?P<spin>[du])?(epsi|epsr)(_.*)?\.dat$"},
 }
 
 TOTAL_ENERGY_CONTRIBUTIONS = {
