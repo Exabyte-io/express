@@ -9,5 +9,7 @@ class HubbardParameters(NonScalarProperty):
         return {
             "name": self.name,
             "units": self.manifest["defaults"]["units"],
-            "values": self.parser.hubbard_parameters(),
+            "category": self.parser.hubbard_parameters()["category"],
+            "headers": self.parser.hubbard_parameters()["headers"],
+            "values": self.parser.hubbard_parameters()["values"],
         }

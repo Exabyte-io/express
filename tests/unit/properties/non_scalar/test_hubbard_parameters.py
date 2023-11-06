@@ -5,7 +5,9 @@ from express.properties.non_scalar.hubbard_parameters import HubbardParameters
 HUBBARD_REFERENCE = {
     "name": "hubbard_parameters",
     "units": "eV",
-    "values": HUBBARD_PARAMS,
+    "category": HUBBARD_PARAMS["category"],
+    "headers": HUBBARD_PARAMS["headers"],
+    "values": HUBBARD_PARAMS["values"],
 }
 
 

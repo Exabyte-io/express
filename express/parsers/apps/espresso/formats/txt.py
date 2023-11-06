@@ -832,8 +832,11 @@ class EspressoTXTParser(BaseTXTParser):
         """
         data = None
         try:
-            data = np.loadtxt(dat_file, dtype=np.dtype([("energy", float), ("eps", (float, 3))]),
-                              converters=lambda x: np.nan_to_num(float(x)))
+            data = np.loadtxt(
+                dat_file,
+                dtype=np.dtype([("energy", float), ("eps", (float, 3))]),
+                converters=lambda x: np.nan_to_num(float(x)),
+            )
         except Exception as e:
             print(e)
         return data
@@ -858,11 +861,13 @@ class EspressoTXTParser(BaseTXTParser):
         returns list of following (example) data:
         [
             {
+                "siteNumber": 1,
                 "atomicSpecies": "Co1",
                 "orbitalName": "3d",
                 "value": 6.7553,
             },
             {
+                "siteNumber": 2,
                 "atomicSpecies": "Co2",
                 "orbitalName": "3d",
                 "value": 6.7553,
@@ -873,10 +878,7 @@ class EspressoTXTParser(BaseTXTParser):
         with open(dat_file, "r", encoding="utf-8") as fp:
             data = fp.read()
 
-        RE_HP_HEADER = (
-            r"\s*({0})\s*({1})\s+({2})\s+({3})\s+({4})\s+({5})\s+({6})\s+({7})"
-            r"\s+({8})\s*"
-        ).format(
+        RE_HP_HEADER = (r"\s*({0})\s*({1})\s+({2})\s+({3})\s+({4})\s+({5})\s+({6})\s+({7})" r"\s+({8})\s*").format(
             "Hubbard U parameters:",
             "site n.",
             "type",
@@ -898,16 +900,21 @@ class EspressoTXTParser(BaseTXTParser):
         hp_block = re.search(RE_HP_BLOCK, data, re.MULTILINE).group()
         hp_data = re.findall(r"^{0}".format(RE_HP_DATA), hp_block, re.MULTILINE)
 
-        result = []
+        values = []
 
         for line in hp_data:
             cols = re.sub(r"([\s\t\r\n])+", " ", line.strip()).split(" ")
-            result.append(
+            values.append(
                 {
+                    "siteNumber": int(cols[1]),
                     "atomicSpecies": cols[2],
                     "orbitalName": cols[6],
                     "value": float(cols[7]),
                 }
             )
 
-        return result
+        return {
+            "category": "hubbard_u",
+            "headers": ["Site no.", "Atomic species", "Orbital/manifold", "U (eV)"],
+            "values": values,
+        }

@@ -367,17 +367,23 @@ class EspressoParser(BaseParser, IonicDataMixin, ElectronicDataMixin, Reciprocal
         """
         Parses hp.x output file __prefix__.Hubbard_parameters.dat and returns
         Hubbard parameters. Example output:
-        [
-            {
-                "atomicSpecies": "Co1",
-                "orbitalName": "3d",
-                "value": 6.7553,
-            },
-            {
-                "atomicSpecies": "Co2",
-                "orbitalName": "3d",
-                "value": 6.7553,
-            },
-        ]
+        {
+            "category": "hubbard_u",
+            "headers": ["Site no.", "Atomic species", "Orbital/manifold", "U (eV)"],
+            "values": [
+                {
+                    "siteNumber": 1,
+                    "atomicSpecies": "Co1",
+                    "orbitalName": "3d",
+                    "value": 6.7553
+                },
+                {
+                    "siteNumber": 2,
+                    "atomicSpecies": "Co2",
+                    "orbitalName": "3d",
+                    "value": 6.7553
+                }
+            ]
+        }
         """
         return self.txt_parser.parse_hubbard()
