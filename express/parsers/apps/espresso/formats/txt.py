@@ -859,20 +859,29 @@ class EspressoTXTParser(BaseTXTParser):
         =-------------------------------------------------------------------------------=
 
         returns list of following (example) data:
-        [
-            {
+        {
+            "category": "hubbard_u",
+            "headers": [
+                "Site no.",
+                "Atomic species",
+                "Orbital/manifold",
+                "U (eV)"
+            ],
+            "values": [
+                {
                 "siteNumber": 1,
                 "atomicSpecies": "Co1",
                 "orbitalName": "3d",
-                "value": 6.7553,
-            },
-            {
+                "value": 6.7553
+                },
+                {
                 "siteNumber": 2,
                 "atomicSpecies": "Co2",
                 "orbitalName": "3d",
-                "value": 6.7553,
-            },
-        ]
+                "value": 6.7553
+                }
+            ]
+        }
         """
         dat_file = find_file(settings.HP_FILE, self.work_dir)
         with open(dat_file, "r", encoding="utf-8") as fp:
@@ -906,7 +915,7 @@ class EspressoTXTParser(BaseTXTParser):
             cols = re.sub(r"([\s\t\r\n])+", " ", line.strip()).split(" ")
             values.append(
                 {
-                    "siteNumber": int(cols[1]),
+                    "siteNumber": int(cols[0]),
                     "atomicSpecies": cols[2],
                     "orbitalName": cols[6],
                     "value": float(cols[7]),
