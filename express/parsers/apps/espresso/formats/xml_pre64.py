@@ -5,28 +5,17 @@ import xml.etree.ElementTree as ET
 
 import numpy as np
 
-from express.parsers.formats.xml import BaseXMLParser
+from express.parsers.apps.espresso.formats.xml_base import EspressoXMLParserBase
 from express.parsers.settings import GENERAL_REGEX, Constant
 
 
-class EspressoXMLParser(BaseXMLParser):
+class EspressoXMLParserPreV6_4(EspressoXMLParserBase):
     """
-    Espresso XML parser class.
+    Espresso XML parser class for versions <= v6.4.
 
     Args:
         xml_file_path (str): path to the xml file.
     """
-
-    TAG_VALUE_CAST_MAP = {
-        "character": lambda v, s, c: v,
-        "integer": lambda v, s, c: np.array([int(_) for _ in re.findall(GENERAL_REGEX.int_number, v)]).reshape(
-            [s // c, c]
-        ),
-        "real": lambda v, s, c: np.array([float(_) for _ in re.findall(GENERAL_REGEX.double_number, v)]).reshape(
-            [s // c, c]
-        ),
-        "logical": lambda v, s, c: False if v in ["F", "false"] else True,
-    }
 
     band_structure_tag = "BAND_STRUCTURE_INFO"
     fermi_energy_tag = "FERMI_ENERGY"
@@ -35,23 +24,6 @@ class EspressoXMLParser(BaseXMLParser):
 
     def __init__(self, xml_file_path):
         super().__init__(xml_file_path)
-
-    def _get_xml_tag_value(self, tag):
-        """
-        This function helps casting xml tag value to the the type defined in the tag attribute. It xml tag's text
-        holds a string, vector, (vector, matrix, constant) of either int or float.
-
-        Args:
-            tag (xml.etree.ElementTree.Element): An Element instance of ElementTree XML class.
-
-        Returns:
-            str | float | int | bool | ndarray: depending on the tag type attribute.
-        """
-        type = tag.attrib.get("type")
-        size = int(tag.attrib.get("size", 1))
-        columns = int(tag.attrib.get("columns", 1))
-        result = self.TAG_VALUE_CAST_MAP[type](tag.text, size, columns)
-        return result[0][0] if size == 1 and type not in ["logical", "character"] else result
 
     def fermi_energy(self):
         """

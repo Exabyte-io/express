@@ -3,12 +3,11 @@ from xml.etree.ElementTree import Element
 
 import numpy as np
 
+from express.parsers.apps.espresso.formats.xml_base import EspressoXMLParserBase
 from express.parsers.settings import Constant
 
-from .xml import EspressoXMLParser
 
-
-class EspressoXMLParserV7(EspressoXMLParser):
+class EspressoXMLParserPostV6_4(EspressoXMLParserBase):
     """
     XML parser overrides for espresso > v6.4.
 

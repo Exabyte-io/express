@@ -10,43 +10,43 @@ test_espresso_total_energy:
   workDir: fixtures/espresso/test-001
   stdoutFile: fixtures/espresso/test-001/pw-scf.out
 
-test_espresso_fermi_energy:
+test_espresso_fermi_energy_pre_v64:
   workDir: fixtures/espresso/test-001
   stdoutFile: fixtures/espresso/test-001/pw-scf.out
 
-test_espresso_fermi_energy_v7:
-  workDir: fixtures/espresso/test-004
-  stdoutFile: fixtures/espresso/test-001/pw-scf.out
-
-test_espresso_nspins:
+test_espresso_nspins_pre_v64:
   workDir: fixtures/espresso/test-001
   stdoutFile: fixtures/espresso/test-001/pw-scf.out
 
-test_espresso_nspins_v7:
-  workDir: fixtures/espresso/test-004
-  stdoutFile: fixtures/espresso/test-001/pw-scf.out
-
-test_espresso_final_lattice_vectors:
+test_espresso_final_lattice_vectors_pre_v64:
   workDir: fixtures/espresso/test-001
   stdoutFile: fixtures/espresso/test-001/pw-scf.out
 
-test_espresso_final_lattice_vectors_v7:
-  workDir: fixtures/espresso/test-004
-  stdoutFile: fixtures/espresso/test-001/pw-scf.out
-
-test_espresso_eigenvalues_at_kpoints:
+test_espresso_eigenvalues_at_kpoints_pre_v64:
   workDir: fixtures/espresso/test-001
   stdoutFile: fixtures/espresso/test-001/pw-scf.out
 
-test_espresso_eigenvalues_at_kpoints_v7:
+test_espresso_fermi_energy_post_v64:
   workDir: fixtures/espresso/test-004
   stdoutFile: fixtures/espresso/test-001/pw-scf.out
 
-test_espresso_eigenvalues_at_kpoints_lsda_v7:
+test_espresso_nspins_post_v64:
+  workDir: fixtures/espresso/test-004
+  stdoutFile: fixtures/espresso/test-001/pw-scf.out
+
+test_espresso_final_lattice_vectors_post_v64:
+  workDir: fixtures/espresso/test-004
+  stdoutFile: fixtures/espresso/test-001/pw-scf.out
+
+test_espresso_eigenvalues_at_kpoints_post_v64:
+  workDir: fixtures/espresso/test-004
+  stdoutFile: fixtures/espresso/test-001/pw-scf.out
+
+test_espresso_eigenvalues_at_kpoints_lsda_post_v64:
   workDir: fixtures/espresso/test-005
   stdoutFile: fixtures/espresso/test-001/pw-scf.out
 
-test_espresso_final_basis_v7:
+test_espresso_final_basis_post_v64:
   workDir: fixtures/espresso/test-004
   stdoutFile: fixtures/espresso/test-001/pw-scf.out
 

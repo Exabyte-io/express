@@ -2,8 +2,8 @@ from express.parsers.settings import GENERAL_REGEX
 
 PDOS_TOT_FILE = "pdos_tot"
 NEB_PATH_FILE_SUFFIX = ".path"
-XML_DATA_FILE = "data-file.xml"
-XML_DATA_FILE_NEW = "__prefix__.xml"
+XML_DATA_FILE_PREv6_4 = "data-file.xml"
+XML_DATA_FILE_POSTv6_4 = "__prefix__.xml"
 PHONON_DOS_FILE = "phonon_dos.out"
 PHONON_MODES_FILE = "normal_modes.out"
 AVERAGE_FILE = "avg.dat"
@@ -23,8 +23,9 @@ REGEX = {
         "output_type": "float",
     },
     "pdos_file": {
-        "regex": r".*\.pdos_atm#(?P<atom_num>\d+)\((?P<atom_name>\w+)\)"
-        r"_wfc#(?P<orbit_num>\d+)\((?P<orbit_symbol>\w)\)",
+        "regex": (
+            r".*\.pdos_atm#(?P<atom_num>\d+)\((?P<atom_name>\w+)\)" r"_wfc#(?P<orbit_num>\d+)\((?P<orbit_symbol>\w)\)"
+        ),
     },
     "convergence_electronic": {
         "regex": r"estimated scf accuracy\s+<\s+({0})".format(DOUBLE_REGEX),
