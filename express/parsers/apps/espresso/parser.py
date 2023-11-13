@@ -7,7 +7,7 @@ import numpy as np
 from express.parsers import BaseParser
 from express.parsers.apps.espresso import settings
 from express.parsers.apps.espresso.formats.txt import EspressoTXTParser
-from express.parsers.apps.espresso.formats.xml_factory import get_xml_parser
+from express.parsers.apps.espresso.formats.xml.xml_factory import get_xml_parser
 from express.parsers.apps.espresso.settings import NEB_PATH_FILE_SUFFIX
 from express.parsers.mixins.electronic import ElectronicDataMixin
 from express.parsers.mixins.ionic import IonicDataMixin
