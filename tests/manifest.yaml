@@ -98,6 +98,10 @@ test_espresso_ibz_k_point_post_v64:
   workDir: fixtures/espresso/v6_5/test-004
   stdoutFile: fixtures/espresso/v6_5/test-004/pw_scf.out
 
+test_espresso_dos_post_v64:
+  workDir: fixtures/espresso/v6_5/test-006
+  stdoutFile: fixtures/espresso/v6_5/test-006/projwfc.out
+
 test_espresso_convergence_electronic_post_v64:
   workDir: fixtures/espresso/v6_5/test-004
   stdoutFile: fixtures/espresso/v6_5/test-004/pw_scf.out
@@ -126,17 +130,17 @@ test_espresso_total_energy_contributions_post_v64:
   workDir: fixtures/espresso/v6_5/test-004
   stdoutFile: fixtures/espresso/v6_5/test-004/pw_scf.out
 
-
 test_espresso_final_basis_post_v64:
   workDir: fixtures/espresso/v6_5/test-004
   stdoutFile: fixtures/espresso/v6_5/test-004/pw_scf.out
 
+test_espresso_phonon_dos_post_v64:
+  workDir: fixtures/espresso/v6_4/test-003
+  stdoutFile: fixtures/espresso/v6_4/test-003/phonon_dos.out
 
-
-
-
-
-
+test_espresso_phonon_dispersion_post_v64:
+  workDir: fixtures/espresso/v6_4/test-003
+  stdoutFile: fixtures/espresso/v6_4/test-003/normal_modes.out
 
 test_vasp_total_energy:
   workDir: fixtures/vasp/test-001
