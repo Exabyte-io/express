@@ -8,6 +8,7 @@ class TestEspressoParser(IntegrationTestBase):
     def setUp(self):
         super(TestEspressoParser, self).setUp()
         self.parser = EspressoParser(work_dir=self.workDir, stdout_file=self.stdoutFile)
+        self.parser_v7 = EspressoParser(work_dir=self.workDir, stdout_file=self.stdoutFile, version="7.2.0")
 
     def tearDown(self):
         super(TestEspressoParser, self).tearDown()
@@ -20,6 +21,9 @@ class TestEspressoParser(IntegrationTestBase):
 
     def test_espresso_nspins(self):
         self.assertEqual(self.parser.nspins(), NSPIN)
+
+    def test_espresso_final_lattice_vectors(self):
+        self.assertDeepAlmostEqual(self.parser.final_lattice_vectors(), LATTICE, places=2)
 
     def test_espresso_eigenvalues_at_kpoints(self):
         self.assertDeepAlmostEqual(self.parser.eigenvalues_at_kpoints()[0], EIGENVALUES_AT_KPOINTS_ZERO, places=2)
@@ -56,3 +60,25 @@ class TestEspressoParser(IntegrationTestBase):
 
     def test_espresso_phonon_dispersion(self):
         self.assertDeepAlmostEqual(self.parser.phonon_dispersions(), PHONON_DISPERSIONS, places=2)
+
+    # Tests for v7 parser
+
+    def test_espresso_fermi_energy_v7(self):
+        self.assertAlmostEqual(self.parser_v7.fermi_energy(), FERMI_ENERGY_v7, places=2)
+
+    def test_espresso_nspins_v7(self):
+        self.assertEqual(self.parser_v7.nspins(), NSPIN)
+
+    def test_espresso_final_lattice_vectors_v7(self):
+        self.assertDeepAlmostEqual(self.parser_v7.final_lattice_vectors(), LATTICE_v7, places=2)
+
+    def test_espresso_eigenvalues_at_kpoints_v7(self):
+        self.assertDeepAlmostEqual(self.parser_v7.eigenvalues_at_kpoints()[0], EIGENVALUES_AT_KPOINTS_ZERO_v7, places=2)
+
+    def test_espresso_eigenvalues_at_kpoints_lsda_v7(self):
+        self.assertDeepAlmostEqual(
+            self.parser_v7.eigenvalues_at_kpoints()[0], EIGENVALUES_AT_KPOINTS_ZERO_LSDA_v7, places=2
+        )
+
+    def test_espresso_final_basis_v7(self):
+        self.assertDeepAlmostEqual(self.parser_v7.final_basis(), FINAL_BASIS_v7, places=2)

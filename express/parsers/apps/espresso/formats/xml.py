@@ -1,21 +1,12 @@
 import os
 import re
 import string
-import numpy as np
 import xml.etree.ElementTree as ET
 
-from express.parsers.settings import Constant
-from express.parsers.settings import GENERAL_REGEX
-from express.parsers.formats.xml import BaseXMLParser
+import numpy as np
 
-TAG_VALUE_CAST_MAP = {
-    "character": lambda v, s, c: v,
-    "integer": lambda v, s, c: np.array([int(_) for _ in re.findall(GENERAL_REGEX.int_number, v)]).reshape([s // c, c]),
-    "real": lambda v, s, c: np.array([float(_) for _ in re.findall(GENERAL_REGEX.double_number, v)]).reshape(
-        [s // c, c]
-    ),
-    "logical": lambda v, s, c: False if "F" in v else True,
-}
+from express.parsers.formats.xml import BaseXMLParser
+from express.parsers.settings import GENERAL_REGEX, Constant
 
 
 class EspressoXMLParser(BaseXMLParser):
@@ -26,8 +17,24 @@ class EspressoXMLParser(BaseXMLParser):
         xml_file_path (str): path to the xml file.
     """
 
+    TAG_VALUE_CAST_MAP = {
+        "character": lambda v, s, c: v,
+        "integer": lambda v, s, c: np.array([int(_) for _ in re.findall(GENERAL_REGEX.int_number, v)]).reshape(
+            [s // c, c]
+        ),
+        "real": lambda v, s, c: np.array([float(_) for _ in re.findall(GENERAL_REGEX.double_number, v)]).reshape(
+            [s // c, c]
+        ),
+        "logical": lambda v, s, c: False if v in ["F", "false"] else True,
+    }
+
+    band_structure_tag = "BAND_STRUCTURE_INFO"
+    fermi_energy_tag = "FERMI_ENERGY"
+    lattice_tag = "DIRECT_LATTICE_VECTORS"
+    reciprocal_lattice_tag = "RECIPROCAL_LATTICE_VECTORS"
+
     def __init__(self, xml_file_path):
-        super(EspressoXMLParser, self).__init__(xml_file_path)
+        super().__init__(xml_file_path)
 
     def _get_xml_tag_value(self, tag):
         """
@@ -43,7 +50,7 @@ class EspressoXMLParser(BaseXMLParser):
         type = tag.attrib.get("type")
         size = int(tag.attrib.get("size", 1))
         columns = int(tag.attrib.get("columns", 1))
-        result = TAG_VALUE_CAST_MAP[type](tag.text, size, columns)
+        result = self.TAG_VALUE_CAST_MAP[type](tag.text, size, columns)
         return result[0][0] if size == 1 and type not in ["logical", "character"] else result
 
     def fermi_energy(self):
@@ -53,8 +60,8 @@ class EspressoXMLParser(BaseXMLParser):
         Returns:
             float
         """
-        bs_tag = self.root.find("BAND_STRUCTURE_INFO")
-        return self._get_xml_tag_value(bs_tag.find("FERMI_ENERGY")) * Constant.HARTREE
+        bs_tag = self.root.find(self.band_structure_tag)
+        return self._get_xml_tag_value(bs_tag.find(self.fermi_energy_tag)) * Constant.HARTREE
 
     def nspins(self):
         """
@@ -63,7 +70,7 @@ class EspressoXMLParser(BaseXMLParser):
         Returns:
              int
         """
-        bs_tag = self.root.find("BAND_STRUCTURE_INFO")
+        bs_tag = self.root.find(self.band_structure_tag)
         return self._get_xml_tag_value(bs_tag.find("NUMBER_OF_SPIN_COMPONENTS"))
 
     def final_lattice_vectors(self, reciprocal=False):
@@ -87,13 +94,11 @@ class EspressoXMLParser(BaseXMLParser):
              }
         """
         vector_tag = "a"
-        lattice_tag = "DIRECT_LATTICE_VECTORS"
-        # units_tag = "UNITS_FOR_DIRECT_LATTICE_VECTORS"
+        lattice_tag = self.lattice_tag
 
         if reciprocal:
             vector_tag = "b"
-            lattice_tag = "RECIPROCAL_LATTICE_VECTORS"
-            # units_tag = "UNITS_FOR_RECIPROCAL_LATTICE_VECTORS"
+            lattice_tag = self.reciprocal_lattice_tag
 
         vectors = {}
         cell_tag = self.root.find("CELL")

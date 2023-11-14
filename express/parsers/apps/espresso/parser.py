@@ -1,19 +1,21 @@
 import os
 from pathlib import Path
-
-import numpy as np
 from typing import Dict, Optional
 
+import numpy as np
+from packaging import version
+
 from express.parsers import BaseParser
-from express.parsers.settings import Constant
 from express.parsers.apps.espresso import settings
-from express.parsers.mixins.ionic import IonicDataMixin
-from express.parsers.mixins.reciprocal import ReciprocalDataMixin
-from express.parsers.mixins.electronic import ElectronicDataMixin
-from express.parsers.utils import find_file, lattice_basis_to_poscar, find_files_by_regex
-from express.parsers.apps.espresso.settings import NEB_PATH_FILE_SUFFIX
 from express.parsers.apps.espresso.formats.txt import EspressoTXTParser
 from express.parsers.apps.espresso.formats.xml import EspressoXMLParser
+from express.parsers.apps.espresso.formats.xml7 import EspressoXMLParserV7
+from express.parsers.apps.espresso.settings import NEB_PATH_FILE_SUFFIX
+from express.parsers.mixins.electronic import ElectronicDataMixin
+from express.parsers.mixins.ionic import IonicDataMixin
+from express.parsers.mixins.reciprocal import ReciprocalDataMixin
+from express.parsers.settings import Constant
+from express.parsers.utils import find_file, find_files_by_regex, lattice_basis_to_poscar
 
 
 class EspressoParser(BaseParser, IonicDataMixin, ElectronicDataMixin, ReciprocalDataMixin):
@@ -22,13 +24,18 @@ class EspressoParser(BaseParser, IonicDataMixin, ElectronicDataMixin, Reciprocal
     """
 
     def __init__(self, *args, **kwargs):
-        super(EspressoParser, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
         self.work_dir = self.kwargs["work_dir"]
         self.stdout_file = self.kwargs["stdout_file"]
         self.txt_parser = EspressoTXTParser(self.work_dir)
-        self.xml_parser = EspressoXMLParser(self.find_xml_file())
 
-    def find_xml_file(self):
+        # use packaging parser for accurate X.x.x version comparison.
+        self.xml_parser = EspressoXMLParser(self.find_xml_file())
+        if self.version:
+            if version.parse(self.version) > version.parse("6.4"):
+                self.xml_parser = EspressoXMLParserV7(self.find_xml_file(settings.XML_DATA_FILE_NEW))
+
+    def find_xml_file(self, xml_filename: str = settings.XML_DATA_FILE) -> Optional[str]:
         """
         Finds XML file.
 
@@ -39,7 +46,7 @@ class EspressoParser(BaseParser, IonicDataMixin, ElectronicDataMixin, Reciprocal
         """
         is_sternheimer_gw = self._is_sternheimer_gw_calculation()
         for root, dirs, files in os.walk(self.work_dir, followlinks=True):
-            for file_ in [f for f in files if settings.XML_DATA_FILE == f]:
+            for file_ in [f for f in files if xml_filename == f]:
                 file_path = os.path.join(root, file_)
                 if not is_sternheimer_gw or (is_sternheimer_gw and settings.STERNHEIMER_GW0_DIR_PATTERN in file_path):
                     return file_path
@@ -362,5 +369,3 @@ class EspressoParser(BaseParser, IonicDataMixin, ElectronicDataMixin, Reciprocal
         for dat_file in epsilon_dat_files:
             tensor_by_filename[dat_file.name] = self.txt_parser.dielectric_tensor_generic(dat_file)
         return tensor_by_filename
-
-
