@@ -1,6 +1,6 @@
 # ruff: noqa: F403,F405
 from express.parsers.apps.espresso.parser import EspressoParser
-from tests.fixtures.espresso.v6_4.references import *
+from tests.fixtures.espresso.v5_4.references import *
 from tests.integration import IntegrationTestBase
 
 
