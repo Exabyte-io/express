@@ -7,92 +7,140 @@ test_nwchem_total_energy_contributions:
   stdoutFile: fixtures/nwchem/test-001/nwchem-total-energy.log
 
 test_espresso_total_energy:
-  workDir: fixtures/espresso/test-001
-  stdoutFile: fixtures/espresso/test-001/pw-scf.out
+  workDir: fixtures/espresso/v5_4/test-001
+  stdoutFile: fixtures/espresso/v5_4/test-001/pw-scf.out
 
 test_espresso_fermi_energy:
-  workDir: fixtures/espresso/test-001
-  stdoutFile: fixtures/espresso/test-001/pw-scf.out
-
-test_espresso_fermi_energy_v7:
-  workDir: fixtures/espresso/test-004
-  stdoutFile: fixtures/espresso/test-001/pw-scf.out
+  workDir: fixtures/espresso/v5_4/test-001
+  stdoutFile: fixtures/espresso/v5_4/test-001/pw-scf.out
 
 test_espresso_nspins:
-  workDir: fixtures/espresso/test-001
-  stdoutFile: fixtures/espresso/test-001/pw-scf.out
-
-test_espresso_nspins_v7:
-  workDir: fixtures/espresso/test-004
-  stdoutFile: fixtures/espresso/test-001/pw-scf.out
+  workDir: fixtures/espresso/v5_4/test-001
+  stdoutFile: fixtures/espresso/v5_4/test-001/pw-scf.out
 
 test_espresso_final_lattice_vectors:
-  workDir: fixtures/espresso/test-001
-  stdoutFile: fixtures/espresso/test-001/pw-scf.out
-
-test_espresso_final_lattice_vectors_v7:
-  workDir: fixtures/espresso/test-004
-  stdoutFile: fixtures/espresso/test-001/pw-scf.out
+  workDir: fixtures/espresso/v5_4/test-001
+  stdoutFile: fixtures/espresso/v5_4/test-001/pw-scf.out
 
 test_espresso_eigenvalues_at_kpoints:
-  workDir: fixtures/espresso/test-001
-  stdoutFile: fixtures/espresso/test-001/pw-scf.out
-
-test_espresso_eigenvalues_at_kpoints_v7:
-  workDir: fixtures/espresso/test-004
-  stdoutFile: fixtures/espresso/test-001/pw-scf.out
-
-test_espresso_eigenvalues_at_kpoints_lsda_v7:
-  workDir: fixtures/espresso/test-005
-  stdoutFile: fixtures/espresso/test-001/pw-scf.out
-
-test_espresso_final_basis_v7:
-  workDir: fixtures/espresso/test-004
-  stdoutFile: fixtures/espresso/test-001/pw-scf.out
+  workDir: fixtures/espresso/v5_4/test-001
+  stdoutFile: fixtures/espresso/v5_4/test-001/pw-scf.out
 
 test_espresso_ibz_k_points:
-  workDir: fixtures/espresso/test-001
-  stdoutFile: fixtures/espresso/test-001/pw-scf.out
+  workDir: fixtures/espresso/v5_4/test-001
+  stdoutFile: fixtures/espresso/v5_4/test-001/pw-scf.out
 
 test_espresso_dos:
-  workDir: fixtures/espresso/test-002
-  stdoutFile: fixtures/espresso/test-002/projwfc.out
+  workDir: fixtures/espresso/v5_4/test-002
+  stdoutFile: fixtures/espresso/v5_4/test-002/projwfc.out
 
 test_espresso_convergence_electronic:
-  workDir: fixtures/espresso/test-001
-  stdoutFile: fixtures/espresso/test-001/pw-scf.out
+  workDir: fixtures/espresso/v5_4/test-001
+  stdoutFile: fixtures/espresso/v5_4/test-001/pw-scf.out
 
 test_espresso_convergence_ionic:
-  workDir: fixtures/espresso/test-001
-  stdoutFile: fixtures/espresso/test-001/pw-scf.out
+  workDir: fixtures/espresso/v5_4/test-001
+  stdoutFile: fixtures/espresso/v5_4/test-001/pw-scf.out
 
 test_espresso_stress_tensor:
-  workDir: fixtures/espresso/test-001
-  stdoutFile: fixtures/espresso/test-001/pw-scf.out
+  workDir: fixtures/espresso/v5_4/test-001
+  stdoutFile: fixtures/espresso/v5_4/test-001/pw-scf.out
 
 test_espresso_pressure:
-  workDir: fixtures/espresso/test-001
-  stdoutFile: fixtures/espresso/test-001/pw-scf.out
+  workDir: fixtures/espresso/v5_4/test-001
+  stdoutFile: fixtures/espresso/v5_4/test-001/pw-scf.out
 
 test_espresso_total_force:
-  workDir: fixtures/espresso/test-001
-  stdoutFile: fixtures/espresso/test-001/pw-scf.out
+  workDir: fixtures/espresso/v5_4/test-001
+  stdoutFile: fixtures/espresso/v5_4/test-001/pw-scf.out
 
 test_espresso_atomic_forces:
-  workDir: fixtures/espresso/test-001
-  stdoutFile: fixtures/espresso/test-001/pw-scf.out
+  workDir: fixtures/espresso/v5_4/test-001
+  stdoutFile: fixtures/espresso/v5_4/test-001/pw-scf.out
 
 test_espresso_total_energy_contributions:
-  workDir: fixtures/espresso/test-001
-  stdoutFile: fixtures/espresso/test-001/pw-scf.out
+  workDir: fixtures/espresso/v5_4/test-001
+  stdoutFile: fixtures/espresso/v5_4/test-001/pw-scf.out
 
 test_espresso_phonon_dos:
-  workDir: fixtures/espresso/test-003
-  stdoutFile: fixtures/espresso/test-003/phonon_dos.out
+  workDir: fixtures/espresso/v5_4/test-003
+  stdoutFile: fixtures/espresso/v5_4/test-003/phonon_dos.out
 
 test_espresso_phonon_dispersion:
-  workDir: fixtures/espresso/test-003
-  stdoutFile: fixtures/espresso/test-003/normal_modes.out
+  workDir: fixtures/espresso/v5_4/test-003
+  stdoutFile: fixtures/espresso/v5_4/test-003/normal_modes.out
+
+test_espresso_total_energy_post_v64:
+  workDir: fixtures/espresso/v6_5/test-004
+  stdoutFile: fixtures/espresso/v6_5/test-004/pw_scf.out
+
+test_espresso_fermi_energy_post_v64:
+  workDir: fixtures/espresso/v6_5/test-004
+  stdoutFile: fixtures/espresso/v6_5/test-004/pw_scf.out
+
+test_espresso_nspins_post_v64:
+  workDir: fixtures/espresso/v6_5/test-004
+  stdoutFile: fixtures/espresso/v6_5/test-004/pw_scf.out
+
+test_espresso_final_lattice_vectors_post_v64:
+  workDir: fixtures/espresso/v6_5/test-004
+  stdoutFile: fixtures/espresso/v6_5/test-004/pw_scf.out
+
+test_espresso_eigenvalues_at_kpoints_post_v64:
+  workDir: fixtures/espresso/v6_5/test-004
+  stdoutFile: fixtures/espresso/v6_5/test-004/pw_scf.out
+
+test_espresso_eigenvalues_at_kpoints_lsda_post_v64:
+  workDir: fixtures/espresso/v6_5/test-005
+  stdoutFile: fixtures/espresso/v6_5/test-005/pw_scf.out
+
+test_espresso_ibz_k_point_post_v64:
+  workDir: fixtures/espresso/v6_5/test-004
+  stdoutFile: fixtures/espresso/v6_5/test-004/pw_scf.out
+
+test_espresso_dos_post_v64:
+  workDir: fixtures/espresso/v6_5/test-006
+  stdoutFile: fixtures/espresso/v6_5/test-006/projwfc.out
+
+test_espresso_convergence_electronic_post_v64:
+  workDir: fixtures/espresso/v6_5/test-004
+  stdoutFile: fixtures/espresso/v6_5/test-004/pw_scf.out
+
+test_espresso_convergence_ionic_post_v64:
+  workDir: fixtures/espresso/v6_5/test-004
+  stdoutFile: fixtures/espresso/v6_5/test-004/pw_scf.out
+
+test_espresso_stress_tensor_post_v64:
+  workDir: fixtures/espresso/v6_5/test-004
+  stdoutFile: fixtures/espresso/v6_5/test-004/pw_scf.out
+
+test_espresso_pressure_post_v64:
+  workDir: fixtures/espresso/v6_5/test-004
+  stdoutFile: fixtures/espresso/v6_5/test-004/pw_scf.out
+
+test_espresso_total_force_post_v64:
+  workDir: fixtures/espresso/v6_5/test-004
+  stdoutFile: fixtures/espresso/v6_5/test-004/pw_scf.out
+
+test_espresso_atomic_forces_post_v64:
+  workDir: fixtures/espresso/v6_5/test-004
+  stdoutFile: fixtures/espresso/v6_5/test-004/pw_scf.out
+
+test_espresso_total_energy_contributions_post_v64:
+  workDir: fixtures/espresso/v6_5/test-004
+  stdoutFile: fixtures/espresso/v6_5/test-004/pw_scf.out
+
+test_espresso_final_basis_post_v64:
+  workDir: fixtures/espresso/v6_5/test-004
+  stdoutFile: fixtures/espresso/v6_5/test-004/pw_scf.out
+
+test_espresso_phonon_dos_post_v64:
+  workDir: fixtures/espresso/v5_4/test-003
+  stdoutFile: fixtures/espresso/v5_4/test-003/phonon_dos.out
+
+test_espresso_phonon_dispersion_post_v64:
+  workDir: fixtures/espresso/v5_4/test-003
+  stdoutFile: fixtures/espresso/v5_4/test-003/normal_modes.out
 
 test_vasp_total_energy:
   workDir: fixtures/vasp/test-001
@@ -151,11 +199,11 @@ test_vasp_magnetic_moments:
   stdoutFile: fixtures/vasp/test-004/vasp.out
 
 test_structure_espresso_basis:
-  structurePath: fixtures/espresso/test-001/pw-scf.in
+  structurePath: fixtures/espresso/v5_4/test-001/pw-scf.in
   structureFormat: espresso-in
 
 test_structure_espresso_lattice_bravais:
-  structurePath: fixtures/espresso/test-001/pw-scf.in
+  structurePath: fixtures/espresso/v5_4/test-001/pw-scf.in
   structureFormat: espresso-in
 
 test_structure_vasp_basis:
@@ -176,19 +224,19 @@ test_material_vasp_final_structure:
   stdoutFile: fixtures/vasp/test-001/vasp.out
 
 test_material_espresso_initial_structure:
-  workDir: fixtures/espresso/test-001
-  stdoutFile: fixtures/espresso/test-001/pw-scf.out
+  workDir: fixtures/espresso/v5_4/test-001
+  stdoutFile: fixtures/espresso/v5_4/test-001/pw-scf.out
 
 test_material_espresso_final_structure:
-  workDir: fixtures/espresso/test-001
-  stdoutFile: fixtures/espresso/test-001/pw-scf.out
+  workDir: fixtures/espresso/v5_4/test-001
+  stdoutFile: fixtures/espresso/v5_4/test-001/pw-scf.out
 
 test_material_is_non_periodic:
   workDir: fixtures/vasp/test-001
   stdoutFile: fixtures/vasp/test-001/vasp.out
 
 test_material_from_structure:
-  structurePath: fixtures/espresso/test-001/pw-scf.in
+  structurePath: fixtures/espresso/v5_4/test-001/pw-scf.in
   structureFormat: espresso-in
 
 test_material_serialize_and_validate:

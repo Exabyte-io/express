@@ -3,13 +3,11 @@ from pathlib import Path
 from typing import Dict, Optional
 
 import numpy as np
-from packaging import version
 
 from express.parsers import BaseParser
 from express.parsers.apps.espresso import settings
 from express.parsers.apps.espresso.formats.txt import EspressoTXTParser
-from express.parsers.apps.espresso.formats.xml import EspressoXMLParser
-from express.parsers.apps.espresso.formats.xml7 import EspressoXMLParserV7
+from express.parsers.apps.espresso.formats.xml.xml_factory import get_xml_parser
 from express.parsers.apps.espresso.settings import NEB_PATH_FILE_SUFFIX
 from express.parsers.mixins.electronic import ElectronicDataMixin
 from express.parsers.mixins.ionic import IonicDataMixin
@@ -29,27 +27,11 @@ class EspressoParser(BaseParser, IonicDataMixin, ElectronicDataMixin, Reciprocal
         self.stdout_file = self.kwargs["stdout_file"]
         self.txt_parser = EspressoTXTParser(self.work_dir)
 
-        # use packaging parser for accurate X.x.x version comparison.
-        self.xml_parser = EspressoXMLParser(self.find_xml_file())
-        if self.version:
-            if version.parse(self.version) > version.parse("6.4"):
-                self.xml_parser = EspressoXMLParserV7(self.find_xml_file(settings.XML_DATA_FILE_NEW))
-
-    def find_xml_file(self, xml_filename: str = settings.XML_DATA_FILE) -> Optional[str]:
-        """
-        Finds XML file.
-
-        Note: Sternheimer GW XML file of the first process (gw0) is returned if this a Sternheimer GW calculation.
-
-        Returns:
-            str
-        """
-        is_sternheimer_gw = self._is_sternheimer_gw_calculation()
-        for root, dirs, files in os.walk(self.work_dir, followlinks=True):
-            for file_ in [f for f in files if xml_filename == f]:
-                file_path = os.path.join(root, file_)
-                if not is_sternheimer_gw or (is_sternheimer_gw and settings.STERNHEIMER_GW0_DIR_PATTERN in file_path):
-                    return file_path
+        self.xml_parser = get_xml_parser(
+            self.version,
+            work_dir=self.work_dir,
+            is_sternheimer_gw=self._is_sternheimer_gw_calculation(),
+        )
 
     def total_energy(self):
         """
@@ -78,7 +60,7 @@ class EspressoParser(BaseParser, IonicDataMixin, ElectronicDataMixin, Reciprocal
         """
         return self.xml_parser.nspins()
 
-    def _is_sternheimer_gw_calculation(self):
+    def _is_sternheimer_gw_calculation(self) -> bool:
         """
         Checks whether this is a Sternheimer GW calculation.
 
@@ -96,6 +78,7 @@ class EspressoParser(BaseParser, IonicDataMixin, ElectronicDataMixin, Reciprocal
                         return False
                     if settings.STERNHEIMER_GW_TITLE in line:
                         return True
+        return False
 
     def eigenvalues_at_kpoints(self):
         """
