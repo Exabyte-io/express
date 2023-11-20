@@ -32,10 +32,10 @@ jobs:
           python-version: ${{ matrix.python-version }}
 
   run-tests:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-20.04
     strategy:
       matrix:
-        python-version: [3.8]
+        python-version: [3.8.6]
 
     steps:
       - name: Checkout this repository
