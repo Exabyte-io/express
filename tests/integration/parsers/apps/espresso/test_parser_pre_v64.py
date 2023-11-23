@@ -48,9 +48,6 @@ class TestEspressoParserPreV64(IntegrationTestBase):
     def test_espresso_phonon_dispersion(self):
         self.assertDeepAlmostEqual(self.parser.phonon_dispersions(), PHONON_DISPERSIONS, places=2)
 
-    def test_espresso_hubbard_parameters(self):
-        self.assertDeepAlmostEqual(self.parser.hubbard_parameters(), HUBBARD_PARAMS, places=2)
-
     # XML version dependent tests
     def test_espresso_fermi_energy(self):
         self.assertAlmostEqual(self.parser.fermi_energy(), FERMI_ENERGY, places=2)

@@ -244,5 +244,5 @@ test_material_serialize_and_validate:
   stdoutFile: fixtures/vasp/test-001/vasp.out
 
 test_espresso_hubbard_parameters:
-  workDir: fixtures/espresso/test-004
-  stdoutFile: fixtures/espresso/test-004/__prefix__.Hubbard_parameters.dat
+  workDir: fixtures/espresso/v7_2/test-007
+  stdoutFile: fixtures/espresso/v7_2/test-007/__prefix__.Hubbard_parameters.dat

@@ -1,5 +1,5 @@
 from tests.unit import UnitTestBase
-from tests.fixtures.espresso.references import HUBBARD_PARAMS
+from tests.fixtures.espresso.v7_2.references import HUBBARD_PARAMS
 from express.properties.non_scalar.hubbard_parameters import HubbardParameters
 
 HUBBARD_REFERENCE = {
