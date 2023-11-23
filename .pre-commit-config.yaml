@@ -8,3 +8,8 @@ repos:
       - id: check-yaml
       - id: end-of-file-fixer
       - id: trailing-whitespace
+  - repo: https://github.com/lk16/detect-missing-init
+    rev: v0.1.6
+    hooks:
+    - id: detect-missing-init
+      args: [ "--python-folders", "express" ]

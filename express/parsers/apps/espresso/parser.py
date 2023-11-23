@@ -1,19 +1,19 @@
 import os
 from pathlib import Path
-
-import numpy as np
 from typing import Dict, Optional
 
+import numpy as np
+
 from express.parsers import BaseParser
-from express.parsers.settings import Constant
 from express.parsers.apps.espresso import settings
+from express.parsers.apps.espresso.formats.txt import EspressoTXTParser
+from express.parsers.apps.espresso.formats.xml.xml_factory import get_xml_parser
+from express.parsers.apps.espresso.settings import NEB_PATH_FILE_SUFFIX
+from express.parsers.mixins.electronic import ElectronicDataMixin
 from express.parsers.mixins.ionic import IonicDataMixin
 from express.parsers.mixins.reciprocal import ReciprocalDataMixin
-from express.parsers.mixins.electronic import ElectronicDataMixin
-from express.parsers.utils import find_file, lattice_basis_to_poscar, find_files_by_regex
-from express.parsers.apps.espresso.settings import NEB_PATH_FILE_SUFFIX
-from express.parsers.apps.espresso.formats.txt import EspressoTXTParser
-from express.parsers.apps.espresso.formats.xml import EspressoXMLParser
+from express.parsers.settings import Constant
+from express.parsers.utils import find_file, find_files_by_regex, lattice_basis_to_poscar
 
 
 class EspressoParser(BaseParser, IonicDataMixin, ElectronicDataMixin, ReciprocalDataMixin):
@@ -22,27 +22,16 @@ class EspressoParser(BaseParser, IonicDataMixin, ElectronicDataMixin, Reciprocal
     """
 
     def __init__(self, *args, **kwargs):
-        super(EspressoParser, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
         self.work_dir = self.kwargs["work_dir"]
         self.stdout_file = self.kwargs["stdout_file"]
         self.txt_parser = EspressoTXTParser(self.work_dir)
-        self.xml_parser = EspressoXMLParser(self.find_xml_file())
 
-    def find_xml_file(self):
-        """
-        Finds XML file.
-
-        Note: Sternheimer GW XML file of the first process (gw0) is returned if this a Sternheimer GW calculation.
-
-        Returns:
-            str
-        """
-        is_sternheimer_gw = self._is_sternheimer_gw_calculation()
-        for root, dirs, files in os.walk(self.work_dir, followlinks=True):
-            for file_ in [f for f in files if settings.XML_DATA_FILE == f]:
-                file_path = os.path.join(root, file_)
-                if not is_sternheimer_gw or (is_sternheimer_gw and settings.STERNHEIMER_GW0_DIR_PATTERN in file_path):
-                    return file_path
+        self.xml_parser = get_xml_parser(
+            self.version,
+            work_dir=self.work_dir,
+            is_sternheimer_gw=self._is_sternheimer_gw_calculation(),
+        )
 
     def total_energy(self):
         """
@@ -71,7 +60,7 @@ class EspressoParser(BaseParser, IonicDataMixin, ElectronicDataMixin, Reciprocal
         """
         return self.xml_parser.nspins()
 
-    def _is_sternheimer_gw_calculation(self):
+    def _is_sternheimer_gw_calculation(self) -> bool:
         """
         Checks whether this is a Sternheimer GW calculation.
 
@@ -89,6 +78,7 @@ class EspressoParser(BaseParser, IonicDataMixin, ElectronicDataMixin, Reciprocal
                         return False
                     if settings.STERNHEIMER_GW_TITLE in line:
                         return True
+        return False
 
     def eigenvalues_at_kpoints(self):
         """
