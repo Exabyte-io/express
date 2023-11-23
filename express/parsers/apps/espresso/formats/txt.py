@@ -841,7 +841,7 @@ class EspressoTXTParser(BaseTXTParser):
             print(e)
         return data
 
-    def parse_hubbard(self) -> list:
+    def parse_hubbard_u(self) -> list:
         """
         Extract Hubbard parameters produced by hp.x
 
@@ -860,13 +860,6 @@ class EspressoTXTParser(BaseTXTParser):
 
         returns list of following (example) data:
         {
-            "category": "hubbard_u",
-            "headers": [
-                "Site no.",
-                "Atomic species",
-                "Orbital/manifold",
-                "U (eV)"
-            ],
             "values": [
                 {
                 "siteNumber": 1,
@@ -881,7 +874,6 @@ class EspressoTXTParser(BaseTXTParser):
                 "value": 6.7553
                 }
             ]
-        }
         """
         dat_file = find_file(settings.HP_FILE, self.work_dir)
         with open(dat_file, "r", encoding="utf-8") as fp:
@@ -922,8 +914,8 @@ class EspressoTXTParser(BaseTXTParser):
                 }
             )
 
+        # let's return dictionary instead of bare values array, in future we
+        # might decide to include more entities e.g., heder labels
         return {
-            "category": "hubbard_u",
-            "headers": ["Site no.", "Atomic species", "Orbital/manifold", "U (eV)"],
             "values": values,
         }
