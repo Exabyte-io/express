@@ -6,7 +6,7 @@ from pathlib import Path
 from typing import Optional
 
 from express.parsers.utils import find_file
-from express.parsers.settings import Constant
+from express.parsers.settings import Constant, GENERAL_REGEX
 from express.parsers.apps.espresso import settings
 from express.parsers.formats.txt import BaseTXTParser
 
@@ -891,10 +891,10 @@ class EspressoTXTParser(BaseTXTParser):
             "Hubbard U \(eV\)",
         )
         RE_HP_DATA = r"\s*{0}\s+{0}\s+{1}\s+{0}\s+{0}\s+{1}\s+{2}\s+{3}".format(
-            settings.HUBBARD_REGEX["int_number"],
+            GENERAL_REGEX["int_number"],
             settings.HUBBARD_REGEX["atomicSpecies"],
             settings.HUBBARD_REGEX["orbitalName"],
-            settings.HUBBARD_REGEX["dbl_number"],
+            GENERAL_REGEX["double_number"],
         )
         RE_HP_BLOCK = r"{0}({1})+".format(RE_HP_HEADER, RE_HP_DATA)
 

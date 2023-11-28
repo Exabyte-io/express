@@ -183,8 +183,6 @@ TOTAL_ENERGY_CONTRIBUTIONS = {
 }
 
 HUBBARD_REGEX = {
-    "dbl_number": GENERAL_REGEX.double_number,
-    "int_number": GENERAL_REGEX.int_number,
     "orbitalName": r"[1-9][sSpPdDfF]",
     "atomicSpecies": r"[a-zA-Z]{1,2}[\d+]?",
 }
