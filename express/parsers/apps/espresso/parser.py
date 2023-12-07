@@ -360,13 +360,13 @@ class EspressoParser(BaseParser, IonicDataMixin, ElectronicDataMixin, Reciprocal
         {
             "values": [
                 {
-                    "siteNumber": 1,
+                    "id": 1,
                     "atomicSpecies": "Co1",
                     "orbitalName": "3d",
                     "value": 6.7553
                 },
                 {
-                    "siteNumber": 2,
+                    "id": 2,
                     "atomicSpecies": "Co2",
                     "orbitalName": "3d",
                     "value": 6.7553

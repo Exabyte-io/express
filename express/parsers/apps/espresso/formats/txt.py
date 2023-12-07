@@ -6,7 +6,7 @@ from pathlib import Path
 from typing import Optional
 
 from express.parsers.utils import find_file
-from express.parsers.settings import Constant, GENERAL_REGEX
+from express.parsers.settings import Constant, GENERAL_REGEX, ATOMIC_REGEX
 from express.parsers.apps.espresso import settings
 from express.parsers.formats.txt import BaseTXTParser
 
@@ -862,13 +862,13 @@ class EspressoTXTParser(BaseTXTParser):
         {
             "values": [
                 {
-                "siteNumber": 1,
+                "id": 1,
                 "atomicSpecies": "Co1",
                 "orbitalName": "3d",
                 "value": 6.7553
                 },
                 {
-                "siteNumber": 2,
+                "id": 2,
                 "atomicSpecies": "Co2",
                 "orbitalName": "3d",
                 "value": 6.7553
@@ -892,8 +892,8 @@ class EspressoTXTParser(BaseTXTParser):
         )
         RE_HP_DATA = r"\s*{0}\s+{0}\s+{1}\s+{0}\s+{0}\s+{1}\s+{2}\s+{3}".format(
             GENERAL_REGEX["int_number"],
-            settings.HUBBARD_REGEX["atomicSpecies"],
-            settings.HUBBARD_REGEX["orbitalName"],
+            ATOMIC_REGEX["atomicSpecies"],
+            ATOMIC_REGEX["orbitalName"],
             GENERAL_REGEX["double_number"],
         )
         RE_HP_BLOCK = r"{0}({1})+".format(RE_HP_HEADER, RE_HP_DATA)
@@ -903,11 +903,11 @@ class EspressoTXTParser(BaseTXTParser):
 
         values = []
 
-        for line in hp_data:
-            cols = re.sub(r"([\s\t\r\n])+", " ", line.strip()).split(" ")
+        for row in hp_data:
+            cols = re.sub(r"([\s\t\r\n])+", " ", row.strip()).split(" ")
             values.append(
                 {
-                    "siteNumber": int(cols[0]),
+                    "id": int(cols[0]),
                     "atomicSpecies": cols[2],
                     "orbitalName": cols[6],
                     "value": float(cols[7]),

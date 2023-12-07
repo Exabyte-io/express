@@ -181,8 +181,3 @@ TOTAL_ENERGY_CONTRIBUTIONS = {
         "output_type": "float",
     },
 }
-
-HUBBARD_REGEX = {
-    "orbitalName": r"[1-9][sSpPdDfF]",
-    "atomicSpecies": r"[a-zA-Z]{1,2}[\d+]?",
-}
