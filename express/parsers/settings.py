@@ -37,3 +37,11 @@ GENERAL_REGEX.update({"double_number": r"[-+]?\d*\.\d+(?:[eE][-+]?\d+)?", "int_n
 
 # Maps the format keywords used in this code to their corresponding ase keywords.
 ASE_FORMATS = {"poscar": "vasp", "cif": "cif", "espresso-in": "espresso-in"}
+
+ATOMIC_REGEX = Munch()
+ATOMIC_REGEX.update(
+    {
+        "orbitalName": r"[1-9][sSpPdDfF]",
+        "atomicSpecies": r"[a-zA-Z]{1,2}[\d+]?",
+    }
+)

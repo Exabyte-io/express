@@ -352,3 +352,26 @@ class EspressoParser(BaseParser, IonicDataMixin, ElectronicDataMixin, Reciprocal
         for dat_file in epsilon_dat_files:
             tensor_by_filename[dat_file.name] = self.txt_parser.dielectric_tensor_generic(dat_file)
         return tensor_by_filename
+
+    def hubbard_u(self) -> list:
+        """
+        Parses hp.x output file __prefix__.Hubbard_parameters.dat and returns
+        Hubbard parameters. Example output:
+        {
+            "values": [
+                {
+                    "id": 1,
+                    "atomicSpecies": "Co1",
+                    "orbitalName": "3d",
+                    "value": 6.7553
+                },
+                {
+                    "id": 2,
+                    "atomicSpecies": "Co2",
+                    "orbitalName": "3d",
+                    "value": 6.7553
+                }
+            ]
+        }
+        """
+        return self.txt_parser.parse_hubbard_u()

@@ -6,7 +6,7 @@ from pathlib import Path
 from typing import Optional
 
 from express.parsers.utils import find_file
-from express.parsers.settings import Constant
+from express.parsers.settings import Constant, GENERAL_REGEX, ATOMIC_REGEX
 from express.parsers.apps.espresso import settings
 from express.parsers.formats.txt import BaseTXTParser
 
@@ -832,8 +832,90 @@ class EspressoTXTParser(BaseTXTParser):
         """
         data = None
         try:
-            data = np.loadtxt(dat_file, dtype=np.dtype([("energy", float), ("eps", (float, 3))]),
-                              converters=lambda x: np.nan_to_num(float(x)))
+            data = np.loadtxt(
+                dat_file,
+                dtype=np.dtype([("energy", float), ("eps", (float, 3))]),
+                converters=lambda x: np.nan_to_num(float(x)),
+            )
         except Exception as e:
             print(e)
         return data
+
+    def parse_hubbard_u(self) -> list:
+        """
+        Extract Hubbard parameters produced by hp.x
+
+        filename: __prefix__.Hubbard_parameters.dat
+
+        Example input content:
+        =-------------------------------------------------------------------------------=
+
+                                        Hubbard U parameters:
+
+            site n.  type  label  spin  new_type  new_label  manifold  Hubbard U (eV)
+                1        1    Co1     1      1         Co1        3d       6.7553
+                2        2    Co2    -1      1         Co1        3d       6.7553
+
+        =-------------------------------------------------------------------------------=
+
+        returns list of following (example) data:
+        {
+            "values": [
+                {
+                "id": 1,
+                "atomicSpecies": "Co1",
+                "orbitalName": "3d",
+                "value": 6.7553
+                },
+                {
+                "id": 2,
+                "atomicSpecies": "Co2",
+                "orbitalName": "3d",
+                "value": 6.7553
+                }
+            ]
+        """
+        dat_file = find_file(settings.HP_FILE, self.work_dir)
+        with open(dat_file, "r", encoding="utf-8") as fp:
+            data = fp.read()
+
+        RE_HP_HEADER = (r"\s*({0})\s*({1})\s+({2})\s+({3})\s+({4})\s+({5})\s+({6})\s+({7})" r"\s+({8})\s*").format(
+            "Hubbard U parameters:",
+            "site n.",
+            "type",
+            "label",
+            "spin",
+            "new_type",
+            "new_label",
+            "manifold",
+            "Hubbard U \(eV\)",
+        )
+        RE_HP_DATA = r"\s*{0}\s+{0}\s+{1}\s+{0}\s+{0}\s+{1}\s+{2}\s+{3}".format(
+            GENERAL_REGEX["int_number"],
+            ATOMIC_REGEX["atomicSpecies"],
+            ATOMIC_REGEX["orbitalName"],
+            GENERAL_REGEX["double_number"],
+        )
+        RE_HP_BLOCK = r"{0}({1})+".format(RE_HP_HEADER, RE_HP_DATA)
+
+        hp_block = re.search(RE_HP_BLOCK, data, re.MULTILINE).group()
+        hp_data = re.findall(r"^{0}".format(RE_HP_DATA), hp_block, re.MULTILINE)
+
+        values = []
+
+        for row in hp_data:
+            cols = re.sub(r"([\s\t\r\n])+", " ", row.strip()).split(" ")
+            values.append(
+                {
+                    "id": int(cols[0]),
+                    "atomicSpecies": cols[2],
+                    "orbitalName": cols[6],
+                    "value": float(cols[7]),
+                }
+            )
+
+        # let's return dictionary instead of bare values array, in future we
+        # might decide to include more entities e.g., heder labels
+        return {
+            "values": values,
+        }

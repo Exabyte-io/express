@@ -16,7 +16,7 @@ class MagneticMomentsTest(UnitTestBase):
     def tearDown(self):
         super(MagneticMomentsTest, self).setUp()
 
-    def test_atomic_forces(self):
+    def test_magnetic_moments(self):
         parser = self.get_mocked_parser("magnetic_moments", MAGNETIC_MOMENTS_RAW_DATA)
         property_ = MagneticMoments("magnetic_moments", parser)
         self.assertDeepAlmostEqual(property_.serialize_and_validate(), MAGNETIC_MOMENTS)
