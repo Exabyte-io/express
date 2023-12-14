@@ -1,5 +1,5 @@
-import re
 import builtins
+import re
 
 
 class BaseTXTParser(object):
@@ -12,7 +12,9 @@ class BaseTXTParser(object):
     def __init__(self, work_dir):
         self.work_dir = work_dir
 
-    def _general_output_parser(self, text, regex, output_type, start_flag=None, occurrences=0, match_groups=[]):
+    def _general_output_parser(
+        self, text, regex, output_type, start_flag=None, end_flag=None, occurrences=0, match_groups=[]
+    ):
         """
         General function for extracting data from a text output. It extracts basic values using regex patterns. Based
         on the input regex pattern, this function uses re.findall method to find every instance of the pattern inside
@@ -22,6 +24,7 @@ class BaseTXTParser(object):
             regex (str): regex pattern.
             output_type (str): output type.
             start_flag (str): a symbol in the output file to be used as the starting point (for speedup and accuracy).
+            end_flag (str): a symbol in the output file to be used as the ending point (for explicit truncation).
             occurrences (int): number of desired line counts to be processed. If negative, last occurrence is extracted:
                                 - N < 0: extract the last N instance(s). Forms a list if |N| > 1
                                 - N = 0: extract all of of the occurred instances and forms a list.
@@ -31,12 +34,13 @@ class BaseTXTParser(object):
             any
         """
         start_index = text.rfind(start_flag) if start_flag else 0
+        end_index = text.rfind(end_flag) if end_flag else len(text)
         pattern = re.compile(regex, re.I | re.MULTILINE)
         cast = getattr(builtins, output_type)
         # output type depends on the number of values required. List or single number.
         result = [] if len(match_groups) > 1 or abs(occurrences) > 1 or occurrences == 0 else None
 
-        match = pattern.findall(text[start_index:])
+        match = pattern.findall(text[start_index:end_index])
         if match:
             occurrences = len(match) if occurrences == 0 else occurrences
             match = match[occurrences:] if occurrences < 0 else match[:occurrences]
