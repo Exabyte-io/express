@@ -3,7 +3,7 @@ import re
 import io
 import numpy as np
 from pathlib import Path
-from typing import Optional
+from typing import Dict, Optional
 
 from express.parsers.utils import find_file
 from express.parsers.settings import Constant, GENERAL_REGEX, ATOMIC_REGEX
@@ -841,7 +841,7 @@ class EspressoTXTParser(BaseTXTParser):
             print(e)
         return data
 
-    def parse_hubbard_u(self) -> list:
+    def parse_hubbard_u(self) -> Dict[str, list]:
         """
         Extract Hubbard parameters produced by hp.x
 
@@ -874,12 +874,13 @@ class EspressoTXTParser(BaseTXTParser):
                 "value": 6.7553
                 }
             ]
+        }
         """
         dat_file = find_file(settings.HP_FILE, self.work_dir)
         with open(dat_file, "r", encoding="utf-8") as fp:
             data = fp.read()
 
-        RE_HP_HEADER = (r"\s*({0})\s*({1})\s+({2})\s+({3})\s+({4})\s+({5})\s+({6})\s+({7})" r"\s+({8})\s*").format(
+        RE_HP_HEADER = (r"\s*({0})\s*({1})\s+({2})\s+({3})\s+({4})\s+({5})\s+({6})\s+({7})\s+({8})\s*").format(
             "Hubbard U parameters:",
             "site n.",
             "type",
@@ -916,6 +917,192 @@ class EspressoTXTParser(BaseTXTParser):
 
         # let's return dictionary instead of bare values array, in future we
         # might decide to include more entities e.g., heder labels
+        return {
+            "values": values,
+        }
+
+    def parse_hubbard_v(self) -> Dict[str, list]:
+        """
+        Parse Hubbard V parameters produced by hp.x for all neighbors in 3⨉3⨉3
+        supercell.
+
+        filename: __prefix__.Hubbard_parameters.dat
+
+        Example input content (partial):
+
+        =-------------------------------------------------------------------=
+
+
+                                 Hubbard V parameters:
+                            (adapted for a supercell 3x3x3)
+
+                  Atom 1     Atom 2    Distance (Bohr)  Hubbard V (eV)
+
+                   1 Co       1 Co        0.000000        7.7514
+                   1 Co      19 O         3.630748        0.7573
+                   1 Co      46 O         3.630748        0.7573
+                   1 Co      43 O         3.630748        0.7573
+                   1 Co      54 O         3.630748        0.7573
+                   1 Co      11 O         3.630748        0.7573
+                   1 Co      22 O         3.630748        0.7573
+                   1 Co      49 Co        5.321586       -0.2300
+                   1 Co      25 Co        5.321586       -0.2300
+                   1 Co      33 Co        5.321586       -0.2300
+                   1 Co      30 O         6.442175       -0.0415
+                   1 Co      14 O         6.442175       -0.0415
+                   1 Co       2 O         6.917913       -0.0586
+                   1 Co       7 O         6.917913       -0.0586
+                   1 Co      62 O         8.727932       -0.1109
+                   1 Co      26 O         8.727932       -0.1109
+                   1 Co      86 O         8.727932       -0.1109
+                   1 Co      50 O         8.727932       -0.1109
+                   1 Co      34 O         8.727932       -0.1109
+                   1 Co      78 O         8.727932       -0.1109
+                   1 Co      45 Co        9.370500       -0.1265
+                   1 Co      53 Co        9.370500       -0.1265
+                   1 Co      21 Co        9.370500       -0.1265
+                   1 Co      13 Co       10.776156       -0.1429
+
+        =-------------------------------------------------------------------=
+
+
+        returns list of following (example) data:
+        {
+            "values": [
+                {
+                "id": 1,
+                "atomicSpecies": "Co",
+                "id2": 1,
+                "atomicSpecies2": "Co",
+                "distance": 0.0,
+                "value": 7.7514
+                },
+                {
+                "id": 1,
+                "atomicSpecies": "Co",
+                "id2": 19,
+                "atomicSpecies2": "O",
+                "distance": 3.630748,
+                "value": 0.7573
+                }
+            ]
+        }
+        """
+        dat_file = find_file(settings.HP_FILE, self.work_dir)
+        with open(dat_file, "r", encoding="utf-8") as fp:
+            data = fp.read()
+
+        RE_HP_HEADER = (r"\s*({0})\s*({1})\s*({2})\s*({3})\s+({4})\s+({5})\s*").format(
+            "Hubbard V parameters:",
+            "\(adapted for a supercell 3x3x3\)",
+            "Atom 1",
+            "Atom 2",
+            "Distance \(Bohr\)",
+            "Hubbard V \(eV\)",
+        )
+        RE_HP_DATA = r"\s*{0}\s+{1}\s+{0}\s+{1}\s+{2}\s+{2}".format(
+            GENERAL_REGEX["int_number"],
+            ATOMIC_REGEX["atomicSpecies"],
+            GENERAL_REGEX["double_number"],
+        )
+
+        RE_HP_BLOCK = r"{0}({1})+".format(RE_HP_HEADER, RE_HP_DATA)
+
+        hp_block = re.search(RE_HP_BLOCK, data, re.MULTILINE).group()
+        hp_data = re.findall(r"^{0}".format(RE_HP_DATA), hp_block, re.MULTILINE)
+
+        values = []
+
+        for row in hp_data:
+            cols = re.sub(r"([\s\t\r\n])+", " ", row.strip()).split(" ")
+            values.append(
+                {
+                    "id": int(cols[0]),
+                    "atomicSpecies": cols[1],
+                    "id2": int(cols[2]),
+                    "atomicSpecies2": cols[3],
+                    "distance": float(cols[4]),
+                    "value": float(cols[5]),
+                }
+            )
+
+        return {
+            "values": values,
+        }
+
+    def parse_hubbard_v_nn(self) -> Dict[str, list]:
+        """
+        Parse Hubbard V parameters produced by hp.x for 6 nearest neighbors.
+
+        filename: HUBBARD.dat
+
+        Example input content:
+
+        # Copy this data in the pw.x input file for DFT+Hubbard calculations
+        HUBBARD {ortho-atomic}
+        V     Co-3d     Co-3d    1     1   7.7514
+        V     Co-3d      O-2p    1    19   0.7573
+        V     Co-3d      O-2p    1    46   0.7573
+        V     Co-3d      O-2p    1    43   0.7573
+        V     Co-3d      O-2p    1    54   0.7573
+        V     Co-3d      O-2p    1    11   0.7573
+        V     Co-3d      O-2p    1    22   0.7573
+
+        returns list of following (example) data:
+
+        {
+            "values": [
+                {
+                "id": 1,
+                "atomicSpecies": "Co",
+                "orbitalName": "3d",
+                "id2": 1,
+                "atomicSpecies2": "Co",
+                "orbitalName2": "3d",
+                "value": 7.7514
+                },
+                {
+                "id": 1,
+                "atomicSpecies": "Co",
+                "orbitalName": "3d",
+                "id2": 19,
+                "atomicSpecies2": "O",
+                "orbitalName2": "2p",
+                "value": 0.7573
+                }
+            ]
+        }
+        """
+        dat_file = find_file(settings.HP_NN_FILE, self.work_dir)
+        with open(dat_file, "r", encoding="utf-8") as fp:
+            data = fp.read()
+
+        RE_HP_NN_DATA = r"\s*V\s+{0}-{1}\s+{0}-{1}\s+{2}\s+{2}\s+{3}".format(
+            ATOMIC_REGEX["atomicSpecies"],
+            ATOMIC_REGEX["orbitalName"],
+            GENERAL_REGEX["int_number"],
+            GENERAL_REGEX["double_number"],
+        )
+
+        hp_data = re.findall(r"^{0}".format(RE_HP_NN_DATA), data, re.MULTILINE)
+
+        values = []
+
+        for row in hp_data:
+            # split by white space and hyphen
+            cols = re.sub(r"([\s\t\r\n-])+", " ", row.strip()).split(" ")
+            values.append(
+                {
+                    "id": int(cols[5]),
+                    "atomicSpecies": cols[1],
+                    "orbitalName": cols[2],
+                    "id2": int(cols[6]),
+                    "atomicSpecies2": cols[3],
+                    "orbitalName2": cols[4],
+                    "value": float(cols[7]),
+                }
+            )
+
         return {
             "values": values,
         }
