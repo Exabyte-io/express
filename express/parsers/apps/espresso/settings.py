@@ -93,6 +93,7 @@ REGEX = {
     "forces_on_atoms": {
         "regex": r"^\s*atom\s+\d+\s+type\s+\d+\s+force\s+=\s+({0})\s+({0})\s+({0})".format(DOUBLE_REGEX),
         "start_flag": "Forces acting on atoms",
+        "end_flag": "The non-local contrib",
         "occurrences": 0,
         "output_type": "float",
         "match_groups": [1, 2, 3],
