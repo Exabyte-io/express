@@ -76,7 +76,7 @@ pip install express
 
 ### Extract Total Energy
 
-The following example demonstrates how to initialize an ExPreSS class instance, to extract and serialize total energy produced in a Quantum ESPRESSO calculation. The full path to the calculation directory (`work_dir`) and the file containing standard output (`stdout_file`) are required to be passed as arguments to the underlying Espresso parser.
+The following example demonstrates how to initialize an ExPreSS class instance to extract and serialize total energy produced in a Quantum ESPRESSO calculation. The full path to the calculation directory (`work_dir`) and the file containing standard output (`stdout_file`) are required to be passed as arguments to the underlying Espresso parser.
 
 ```python
 
@@ -149,7 +149,7 @@ print json.dumps(express_.property("material"), indent=4)
 
 ## Tests
 
-There are two types of tests in ExPreSS, unit and integration, implemented in [Python Unit Testing Framework](https://docs.python.org/2/library/unittest.html).
+There are two types of tests in ExPreSS: unit and integration, implemented in [Python Unit Testing Framework](https://docs.python.org/2/library/unittest.html).
 
 ### Unit Tests
 
@@ -172,7 +172,7 @@ sh run-tests.sh -t=integration
 
 ## Contribution
 
-This repository is an [open-source](LICENSE.md) work-in-progress and we welcome contributions. We suggest forking this repository and introducing the adjustments there, the changes in the fork can further be considered for merging into this repository as explained in [GitHub Standard Fork and Pull Request Workflow](https://gist.github.com/Chaser324/ce0505fbed06b947d962).
+This repository is an [open-source](LICENSE.md) work-in-progress and we welcome contributions. We suggest forking this repository and introducing the adjustments there. The changes in the fork can further be considered for merging into this repository as explained in [GitHub Standard Fork and Pull Request Workflow](https://gist.github.com/Chaser324/ce0505fbed06b947d962).
 
 ## TODO list
 
@@ -184,6 +184,6 @@ Desirable features for implementation:
 
 ## Links
 
-1. [Exabyte Source of Schemas and Examples (ESSE), Github Repository](https://github.com/exabyte-io/exabyte-esse)
+1. [Excellent Source of Schemas and Examples (ESSE), Github Repository](https://github.com/exabyte-io/esse)
 1. [Vienna Ab-initio Simulation Package (VASP), official website](https://cms.mpi.univie.ac.at/vasp/)
 1. [Quantum ESPRESSO, Official Website](https://www.quantum-espresso.org/)
