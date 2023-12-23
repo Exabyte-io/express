@@ -1020,6 +1020,8 @@ class EspressoTXTParser(BaseTXTParser):
         hp_data = re.findall(r"^{0}".format(RE_HP_DATA), hp_block, re.MULTILINE)
 
         values = []
+        # need to get orbitalName from atomicSpecies, find it from Hubbard U values
+        u_values = self.parse_hubbard_u()["values"]
 
         for row in hp_data:
             cols = re.sub(r"([\s\t\r\n])+", " ", row.strip()).split(" ")
@@ -1027,8 +1029,14 @@ class EspressoTXTParser(BaseTXTParser):
                 {
                     "id": int(cols[0]),
                     "atomicSpecies": cols[1],
+                    "orbitalName": next(
+                        (item["orbitalName"] for item in u_values if item["atomicSpecies"] == cols[1]), "nl"
+                    ),
                     "id2": int(cols[2]),
                     "atomicSpecies2": cols[3],
+                    "orbitalName2": next(
+                        (item["orbitalName"] for item in u_values if item["atomicSpecies"] == cols[3]), "nl"
+                    ),
                     "distance": float(cols[4]),
                     "value": float(cols[5]),
                 }
