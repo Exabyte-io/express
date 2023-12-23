@@ -1,5 +1,5 @@
 munch==2.5.0
 pymatgen==2023.7.14
 ase==3.17.0
-esse@git+https://github.com/exabyte-io/esse@0baa0e8040de1982b937ac52b8c3b747b3e68160
+esse@git+https://github.com/exabyte-io/esse@5503b9bb8a0474bd0b6821e01dc3d593b98e88a8
 rdkit-pypi>=2022.3.5
