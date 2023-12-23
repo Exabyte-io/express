@@ -932,62 +932,57 @@ class EspressoTXTParser(BaseTXTParser):
 
         filename: __prefix__.Hubbard_parameters.dat
 
-        Example input content (partial):
+        Example input content:
 
+        =-------------------------------------------------------------------------------=
+                           Hubbard V parameters:
+                      (adapted for a supercell 3x3x3)
+
+            Atom 1     Atom 2    Distance (Bohr)  Hubbard V (eV)
+
+             1 Co1      1 Co1       0.000000        5.0634
+             1 Co1     12 O         3.916149        0.2006
+             1 Co1     20 O         3.916149        0.2006
+             1 Co1     10 Co2       5.849456       -1.7819
+
+             2 Co2      2 Co2       0.000000        5.6920
+             2 Co2     48 O         3.916149        0.2100
+             2 Co2     24 O         3.916149        0.2100
+             2 Co2     57 Co1       5.849456       -1.7819
+
+             3 O        3 O         0.000000        7.9678
+             3 O       22 Co2       3.916149        0.2100
+             3 O       57 Co1       3.916149        0.2006
+             3 O       12 O         5.849456       -1.0886
+
+             4 O        4 O         0.000000        7.9678
+             4 O       58 Co2       3.916149        0.2100
+             4 O       69 Co1       3.916149        0.2006
+             4 O       59 O         5.849456       -1.0886
         =-------------------------------------------------------------------=
-
-
-                                 Hubbard V parameters:
-                            (adapted for a supercell 3x3x3)
-
-                  Atom 1     Atom 2    Distance (Bohr)  Hubbard V (eV)
-
-                   1 Co       1 Co        0.000000        7.7514
-                   1 Co      19 O         3.630748        0.7573
-                   1 Co      46 O         3.630748        0.7573
-                   1 Co      43 O         3.630748        0.7573
-                   1 Co      54 O         3.630748        0.7573
-                   1 Co      11 O         3.630748        0.7573
-                   1 Co      22 O         3.630748        0.7573
-                   1 Co      49 Co        5.321586       -0.2300
-                   1 Co      25 Co        5.321586       -0.2300
-                   1 Co      33 Co        5.321586       -0.2300
-                   1 Co      30 O         6.442175       -0.0415
-                   1 Co      14 O         6.442175       -0.0415
-                   1 Co       2 O         6.917913       -0.0586
-                   1 Co       7 O         6.917913       -0.0586
-                   1 Co      62 O         8.727932       -0.1109
-                   1 Co      26 O         8.727932       -0.1109
-                   1 Co      86 O         8.727932       -0.1109
-                   1 Co      50 O         8.727932       -0.1109
-                   1 Co      34 O         8.727932       -0.1109
-                   1 Co      78 O         8.727932       -0.1109
-                   1 Co      45 Co        9.370500       -0.1265
-                   1 Co      53 Co        9.370500       -0.1265
-                   1 Co      21 Co        9.370500       -0.1265
-                   1 Co      13 Co       10.776156       -0.1429
-
-        =-------------------------------------------------------------------=
-
 
         returns list of following (example) data:
         {
             "values": [
                 {
-                "id": 1,
-                "atomicSpecies": "Co",
-                "id2": 1,
-                "atomicSpecies2": "Co",
-                "distance": 0.0,
-                "value": 7.7514
+                    "id": 1,
+                    "atomicSpecies": "Co1",
+                    "orbitalName": "3d",
+                    "id2": 1,
+                    "atomicSpecies2": "Co1",
+                    "orbitalName2": "3d",
+                    "distance": 0.0,
+                    "value": 5.0634
                 },
                 {
-                "id": 1,
-                "atomicSpecies": "Co",
-                "id2": 19,
-                "atomicSpecies2": "O",
-                "distance": 3.630748,
-                "value": 0.7573
+                    "id": 1,
+                    "atomicSpecies": "Co1",
+                    "orbitalName": "3d",
+                    "id2": 12,
+                    "atomicSpecies2": "O",
+                    "orbitalName2": "2p",
+                    "distance": 3.916149,
+                    "value": 0.2006
                 }
             ]
         }
