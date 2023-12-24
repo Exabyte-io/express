@@ -914,6 +914,7 @@ class EspressoTXTParser(BaseTXTParser):
                 {
                     "id": int(cols[0]),
                     "atomicSpecies": cols[2],
+                    "newLabel": cols[5],
                     "orbitalName": cols[6],
                     "value": float(cols[7]),
                 }
