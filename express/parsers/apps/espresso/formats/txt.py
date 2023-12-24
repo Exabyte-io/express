@@ -1025,7 +1025,7 @@ class EspressoTXTParser(BaseTXTParser):
             cols = re.sub(r"([\s\t\r\n])+", " ", row.strip()).split(" ")
             u_dict.append(
                 {
-                    "atomicSpecies": cols[2],
+                    "atomicSpecies": cols[5],  # new_label col
                     "orbitalName": cols[6],
                 }
             )
