@@ -3,7 +3,7 @@ import re
 import io
 import numpy as np
 from pathlib import Path
-from typing import Optional
+from typing import Dict, Optional
 
 from express.parsers.utils import find_file
 from express.parsers.settings import Constant, GENERAL_REGEX, ATOMIC_REGEX
@@ -841,7 +841,7 @@ class EspressoTXTParser(BaseTXTParser):
             print(e)
         return data
 
-    def parse_hubbard_u(self) -> list:
+    def parse_hubbard_u(self) -> Dict[str, list]:
         """
         Extract Hubbard parameters produced by hp.x
 
@@ -874,12 +874,13 @@ class EspressoTXTParser(BaseTXTParser):
                 "value": 6.7553
                 }
             ]
+        }
         """
         dat_file = find_file(settings.HP_FILE, self.work_dir)
         with open(dat_file, "r", encoding="utf-8") as fp:
             data = fp.read()
 
-        RE_HP_HEADER = (r"\s*({0})\s*({1})\s+({2})\s+({3})\s+({4})\s+({5})\s+({6})\s+({7})" r"\s+({8})\s*").format(
+        RE_HP_HEADER = (r"\s*({0})\s*({1})\s+({2})\s+({3})\s+({4})\s+({5})\s+({6})\s+({7})\s+({8})\s*").format(
             "Hubbard U parameters:",
             "site n.",
             "type",
@@ -898,7 +899,11 @@ class EspressoTXTParser(BaseTXTParser):
         )
         RE_HP_BLOCK = r"{0}({1})+".format(RE_HP_HEADER, RE_HP_DATA)
 
-        hp_block = re.search(RE_HP_BLOCK, data, re.MULTILINE).group()
+        try:
+            hp_block = re.search(RE_HP_BLOCK, data, re.MULTILINE).group()
+        except Exception:
+            hp_block = ""
+
         hp_data = re.findall(r"^{0}".format(RE_HP_DATA), hp_block, re.MULTILINE)
 
         values = []
@@ -909,6 +914,7 @@ class EspressoTXTParser(BaseTXTParser):
                 {
                     "id": int(cols[0]),
                     "atomicSpecies": cols[2],
+                    "newLabel": cols[5],
                     "orbitalName": cols[6],
                     "value": float(cols[7]),
                 }
@@ -916,6 +922,199 @@ class EspressoTXTParser(BaseTXTParser):
 
         # let's return dictionary instead of bare values array, in future we
         # might decide to include more entities e.g., heder labels
+        return {
+            "values": values,
+        }
+
+    def parse_hubbard_v(self) -> Dict[str, list]:
+        """
+        Parse Hubbard V parameters produced by hp.x for all neighbors in 3⨉3⨉3
+        supercell.
+
+        filename: __prefix__.Hubbard_parameters.dat
+
+        Example input content:
+
+        =-------------------------------------------------------------------------------=
+                           Hubbard V parameters:
+                      (adapted for a supercell 3x3x3)
+
+            Atom 1     Atom 2    Distance (Bohr)  Hubbard V (eV)
+
+             1 Co1      1 Co1       0.000000        5.0634
+             1 Co1     12 O         3.916149        0.2006
+             1 Co1     20 O         3.916149        0.2006
+             1 Co1     10 Co2       5.849456       -1.7819
+
+             2 Co2      2 Co2       0.000000        5.6920
+             2 Co2     48 O         3.916149        0.2100
+             2 Co2     24 O         3.916149        0.2100
+             2 Co2     57 Co1       5.849456       -1.7819
+
+             3 O        3 O         0.000000        7.9678
+             3 O       22 Co2       3.916149        0.2100
+             3 O       57 Co1       3.916149        0.2006
+             3 O       12 O         5.849456       -1.0886
+
+             4 O        4 O         0.000000        7.9678
+             4 O       58 Co2       3.916149        0.2100
+             4 O       69 Co1       3.916149        0.2006
+             4 O       59 O         5.849456       -1.0886
+        =-------------------------------------------------------------------=
+
+        returns list of following (example) data:
+        {
+            "values": [
+                {
+                    "id": 1,
+                    "atomicSpecies": "Co1",
+                    "orbitalName": "3d",
+                    "id2": 1,
+                    "atomicSpecies2": "Co1",
+                    "orbitalName2": "3d",
+                    "distance": 0.0,
+                    "value": 5.0634
+                },
+                {
+                    "id": 1,
+                    "atomicSpecies": "Co1",
+                    "orbitalName": "3d",
+                    "id2": 12,
+                    "atomicSpecies2": "O",
+                    "orbitalName2": "2p",
+                    "distance": 3.916149,
+                    "value": 0.2006
+                }
+            ]
+        }
+        """
+        dat_file = find_file(settings.HP_FILE, self.work_dir)
+        with open(dat_file, "r", encoding="utf-8") as fp_v:
+            data = fp_v.read()
+
+        RE_HP_HEADER = (r"\s*({0})\s*({1})\s*({2})\s*({3})\s+({4})\s+({5})\s*").format(
+            "Hubbard V parameters:",
+            "\(adapted for a supercell 3x3x3\)",
+            "Atom 1",
+            "Atom 2",
+            "Distance \(Bohr\)",
+            "Hubbard V \(eV\)",
+        )
+        RE_HP_DATA = r"\s*{0}\s+{1}\s+{0}\s+{1}\s+{2}\s+{2}".format(
+            GENERAL_REGEX["int_number"],
+            ATOMIC_REGEX["atomicSpecies"],
+            GENERAL_REGEX["double_number"],
+        )
+
+        RE_HP_BLOCK = r"{0}({1})+".format(RE_HP_HEADER, RE_HP_DATA)
+
+        try:
+            hp_block = re.search(RE_HP_BLOCK, data, re.MULTILINE).group()
+        except Exception:
+            hp_block = ""
+
+        hp_data = re.findall(r"^{0}".format(RE_HP_DATA), hp_block, re.MULTILINE)
+
+        # get orbitalName from atomicSpecies (new_label), find it from Hubbard U parser
+        u_dict = self.parse_hubbard_u()["values"]
+        values = []
+
+        for row in hp_data:
+            cols = re.sub(r"([\s\t\r\n])+", " ", row.strip()).split(" ")
+            values.append(
+                {
+                    "id": int(cols[0]),
+                    "atomicSpecies": cols[1],
+                    "orbitalName": next(
+                        (item["orbitalName"] for item in u_dict if item["newLabel"] == cols[1]), "nl"
+                    ),
+                    "id2": int(cols[2]),
+                    "atomicSpecies2": cols[3],
+                    "orbitalName2": next(
+                        (item["orbitalName"] for item in u_dict if item["newLabel"] == cols[3]), "nl"
+                    ),
+                    "distance": float(cols[4]),
+                    "value": float(cols[5]),
+                }
+            )
+
+        return {
+            "values": values,
+        }
+
+    def parse_hubbard_v_nn(self) -> Dict[str, list]:
+        """
+        Parse Hubbard V parameters produced by hp.x for 6 nearest neighbors.
+
+        filename: HUBBARD.dat
+
+        Example input content:
+
+        # Copy this data in the pw.x input file for DFT+Hubbard calculations
+        HUBBARD {ortho-atomic}
+        V     Co-3d     Co-3d    1     1   7.7514
+        V     Co-3d      O-2p    1    19   0.7573
+        V     Co-3d      O-2p    1    46   0.7573
+        V     Co-3d      O-2p    1    43   0.7573
+        V     Co-3d      O-2p    1    54   0.7573
+        V     Co-3d      O-2p    1    11   0.7573
+        V     Co-3d      O-2p    1    22   0.7573
+
+        returns list of following (example) data:
+
+        {
+            "values": [
+                {
+                "id": 1,
+                "atomicSpecies": "Co",
+                "orbitalName": "3d",
+                "id2": 1,
+                "atomicSpecies2": "Co",
+                "orbitalName2": "3d",
+                "value": 7.7514
+                },
+                {
+                "id": 1,
+                "atomicSpecies": "Co",
+                "orbitalName": "3d",
+                "id2": 19,
+                "atomicSpecies2": "O",
+                "orbitalName2": "2p",
+                "value": 0.7573
+                }
+            ]
+        }
+        """
+        dat_file = find_file(settings.HP_NN_FILE, self.work_dir)
+        with open(dat_file, "r", encoding="utf-8") as fp:
+            data = fp.read()
+
+        RE_HP_NN_DATA = r"\s*V\s+{0}-{1}\s+{0}-{1}\s+{2}\s+{2}\s+{3}".format(
+            ATOMIC_REGEX["atomicSpecies"],
+            ATOMIC_REGEX["orbitalName"],
+            GENERAL_REGEX["int_number"],
+            GENERAL_REGEX["double_number"],
+        )
+
+        hp_data = re.findall(r"^{0}".format(RE_HP_NN_DATA), data, re.MULTILINE)
+
+        values = []
+
+        for row in hp_data:
+            # split by white space and hyphen
+            cols = re.sub(r"([\s\t\r\n-])+", " ", row.strip()).split(" ")
+            values.append(
+                {
+                    "id": int(cols[5]),
+                    "atomicSpecies": cols[1],
+                    "orbitalName": cols[2],
+                    "id2": int(cols[6]),
+                    "atomicSpecies2": cols[3],
+                    "orbitalName2": cols[4],
+                    "value": float(cols[7]),
+                }
+            )
+
         return {
             "values": values,
         }

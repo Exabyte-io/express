@@ -54,6 +54,12 @@ NON_SCALAR_PROPERTIES_MANIFEST = {
     },
     "hubbard_u": {
         "reference": "express.properties.non_scalar.hubbard_u.HubbardU"
+    },
+    "hubbard_v": {
+        "reference": "express.properties.non_scalar.hubbard_v.HubbardV"
+    },
+    "hubbard_v_nn": {
+        "reference": "express.properties.non_scalar.hubbard_v_nn.HubbardV_NN"
     }
 }
 
