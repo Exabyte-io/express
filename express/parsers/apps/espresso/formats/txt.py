@@ -989,49 +989,9 @@ class EspressoTXTParser(BaseTXTParser):
         }
         """
         dat_file = find_file(settings.HP_FILE, self.work_dir)
-        with open(dat_file, "r", encoding="utf-8") as fp:
-            data = fp.read()
+        with open(dat_file, "r", encoding="utf-8") as fp_v:
+            data = fp_v.read()
 
-        # parse U block first
-        # need to get orbitalName from atomicSpecies, find it from Hubbard U values
-        RE_HP_HEADER = (r"\s*({0})\s*({1})\s+({2})\s+({3})\s+({4})\s+({5})\s+({6})\s+({7})\s+({8})\s*").format(
-            "Hubbard U parameters:",
-            "site n.",
-            "type",
-            "label",
-            "spin",
-            "new_type",
-            "new_label",
-            "manifold",
-            "Hubbard U \(eV\)",
-        )
-        RE_HP_DATA = r"\s*{0}\s+{0}\s+{1}\s+{0}\s+{0}\s+{1}\s+{2}\s+{3}".format(
-            GENERAL_REGEX["int_number"],
-            ATOMIC_REGEX["atomicSpecies"],
-            ATOMIC_REGEX["orbitalName"],
-            GENERAL_REGEX["double_number"],
-        )
-        RE_HP_BLOCK = r"{0}({1})+".format(RE_HP_HEADER, RE_HP_DATA)
-
-        try:
-            hp_block = re.search(RE_HP_BLOCK, data, re.MULTILINE).group()
-        except Exception:
-            hp_block = ""
-
-        hp_data = re.findall(r"^{0}".format(RE_HP_DATA), hp_block, re.MULTILINE)
-
-        u_dict = []
-
-        for row in hp_data:
-            cols = re.sub(r"([\s\t\r\n])+", " ", row.strip()).split(" ")
-            u_dict.append(
-                {
-                    "atomicSpecies": cols[5],  # new_label col
-                    "orbitalName": cols[6],
-                }
-            )
-
-        # parse V block
         RE_HP_HEADER = (r"\s*({0})\s*({1})\s*({2})\s*({3})\s+({4})\s+({5})\s*").format(
             "Hubbard V parameters:",
             "\(adapted for a supercell 3x3x3\)",
@@ -1055,6 +1015,8 @@ class EspressoTXTParser(BaseTXTParser):
 
         hp_data = re.findall(r"^{0}".format(RE_HP_DATA), hp_block, re.MULTILINE)
 
+        # get orbitalName from atomicSpecies (new_label), find it from Hubbard U parser
+        u_dict = self.parse_hubbard_u()["values"]
         values = []
 
         for row in hp_data:
@@ -1064,12 +1026,12 @@ class EspressoTXTParser(BaseTXTParser):
                     "id": int(cols[0]),
                     "atomicSpecies": cols[1],
                     "orbitalName": next(
-                        (item["orbitalName"] for item in u_dict if item["atomicSpecies"] == cols[1]), "nl"
+                        (item["orbitalName"] for item in u_dict if item["newLabel"] == cols[1]), "nl"
                     ),
                     "id2": int(cols[2]),
                     "atomicSpecies2": cols[3],
                     "orbitalName2": next(
-                        (item["orbitalName"] for item in u_dict if item["atomicSpecies"] == cols[3]), "nl"
+                        (item["orbitalName"] for item in u_dict if item["newLabel"] == cols[3]), "nl"
                     ),
                     "distance": float(cols[4]),
                     "value": float(cols[5]),
