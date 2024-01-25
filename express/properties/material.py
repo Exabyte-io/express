@@ -4,7 +4,6 @@ import os
 from express.parsers.apps.vasp.parser import VaspParser
 from express.parsers.crystal import CrystalParser
 from express.parsers.molecule import MoleculeParser
-from express.parsers.structure import StructureParser  # noqa: F401
 from express.parsers.utils import lattice_basis_to_poscar
 from express.properties import BaseProperty
 from express.properties.non_scalar.symmetry import Symmetry
