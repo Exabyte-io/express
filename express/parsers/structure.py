@@ -43,7 +43,7 @@ class StructureParser(BaseParser, IonicDataMixin):
             self.structure_string = self.jarvis_db_entry_json_to_poscar(self.structure_string)
 
         # cell_type is either original, primitive or conventional
-        self.cell_type = kwargs["cell_type"]
+        self.cell_type = kwargs.get("cell_type", "original")
         self.structure = Structure.from_str(self.structure_string, self.structure_format)
         if self.cell_type != "original":
             self.structure = STRUCTURE_MAP[self.cell_type](self.structure)
