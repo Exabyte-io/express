@@ -1,4 +1,4 @@
-from esse import ESSE
+from mat3ra.esse import ESSE
 from abc import abstractmethod
 
 
