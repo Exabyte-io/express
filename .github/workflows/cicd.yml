@@ -81,5 +81,4 @@ jobs:
         with:
           python-version: 3.x
           github-token: ${{ secrets.BOT_GITHUB_TOKEN }}
-          pypi-username: ${{ secrets.PYPI_USERNAME }}
-          pypi-password: ${{ secrets.PYPI_PASSWORD }}
+          pypi-api-token: ${{ secrets.PYPI_API_TOKEN }}
