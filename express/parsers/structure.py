@@ -1,7 +1,11 @@
 import io
+import json
+
 import pymatgen as mg
 from pymatgen.core.structure import Structure
 from ase.io import read, write
+from jarvis.core.atoms import Atoms
+from jarvis.io.vasp.inputs import Poscar
 
 from express.parsers import BaseParser
 from express.parsers.mixins.ionic import IonicDataMixin
@@ -32,6 +36,11 @@ class StructureParser(BaseParser, IonicDataMixin):
         if self.structure_format == "espresso-in":
             self.structure_format = "poscar"
             self.structure_string = self.espresso_input_to_poscar(self.structure_string)
+
+        # convert jarvis-db-entry JSON into poscar
+        if self.structure_format == "jarvis-db-entry":
+            self.structure_format = "poscar"
+            self.structure_string = self.jarvis_db_entry_json_to_poscar(self.structure_string)
 
         # cell_type is either original, primitive or conventional
         self.cell_type = kwargs["cell_type"]
@@ -222,4 +231,20 @@ class StructureParser(BaseParser, IonicDataMixin):
         content = output_.getvalue()
         input_.close()
         output_.close()
+        return content
+
+    def jarvis_db_entry_json_to_poscar(self, jarvis_db_entry_json_str):
+        """
+        Extracts structure from jarvis atoms dictionary and returns in poscar format.
+
+        Args:
+            jarvis_atoms_json (dict): input content
+
+        Returns:
+            str: poscar
+        """
+        jarvis_db_entry = json.loads(jarvis_db_entry_json_str)
+        atoms = Atoms.from_dict(jarvis_db_entry["atoms"])
+        poscar = Poscar(atoms)
+        content = poscar.to_string()
         return content

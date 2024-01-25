@@ -1,7 +1,7 @@
 import os
 
 from express.parsers.structure import StructureParser
-from tests.fixtures.data import SI
+from tests.fixtures.data import SI, JVASP_677
 from tests.integration import IntegrationTestBase
 
 
@@ -26,11 +26,17 @@ class TestStructureParser(IntegrationTestBase):
     def test_structure_espresso_basis(self):
         self.assertDeepAlmostEqual(self.parser.basis(), SI["basis"], places=2)
 
-    def test_structure_vasp_basis(self):
-        self.assertDeepAlmostEqual(self.parser.basis(), SI["basis"], places=2)
-
     def test_structure_espresso_lattice_bravais(self):
         self.assertDeepAlmostEqual(self.parser.lattice_bravais(), SI["lattice"], places=2)
 
+    def test_structure_vasp_basis(self):
+        self.assertDeepAlmostEqual(self.parser.basis(), SI["basis"], places=2)
+
     def test_structure_vasp_lattice_bravais(self):
         self.assertDeepAlmostEqual(self.parser.lattice_bravais(), SI["lattice"], places=2)
+
+    def test_structure_jarvis_db_entry_basis(self):
+        self.assertDeepAlmostEqual(self.parser.basis(), JVASP_677["basis"], places=2)
+
+    def test_structure_jarvis_db_entry_lattice_bravais(self):
+        self.assertDeepAlmostEqual(self.parser.lattice_bravais(), JVASP_677["lattice"], places=2)
