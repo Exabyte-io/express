@@ -1,5 +1,6 @@
 import warnings
 import importlib
+import numpy as np
 
 try:
     from ._version import version as __version__
