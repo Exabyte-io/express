@@ -333,8 +333,8 @@ class EspressoTXTParser(BaseTXTParser):
          Example:
             {
                 'units': 'angstrom',
-                'elements': [{'id': 1, 'value': 'Si'}, {'id': 2, 'value': 'Si'}],
-                'coordinates': [{'id': 1, 'value': [0.0, 0.0, 0.0]}, {'id': 2, 'value': [2.1095228, 1.49165, 3.6538]}]
+                'elements': [{'id': 0, 'value': 'Si'}, {'id': 1, 'value': 'Si'}],
+                'coordinates': [{'id': 0, 'value': [0.0, 0.0, 0.0]}, {'id': 1, 'value': [2.1095228, 1.49165, 3.6538]}]
              }
         """
         alat = self._get_alat(text)
@@ -436,14 +436,14 @@ class EspressoTXTParser(BaseTXTParser):
             [
                 {
                     'units': 'crystal',
-                    'elements': [{'id': 1, 'value': 'Si'}, {'id': 2, 'value': 'Si'}],
-                    'coordinates': [{'id': 1, 'value': [0.0, 0.0, 0.0]}, {'id': 2, 'value': [0.0, 0.0, 0.0]}]
+                    'elements': [{'id': 0, 'value': 'Si'}, {'id': 1, 'value': 'Si'}],
+                    'coordinates': [{'id': 0, 'value': [0.0, 0.0, 0.0]}, {'id': 1, 'value': [0.0, 0.0, 0.0]}]
                  },
                 ...
                 {
                     'units': 'crystal',
-                    'elements': [{'id': 1, 'value': 'Si'}, {'id': 2, 'value': 'Si'}],
-                    'coordinates': [{'id': 1, 'value': [0.0, 0.0, 0.0]}, {'id': 2, 'value': [0.0, 0.0, 0.0]}]
+                    'elements': [{'id': 0, 'value': 'Si'}, {'id': 1, 'value': 'Si'}],
+                    'coordinates': [{'id': 0, 'value': [0.0, 0.0, 0.0]}, {'id': 1, 'value': [0.0, 0.0, 0.0]}]
                  }
             ]
         """
@@ -462,8 +462,8 @@ class EspressoTXTParser(BaseTXTParser):
         Example:
             {
                 'units': 'crystal',
-                'elements': [{'id': 1, 'value': 'Si'}, {'id': 2, 'value': 'Si'}],
-                'coordinates': [{'id': 1, 'value': [0.0, 0.0, 0.0]}, {'id': 2, 'value': [0.0, 0.0, 0.0]}]
+                'elements': [{'id': 0, 'value': 'Si'}, {'id': 1, 'value': 'Si'}],
+                'coordinates': [{'id': 0, 'value': [0.0, 0.0, 0.0]}, {'id': 1, 'value': [0.0, 0.0, 0.0]}]
              }
         """
         basis = {"units": "crystal", "elements": [], "coordinates": []}

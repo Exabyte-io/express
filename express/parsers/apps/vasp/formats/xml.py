@@ -292,8 +292,8 @@ class VaspXMLParser(BaseXMLParser):
         Example:
             {
                 'units': 'angstrom',
-                'elements': [{'id': 1, 'value': 'Si'}, {'id': 2, 'value': 'Si'}],
-                'coordinates': [{'id': 1, 'value': [0.0, 0.0, 0.0]}, {'id': 2, 'value': [1.11, 0.78, 1.93]}]
+                'elements': [{'id': 0, 'value': 'Si'}, {'id': 1, 'value': 'Si'}],
+                'coordinates': [{'id': 0, 'value': [0.0, 0.0, 0.0]}, {'id': 1, 'value': [1.11, 0.78, 1.93]}]
              }
         """
         lattice = self.final_lattice_vectors()
