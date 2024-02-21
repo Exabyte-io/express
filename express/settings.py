@@ -49,18 +49,10 @@ NON_SCALAR_PROPERTIES_MANIFEST = {
     "average_potential_profile": {
         "reference": "express.properties.non_scalar.two_dimensional_plot.average_potential_profile.AveragePotentialProfile"  # noqa: E501
     },
-    "dielectric_tensor": {
-        "reference": "express.properties.non_scalar.dielectric_tensor.DielectricTensor"
-    },
-    "hubbard_u": {
-        "reference": "express.properties.non_scalar.hubbard_u.HubbardU"
-    },
-    "hubbard_v": {
-        "reference": "express.properties.non_scalar.hubbard_v.HubbardV"
-    },
-    "hubbard_v_nn": {
-        "reference": "express.properties.non_scalar.hubbard_v_nn.HubbardV_NN"
-    }
+    "dielectric_tensor": {"reference": "express.properties.non_scalar.dielectric_tensor.DielectricTensor"},
+    "hubbard_u": {"reference": "express.properties.non_scalar.hubbard_u.HubbardU"},
+    "hubbard_v": {"reference": "express.properties.non_scalar.hubbard_v.HubbardV"},
+    "hubbard_v_nn": {"reference": "express.properties.non_scalar.hubbard_v_nn.HubbardV_NN"},
 }
 
 CONVERGENCE_PROPERTIES = {
@@ -81,4 +73,5 @@ PARSERS_REGISTRY = {
     "exabyteml": "express.parsers.exabyteml.ExabyteMLParser",
 }
 
-PRECISION = 4
+# Used to round to zero by default
+PRECISION = 9
