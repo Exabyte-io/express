@@ -15,6 +15,14 @@ STRUCTURE_MAP = {
     "conventional": lambda s: mg.symmetry.analyzer.SpacegroupAnalyzer(s).get_conventional_standard_structure(),
 }
 
+PRECISION_MAP = {
+    # decimal places
+    "coordinates_crystal": 6,
+    ## Default values are used for the below
+    # "coordinates_crystal": 4,
+    # "angles": 4,
+}
+
 
 class StructureParser(BaseParser, IonicDataMixin):
     """
@@ -61,9 +69,9 @@ class StructureParser(BaseParser, IonicDataMixin):
         """
         return {
             "vectors": {
-                "a": self.structure.lattice.matrix.tolist()[0],
-                "b": self.structure.lattice.matrix.tolist()[1],
-                "c": self.structure.lattice.matrix.tolist()[2],
+                "a": self._round(self.structure.lattice.matrix.tolist()[0]),
+                "b": self._round(self.structure.lattice.matrix.tolist()[1]),
+                "c": self._round(self.structure.lattice.matrix.tolist()[2]),
                 "alat": 1.0,
             }
         }
@@ -160,7 +168,8 @@ class StructureParser(BaseParser, IonicDataMixin):
             "units": "crystal",
             "elements": [{"id": i, "value": v.species_string} for i, v in enumerate(self.structure.sites)],
             "coordinates": [
-                {"id": i, "value": self._round(v.frac_coords.tolist())} for i, v in enumerate(self.structure.sites)
+                {"id": i, "value": self._round(v.frac_coords.tolist(), PRECISION_MAP["coordinates_crystal"])}
+                for i, v in enumerate(self.structure.sites)
             ],
         }
 
