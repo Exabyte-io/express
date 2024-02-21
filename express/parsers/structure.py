@@ -77,12 +77,12 @@ class StructureParser(BaseParser, IonicDataMixin):
         """
         return {
             "type": self._lattice_type(),
-            "a": self.structure.lattice.a,
-            "b": self.structure.lattice.b,
-            "c": self.structure.lattice.c,
-            "alpha": self.structure.lattice.alpha,
-            "beta": self.structure.lattice.beta,
-            "gamma": self.structure.lattice.gamma,
+            "a": self._round(self.structure.lattice.a),
+            "b": self._round(self.structure.lattice.b),
+            "c": self._round(self.structure.lattice.c),
+            "alpha": self._round(self.structure.lattice.alpha),
+            "beta": self._round(self.structure.lattice.beta),
+            "gamma": self._round(self.structure.lattice.gamma),
             "units": {"length": "angstrom", "angle": "degree"},
         }
 
@@ -159,7 +159,9 @@ class StructureParser(BaseParser, IonicDataMixin):
         return {
             "units": "crystal",
             "elements": [{"id": i, "value": v.species_string} for i, v in enumerate(self.structure.sites)],
-            "coordinates": [{"id": i, "value": v.frac_coords.tolist()} for i, v in enumerate(self.structure.sites)],
+            "coordinates": [
+                {"id": i, "value": self._round(v.frac_coords.tolist())} for i, v in enumerate(self.structure.sites)
+            ],
         }
 
     def space_group_symbol(self):

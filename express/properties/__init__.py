@@ -1,8 +1,10 @@
 from mat3ra.esse import ESSE
 from abc import abstractmethod
 
+from express.mixins import RoundNumericValuesMixin
 
-class BaseProperty(object):
+
+class BaseProperty(RoundNumericValuesMixin):
     """
     Base Property class.
 
@@ -35,6 +37,7 @@ class BaseProperty(object):
             dict
         """
         instance = self._serialize()
+        # TODO: consider rounding all numbers at this stage
         self.esse.validate(instance, self.schema)
         return instance
 

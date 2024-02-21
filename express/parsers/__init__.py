@@ -1,7 +1,9 @@
 import os
 
+from express.mixins import RoundNumericValuesMixin
 
-class BaseParser(object):
+
+class BaseParser(RoundNumericValuesMixin):
     """
     Base Parser class.
     """

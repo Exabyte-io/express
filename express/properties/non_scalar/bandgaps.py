@@ -1,7 +1,6 @@
 import numpy as np
 from typing import Tuple
 from copy import deepcopy
-from express import settings
 from express.properties.utils import eigenvalues
 from express.properties.non_scalar import NonScalarProperty
 
@@ -184,6 +183,3 @@ class BandGaps(NonScalarProperty):
                 eigens_at_spin["energies"] = eigens_at_spin["energies"][start:end]
                 eigens_at_spin["occupations"] = eigens_at_spin["occupations"][start:end]
         return eigens_at_kpoints
-
-    def _round(self, array):
-        return np.round(array, settings.PRECISION).tolist()
