@@ -13,9 +13,9 @@ class WorkflowTest(UnitTestBase):
     def tearDown(self):
         super().setUp()
 
-    @mock.patch("express.properties.workflow.os")
-    def test_pyml_workflow(self, mock_os):
-        mock_os.listdir.return_value = MOCK_BASENAMES
+    @mock.patch("express.properties.workflow.os.listdir")
+    def test_pyml_workflow(self, mock_os_listdir):
+        mock_os_listdir.return_value = MOCK_BASENAMES
 
         name = NAME
         parser = PARSER

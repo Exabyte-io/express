@@ -42,8 +42,8 @@ class IonicDataMixin(object):
         Example:
             {
                 'units': 'crystal',
-                'elements': [{'id': 1, 'value': 'Si'}, {'id': 2, 'value': 'Si'}],
-                'coordinates': [{'id': 1, 'value': [0.0, 0.0, 0.0]}, {'id': 2, 'value': [0.25, 0.25, 0.25]}]
+                'elements': [{'id': 0, 'value': 'Si'}, {'id': 1, 'value': 'Si'}],
+                'coordinates': [{'id': 0, 'value': [0.0, 0.0, 0.0]}, {'id': 1, 'value': [0.25, 0.25, 0.25]}]
              }
         """
         pass
@@ -81,8 +81,8 @@ class IonicDataMixin(object):
         Example:
             {
                 'units': 'crystal',
-                'elements': [{'id': 1, 'value': 'Si'}, {'id': 2, 'value': 'Si'}],
-                'coordinates': [{'id': 1, 'value': [0.0, 0.0, 0.0]}, {'id': 2, 'value': [0.25, 0.25, 0.25]}]
+                'elements': [{'id': 0, 'value': 'Si'}, {'id': 1, 'value': 'Si'}],
+                'coordinates': [{'id': 0, 'value': [0.0, 0.0, 0.0]}, {'id': 1, 'value': [0.25, 0.25, 0.25]}]
              }
         """
         pass

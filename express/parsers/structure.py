@@ -158,8 +158,8 @@ class StructureParser(BaseParser, IonicDataMixin):
         """
         return {
             "units": "crystal",
-            "elements": [{"id": i + 1, "value": v.species_string} for i, v in enumerate(self.structure.sites)],
-            "coordinates": [{"id": i + 1, "value": v.frac_coords.tolist()} for i, v in enumerate(self.structure.sites)],
+            "elements": [{"id": i, "value": v.species_string} for i, v in enumerate(self.structure.sites)],
+            "coordinates": [{"id": i, "value": v.frac_coords.tolist()} for i, v in enumerate(self.structure.sites)],
         }
 
     def space_group_symbol(self):

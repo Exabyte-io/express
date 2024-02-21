@@ -26,4 +26,4 @@ def to_array_with_ids(array):
     Returns:
         list
     """
-    return [{"id": index + 1, "value": value} for index, value in enumerate(array)]
+    return [{"id": index, "value": value} for index, value in enumerate(array)]
