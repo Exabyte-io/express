@@ -17,10 +17,9 @@ STRUCTURE_MAP = {
 
 PRECISION_MAP = {
     # decimal places
-    "coordinates_crystal": 6,
-    ## Default values are used for the below
-    # "coordinates_crystal": 4,
-    # "angles": 4,
+    "coordinates_crystal": 9,
+    "coordinates_cartesian": 6,
+    "angles": 4,
 }
 
 
@@ -67,11 +66,12 @@ class StructureParser(BaseParser, IonicDataMixin):
         Reference:
             func: express.parsers.mixins.ionic.IonicDataMixin.lattice_vectors
         """
+        precision = PRECISION_MAP["coordinates_cartesian"]
         return {
             "vectors": {
-                "a": self._round(self.structure.lattice.matrix.tolist()[0]),
-                "b": self._round(self.structure.lattice.matrix.tolist()[1]),
-                "c": self._round(self.structure.lattice.matrix.tolist()[2]),
+                "a": self._round(self.structure.lattice.matrix.tolist()[0], precision),
+                "b": self._round(self.structure.lattice.matrix.tolist()[1], precision),
+                "c": self._round(self.structure.lattice.matrix.tolist()[2], precision),
                 "alat": 1.0,
             }
         }
@@ -83,14 +83,16 @@ class StructureParser(BaseParser, IonicDataMixin):
         Reference:
             func: express.parsers.mixins.ionic.IonicDataMixin.lattice_bravais
         """
+        precision_coordinates = PRECISION_MAP["coordinates_cartesian"]
+        precision_angles = PRECISION_MAP["angles"]
         return {
             "type": self._lattice_type(),
-            "a": self._round(self.structure.lattice.a),
-            "b": self._round(self.structure.lattice.b),
-            "c": self._round(self.structure.lattice.c),
-            "alpha": self._round(self.structure.lattice.alpha),
-            "beta": self._round(self.structure.lattice.beta),
-            "gamma": self._round(self.structure.lattice.gamma),
+            "a": self._round(self.structure.lattice.a, precision_coordinates),
+            "b": self._round(self.structure.lattice.b, precision_coordinates),
+            "c": self._round(self.structure.lattice.c, precision_coordinates),
+            "alpha": self._round(self.structure.lattice.alpha, precision_angles),
+            "beta": self._round(self.structure.lattice.beta, precision_angles),
+            "gamma": self._round(self.structure.lattice.gamma, precision_angles),
             "units": {"length": "angstrom", "angle": "degree"},
         }
 

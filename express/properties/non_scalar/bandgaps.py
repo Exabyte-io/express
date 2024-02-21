@@ -4,6 +4,12 @@ from copy import deepcopy
 from express.properties.utils import eigenvalues
 from express.properties.non_scalar import NonScalarProperty
 
+PRECISION_MAP = {
+    # decimal places
+    "ibz_kpts": 4,
+    "eigenvalues": 4,
+}
+
 
 class BandGaps(NonScalarProperty):
     """
@@ -96,11 +102,13 @@ class BandGaps(NonScalarProperty):
         # value for shifting back eigenvalues (see also _get_bands_info)
         e_fermi = self.fermi_energy if absolute_eigenvalues else 0
 
+        precision = PRECISION_MAP["ibz_kpts"]
+
         if k_val is not None and k_cond is not None:
             result.update(
                 {
-                    "kpointValence": self._round(self.ibz_k_points[k_val]),
-                    "kpointConduction": self._round(self.ibz_k_points[k_cond]),
+                    "kpointValence": self._round(self.ibz_k_points[k_val], precision),
+                    "kpointConduction": self._round(self.ibz_k_points[k_cond], precision),
                     "eigenvalueValence": ev_k[k_val] + e_fermi,
                     "eigenvalueConduction": ec_k[k_cond] + e_fermi,
                 }
@@ -169,12 +177,13 @@ class BandGaps(NonScalarProperty):
         Returns:
              dict
         """
+        precision = PRECISION_MAP["eigenvalues"]
         eigens_at_kpoints = deepcopy(self.eigenvalues_at_kpoints)
         for eigens_at_kpoint in eigens_at_kpoints:
-            eigens_at_kpoint["kpoint"] = self._round(eigens_at_kpoint["kpoint"])
+            eigens_at_kpoint["kpoint"] = self._round(eigens_at_kpoint["kpoint"], precision)
             for eigens_at_spin in eigens_at_kpoint["eigenvalues"]:
-                eigens_at_spin["energies"] = self._round(eigens_at_spin["energies"])
-                eigens_at_spin["occupations"] = self._round(eigens_at_spin["occupations"])
+                eigens_at_spin["energies"] = self._round(eigens_at_spin["energies"], precision)
+                eigens_at_spin["occupations"] = self._round(eigens_at_spin["occupations"], precision)
                 # occupations are empty in case of QE GW, hence sending all values.
                 if len(eigens_at_spin["occupations"]) == 0:
                     continue
