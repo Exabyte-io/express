@@ -25,7 +25,7 @@ class BandStructure(TwoDimensionalPlotProperty):
         # and we return the same for versions above 6.4 if noncolin is True.
         # However, for non-collinear magnetic case there are one eigenvalue per
         # k-pont. Here we override nspins for non-collinear case.
-        self.nspins = self.parser.nspins() if self.parser.nspins() != 4 else 1
+        self.nspins = 1 if self.parser.nspins() == 4 else self.parser.nspins()
 
         self.eigenvalues_at_kpoints = self.parser.eigenvalues_at_kpoints()
         if kwargs.get("remove_non_zero_weight_kpoints", False):
