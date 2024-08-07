@@ -143,7 +143,7 @@ class EspressoXMLParserPostV6_4(EspressoXMLParserBase):
             }
             if is_lsda:
                 kpoint_dict["eigenvalues"] = self.__process_ks_lsda(ks_entry, nband)
-            # below clause applicable to both non-magnetic and non-collinear magnetic cases
+            # below clause is applicable to both non-magnetic and non-collinear magnetic cases
             else:
                 kpoint_dict["eigenvalues"] = self.__process_ks_non_mag(ks_entry)
 

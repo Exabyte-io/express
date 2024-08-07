@@ -16,15 +16,15 @@ class BandStructure(TwoDimensionalPlotProperty):
 
     def __init__(self, name, parser, *args, **kwargs):
         super(BandStructure, self).__init__(name, parser, *args, **kwargs)
-        # there could be three possibilities for nspins:
-        # (1) non-magnetic ==> nspins = 1
-        # (2) collinear magnetic (LSDA) ==> nspins = 2
-        # (3) non-collinear magnetic ==> nspins = 4
-        # Prior to Quantum ESPRESSO version 6.4, the XML output contains tag
+        # There could be three possibilities for nspins:
+        #   (1) non-magnetic ==> nspins = 1
+        #   (2) collinear magnetic (LSDA) ==> nspins = 2
+        #   (3) non-collinear magnetic ==> nspins = 4
+        # Prior to Quantum ESPRESSO version 6.4, the XML output contains the tag
         # NUMBER_OF_SPIN_COMPONENTS, which is set to 4 for non-collinear case,
         # and we return the same for versions above 6.4 if noncolin is True.
-        # However, for non-collinear magnetic case there are one eigenvalue per
-        # k-pont. Here we override nspins for non-collinear case.
+        # However, for non-collinear magnetic case there is one eigenvalue per
+        # k-point. Here we override nspins for non-collinear case.
         self.nspins = 1 if self.parser.nspins() == 4 else self.parser.nspins()
 
         self.eigenvalues_at_kpoints = self.parser.eigenvalues_at_kpoints()
