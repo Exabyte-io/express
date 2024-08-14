@@ -157,7 +157,7 @@ class BandGaps(NonScalarProperty):
         Returns:
             tuple: a (gap, k1, k2) tuple where k1 and k2 are the indices of the valence and conduction k-points.
         """
-        if occupations.ptp() > 0:
+        if np.ptp(occupations) > 0:
             # Some band must be crossing fermi-level. Hence, we return zero for band gap and the actual k-points
             kv = kc = occupations.argmax()
             return 0.0, kv, kc

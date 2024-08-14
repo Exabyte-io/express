@@ -127,7 +127,6 @@ class EspressoXMLParserPostV6_4(EspressoXMLParserBase):
         all_kpoints = []
         bs_tag = self.root.find(self.band_structure_tag)
         is_lsda = self._get_xml_tag_value(bs_tag.find("lsda"))
-        is_noncolinear = self._get_xml_tag_value(bs_tag.find("noncolin"))
 
         if is_lsda:
             nband = int(bs_tag.find("nbnd_up").text)
@@ -144,10 +143,7 @@ class EspressoXMLParserPostV6_4(EspressoXMLParserBase):
             }
             if is_lsda:
                 kpoint_dict["eigenvalues"] = self.__process_ks_lsda(ks_entry, nband)
-
-            # TODO: implement noncolinear spin magnetization case, values come in pairs
-            elif is_noncolinear:
-                raise NotImplementedError("Noncolinear spin magnetization case not implemented")
+            # below clause is applicable to both non-magnetic and non-collinear magnetic cases
             else:
                 kpoint_dict["eigenvalues"] = self.__process_ks_non_mag(ks_entry)
 
