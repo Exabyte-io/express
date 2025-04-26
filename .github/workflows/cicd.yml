@@ -8,14 +8,11 @@ concurrency:
 
 jobs:
   run-linter:
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
     strategy:
       matrix:
         python-version:
-          - 3.8.x
-          - 3.9.x
           - 3.10.x
-          - 3.11.x
 
     steps:
       - name: Checkout this repository
@@ -36,14 +33,14 @@ jobs:
           python-version: ${{ matrix.python-version }}
 
   run-tests:
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
     strategy:
       matrix:
         python-version:
-          - 3.8.x
           - 3.9.x
           - 3.10.x
           - 3.11.x
+          - 3.12.x
 
     steps:
       - name: Checkout this repository
@@ -68,7 +65,7 @@ jobs:
 
   publish:
     needs: [run-linter, run-tests]
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     if: github.ref_name == 'dev'
 
     steps:
@@ -87,6 +84,5 @@ jobs:
       - name: Publish release
         uses: ./actions/py/publish
         with:
-          python-version: 3.x
           github-token: ${{ secrets.BOT_GITHUB_TOKEN }}
           pypi-api-token: ${{ secrets.PYPI_API_TOKEN }}
