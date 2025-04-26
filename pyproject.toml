@@ -30,6 +30,7 @@ extra = [
 ]
 tests = [
     "coverage[toml]>=5.3",
+    "pyyaml",
 ]
 all = ["express-py[tests]", "express-py[extra]"]
 
