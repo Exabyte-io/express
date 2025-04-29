@@ -3,7 +3,7 @@ import os
 
 from express.parsers.apps.vasp.parser import VaspParser
 from express.parsers.crystal import CrystalParser
-# from express.parsers.molecule import MoleculeParser
+from express.parsers.molecule import MoleculeParser
 from express.parsers.utils import lattice_basis_to_poscar
 from express.properties import BaseProperty
 from express.properties.non_scalar.symmetry import Symmetry
@@ -48,7 +48,7 @@ class Material(BaseProperty):
                     structure_string = lattice_basis_to_poscar(lattice, basis)
 
         if self.is_non_periodic:
-            self.parser = CrystalParser(
+            self.parser = MoleculeParser(
                 structure_string=structure_string, structure_format=structure_format, cell_type=cell_type
             )
         else:

@@ -74,3 +74,22 @@ class MaterialTest(IntegrationTestBase):
     def test_material_espresso_final_structure(self):
         material = Material("material", self.espresso_parser, is_final_structure=True)
         self.assertPropertiesEqual(material)
+
+    def test_material_is_non_periodic(self):
+        material = Material("material", self.vasp_parser, is_initial_structure=True, is_non_periodic=True)
+        self.assertPropertiesEqual(material)
+
+    def test_material_from_structure(self):
+        material = Material(
+            "material",
+            parser=None,
+            cell_type="original",
+            structure_string=self.structure_string,
+            structure_format="espresso-in",
+            is_non_periodic=True,
+        )
+        self.assertPropertiesEqual(material)
+
+    def test_material_serialize_and_validate(self):
+        material = Material("material", self.vasp_parser, is_initial_structure=True, is_non_periodic=True)
+        self.assertJsonEqual(material)
