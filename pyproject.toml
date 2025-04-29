@@ -32,8 +32,6 @@ extra = [
 tests = [
     "coverage[toml]>=5.3",
     "pyyaml",
-    # To run tests on full codebase
-    "rdkit-pypi>=2022.3.5",
 ]
 all = ["express-py[tests]", "express-py[extra]"]
 
