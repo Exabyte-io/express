@@ -84,8 +84,9 @@ class Material(BaseProperty):
             derived_properties.extend(self._elemental_ratios())
             derived_properties.extend(self._p_norms())
         # TODO: Determine how to avoid an eternal pass when one derived property fails
-        except Exception:
-            logging.info("Derived properties array empty due to failure to calculate one (or more) values.")
+        except Exception as e:
+            logging.info(f"NOTE: derived properties array is empty due to failure to calculate values. Exception: {e}   ")
+            print("NOTE: derived properties array is empty due to failure to calculate values.", e)
             pass
         return sorted(derived_properties, key=lambda x: x["name"])
 
