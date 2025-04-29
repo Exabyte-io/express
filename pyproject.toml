@@ -26,11 +26,14 @@ dependencies = [
 
 [project.optional-dependencies]
 extra = [
+    # To allow avoiding the rdkit installation in JupyterLite
     "rdkit-pypi>=2022.3.5",
 ]
 tests = [
     "coverage[toml]>=5.3",
     "pyyaml",
+    # To run tests on full codebase
+    "express-py[extra]",
 ]
 all = ["express-py[tests]", "express-py[extra]"]
 
