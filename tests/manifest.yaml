@@ -247,7 +247,7 @@ test_material_from_structure:
   structurePath: fixtures/espresso/v5_4/test-001/pw-scf.in
   structureFormat: espresso-in
 
-test_structure_silicon_carbide:
+test_material_vasp_structure_order_of_elements:
   structurePath: fixtures/structural/test-003/POSCAR
   structureFormat: poscar
 

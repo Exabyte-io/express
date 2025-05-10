@@ -1,7 +1,7 @@
 import os
 
 from express.parsers.structure import StructureParser
-from tests.fixtures.data import SI, JVASP_677, SiC
+from tests.fixtures.data import JVASP_677, SI, SiC
 from tests.integration import IntegrationTestBase
 
 
@@ -41,5 +41,5 @@ class TestStructureParser(IntegrationTestBase):
     def test_structure_jarvis_db_entry_lattice_bravais(self):
         self.assertDeepAlmostEqual(self.parser.lattice_bravais(), JVASP_677["lattice"], places=2)
 
-    def test_structure_silicon_carbide(self):
+    def test_material_vasp_structure_order_of_elements(self):
         self.assertDeepAlmostEqual(self.parser.basis(), SiC["basis"], places=2)
