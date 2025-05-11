@@ -247,6 +247,10 @@ test_material_from_structure:
   structurePath: fixtures/espresso/v5_4/test-001/pw-scf.in
   structureFormat: espresso-in
 
+test_material_vasp_structure_order_of_elements:
+  structurePath: fixtures/structural/test-003/POSCAR
+  structureFormat: poscar
+
 test_material_serialize_and_validate:
   workDir: fixtures/vasp/test-001
   stdoutFile: fixtures/vasp/test-001/vasp.out
