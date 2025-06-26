@@ -26,8 +26,8 @@ dependencies = [
 
 [project.optional-dependencies]
 extra = [
-    # To allow avoiding the rdkit installation in JupyterLite
-    "rdkit>=2024.9.6",
+    # To allow avoiding the rdkit installation in JupyterLite. Latest version supported by py 3.10.13.
+    "rdkit==2024.3.2",
 ]
 tests = [
     "coverage[toml]>=5.3",
