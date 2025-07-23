@@ -1,5 +1,4 @@
 import re
-from abc import abstractmethod
 
 import numpy as np
 
@@ -61,38 +60,7 @@ class EspressoXMLParserBase(BaseXMLParser):
         bs_tag = self.root.find(self.band_structure_tag)
         return self._get_xml_tag_value(bs_tag.find(self.fermi_energy_tag)) * Constant.HARTREE
 
-    @abstractmethod
-    def nspins(self) -> int:
-        """
-        Extracts the number of number of spin components.
 
-        Returns:
-             int
-        """
-        pass
-
-    @abstractmethod
-    def final_lattice_vectors(self, reciprocal=False) -> dict:
-        """
-        Extracts lattice.
-
-        Args:
-            reciprocal (bool): whether to extract reciprocal lattice.
-
-        Returns:
-            dict
-
-        Examples:
-            {
-                'vectors': {
-                    'a': [-0.561154473, -0.000000000, 0.561154473],
-                    'b': [-0.000000000, 0.561154473, 0.561154473],
-                    'c': [-0.561154473, 0.561154473, 0.000000000],
-                    'alat': 9.44858082
-                }
-             }
-        """
-        pass
 
     def get_inverse_reciprocal_lattice_vectors(self):
         """
@@ -102,45 +70,4 @@ class EspressoXMLParserBase(BaseXMLParser):
         lattice_array = [reciprocal_lattice["vectors"][i] for i in ["a", "b", "c"]]
         return np.linalg.inv(np.array(lattice_array))
 
-    @abstractmethod
-    def eigenvalues_at_kpoints(self):
-        """
-        Returns eigenvalues for all kpoints.
 
-        Returns:
-             list
-
-        Example:
-            [
-                {
-                    'kpoint': [-0.5, 0.5, 0.5],
-                    'weight': 9.5238095E-002,
-                    'eigenvalues': [
-                        {
-                            'energies': [-1.4498446E-001, ..., 4.6507387E-001],
-                            'occupations': [1, ... , 0],
-                            'spin': 0.5
-                        }
-                    ]
-                },
-                ...
-            ]
-        """
-        pass
-
-    @abstractmethod
-    def final_basis(self):
-        """
-        Extracts basis.
-
-        Returns:
-            dict
-
-        Example:
-            {
-                'units': 'angstrom',
-                'elements': [{'id': 0, 'value': 'Si'}, {'id': 1, 'value': 'Si'}],
-                'coordinates': [{'id': 0, 'value': [0.0, 0.0, 0.0]}, {'id': 1, 'value': [0.0, 0.0, 0.0]}]
-             }
-        """
-        pass
