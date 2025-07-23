@@ -2,8 +2,7 @@ from express.parsers.settings import GENERAL_REGEX
 
 PDOS_TOT_FILE = "pdos_tot"
 NEB_PATH_FILE_SUFFIX = ".path"
-XML_DATA_FILE_PREv6_4 = "data-file.xml"
-XML_DATA_FILE_POSTv6_4 = "__prefix__.xml"
+XML_DATA_FILE = "__prefix__.xml"
 PHONON_DOS_FILE = "phonon_dos.out"
 PHONON_MODES_FILE = "normal_modes.out"
 AVERAGE_FILE = "avg.dat"
