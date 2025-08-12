@@ -51,7 +51,7 @@ class WorkflowProperty(BaseProperty):
 
 class PyMLTrainAndPredictWorkflow(WorkflowProperty):
     """
-    Next generation of ExabyteML. We expect workflows to have a format as follows:
+    We expect workflows to have a format as follows:
 
     Workflow_Head_Subworkflow - Contains various units which prepare an ML job. For example, we may have the following
     units present.
@@ -203,7 +203,7 @@ class PyMLTrainAndPredictWorkflow(WorkflowProperty):
     @property
     def workflow_specific_config(self) -> dict:
         """
-        Generates the specific config for the new implementation of ExabyteML. The remainder of the config is
+        Generates the specific config for the workflow. The remainder of the config is
         generated inside of the parent Workflow class.
 
         Returns:
@@ -223,169 +223,4 @@ class PyMLTrainAndPredictWorkflow(WorkflowProperty):
             "isUsingDataset": self.is_using_dataset,
         }
 
-        return specific_config
-
-
-class ExabyteMLPredictWorkflow(WorkflowProperty):
-    """
-    Legacy implementation of Exabyte ML's predict Workflow property class.
-    """
-
-    def __init__(self, name, parser, *args, **kwargs):
-        super().__init__(name, parser, *args, **kwargs)
-
-        self.model = self.parser.model
-        self.targets = self.parser.targets
-        self.features = self.parser.features
-        self.scaling_params_per_feature = self.parser.scaling_params_per_feature
-
-    @property
-    def workflow_specific_config(self) -> dict:
-        """
-        Generates the specific config for a legacy ExabyteML workflow. The remainder of the config is generated
-        inside of the parent Worfklow class.
-
-        Returns:
-             dict
-        """
-        specific_config = {
-            "units": [
-                {
-                    "_id": "LCthJ6E2QabYCZqf4",
-                    "name": "ml_predict_subworkflow",
-                    "type": "subworkflow",
-                    "flowchartId": "subworkflow",
-                    "head": True,
-                }
-            ],
-            "subworkflows": [
-                {
-                    "name": "ml_predict_subworkflow",
-                    "isDraft": True,
-                    "application": {
-                        "version": "0.2.0",
-                        "summary": "Exabyte Machine Learning Engine",
-                        "name": "exabyteml",
-                        "shortName": "ml",
-                        "build": "Default",
-                    },
-                    "units": [
-                        {
-                            "status": "idle",
-                            "statusTrack": [],
-                            "head": True,
-                            "flowchartId": "io",
-                            "name": "input",
-                            "application": {
-                                "version": "0.2.0",
-                                "summary": "Exabyte Machine Learning Engine",
-                                "name": "exabyteml",
-                                "shortName": "ml",
-                                "build": "Default",
-                            },
-                            "results": [],
-                            "next": "data_transformation_manipulation",
-                            "source": "api",
-                            "postProcessors": [],
-                            "preProcessors": [],
-                            "subtype": "dataFrame",
-                            "input": [
-                                {
-                                    "endpoint": "dataframe",
-                                    "endpoint_options": {
-                                        "headers": {},
-                                        "data": {"features": self.features, "ids": [], "targets": self.targets},
-                                        "method": "POST",
-                                        "params": {},
-                                        "jobId": "",
-                                    },
-                                }
-                            ],
-                            "type": "io",
-                            "monitors": [],
-                        },
-                        {
-                            "status": "idle",
-                            "statusTrack": [],
-                            "head": False,
-                            "flowchartId": "data_transformation_manipulation",
-                            "name": "clean data",
-                            "monitors": [],
-                            "results": [],
-                            "next": "data_transformation_scale_and_reduce",
-                            "application": {
-                                "version": "0.2.0",
-                                "summary": "Exabyte Machine Learning Engine",
-                                "name": "exabyteml",
-                                "shortName": "ml",
-                                "build": "Default",
-                            },
-                            "postProcessors": [],
-                            "preProcessors": [],
-                            "operationType": "manipulation",
-                            "operation": "data_transformation",
-                            "type": "processing",
-                            "inputData": {
-                                "cleanMissingData": True,
-                                "replaceNoneValuesWith": 0,
-                                "removeDuplicateRows": True,
-                            },
-                        },
-                        {
-                            "status": "idle",
-                            "statusTrack": [],
-                            "head": False,
-                            "flowchartId": "data_transformation_scale_and_reduce",
-                            "name": "scale and reduce",
-                            "monitors": [],
-                            "results": [],
-                            "next": "score",
-                            "application": {
-                                "version": "0.2.0",
-                                "build": "Default",
-                                "name": "exabyteml",
-                                "shortName": "ml",
-                                "summary": "Exabyte Machine Learning Engine",
-                            },
-                            "postProcessors": [],
-                            "preProcessors": [],
-                            "operationType": "scale_and_reduce",
-                            "operation": "data_transformation",
-                            "type": "processing",
-                            "inputData": {
-                                "scaler": "standard_scaler",
-                                "perFeature": self.scaling_params_per_feature,
-                            },
-                        },
-                        {
-                            "status": "idle",
-                            "statusTrack": [],
-                            "executable": {"name": "score"},
-                            "flowchartId": "score",
-                            "name": "score",
-                            "head": False,
-                            "results": [{"name": "predicted_properties"}],
-                            "application": {
-                                "version": "0.2.0",
-                                "build": "Default",
-                                "name": "exabyteml",
-                                "shortName": "ml",
-                                "summary": "Exabyte Machine Learning Engine",
-                            },
-                            "postProcessors": [],
-                            "preProcessors": [],
-                            "context": {},
-                            "input": [],
-                            "flavor": {"name": "score"},
-                            "type": "execution",
-                            "monitors": [{"name": "standard_output"}],
-                        },
-                    ],
-                    "model": self.model,
-                    "_id": "LCthJ6E2QabYCZqf4",
-                    "properties": self.targets,
-                }
-            ],
-            "properties": self.targets,
-        }
         return specific_config
