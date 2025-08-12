@@ -29,7 +29,6 @@ NON_SCALAR_PROPERTIES_MANIFEST = {
     },
     "material": {"reference": "express.properties.material.Material"},
     "symmetry": {"reference": "express.properties.non_scalar.symmetry.Symmetry"},
-    "workflow:ml_predict": {"reference": "express.properties.workflow.ExabyteMLPredictWorkflow"},
     "workflow:pyml_predict": {"reference": "express.properties.workflow.PyMLTrainAndPredictWorkflow"},
     "phonon_dos": {"reference": "express.properties.non_scalar.two_dimensional_plot.phonon_dos.PhononDOS"},
     "phonon_dispersions": {
@@ -70,7 +69,6 @@ PARSERS_REGISTRY = {
     "vasp": "express.parsers.apps.vasp.parser.VaspParser",
     "nwchem": "express.parsers.apps.nwchem.parser.NwchemParser",
     "structure": "express.parsers.structure.StructureParser",
-    "exabyteml": "express.parsers.exabyteml.ExabyteMLParser",
 }
 
 # Used to round to zero by default
