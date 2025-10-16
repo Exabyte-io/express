@@ -51,12 +51,19 @@ class StructureParser(BaseParser, IonicDataMixin):
 
         # cell_type is either original, primitive or conventional
         self.cell_type = kwargs.get("cell_type", "original")
-        self.structure = Structure.from_str(self.structure_string, self.structure_format)
+
+        # Initialize structure class
+        if self.structure_format == "pymatgen.core.structure":
+            structure_as_dict = json.loads(self.structure_string)
+            self.structure = Structure.from_dict(structure_as_dict)
+        else:
+            self.structure = Structure.from_str(self.structure_string, self.structure_format)
+
         if self.cell_type != "original":
             self.structure = STRUCTURE_MAP[self.cell_type](self.structure)
 
         # keep only one atom inside the basis in order to have the original lattice type
-        self.lattice_only_structure = Structure.from_str(self.structure_string, self.structure_format)  # deepcopy
+        self.lattice_only_structure = self.structure.copy() # deepcopy
         self.lattice_only_structure.remove_sites(range(1, len(self.structure.sites)))
 
     def lattice_vectors(self):
