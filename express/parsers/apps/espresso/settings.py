@@ -121,6 +121,12 @@ REGEX = {
         "output_type": "float",
         "match_groups": [1, 2, 3, 4],
     },
+    "wavefunction_amplitude": {
+        "regex": r"^\s+({0})\s+({0})".format(DOUBLE_REGEX),
+        "occurrences": 0,
+        "output_type": "float",
+        "match_groups": [1, 2],
+    },
     "charge_density_profile": {
         "regex": r"^\s+({0})\s+({0})\s+{0}\s+{0}\s+{0}".format(DOUBLE_REGEX),
         "occurrences": 0,

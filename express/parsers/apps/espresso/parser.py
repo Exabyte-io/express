@@ -274,8 +274,18 @@ class EspressoParser(BaseParser, IonicDataMixin, ElectronicDataMixin, Reciprocal
     def _get_esm_file(self):
         return find_file(".esm1", self.work_dir)
 
+    def _get_wavefunction_file(self):
+        """
+        Get wavefunction data file (e.g., from pp.x postprocessing output).
+        This looks for a file with wavefunction amplitude data.
+        """
+        return find_file(".wavefunction", self.work_dir)
+
     def potential_profile(self):
         return self.txt_parser.potential_profile(self._get_file_content(self._get_esm_file()))
+
+    def wavefunction_amplitude(self):
+        return self.txt_parser.wavefunction_amplitude(self._get_file_content(self._get_wavefunction_file()))
 
     def charge_density_profile(self):
         return self.txt_parser.charge_density_profile(self._get_file_content(self._get_esm_file()))

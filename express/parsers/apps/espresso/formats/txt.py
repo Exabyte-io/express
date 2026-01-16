@@ -701,6 +701,24 @@ class EspressoTXTParser(BaseTXTParser):
         data = self._general_output_parser(text, **settings.REGEX["potential_profile"])
         return [[e[i] for e in data] for i in range(4)]
 
+    def wavefunction_amplitude(self, text):
+        """
+        Extracts wavefunction amplitude along z coordinate.
+
+        Example input:
+            #z (A)  Amplitude
+             -4.89        0.0012
+             -4.78        0.0034
+             -4.67        0.0067
+             -4.56        0.0123
+             -4.44        0.0234
+
+        Returns:
+            list[list[float]]
+        """
+        data = self._general_output_parser(text, **settings.REGEX["wavefunction_amplitude"])
+        return [[e[i] for e in data] for i in range(2)]
+
     def charge_density_profile(self, text):
         """
         Extracts total charge density along z.
