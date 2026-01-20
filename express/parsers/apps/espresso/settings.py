@@ -8,6 +8,7 @@ PHONON_MODES_FILE = "normal_modes.out"
 AVERAGE_FILE = "avg.dat"
 HP_FILE = "__prefix__.Hubbard_parameters.dat"  # contains Hubbard U and V parameters
 HP_NN_FILE = "HUBBARD.dat"  # contains Hubbard V parameters for 6 nearest neighbors
+WAVEFUNCTION_FILE = "wf_r.dat"
 
 COMMON_REGEX = r"{0}\s+[=:<>]\s*([-+]?\d*\.?\d*([Ee][+-]?\d+)?)"
 DOUBLE_REGEX = GENERAL_REGEX.double_number
