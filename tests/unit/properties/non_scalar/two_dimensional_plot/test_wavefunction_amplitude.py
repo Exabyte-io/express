@@ -11,7 +11,7 @@ WAVEFUNCTION_AMPLITUDE = {
     "name": "wavefunction_amplitude",
     "xDataArray": [0.0, 0.0050251256, 0.0100502513, 0.0150753769, 0.0201005025],
     "yDataSeries": [[0.0000322091, 0.0000072134, -0.0000218274, -0.0000540398, -0.0000883573]],
-    "xAxis": {"label": "z coordinate", "units": "angstrom"},
+    "xAxis": {"label": "coordinate", "units": "angstrom"},
     "yAxis": {"label": "amplitude", "units": "a.u."},
 }
 
