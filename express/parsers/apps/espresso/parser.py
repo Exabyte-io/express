@@ -284,7 +284,7 @@ class EspressoParser(BaseParser, IonicDataMixin, ElectronicDataMixin, Reciprocal
         data = self.txt_parser.wavefunction_amplitude(self._get_file_content(self._get_wavefunction_file()))
         lattice = self.xml_parser.final_lattice_vectors()
         alat = lattice["vectors"]["alat"]
-        data[0] = [x * alat * Constant.BOHR for x in data[0]]
+        data[0] = [x * alat for x in data[0]]
         return data
 
     def charge_density_profile(self):

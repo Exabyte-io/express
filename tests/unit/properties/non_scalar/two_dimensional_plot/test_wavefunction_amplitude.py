@@ -1,5 +1,4 @@
 from tests.unit import UnitTestBase
-from express.parsers.settings import Constant
 from express.properties.non_scalar.two_dimensional_plot.wavefunction_amplitude import WavefunctionAmplitude
 
 RAW_DATA_ALAT = [
@@ -7,10 +6,10 @@ RAW_DATA_ALAT = [
     [0.0000322091, 0.0000072134, -0.0000218274, -0.0000540398, -0.0000883573]
 ]
 
-ALAT_BOHR = 10.0
+ALAT_ANGSTROM = 10.0
 
 CONVERTED_DATA_ANGSTROMS = [
-    [x * ALAT_BOHR * Constant.BOHR for x in RAW_DATA_ALAT[0]],
+    [x * ALAT_ANGSTROM for x in RAW_DATA_ALAT[0]],
     RAW_DATA_ALAT[1]
 ]
 
