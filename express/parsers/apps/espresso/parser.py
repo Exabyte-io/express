@@ -281,7 +281,10 @@ class EspressoParser(BaseParser, IonicDataMixin, ElectronicDataMixin, Reciprocal
         return self.txt_parser.potential_profile(self._get_file_content(self._get_esm_file()))
 
     def wavefunction_amplitude(self):
-        return self.txt_parser.wavefunction_amplitude(self._get_file_content(self._get_wavefunction_file()))
+        data = self.txt_parser.wavefunction_amplitude(self._get_file_content(self._get_wavefunction_file()))
+        alat = self.txt_parser._get_alat(self.stdout_file)
+        data[0] = [x * alat * Constant.BOHR for x in data[0]]
+        return data
 
     def charge_density_profile(self):
         return self.txt_parser.charge_density_profile(self._get_file_content(self._get_esm_file()))
