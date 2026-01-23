@@ -41,6 +41,9 @@ NON_SCALAR_PROPERTIES_MANIFEST = {
     "potential_profile": {
         "reference": "express.properties.non_scalar.two_dimensional_plot.potential_profile.PotentialProfile"
     },
+    "wavefunction_amplitude": {
+        "reference": "express.properties.non_scalar.two_dimensional_plot.wavefunction_amplitude.WavefunctionAmplitude"
+    },
     "charge_density_profile": {
         "reference": "express.properties.non_scalar.two_dimensional_plot.charge_density_profile.ChargeDensityProfile"
     },

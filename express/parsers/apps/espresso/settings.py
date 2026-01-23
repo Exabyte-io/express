@@ -8,6 +8,7 @@ PHONON_MODES_FILE = "normal_modes.out"
 AVERAGE_FILE = "avg.dat"
 HP_FILE = "__prefix__.Hubbard_parameters.dat"  # contains Hubbard U and V parameters
 HP_NN_FILE = "HUBBARD.dat"  # contains Hubbard V parameters for 6 nearest neighbors
+WAVEFUNCTION_FILE = "wf_r.dat"
 
 COMMON_REGEX = r"{0}\s+[=:<>]\s*([-+]?\d*\.?\d*([Ee][+-]?\d+)?)"
 DOUBLE_REGEX = GENERAL_REGEX.double_number
@@ -120,6 +121,12 @@ REGEX = {
         "occurrences": 0,
         "output_type": "float",
         "match_groups": [1, 2, 3, 4],
+    },
+    "wavefunction_amplitude": {
+        "regex": r"^\s+({0})\s+({0})".format(DOUBLE_REGEX),
+        "occurrences": 0,
+        "output_type": "float",
+        "match_groups": [1, 2],
     },
     "charge_density_profile": {
         "regex": r"^\s+({0})\s+({0})\s+{0}\s+{0}\s+{0}".format(DOUBLE_REGEX),
