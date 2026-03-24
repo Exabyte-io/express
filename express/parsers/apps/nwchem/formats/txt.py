@@ -39,3 +39,27 @@ class NwchemTXTParser(BaseTXTParser):
             if value is not None:
                 energy_contributions.update({contribution: {"name": contribution, "value": value}})
         return energy_contributions
+
+    def homo_energy(self, text):
+        """
+        Extracts HOMO energy.
+
+        Args:
+            text (str): text to extract data from.
+
+        Returns:
+            float | None
+        """
+        return self._general_output_parser(text, **settings.REGEX["homo_energy"])
+
+    def lumo_energy(self, text):
+        """
+        Extracts LUMO energy.
+
+        Args:
+            text (str): text to extract data from.
+
+        Returns:
+            float | None
+        """
+        return self._general_output_parser(text, **settings.REGEX["lumo_energy"])
