@@ -2,6 +2,14 @@ test_nwchem_total_energy:
   workDir: fixtures/nwchem/test-001
   stdoutFile: fixtures/nwchem/test-001/nwchem-total-energy.log
 
+test_nwchem_homo_energy:
+  workDir: fixtures/nwchem/test-001
+  stdoutFile: fixtures/nwchem/test-001/nwchem-total-energy.log
+
+test_nwchem_lumo_energy:
+  workDir: fixtures/nwchem/test-001
+  stdoutFile: fixtures/nwchem/test-001/nwchem-total-energy.log
+
 test_nwchem_total_energy_contributions:
   workDir: fixtures/nwchem/test-001
   stdoutFile: fixtures/nwchem/test-001/nwchem-total-energy.log
