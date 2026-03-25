@@ -15,7 +15,6 @@ classifiers = [
     "Topic :: Software Development",
 ]
 dependencies = [
-    "munch==2.5.0",
     "pymatgen>=2023.8.10",
     "ase>=3.17.0",
     "mat3ra-esse>=2026.3.25.post0",
