@@ -16,10 +16,10 @@ class EspressoXMLParserBase(BaseXMLParser):
 
     TAG_VALUE_CAST_MAP = {
         "character": lambda v, s, c: v,
-        "integer": lambda v, s, c: np.array([int(_) for _ in re.findall(GENERAL_REGEX.int_number, v)]).reshape(
+        "integer": lambda v, s, c: np.array([int(_) for _ in re.findall(GENERAL_REGEX["int_number"], v)]).reshape(
             [s // c, c]
         ),
-        "real": lambda v, s, c: np.array([float(_) for _ in re.findall(GENERAL_REGEX.double_number, v)]).reshape(
+        "real": lambda v, s, c: np.array([float(_) for _ in re.findall(GENERAL_REGEX["double_number"], v)]).reshape(
             [s // c, c]
         ),
         "logical": lambda v, s, c: False if v in ["F", "false"] else True,

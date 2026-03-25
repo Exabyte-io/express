@@ -11,7 +11,7 @@ HP_NN_FILE = "HUBBARD.dat"  # contains Hubbard V parameters for 6 nearest neighb
 WAVEFUNCTION_FILE = "wf_r.dat"
 
 COMMON_REGEX = r"{0}\s+[=:<>]\s*([-+]?\d*\.?\d*([Ee][+-]?\d+)?)"
-DOUBLE_REGEX = GENERAL_REGEX.double_number
+DOUBLE_REGEX = GENERAL_REGEX["double_number"]
 
 STERNHEIMER_GW0_DIR_PATTERN = "/_gw0/"
 STERNHEIMER_GW_TITLE = "SternheimerGW"

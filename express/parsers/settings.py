@@ -1,5 +1,4 @@
 from math import pi
-from munch import Munch
 
 
 class Constant(object):
@@ -31,8 +30,7 @@ class Constant(object):
     ry_bohr_to_eV_A = 25.71104309541616  # or RYDBERG / BOHR
 
 
-GENERAL_REGEX = Munch()
-GENERAL_REGEX.update({"double_number": r"[-+]?\d*\.\d+(?:[eE][-+]?\d+)?", "int_number": r"[+-]?\d+"})
+GENERAL_REGEX= {"double_number": r"[-+]?\d*\.\d+(?:[eE][-+]?\d+)?", "int_number": r"[+-]?\d+"}
 
 
 # Maps the format keywords used in this code to their corresponding ase keywords.
