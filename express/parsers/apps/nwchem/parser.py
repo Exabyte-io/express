@@ -45,6 +45,26 @@ class NwchemParser(BaseParser, IonicDataMixin, ElectronicDataMixin, ReciprocalDa
                     value1[key2] = value2 * Constant.HARTREE
         return energy_contributions
 
+    def homo_energy(self):
+        """
+        Returns HOMO energy.
+
+        Reference:
+            NWChem orbital energies are defaulted to hartrees and are converted to eV in this method.
+        """
+        homo_energy = self.txt_parser.homo_energy(self._get_file_content(self.stdout_file))
+        return None if homo_energy is None else Constant.HARTREE * homo_energy
+
+    def lumo_energy(self):
+        """
+        Returns LUMO energy.
+
+        Reference:
+            NWChem orbital energies are defaulted to hartrees and are converted to eV in this method.
+        """
+        lumo_energy = self.txt_parser.lumo_energy(self._get_file_content(self.stdout_file))
+        return None if lumo_energy is None else Constant.HARTREE * lumo_energy
+
     def _is_nwchem_output_file(self, path):
         """
         Checks whether the given file is nwchem output file.

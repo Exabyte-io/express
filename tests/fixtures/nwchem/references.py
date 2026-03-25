@@ -4,6 +4,8 @@ All nwchem output values are in hartrees. ExPrESS converts units to eV.
 All reference energies are in eV.
 """
 TOTAL_ENERGY = -2079.18666382721904
+HOMO_ENERGY = -12.800485418916242
+LUMO_ENERGY = 3.1242763921882197
 
 TOTAL_ENERGY_CONTRIBUTION = {
     "one_electron": {"name": "one_electron", "value": -3350.531714067630674},

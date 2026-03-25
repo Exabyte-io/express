@@ -3,6 +3,8 @@ ZERO_WEIGHT_KPOINT_THRESHOLD = 1e-7
 SCALAR_PROPERTIES_MANIFEST = {
     "total_energy": {"reference": "express.properties.scalar.total_energy.TotalEnergy"},
     "fermi_energy": {"reference": "express.properties.scalar.fermi_energy.FermiEnergy"},
+    "homo_energy": {"reference": "express.properties.scalar.homo_energy.HOMOEnergy"},
+    "lumo_energy": {"reference": "express.properties.scalar.lumo_energy.LUMOEnergy"},
     "pressure": {"reference": "express.properties.scalar.pressure.Pressure"},
     "total_force": {"reference": "express.properties.scalar.total_force.TotalForce"},
     "volume": {"reference": "express.properties.scalar.volume.Volume"},
