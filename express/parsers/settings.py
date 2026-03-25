@@ -8,7 +8,7 @@ class Constant(object):
 
     _c = 299792458.0  # speed of light, m/s
     _mu0 = 4.0e-7 * pi  # permeability of vacuum
-    _eps0 = 1 / _mu0 / _c**2  # permittivity of vacuum
+    _eps0 = 1 / _mu0 / _c ** 2  # permittivity of vacuum
     _Grav = 6.67259e-11  # gravitational constant
     _hplanck = 6.6260755e-34  # Planck constant, J s
     _hbar = _hplanck / (2 * pi)  # Planck constant / 2pi, J s
@@ -18,9 +18,9 @@ class Constant(object):
     _Nav = 6.0221367e23  # Avogadro number
     _k = 1.380658e-23  # Boltzmann constant, J/K
     _amu = 1.6605402e-27  # atomic mass unit, kg
-    BOHR = 4e10 * pi * _eps0 * _hbar**2 / _me / _e**2  # Bohr radius in angstrom
+    BOHR = 4e10 * pi * _eps0 * _hbar ** 2 / _me / _e ** 2  # Bohr radius in angstrom
     eV = 1.0
-    HARTREE = _me * _e**3 / 16 / pi**2 / _eps0**2 / _hbar**2  # in eV
+    HARTREE = _me * _e ** 3 / 16 / pi ** 2 / _eps0 ** 2 / _hbar ** 2  # in eV
     RYDBERG = 0.5 * HARTREE  # in eV
     Ry = RYDBERG
     Ha = HARTREE
@@ -30,16 +30,12 @@ class Constant(object):
     ry_bohr_to_eV_A = 25.71104309541616  # or RYDBERG / BOHR
 
 
-GENERAL_REGEX= {"double_number": r"[-+]?\d*\.\d+(?:[eE][-+]?\d+)?", "int_number": r"[+-]?\d+"}
-
+GENERAL_REGEX = {"double_number": r"[-+]?\d*\.\d+(?:[eE][-+]?\d+)?", "int_number": r"[+-]?\d+"}
 
 # Maps the format keywords used in this code to their corresponding ase keywords.
 ASE_FORMATS = {"poscar": "vasp", "cif": "cif", "espresso-in": "espresso-in"}
 
-ATOMIC_REGEX = Munch()
-ATOMIC_REGEX.update(
-    {
-        "orbitalName": r"[1-9][sSpPdDfF]",
-        "atomicSpecies": r"[a-zA-Z]{1,2}[\d+]?",
-    }
-)
+ATOMIC_REGEX = {
+    "orbitalName": r"[1-9][sSpPdDfF]",
+    "atomicSpecies": r"[a-zA-Z]{1,2}[\d+]?",
+}
