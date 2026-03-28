@@ -19,6 +19,10 @@ class NwchemParser(BaseParser, IonicDataMixin, ElectronicDataMixin, ReciprocalDa
         self.stdout_file = self.kwargs["stdout_file"]
         self.txt_parser = NwchemTXTParser(self.work_dir)
 
+    @staticmethod
+    def _kcal_per_mol_to_ev(value):
+        return value * Constant.kcal / Constant._Nav
+
     def total_energy(self):
         """
         Returns total energy.
@@ -64,6 +68,31 @@ class NwchemParser(BaseParser, IonicDataMixin, ElectronicDataMixin, ReciprocalDa
         """
         lumo_energy = self.txt_parser.lumo_energy(self._get_file_content(self.stdout_file))
         return None if lumo_energy is None else Constant.HARTREE * lumo_energy
+
+    def zero_point_energy(self):
+        """
+        Returns zero point energy.
+
+        Reference:
+            NWChem zero-point correction is printed in kcal/mol and converted to eV in this method.
+        """
+        zero_point_energy = self.txt_parser.zero_point_energy(self._get_file_content(self.stdout_file))
+        return None if zero_point_energy is None else self._kcal_per_mol_to_ev(zero_point_energy)
+
+    def thermal_correction_to_energy(self):
+        """
+        Returns thermal correction to energy.
+
+        Reference:
+            NWChem thermochemistry correction is parsed directly in kcal/mol.
+        """
+        return self.txt_parser.thermal_correction_to_energy(self._get_file_content(self.stdout_file))
+
+    def thermal_correction_to_enthalpy(self):
+        """
+        Returns thermal correction to enthalpy.
+        """
+        return self.txt_parser.thermal_correction_to_enthalpy(self._get_file_content(self.stdout_file))
 
     def _is_nwchem_output_file(self, path):
         """

@@ -12,6 +12,12 @@ SCALAR_PROPERTIES_MANIFEST = {
     "elemental_ratio": {"reference": "express.properties.scalar.elemental_ratio.ElementalRatio"},
     "p-norm": {"reference": "express.properties.scalar.p_norm.PNorm"},
     "zero_point_energy": {"reference": "express.properties.scalar.zero_point_energy.ZeroPointEnergy"},
+    "thermal_correction_to_energy": {
+        "reference": "express.properties.scalar.thermal_correction_to_energy.ThermalCorrectionToEnergy"
+    },
+    "thermal_correction_to_enthalpy": {
+        "reference": "express.properties.scalar.thermal_correction_to_enthalpy.ThermalCorrectionToEnthalpy"
+    },
     "surface_energy": {"reference": "express.properties.scalar.scalar_property_context.ScalarPropertyFromContext"},
     "reaction_energy_barrier": {"reference": "express.properties.scalar.reaction_energy_barrier.ReactionEnergyBarrier"},
     "valence_band_offset": {"reference": "express.properties.scalar.scalar_property_context.ScalarPropertyFromContext"},
