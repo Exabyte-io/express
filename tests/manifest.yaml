@@ -14,6 +14,18 @@ test_nwchem_total_energy_contributions:
   workDir: fixtures/nwchem/test-001
   stdoutFile: fixtures/nwchem/test-001/nwchem-total-energy.log
 
+test_nwchem_zero_point_energy:
+  workDir: fixtures/nwchem/test-002
+  stdoutFile: fixtures/nwchem/test-002/nwchem-frequency.log
+
+test_nwchem_thermal_correction_to_energy:
+  workDir: fixtures/nwchem/test-002
+  stdoutFile: fixtures/nwchem/test-002/nwchem-frequency.log
+
+test_nwchem_thermal_correction_to_enthalpy:
+  workDir: fixtures/nwchem/test-002
+  stdoutFile: fixtures/nwchem/test-002/nwchem-frequency.log
+
 
 
 test_espresso_total_energy:
