@@ -63,3 +63,39 @@ class NwchemTXTParser(BaseTXTParser):
             float | None
         """
         return self._general_output_parser(text, **settings.REGEX["lumo_energy"])
+
+    def zero_point_energy(self, text):
+        """
+        Extracts zero point energy.
+
+        Args:
+            text (str): text to extract data from.
+
+        Returns:
+            float | None
+        """
+        return self._general_output_parser(text, **settings.REGEX["zero_point_energy"])
+
+    def thermal_correction_to_energy(self, text):
+        """
+        Extracts thermal correction to energy.
+
+        Args:
+            text (str): text to extract data from.
+
+        Returns:
+            float | None
+        """
+        return self._general_output_parser(text, **settings.REGEX["thermal_correction_to_energy"])
+
+    def thermal_correction_to_enthalpy(self, text):
+        """
+        Extracts thermal correction to enthalpy.
+
+        Args:
+            text (str): text to extract data from.
+
+        Returns:
+            float | None
+        """
+        return self._general_output_parser(text, **settings.REGEX["thermal_correction_to_enthalpy"])

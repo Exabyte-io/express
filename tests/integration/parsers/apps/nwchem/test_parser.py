@@ -23,3 +23,14 @@ class TestNwchemParser(IntegrationTestBase):
 
     def test_nwchem_total_energy_contributions(self):
         self.assertDeepAlmostEqual(self.parser.total_energy_contributions(), TOTAL_ENERGY_CONTRIBUTION, places=2)
+
+    def test_nwchem_zero_point_energy(self):
+        self.assertAlmostEqual(self.parser.zero_point_energy(), ZERO_POINT_ENERGY, places=2)
+
+    def test_nwchem_thermal_correction_to_energy(self):
+        self.assertAlmostEqual(self.parser.thermal_correction_to_energy(), THERMAL_CORRECTION_TO_ENERGY, places=2)
+
+    def test_nwchem_thermal_correction_to_enthalpy(self):
+        self.assertAlmostEqual(
+            self.parser.thermal_correction_to_enthalpy(), THERMAL_CORRECTION_TO_ENTHALPY, places=2
+        )
