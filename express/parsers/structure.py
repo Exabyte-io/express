@@ -183,7 +183,9 @@ class StructureParser(BaseParser, IonicDataMixin):
                 )
 
             elements.append({"id": i, "value": site.species_string})
-            coordinates.append({"id": i, "value": self._round(site.frac_coords.tolist(), PRECISION_MAP["coordinates_crystal"])})
+            coordinates.append(
+                {"id": i, "value": self._round(site.frac_coords.tolist(), PRECISION_MAP["coordinates_crystal"])}
+            )
         return {"units": "crystal", "elements": elements, "coordinates": coordinates}
 
     def space_group_symbol(self):
