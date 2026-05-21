@@ -173,14 +173,22 @@ class StructureParser(BaseParser, IonicDataMixin):
         Reference:
             func: express.parsers.mixins.ionic.IonicDataMixin.basis
         """
-        return {
-            "units": "crystal",
-            "elements": [{"id": i, "value": v.species_string} for i, v in enumerate(self.structure.sites)],
-            "coordinates": [
-                {"id": i, "value": self._round(v.frac_coords.tolist(), PRECISION_MAP["coordinates_crystal"])}
-                for i, v in enumerate(self.structure.sites)
-            ],
-        }
+        elements = []
+        coordinates = []
+        for i, site in enumerate(self.structure.sites):
+            if not site.is_ordered:
+                raise ValueError(
+                   f"Disordered site at {site.frac_coords.tolist()} with "
+                   f"occupancy {site.species} is not supported."
+                )
+
+            # Use specie.symbol to strip oxidation state (e.g. "Li0+" → "Li", "O2-" → "O")
+            elements.append({"id": i, "value": site.specie.symbol})
+            coordinates.append({
+                "id": i,
+                "value": self._round(site.frac_coords.tolist(), PRECISION_MAP["coordinates_crystal"])
+            })
+        return {"units": "crystal", "elements": elements, "coordinates": coordinates}
 
     def space_group_symbol(self):
         """
