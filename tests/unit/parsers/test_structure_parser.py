@@ -32,7 +32,7 @@ class LiCifStructureParserTest(UnitTestBase):
     def tearDown(self):
         super().tearDown()
 
-    def test_basis_parsing_of_oxidation_state_suffix(self):
+    def test_parser_strips_oxidation_state_suffix(self):
         """
         Verifies the full basis: element symbols (Li0+ -> Li) and
         fractional coordinates are both parsed correctly.
