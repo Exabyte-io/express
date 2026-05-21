@@ -38,3 +38,37 @@ class LiCifStructureParserTest(UnitTestBase):
         fractional coordinates are both parsed correctly.
         """
         self.assertDeepAlmostEqual(self.parser.basis(), LI_CIF_BASIS, places=5)
+
+
+class DisorderedStructureParserTest(UnitTestBase):
+    """
+    Tests that StructureParser raises a ValueError with an informative message
+    when basis() is called on a structure with disordered (mixed-occupancy) sites.
+
+    The SrLaCoO4 CIF has Sr2+ and La3+ sharing the same Wyckoff 4e site
+    with occupancy 0.5 each — a canonical disordered case.
+    """
+
+    def setUp(self):
+        super().setUp()
+        # Parsing itself succeeds — pymatgen can load disordered structures.
+        # The error is raised lazily when basis() is called.
+        self.parser = StructureParser(
+            structure_string=_read_file(DISORDERED_CIF_PATH),
+            structure_format="cif",
+        )
+
+    def tearDown(self):
+        super().tearDown()
+
+    def test_basis_raises_for_disordered_site(self):
+        """
+        basis() must raise ValueError for mixed-occupancy sites.
+        The error message should identify the site coordinates and occupancy.
+        """
+        with self.assertRaises(ValueError) as ctx:
+            self.parser.basis()
+        error = str(ctx.exception)
+        self.assertIn("is not supported", error)
+        self.assertIn("occupancy", error)
+        self.assertIn("0.361", error)
