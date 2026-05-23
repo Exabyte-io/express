@@ -15,12 +15,13 @@ classifiers = [
     "Topic :: Software Development",
 ]
 dependencies = [
-    "pymatgen>=2025.10.7",
     "ase>=3.28.0",
-    "mat3ra-esse>=2026.5.18.post3",
     "jarvis-tools>=2026.4.2",
+    "mat3ra-esse>=2026.5.18.post3",
     # To avoid module 'numpy.linalg._umath_linalg' has no attribute '_ilp64' in Colab
     "numpy>=1.24.4,<2",
+    "pymatgen>=2025.10.7",
+    "qe-tools==2.3.0",
 ]
 
 [project.optional-dependencies]

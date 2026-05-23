@@ -2,7 +2,7 @@ import json
 
 import pymatgen as mg
 from pymatgen.core.structure import Structure
-from pymatgen.io.pwscf import PWInput
+from qe_tools.parsers import PwInputFile
 from jarvis.core.atoms import Atoms
 from jarvis.io.vasp.inputs import Poscar
 
@@ -41,7 +41,13 @@ class StructureParser(BaseParser, IonicDataMixin):
 
         # convert espresso input into pymatgen.core.structure
         if self.structure_format == "espresso-in":
-            self.structure = PWInput.from_str(self.structure_string).structure
+            parsed = PwInputFile(self.structure_string)
+            self.structure = Structure(
+                lattice=parsed.structure["cell"],
+                species=parsed.structure["atom_names"],
+                coords=parsed.structure["positions"],
+                coords_are_cartesian=True,
+            )
         # convert jarvis-db-entry JSON into poscar
         elif self.structure_format == "jarvis-db-entry":
             self.structure_string = self.jarvis_db_entry_json_to_poscar(self.structure_string)
