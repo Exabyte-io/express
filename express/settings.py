@@ -19,6 +19,7 @@ SCALAR_PROPERTIES_MANIFEST = {
         "reference": "express.properties.scalar.thermal_correction_to_enthalpy.ThermalCorrectionToEnthalpy"
     },
     "surface_energy": {"reference": "express.properties.scalar.scalar_property_context.ScalarPropertyFromContext"},
+    "formation_energy": {"reference": "express.properties.scalar.scalar_property_context.ScalarPropertyFromContext"},
     "reaction_energy_barrier": {"reference": "express.properties.scalar.reaction_energy_barrier.ReactionEnergyBarrier"},
     "valence_band_offset": {"reference": "express.properties.scalar.scalar_property_context.ScalarPropertyFromContext"},
 }
