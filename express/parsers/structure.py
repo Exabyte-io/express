@@ -2,7 +2,7 @@ import json
 
 import pymatgen as mg
 from pymatgen.core.structure import Structure
-from qe_tools.parsers import PwInputFile
+from express.parsers.apps.espresso.pw_input_file import PwInputFile
 from jarvis.core.atoms import Atoms
 from jarvis.io.vasp.inputs import Poscar
 

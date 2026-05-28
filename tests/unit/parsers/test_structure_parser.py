@@ -1,7 +1,7 @@
 import os
 
 from tests.unit import UnitTestBase
-from tests.fixtures.structural.references import LI_CIF_BASIS, SI_IBRAV0_BASIS, SI_IBRAV2_BASIS, SI_PRIMITIVE_LATTICE_A
+from tests.fixtures.structural.references import LI_CIF_BASIS, SI_IBRAV_BASIS, SI_PRIMITIVE_LATTICE_A
 from express.parsers.structure import StructureParser
 
 LI_CIF_PATH = os.path.join(os.path.dirname(__file__), "..", "..", "fixtures", "structural", "test-004", "Li.cif")
@@ -98,7 +98,7 @@ class EspressoInIbrav0StructureParserTest(UnitTestBase):
         super().tearDown()
 
     def test_basis(self):
-        self.assertDeepAlmostEqual(self.parser.basis(), SI_IBRAV0_BASIS, places=5)
+        self.assertDeepAlmostEqual(self.parser.basis(), SI_IBRAV_BASIS, places=5)
 
     def test_formula(self):
         self.assertEqual(self.parser.formula(), "Si2")
@@ -126,7 +126,7 @@ class EspressoInIbrav2StructureParserTest(UnitTestBase):
         super().tearDown()
 
     def test_basis(self):
-        self.assertDeepAlmostEqual(self.parser.basis(), SI_IBRAV2_BASIS, places=5)
+        self.assertDeepAlmostEqual(self.parser.basis(), SI_IBRAV_BASIS, places=5)
 
     def test_formula(self):
         self.assertEqual(self.parser.formula(), "Si2")

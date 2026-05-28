@@ -30,23 +30,12 @@ LI_CIF_BASIS = {
     ],
 }
 
-# ibrav=0 silicon with explicit CELL_PARAMETERS
-SI_IBRAV0_BASIS = {
+SI_IBRAV_BASIS = {
     "units": "crystal",
     "elements": [{"id": 0, "value": "Si"}, {"id": 1, "value": "Si"}],
     "coordinates": [
         {"id": 0, "value": [0.0, 0.0, 0.0]},
         {"id": 1, "value": [0.25, 0.25, 0.25]},
-    ],
-}
-
-# ibrav=2 with FCC lattice, qe-tools produces symmetry equivalent but non-identical basis
-SI_IBRAV2_BASIS = {
-    "units": "crystal",
-    "elements": [{"id": 0, "value": "Si"}, {"id": 1, "value": "Si"}],
-    "coordinates": [
-        {"id": 0, "value": [0.0, 0.0, 0.0]},
-        {"id": 1, "value": [-0.25, 0.75, -0.25]},
     ],
 }
 
