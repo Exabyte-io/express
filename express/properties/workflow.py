@@ -77,6 +77,9 @@ class PyMLTrainAndPredictWorkflow(WorkflowProperty):
         - pyml:post_processing:parity_plot:matplotlib: Creates a parity plot if the workflow is in "Training" mode.
     """
 
+    _RUNTIME_ITEM_KEYS = ("preProcessors", "postProcessors", "monitors", "results")
+    _RUNTIME_ITEM_CONTAINERS = ("flavor", "executable")
+
     def __init__(
         self,
         name: str,
@@ -129,12 +132,84 @@ class PyMLTrainAndPredictWorkflow(WorkflowProperty):
         object_storage_data.update({"NAME": os.path.join(*path_name)})
 
         io_unit_input = {
+            "type": "object_storage",
             "basename": basename,
             "pathname": self.context_dir_relative_path,
             "overwrite": False,
             "objectData": object_storage_data,
         }
         return io_unit_input
+
+    @classmethod
+    def _normalize_runtime_items(cls, items):
+        if not isinstance(items, list):
+            return items
+        return [{"name": item} if isinstance(item, str) else item for item in items]
+
+    @classmethod
+    def _normalize_runtime_items_container(cls, container):
+        if not isinstance(container, dict):
+            return
+        for key in cls._RUNTIME_ITEM_KEYS:
+            if key in container:
+                container[key] = cls._normalize_runtime_items(container[key])
+            else:
+                container[key] = []
+
+    @classmethod
+    def _normalize_unit(cls, unit):
+        if not isinstance(unit, dict):
+            return
+        for key in cls._RUNTIME_ITEM_KEYS:
+            if key in unit:
+                unit[key] = cls._normalize_runtime_items(unit[key])
+        for container_key in cls._RUNTIME_ITEM_CONTAINERS:
+            if container_key in unit:
+                cls._normalize_runtime_items_container(unit[container_key])
+        if unit.get("type") == "execution":
+            cls._normalize_execution_unit(unit)
+        if unit.get("type") == "io" and unit.get("source") == "object_storage":
+            for item in unit.get("input", []):
+                if isinstance(item, dict) and "type" not in item:
+                    item["type"] = "object_storage"
+
+    @classmethod
+    def _normalize_execution_unit(cls, unit):
+        if isinstance(unit.get("context"), dict) and not unit["context"]:
+            unit["context"] = []
+
+        application = unit.get("application", {})
+        executable = unit.get("executable", {})
+        for target in (executable, unit.get("flavor", {})):
+            if not isinstance(target, dict):
+                continue
+            target.setdefault("applicationName", application.get("name", ""))
+            target.setdefault("applicationVersion", application.get("version", ""))
+            if target is not executable:
+                target.setdefault("executableName", executable.get("name", ""))
+
+        for input_item in unit.get("input", []):
+            if not isinstance(input_item, dict):
+                continue
+            input_item.setdefault("isManuallyChanged", False)
+            if "template" not in input_item:
+                input_item["template"] = {
+                    "_id": input_item.get("_id", ""),
+                    "name": input_item.get("name", ""),
+                    "content": input_item.get("content", ""),
+                    "contextProviders": input_item.get("contextProviders", []),
+                    "applicationName": input_item.get("applicationName", application.get("name", "")),
+                    "executableName": input_item.get("executableName", executable.get("name", "")),
+                    "applicationVersion": input_item.get("applicationVersion", application.get("version", "")),
+                }
+
+    @classmethod
+    def _normalize_workflow_units(cls, workflow_config):
+        for subworkflow in workflow_config.get("subworkflows", []):
+            for unit in subworkflow.get("units", []):
+                cls._normalize_unit(unit)
+        for unit in workflow_config.get("units", []):
+            cls._normalize_unit(unit)
 
     def set_io_unit_filenames(self, unit: dict) -> None:
         """
@@ -220,7 +295,10 @@ class PyMLTrainAndPredictWorkflow(WorkflowProperty):
         specific_config = {
             "units": train_subworkflow_units,
             "subworkflows": predict_subworkflows,
+            "properties": self.workflow.get("properties", []),
+            "workflows": self.workflow.get("workflows", []),
             "isUsingDataset": self.is_using_dataset,
         }
 
+        self._normalize_workflow_units(specific_config)
         return specific_config
