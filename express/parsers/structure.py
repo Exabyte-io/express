@@ -1,9 +1,8 @@
-import io
 import json
 
 import pymatgen as mg
 from pymatgen.core.structure import Structure
-from ase.io import read, write
+from express.parsers.apps.espresso.pw_input_file import PwInputFile
 from jarvis.core.atoms import Atoms
 from jarvis.io.vasp.inputs import Poscar
 
@@ -38,22 +37,22 @@ class StructureParser(BaseParser, IonicDataMixin):
         super().__init__(*args, **kwargs)
         self.structure_string = kwargs.get("structure_string")
         self.structure_format = kwargs.get("structure_format")
+        self.cell_type = kwargs.get("cell_type", "original")  # original, primitive or conventional
 
-        # convert espresso input into poscar
+        # convert espresso input into pymatgen.core.structure
         if self.structure_format == "espresso-in":
-            self.structure_format = "poscar"
-            self.structure_string = self.espresso_input_to_poscar(self.structure_string)
-
+            parsed = PwInputFile(self.structure_string)
+            self.structure = Structure(
+                lattice=parsed.structure["cell"],
+                species=parsed.structure["atom_names"],
+                coords=parsed.structure["positions"],
+                coords_are_cartesian=True,
+            )
         # convert jarvis-db-entry JSON into poscar
-        if self.structure_format == "jarvis-db-entry":
-            self.structure_format = "poscar"
+        elif self.structure_format == "jarvis-db-entry":
             self.structure_string = self.jarvis_db_entry_json_to_poscar(self.structure_string)
-
-        # cell_type is either original, primitive or conventional
-        self.cell_type = kwargs.get("cell_type", "original")
-
-        # Initialize structure class
-        if self.structure_format == "pymatgen.core.structure":
+            self.structure = Structure.from_str(self.structure_string, "poscar")
+        elif self.structure_format == "pymatgen.core.structure":
             structure_as_dict = json.loads(self.structure_string)
             self.structure = Structure.from_dict(structure_as_dict)
         else:
@@ -63,7 +62,7 @@ class StructureParser(BaseParser, IonicDataMixin):
             self.structure = STRUCTURE_MAP[self.cell_type](self.structure)
 
         # keep only one atom inside the basis in order to have the original lattice type
-        self.lattice_only_structure = self.structure.copy() # deepcopy
+        self.lattice_only_structure = self.structure.copy()  # deepcopy
         self.lattice_only_structure.remove_sites(range(1, len(self.structure.sites)))
 
     def lattice_vectors(self):
@@ -178,16 +177,15 @@ class StructureParser(BaseParser, IonicDataMixin):
         for i, site in enumerate(self.structure.sites):
             if not site.is_ordered:
                 raise ValueError(
-                   f"Disordered site at {site.frac_coords.tolist()} with "
-                   f"occupancy {site.species} is not supported."
+                    f"Disordered site at {site.frac_coords.tolist()} with "
+                    f"occupancy {site.species} is not supported."
                 )
 
             # Use specie.symbol to strip oxidation state (e.g. "Li0+" → "Li", "O2-" → "O")
             elements.append({"id": i, "value": site.specie.symbol})
-            coordinates.append({
-                "id": i,
-                "value": self._round(site.frac_coords.tolist(), PRECISION_MAP["coordinates_crystal"])
-            })
+            coordinates.append(
+                {"id": i, "value": self._round(site.frac_coords.tolist(), PRECISION_MAP["coordinates_crystal"])}
+            )
         return {"units": "crystal", "elements": elements, "coordinates": coordinates}
 
     def space_group_symbol(self):
@@ -239,27 +237,6 @@ class StructureParser(BaseParser, IonicDataMixin):
             func: express.parsers.mixins.ionic.IonicDataMixin.atomic_constraints
         """
         return self.structure.site_properties.get("selective_dynamics")
-
-    def espresso_input_to_poscar(self, espresso_input):
-        """
-        Extracts structure from espresso input file and returns in poscar format.
-
-        Args:
-            espresso_input (str): input file content
-
-        Returns:
-            str: poscar
-        """
-        input_ = io.StringIO()
-        input_.write(espresso_input)
-        input_.seek(0)
-        atoms = read(input_, format="espresso-in")
-        output_ = io.StringIO()
-        write(output_, atoms, format="vasp", vasp5=True)
-        content = output_.getvalue()
-        input_.close()
-        output_.close()
-        return content
 
     def jarvis_db_entry_json_to_poscar(self, jarvis_db_entry_json_str):
         """

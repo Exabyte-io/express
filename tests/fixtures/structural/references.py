@@ -29,3 +29,14 @@ LI_CIF_BASIS = {
         {"id": 8, "value": [0.333333330, 0.666666670, 0.666666670]},
     ],
 }
+
+SI_IBRAV_BASIS = {
+    "units": "crystal",
+    "elements": [{"id": 0, "value": "Si"}, {"id": 1, "value": "Si"}],
+    "coordinates": [
+        {"id": 0, "value": [0.0, 0.0, 0.0]},
+        {"id": 1, "value": [0.25, 0.25, 0.25]},
+    ],
+}
+
+SI_PRIMITIVE_LATTICE_A = 3.867  # Angstrom
