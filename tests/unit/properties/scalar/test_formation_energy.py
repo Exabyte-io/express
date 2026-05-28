@@ -1,7 +1,7 @@
 from tests.unit import UnitTestBase
 from express.properties.scalar.scalar_property_context import ScalarPropertyFromContext
 
-FORMATION_ENERGY = {"units": "eV", "name": "formation_energy", "value": -0.123}
+FORMATION_ENERGY = {"units": "eV/atom", "name": "formation_energy", "value": -0.123}
 FORMATION_ENERGY_VALUE = -0.123
 
 
