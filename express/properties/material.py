@@ -118,6 +118,7 @@ class Material(BaseProperty):
             "creator": {"_id": "", "cls": "User", "slug": ""},
             "owner": {"_id": "", "cls": "Account", "slug": ""},
             "schemaVersion": "0.2.0",
+            "metadata": {}
         }
 
     def _elemental_ratios(self):
