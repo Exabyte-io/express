@@ -1,10 +1,19 @@
+import unittest
+
+from mat3ra.esse import ESSE
+
 from tests.unit import UnitTestBase
 from express.properties.scalar.scalar_property_context import ScalarPropertyFromContext
 
 FORMATION_ENERGY = {"units": "eV/atom", "name": "formation_energy", "value": -0.123}
 FORMATION_ENERGY_VALUE = -0.123
+FORMATION_ENERGY_MANIFEST = ESSE().get_property_manifest("formation_energy")
 
 
+@unittest.skipUnless(
+    FORMATION_ENERGY_MANIFEST.get("defaults", {}).get("units"),
+    "formation_energy manifest defaults require a newer mat3ra-esse release",
+)
 class FormationEnergyTest(UnitTestBase):
     def setUp(self):
         super().setUp()
