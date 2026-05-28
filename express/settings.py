@@ -19,6 +19,7 @@ SCALAR_PROPERTIES_MANIFEST = {
         "reference": "express.properties.scalar.thermal_correction_to_enthalpy.ThermalCorrectionToEnthalpy"
     },
     "surface_energy": {"reference": "express.properties.scalar.scalar_property_context.ScalarPropertyFromContext"},
+    "formation_energy": {"reference": "express.properties.scalar.scalar_property_context.ScalarPropertyFromContext"},
     "reaction_energy_barrier": {"reference": "express.properties.scalar.reaction_energy_barrier.ReactionEnergyBarrier"},
     "valence_band_offset": {"reference": "express.properties.scalar.scalar_property_context.ScalarPropertyFromContext"},
 }
@@ -60,6 +61,9 @@ NON_SCALAR_PROPERTIES_MANIFEST = {
         "reference": "express.properties.non_scalar.two_dimensional_plot.average_potential_profile.AveragePotentialProfile"  # noqa: E501
     },
     "dielectric_tensor": {"reference": "express.properties.non_scalar.dielectric_tensor.DielectricTensor"},
+    "formation_energy_references": {
+        "reference": "express.properties.non_scalar.formation_energy_references.FormationEnergyReferencesFromContext"
+    },
     "hubbard_u": {"reference": "express.properties.non_scalar.hubbard_u.HubbardU"},
     "hubbard_v": {"reference": "express.properties.non_scalar.hubbard_v.HubbardV"},
     "hubbard_v_nn": {"reference": "express.properties.non_scalar.hubbard_v_nn.HubbardV_NN"},
