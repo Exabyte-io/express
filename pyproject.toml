@@ -16,7 +16,7 @@ classifiers = [
 ]
 dependencies = [
     "mat3ra-esse>=2026.5.27.post0",
-    "mat3ra-made @ git+https://github.com/exabyte-io/made.git@f80df56b6b404ce1d5482e6d850e60f10041a8f5",
+    "mat3ra-made[tools] @ git+https://github.com/exabyte-io/made.git@f80df56b6b404ce1d5482e6d850e60f10041a8f5",
     "jarvis-tools>=2023.12.12",
     # To avoid module 'numpy.linalg._umath_linalg' has no attribute '_ilp64' in Colab
     "numpy>=1.24.4,<2",
