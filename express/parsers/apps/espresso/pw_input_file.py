@@ -4,8 +4,7 @@ from typing import List, Optional, Tuple
 
 from mat3ra.esse.models.properties_directory.structural.lattice import LatticeSchema
 from mat3ra.made.cell.primitive_cell import get_primitive_lattice_vectors_from_config
-
-BOHR_TO_ANGSTROM = 0.529177210903
+from mat3ra.utils.constants import COEFFICIENTS
 
 # Maps QE ibrav codes → made/esse Bravais type strings
 IBRAV_TO_LATTICE_TYPE = {
@@ -57,7 +56,7 @@ def _get_cell_from_ibrav(system: dict) -> List[List[float]]:
     has_celldm = "celldm1" in system
 
     if has_celldm:
-        a = float(system["celldm1"]) * BOHR_TO_ANGSTROM
+        a = float(system["celldm1"]) * COEFFICIENTS["BOHR_TO_ANGSTROM"]
         b = a * float(system.get("celldm2", 1))
         c = a * float(system.get("celldm3", 1))
         # celldm(4,5,6) are cosines → convert to degrees
@@ -88,7 +87,7 @@ def _parse_cell_parameters(text: str, celldm1_angstrom: Optional[float]) -> List
     units = match.group(1).lower()
     rows = [list(map(float, line.split())) for line in match.group(2).strip().splitlines()]
     if units == "bohr":
-        rows = [[v * BOHR_TO_ANGSTROM for v in row] for row in rows]
+        rows = [[v * COEFFICIENTS["BOHR_TO_ANGSTROM"] for v in row] for row in rows]
     elif units == "alat":
         if not celldm1_angstrom:
             raise ValueError("alat units require celldm(1)")
@@ -121,7 +120,7 @@ def _parse_atomic_positions(
                 for j in range(3)
             ]
         elif units == "bohr":
-            coords = [v * BOHR_TO_ANGSTROM for v in coords]
+            coords = [v * COEFFICIENTS["BOHR_TO_ANGSTROM"] for v in coords]
         elif units == "alat":
             if not celldm1_angstrom:
                 raise ValueError("alat units require celldm(1)")
@@ -148,7 +147,7 @@ class PwInputFile:
         ibrav = int(system.get("ibrav", 0))
 
         celldm1_angstrom = (
-            float(system["celldm1"]) * BOHR_TO_ANGSTROM if "celldm1" in system else None
+            float(system["celldm1"]) * COEFFICIENTS["BOHR_TO_ANGSTROM"] if "celldm1" in system else None
         )
 
         cell = (
