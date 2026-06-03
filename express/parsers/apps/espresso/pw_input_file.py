@@ -5,6 +5,7 @@ from typing import List, Optional, Tuple
 from mat3ra.esse.models.properties_directory.structural.lattice import LatticeSchema
 from mat3ra.made.cell.primitive_cell import get_primitive_lattice_vectors_from_config
 from mat3ra.utils.constants import COEFFICIENTS
+from mat3ra.utils.string import remove_comments_from_source_code
 
 # Maps QE ibrav codes → made/esse Bravais type strings
 IBRAV_TO_LATTICE_TYPE = {
@@ -23,12 +24,6 @@ IBRAV_TO_LATTICE_TYPE = {
     13: "MCLC",
     14: "TRI",
 }
-
-
-def _strip_comments(text: str) -> str:
-    text = re.sub(r"!.*$", "", text, flags=re.MULTILINE)
-    text = re.sub(r"#.*$", "", text, flags=re.MULTILINE)
-    return text
 
 
 def _parse_namelist(text: str, name: str) -> dict:
@@ -142,7 +137,7 @@ class PwInputFile:
     """
 
     def __init__(self, input_text: str):
-        text = _strip_comments(input_text)
+        text = remove_comments_from_source_code(input_text, language="fortran")
         system = _parse_namelist(text, "SYSTEM")
         ibrav = int(system.get("ibrav", 0))
 
