@@ -25,6 +25,20 @@ FORMATION_ENERGY_CONTRIBUTIONS = {
     "name": "formation_energy_contributions",
     "values": FORMATION_ENERGY_CONTRIBUTIONS_VALUES,
 }
+COMPOUND_CONTRIBUTION_WITHOUT_PRECISION = {
+    "formula": "SiC",
+    "n_atoms": 4,
+    "is_elemental": False,
+    "total_energy": -520.003969643439,
+    "total_energy_per_atom": -130.00099241085975,
+}
+DEFAULT_PRECISION_VALUE = -1
+DEFAULT_PRECISION_METRIC = "unknown"
+COMPOUND_CONTRIBUTION_WITH_DEFAULT_PRECISION = {
+    **COMPOUND_CONTRIBUTION_WITHOUT_PRECISION,
+    "precision_value": DEFAULT_PRECISION_VALUE,
+    "precision_metric": DEFAULT_PRECISION_METRIC,
+}
 
 
 class FormationEnergyContributionsTest(UnitTestBase):
@@ -60,6 +74,21 @@ class FormationEnergyContributionsTest(UnitTestBase):
         )
 
         self.assertDeepAlmostEqual(property_.serialize_and_validate(), FORMATION_ENERGY_CONTRIBUTIONS)
+
+    def test_formation_energy_contributions_applies_schema_defaults(self):
+        property_ = NonScalarPropertyFromContext(
+            "formation_energy_contributions",
+            None,
+            data=[COMPOUND_CONTRIBUTION_WITHOUT_PRECISION],
+        )
+
+        self.assertDeepAlmostEqual(
+            property_.serialize_and_validate(),
+            {
+                "name": "formation_energy_contributions",
+                "values": [COMPOUND_CONTRIBUTION_WITH_DEFAULT_PRECISION],
+            },
+        )
 
     def test_formation_energy_contributions_from_context_key(self):
         property_ = NonScalarPropertyFromContext(

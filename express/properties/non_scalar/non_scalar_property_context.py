@@ -1,5 +1,7 @@
 from typing import Any, Type
 
+from mat3ra.esse.utils import validate_and_clean
+
 from express.parsers import BaseParser
 from express.properties.non_scalar import NonScalarProperty
 
@@ -27,3 +29,10 @@ class NonScalarPropertyFromContext(NonScalarProperty):
         if isinstance(self.data, dict):
             return {"name": self.name, **self.data}
         return {"name": self.name, "values": self.data}
+
+    def serialize_and_validate(self):
+        instance = self._serialize()
+        result = validate_and_clean(instance, self.schema)
+        if not result["is_valid"]:
+            raise result["errors"][0]
+        return instance
