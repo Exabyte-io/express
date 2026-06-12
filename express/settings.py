@@ -19,6 +19,7 @@ SCALAR_PROPERTIES_MANIFEST = {
         "reference": "express.properties.scalar.thermal_correction_to_enthalpy.ThermalCorrectionToEnthalpy"
     },
     "surface_energy": {"reference": "express.properties.scalar.scalar_property_context.ScalarPropertyFromContext"},
+    "formation_energy": {"reference": "express.properties.scalar.scalar_property_context.ScalarPropertyFromContext"},
     "reaction_energy_barrier": {"reference": "express.properties.scalar.reaction_energy_barrier.ReactionEnergyBarrier"},
     "valence_band_offset": {"reference": "express.properties.scalar.scalar_property_context.ScalarPropertyFromContext"},
 }
@@ -34,6 +35,9 @@ NON_SCALAR_PROPERTIES_MANIFEST = {
     "atomic_constraints": {"reference": "express.properties.non_scalar.atomic_constraints.AtomicConstraints"},
     "total_energy_contributions": {
         "reference": "express.properties.non_scalar.total_energy_contributions.TotalEnergyContributions"
+    },
+    "formation_energy_contributions": {
+        "reference": "express.properties.non_scalar.non_scalar_property_context.NonScalarPropertyFromContext"
     },
     "material": {"reference": "express.properties.material.Material"},
     "symmetry": {"reference": "express.properties.non_scalar.symmetry.Symmetry"},

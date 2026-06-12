@@ -15,7 +15,7 @@ classifiers = [
     "Topic :: Software Development",
 ]
 dependencies = [
-    "mat3ra-esse>=2026.5.27.post0",
+    "mat3ra-esse>=2026.6.12",
     "mat3ra-made[tools] @ git+https://github.com/exabyte-io/made.git@774c0c2c54c5f175291ea026411de1ee8405d825",
     "mat3ra-parsers @ git+https://github.com/exabyte-io/parsers.git@6f8601a2bdd3aac155f9743b2c53dfc73c4c69a4",
     "jarvis-tools>=2023.12.12",
