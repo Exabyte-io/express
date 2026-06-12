@@ -36,6 +36,9 @@ NON_SCALAR_PROPERTIES_MANIFEST = {
     "total_energy_contributions": {
         "reference": "express.properties.non_scalar.total_energy_contributions.TotalEnergyContributions"
     },
+    "formation_energy_contributions": {
+        "reference": "express.properties.non_scalar.non_scalar_property_context.NonScalarPropertyFromContext"
+    },
     "material": {"reference": "express.properties.material.Material"},
     "symmetry": {"reference": "express.properties.non_scalar.symmetry.Symmetry"},
     "workflow:pyml_predict": {"reference": "express.properties.workflow.PyMLTrainAndPredictWorkflow"},
