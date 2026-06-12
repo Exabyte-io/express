@@ -60,19 +60,13 @@ class PwInputFile:
         text = remove_comments_from_source_code(input_text, language="fortran")
         parser = EspressoPwxStdinParser(text)
 
-        system = parser.get_namelist_as_dict("SYSTEM")
+        system = parser.get_namelist("SYSTEM")
         ibrav = int(system.get("ibrav", 0))
 
-        celldm1_angstrom = (
-            float(system["celldm1"]) * COEFFICIENTS["BOHR_TO_ANGSTROM"] if "celldm1" in system else None
-        )
+        celldm1_angstrom = float(system["celldm1"]) * COEFFICIENTS["BOHR_TO_ANGSTROM"] if "celldm1" in system else None
 
-        # Delegate to the new parser method if ibrav == 0, else build from ibrav
-        cell = (
-            parser.get_card_cell_parameters(celldm1_angstrom)
-            if ibrav == 0
-            else _get_cell_from_ibrav(system)
-        )
+        # Delegate crystal lattice calculation based on ibrav value
+        cell = parser.get_card_cell_parameters(celldm1_angstrom) if ibrav == 0 else _get_cell_from_ibrav(system)
 
         atom_names, positions = parser.get_card_atomic_positions(cell, celldm1_angstrom)
 
