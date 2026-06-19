@@ -5,7 +5,7 @@ from mat3ra.esse.models.properties_directory.structural.lattice import LatticeSc
 from mat3ra.made.cell.primitive_cell import get_primitive_lattice_vectors_from_config
 from mat3ra.utils.constants import COEFFICIENTS
 from mat3ra.utils.string import remove_comments_from_source_code
-from mat3ra.parsers.applications.espresso.pwin import EspressoPwinParser
+from mat3ra.parsers.applications.espresso.pw_x.stdin.parser import EspressoPwxStdinParser
 
 # Maps QE ibrav codes → made/esse Bravais type strings
 IBRAV_TO_LATTICE_TYPE = {
@@ -58,7 +58,7 @@ def _get_cell_from_ibrav(system: dict) -> List[List[float]]:
 class PwInputFile:
     def __init__(self, input_text: str):
         text = remove_comments_from_source_code(input_text, language="fortran")
-        parser = EspressoPwinParser(text)
+        parser = EspressoPwxStdinParser(text)
 
         system = parser.get_namelist("SYSTEM")
         ibrav = int(system.get("ibrav", 0))
