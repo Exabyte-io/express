@@ -57,7 +57,9 @@ def _get_cell_from_ibrav(system: dict) -> List[List[float]]:
 
 class PwInputFile:
     def __init__(self, input_text: str):
-        text = remove_comments_from_source_code(input_text, language="fortran")
+        text = remove_comments_from_source_code(
+            remove_comments_from_source_code(input_text, language="fortran"), language="python"
+        )
         parser = EspressoPwxStdinParser(text)
 
         system = parser.get_namelist("SYSTEM")
