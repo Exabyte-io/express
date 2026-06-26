@@ -15,9 +15,9 @@ classifiers = [
     "Topic :: Software Development",
 ]
 dependencies = [
-    "mat3ra-esse>=2026.6.12",
-    "mat3ra-made[tools] @ git+https://github.com/exabyte-io/made.git@5a6646dc14b8981efbb80d5646e46a33404c49e6",
-    "mat3ra-parsers @ git+https://github.com/exabyte-io/parsers.git@ba823020da54ec33e2cd29342a5c22469bebfe71",
+    "mat3ra-esse @ git+https://github.com/mat3ra/esse.git@34558bccb2c7df4a486e4191cc34a561398ee404",
+    "mat3ra-made[tools] @ git+https://github.com/mat3ra/made.git@ed36a530af3c4e43d000bc18ceb6d367d38711ac",
+    "mat3ra-parsers @ git+https://github.com/mat3ra/parsers.git@3f81a38373cce1a47f14cc9b5f9ac3ba3dddf894",
     "jarvis-tools>=2023.12.12",
     # To avoid module 'numpy.linalg._umath_linalg' has no attribute '_ilp64' in Colab
     "numpy>=1.24.4,<2",

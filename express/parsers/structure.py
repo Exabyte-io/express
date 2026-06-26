@@ -2,7 +2,6 @@ import json
 
 import pymatgen as mg
 from pymatgen.core.structure import Structure
-from express.parsers.apps.espresso.pw_input_file import PwInputFile
 from jarvis.core.atoms import Atoms
 from jarvis.io.vasp.inputs import Poscar
 
@@ -41,13 +40,27 @@ class StructureParser(BaseParser, IonicDataMixin):
 
         # convert espresso input into pymatgen.core.structure
         if self.structure_format == "espresso-in":
-            parsed = PwInputFile(self.structure_string)
+            from mat3ra.parsers.applications.espresso.pw_x.stdin.material import EspressoPwxStdinMaterial
+
+            material_parser = EspressoPwxStdinMaterial(self.structure_string)
+
+            # Reconstruct the PyMatGen Structure object safely from the standardized MADE config outputs
+            lattice_matrix = [
+                material_parser.lattice["vectors"]["a"],
+                material_parser.lattice["vectors"]["b"],
+                material_parser.lattice["vectors"]["c"],
+            ]
+            species = [element["value"] for element in material_parser.basis["elements"]]
+            coords = [coord["value"] for coord in material_parser.basis["coordinates"]]
+            coords_are_cartesian = (material_parser.basis["units"] == "cartesian")
+
             self.structure = Structure(
-                lattice=parsed.structure["cell"],
-                species=parsed.structure["atom_names"],
-                coords=parsed.structure["positions"],
-                coords_are_cartesian=True,
+                lattice=lattice_matrix,
+                species=species,
+                coords=coords,
+                coords_are_cartesian=coords_are_cartesian,
             )
+
         # convert jarvis-db-entry JSON into poscar
         elif self.structure_format == "jarvis-db-entry":
             self.structure_string = self.jarvis_db_entry_json_to_poscar(self.structure_string)
