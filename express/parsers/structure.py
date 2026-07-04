@@ -44,15 +44,19 @@ class StructureParser(BaseParser, IonicDataMixin):
 
             material_parser = EspressoPwxStdinMaterial(self.structure_string)
 
+            # Cache the parsed results to avoid multiple property evaluations
+            parsed_lattice = material_parser.lattice
+            parsed_basis = material_parser.basis
+
             # Reconstruct the PyMatGen Structure object safely from the standardized MADE config outputs
             lattice_matrix = [
-                material_parser.lattice["vectors"]["a"],
-                material_parser.lattice["vectors"]["b"],
-                material_parser.lattice["vectors"]["c"],
+                parsed_lattice["vectors"]["a"],
+                parsed_lattice["vectors"]["b"],
+                parsed_lattice["vectors"]["c"],
             ]
-            species = [element["value"] for element in material_parser.basis["elements"]]
-            coords = [coord["value"] for coord in material_parser.basis["coordinates"]]
-            coords_are_cartesian = (material_parser.basis["units"] == "cartesian")
+            species = [element["value"] for element in parsed_basis["elements"]]
+            coords = [coord["value"] for coord in parsed_basis["coordinates"]]
+            coords_are_cartesian = (parsed_basis["units"] == "cartesian")
 
             self.structure = Structure(
                 lattice=lattice_matrix,

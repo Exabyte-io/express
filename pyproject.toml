@@ -18,7 +18,7 @@ dependencies = [
     "jarvis-tools>=2023.12.12",
     "mat3ra-esse>=2026.6.30.post0",
     "mat3ra-made[tools]>=2026.7.4.post0",
-    "mat3ra-parsers @ git+https://github.com/mat3ra/parsers.git@123e25d0b5b0190ecb6671cf5cbce949d8fa7088",
+    "mat3ra-parsers @ git+https://github.com/mat3ra/parsers.git@3f0abec909c295e0080a7d7050d00c8e613d78ad",
     # To avoid module 'numpy.linalg._umath_linalg' has no attribute '_ilp64' in Colab
     "numpy>=1.24.4,<2",
 ]
