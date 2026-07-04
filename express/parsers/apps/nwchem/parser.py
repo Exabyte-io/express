@@ -45,7 +45,7 @@ class NwchemParser(BaseParser, IonicDataMixin, ElectronicDataMixin, ReciprocalDa
         energy_contributions = self.txt_parser.total_energy_contributions(self._get_file_content(self.stdout_file))
         for key1, value1 in energy_contributions.items():
             for key2, value2 in value1.items():
-                if type(value2) == float:
+                if type(value2) is float:
                     value1[key2] = value2 * Constant.HARTREE
         return energy_contributions
 
