@@ -5,3 +5,4 @@ fixtures/vasp/** filter=lfs diff=lfs merge=lfs -text
 fixtures/data.py filter=lfs diff=lfs merge=lfs -text
 fixtures/pyML/test-001/*.JSON filter=lfs diff=lfs merge=lfs -text
 *.cif filter=lfs diff=lfs merge=lfs -text
+fixtures/structural/test-005/*.in filter=lfs diff=lfs merge=lfs -text

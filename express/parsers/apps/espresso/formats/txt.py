@@ -827,9 +827,9 @@ class EspressoTXTParser(BaseTXTParser):
         """
         average_file = find_file(settings.AVERAGE_FILE, self.work_dir)
         # backup in case avg.dat doesn't exist
-        if type(average_file) != str:
+        if type(average_file) is not str:
             average_file = find_file(stdout_file, self.work_dir)
-        if type(average_file) == str and os.path.isfile(average_file):
+        if type(average_file) is str and os.path.isfile(average_file):
             dtype = np.dtype([("x", float), ("planar_average", float), ("macroscopic_average", float)])
             data = np.fromregex(average_file, settings.REGEX["average_quantity"]["regex"], dtype)
             return data
