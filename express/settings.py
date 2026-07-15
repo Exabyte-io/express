@@ -20,6 +20,9 @@ SCALAR_PROPERTIES_MANIFEST = {
     },
     "surface_energy": {"reference": "express.properties.scalar.scalar_property_context.ScalarPropertyFromContext"},
     "interfacial_energy": {"reference": "express.properties.scalar.scalar_property_context.ScalarPropertyFromContext"},
+    "defect_formation_energy": {
+        "reference": "express.properties.scalar.scalar_property_context.ScalarPropertyFromContext"
+    },
     "formation_energy": {"reference": "express.properties.scalar.scalar_property_context.ScalarPropertyFromContext"},
     "reaction_energy_barrier": {"reference": "express.properties.scalar.reaction_energy_barrier.ReactionEnergyBarrier"},
     "valence_band_offset": {"reference": "express.properties.scalar.scalar_property_context.ScalarPropertyFromContext"},
