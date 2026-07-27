@@ -4,8 +4,20 @@ All nwchem output values are in hartrees. ExPrESS converts units to eV.
 All reference energies are in eV.
 """
 TOTAL_ENERGY = -2079.18666382721904
-HOMO_ENERGY = -12.800485418916242
-LUMO_ENERGY = 3.1242763921882197
+# HOMO/LUMO from the final orbital analysis section. The *_INITIAL_GUESS values come from the
+# initial-guess section and are used by the tests to check the parser does not return them.
+HOMO_ENERGY = -7.938587261191046
+LUMO_ENERGY = 1.793148251055798
+HOMO_ENERGY_INITIAL_GUESS = -12.800485418916242
+LUMO_ENERGY_INITIAL_GUESS = 3.1242763921882197
+
+# From test-002/nwchem-frequency.log, whose output contains several orbital analysis sections
+# (one per geometry-optimization step); the parser must read the last one.
+HOMO_ENERGY_MULTISTEP = -7.8966272890902385
+LUMO_ENERGY_MULTISTEP = 1.7759215328081597
+HOMO_ENERGY_MULTISTEP_INITIAL_GUESS = -10.187320671325603
+LUMO_ENERGY_MULTISTEP_INITIAL_GUESS = -3.5424611206222094
+
 ZERO_POINT_ENERGY = 0.5748347036575007
 THERMAL_CORRECTION_TO_ENERGY = 15.033
 THERMAL_CORRECTION_TO_ENTHALPY = 15.626

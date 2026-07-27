@@ -16,10 +16,24 @@ class TestNwchemParser(IntegrationTestBase):
         self.assertAlmostEqual(self.parser.total_energy(), TOTAL_ENERGY, places=2)
 
     def test_nwchem_homo_energy(self):
-        self.assertAlmostEqual(self.parser.homo_energy(), HOMO_ENERGY, places=2)
+        homo_energy = self.parser.homo_energy()
+        self.assertAlmostEqual(homo_energy, HOMO_ENERGY, places=2)
+        self.assertNotAlmostEqual(homo_energy, HOMO_ENERGY_INITIAL_GUESS, places=2)
 
     def test_nwchem_lumo_energy(self):
-        self.assertAlmostEqual(self.parser.lumo_energy(), LUMO_ENERGY, places=2)
+        lumo_energy = self.parser.lumo_energy()
+        self.assertAlmostEqual(lumo_energy, LUMO_ENERGY, places=2)
+        self.assertNotAlmostEqual(lumo_energy, LUMO_ENERGY_INITIAL_GUESS, places=2)
+
+    def test_nwchem_homo_energy_multistep(self):
+        homo_energy = self.parser.homo_energy()
+        self.assertAlmostEqual(homo_energy, HOMO_ENERGY_MULTISTEP, places=2)
+        self.assertNotAlmostEqual(homo_energy, HOMO_ENERGY_MULTISTEP_INITIAL_GUESS, places=2)
+
+    def test_nwchem_lumo_energy_multistep(self):
+        lumo_energy = self.parser.lumo_energy()
+        self.assertAlmostEqual(lumo_energy, LUMO_ENERGY_MULTISTEP, places=2)
+        self.assertNotAlmostEqual(lumo_energy, LUMO_ENERGY_MULTISTEP_INITIAL_GUESS, places=2)
 
     def test_nwchem_total_energy_contributions(self):
         self.assertDeepAlmostEqual(self.parser.total_energy_contributions(), TOTAL_ENERGY_CONTRIBUTION, places=2)

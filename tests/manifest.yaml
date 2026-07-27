@@ -10,6 +10,14 @@ test_nwchem_lumo_energy:
   workDir: fixtures/nwchem/test-001
   stdoutFile: fixtures/nwchem/test-001/nwchem-total-energy.log
 
+test_nwchem_homo_energy_multistep:
+  workDir: fixtures/nwchem/test-002
+  stdoutFile: fixtures/nwchem/test-002/nwchem-frequency.log
+
+test_nwchem_lumo_energy_multistep:
+  workDir: fixtures/nwchem/test-002
+  stdoutFile: fixtures/nwchem/test-002/nwchem-frequency.log
+
 test_nwchem_total_energy_contributions:
   workDir: fixtures/nwchem/test-001
   stdoutFile: fixtures/nwchem/test-001/nwchem-total-energy.log
