@@ -1,7 +1,7 @@
 from tests.unit import UnitTestBase
 from express.properties.scalar.scalar_property_context import ScalarPropertyFromContext
 
-DEFECT_FORMATION_ENERGY = {"units": "eV/defect", "name": "defect_formation_energy", "value": 3.5}
+DEFECT_FORMATION_ENERGY = {"units": "eV", "name": "defect_formation_energy", "value": 3.5}
 
 
 class DefectFormationEnergyTest(UnitTestBase):
