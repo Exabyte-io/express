@@ -12,10 +12,15 @@ VECTOR_REGEX = re.compile(
     r"Vector\s+\d+\s+Occ=\s*(?P<occupation>[\dDEe.+-]+)\s+E=\s*(?P<energy>[\dDEe.+-]+)"
 )
 
+# HOMO is the highest-energy occupied orbital; LUMO the lowest-energy unoccupied one.
+# Consumed by NwchemTXTParser._frontier_orbital_energy.
+FRONTIER_ORBITAL_ENERGY = {
+    "homo_energy": {"occupied": True, "select": max},
+    "lumo_energy": {"occupied": False, "select": min},
+}
+
 REGEX = {
     "total_energy": {"regex": COMMON_REGEX.format("Total DFT energy"), "occurrences": -1, "output_type": "float"},
-    # homo_energy / lumo_energy are parsed from the orbital analysis section instead;
-    # see NwchemTXTParser._converged_homo_energy / _converged_lumo_energy.
     "zero_point_energy": {
         "regex": COMMON_REGEX.format("Zero-Point correction to Energy"),
         "occurrences": -1,

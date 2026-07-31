@@ -39,39 +39,24 @@ class NwchemTXTParser(BaseTXTParser):
         start_index = text.rfind(settings.FRONTIER_ORBITAL_BLOCK_START_FLAG)
         return text[start_index:] if start_index != -1 else ""
 
-    def _converged_homo_energy(self, text):
+    def _frontier_orbital_energy(self, text, occupied, select):
         """
-        Extracts the HOMO energy (Hartree): the highest energy among occupied orbitals.
+        Extracts a frontier orbital energy (Hartree) from the final orbital analysis section.
 
         Args:
             text (str): text to extract data from.
+            occupied (bool): select among occupied orbitals if True, unoccupied ones if False.
+            select (callable): reduces the matching energies to the frontier one (max or min).
 
         Returns:
             float | None
         """
-        occupied_energies = [
+        energies = [
             _fortran_float(orbital.group("energy"))
             for orbital in settings.VECTOR_REGEX.finditer(self._converged_orbital_block(text))
-            if _fortran_float(orbital.group("occupation")) > 0
+            if (_fortran_float(orbital.group("occupation")) > 0) == occupied
         ]
-        return max(occupied_energies) if occupied_energies else None
-
-    def _converged_lumo_energy(self, text):
-        """
-        Extracts the LUMO energy (Hartree): the lowest energy among unoccupied orbitals.
-
-        Args:
-            text (str): text to extract data from.
-
-        Returns:
-            float | None
-        """
-        virtual_energies = [
-            _fortran_float(orbital.group("energy"))
-            for orbital in settings.VECTOR_REGEX.finditer(self._converged_orbital_block(text))
-            if _fortran_float(orbital.group("occupation")) == 0
-        ]
-        return min(virtual_energies) if virtual_energies else None
+        return select(energies) if energies else None
 
     def total_energy(self, text):
         """
@@ -104,7 +89,7 @@ class NwchemTXTParser(BaseTXTParser):
 
     def homo_energy(self, text):
         """
-        Extracts the converged HOMO energy.
+        Extracts the HOMO energy.
 
         Args:
             text (str): text to extract data from.
@@ -112,11 +97,11 @@ class NwchemTXTParser(BaseTXTParser):
         Returns:
             float | None
         """
-        return self._converged_homo_energy(text)
+        return self._frontier_orbital_energy(text, **settings.FRONTIER_ORBITAL_ENERGY["homo_energy"])
 
     def lumo_energy(self, text):
         """
-        Extracts the converged LUMO energy.
+        Extracts the LUMO energy.
 
         Args:
             text (str): text to extract data from.
@@ -124,7 +109,7 @@ class NwchemTXTParser(BaseTXTParser):
         Returns:
             float | None
         """
-        return self._converged_lumo_energy(text)
+        return self._frontier_orbital_energy(text, **settings.FRONTIER_ORBITAL_ENERGY["lumo_energy"])
 
     def zero_point_energy(self, text):
         """
