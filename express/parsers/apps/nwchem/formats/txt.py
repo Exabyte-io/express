@@ -28,7 +28,8 @@ class NwchemTXTParser(BaseTXTParser):
     def eigenvalues_at_vectors(self, text):
         """
         Extracts eigenvalues at molecular orbitals (vectors). Geometry optimizations print one
-        orbital analysis section per step; the last one is read, for the final geometry.
+        orbital analysis section per step; the last one is read, for the final geometry. A
+        spin-polarized run prints an alpha and a beta section per step, both of which are read.
 
         Units:
             energy: Hartree
@@ -39,16 +40,17 @@ class NwchemTXTParser(BaseTXTParser):
         Returns:
             list[dict]
         """
-        start_index = text.rfind(settings.ORBITAL_ANALYSIS_BLOCK_START_FLAG)
-        if start_index == -1:
-            return []
+        blocks = list(settings.ORBITAL_ANALYSIS_BLOCK_REGEX.finditer(text))
+        ends = [block.start() for block in blocks[1:]] + [len(text)]
+        last_block_per_spin = {block.group("spin"): text[block.end() : end] for block, end in zip(blocks, ends)}
         return [
             {
                 "vector": int(orbital.group("vector")),
                 "occupation": _fortran_float(orbital.group("occupation")),
                 "energy": _fortran_float(orbital.group("energy")),
             }
-            for orbital in settings.VECTOR_REGEX.finditer(text[start_index:])
+            for block in last_block_per_spin.values()
+            for orbital in settings.VECTOR_REGEX.finditer(block)
         ]
 
     def total_energy(self, text):

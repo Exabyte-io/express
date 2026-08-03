@@ -6,9 +6,8 @@ COMMON_REGEX = r"{}\s+[=:<>]\s*([-+]?\d*\.?\d*([Ee][+-]?\d+)?)"
 DOUBLE_REGEX = GENERAL_REGEX["double_number"]
 NWCHEM_OUTPUT_FILE_REGEX = "Northwest Computational Chemistry Package"
 
-# TODO: spin-polarized (ODFT) runs emit "DFT Final Alpha/Beta Molecular Orbital Analysis" instead,
-# which this flag does not match, leaving the eigenvalues empty.
-ORBITAL_ANALYSIS_BLOCK_START_FLAG = "DFT Final Molecular Orbital Analysis"
+# Closed-shell runs print a single unlabeled section, spin-polarized (ODFT) ones an Alpha and a Beta.
+ORBITAL_ANALYSIS_BLOCK_REGEX = re.compile(r"DFT Final (?:(?P<spin>Alpha|Beta) )?Molecular Orbital Analysis")
 VECTOR_REGEX = re.compile(
     r"Vector\s+(?P<vector>\d+)\s+Occ=\s*(?P<occupation>[\dDEe.+-]+)\s+E=\s*(?P<energy>[\dDEe.+-]+)"
 )
