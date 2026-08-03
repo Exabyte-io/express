@@ -6,18 +6,12 @@ COMMON_REGEX = r"{}\s+[=:<>]\s*([-+]?\d*\.?\d*([Ee][+-]?\d+)?)"
 DOUBLE_REGEX = GENERAL_REGEX["double_number"]
 NWCHEM_OUTPUT_FILE_REGEX = "Northwest Computational Chemistry Package"
 
-# Header of the final molecular orbital analysis section; VECTOR_REGEX matches its orbital lines.
-FRONTIER_ORBITAL_BLOCK_START_FLAG = "DFT Final Molecular Orbital Analysis"
+# TODO: spin-polarized (ODFT) runs emit "DFT Final Alpha/Beta Molecular Orbital Analysis" instead,
+# which this flag does not match, leaving the eigenvalues empty.
+ORBITAL_ANALYSIS_BLOCK_START_FLAG = "DFT Final Molecular Orbital Analysis"
 VECTOR_REGEX = re.compile(
-    r"Vector\s+\d+\s+Occ=\s*(?P<occupation>[\dDEe.+-]+)\s+E=\s*(?P<energy>[\dDEe.+-]+)"
+    r"Vector\s+(?P<vector>\d+)\s+Occ=\s*(?P<occupation>[\dDEe.+-]+)\s+E=\s*(?P<energy>[\dDEe.+-]+)"
 )
-
-# HOMO is the highest-energy occupied orbital; LUMO the lowest-energy unoccupied one.
-# Consumed by NwchemTXTParser._frontier_orbital_energy.
-FRONTIER_ORBITAL_ENERGY = {
-    "homo_energy": {"occupied": True, "select": max},
-    "lumo_energy": {"occupied": False, "select": min},
-}
 
 REGEX = {
     "total_energy": {"regex": COMMON_REGEX.format("Total DFT energy"), "occurrences": -1, "output_type": "float"},

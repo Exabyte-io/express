@@ -25,38 +25,31 @@ class NwchemTXTParser(BaseTXTParser):
     def __init__(self, work_dir):
         super(NwchemTXTParser, self).__init__(work_dir)
 
-    def _converged_orbital_block(self, text):
+    def eigenvalues_at_vectors(self, text):
         """
-        Returns the text of the final molecular orbital analysis section, or an empty
-        string if it is not present.
+        Extracts eigenvalues at molecular orbitals (vectors). Geometry optimizations print one
+        orbital analysis section per step; the last one is read, for the final geometry.
+
+        Units:
+            energy: Hartree
 
         Args:
             text (str): text to extract data from.
 
         Returns:
-            str
+            list[dict]
         """
-        start_index = text.rfind(settings.FRONTIER_ORBITAL_BLOCK_START_FLAG)
-        return text[start_index:] if start_index != -1 else ""
-
-    def _frontier_orbital_energy(self, text, occupied, select):
-        """
-        Extracts a frontier orbital energy (Hartree) from the final orbital analysis section.
-
-        Args:
-            text (str): text to extract data from.
-            occupied (bool): select among occupied orbitals if True, unoccupied ones if False.
-            select (callable): reduces the matching energies to the frontier one (max or min).
-
-        Returns:
-            float | None
-        """
-        energies = [
-            _fortran_float(orbital.group("energy"))
-            for orbital in settings.VECTOR_REGEX.finditer(self._converged_orbital_block(text))
-            if (_fortran_float(orbital.group("occupation")) > 0) == occupied
+        start_index = text.rfind(settings.ORBITAL_ANALYSIS_BLOCK_START_FLAG)
+        if start_index == -1:
+            return []
+        return [
+            {
+                "vector": int(orbital.group("vector")),
+                "occupation": _fortran_float(orbital.group("occupation")),
+                "energy": _fortran_float(orbital.group("energy")),
+            }
+            for orbital in settings.VECTOR_REGEX.finditer(text[start_index:])
         ]
-        return select(energies) if energies else None
 
     def total_energy(self, text):
         """
@@ -86,30 +79,6 @@ class NwchemTXTParser(BaseTXTParser):
             if value is not None:
                 energy_contributions.update({contribution: {"name": contribution, "value": value}})
         return energy_contributions
-
-    def homo_energy(self, text):
-        """
-        Extracts the HOMO energy.
-
-        Args:
-            text (str): text to extract data from.
-
-        Returns:
-            float | None
-        """
-        return self._frontier_orbital_energy(text, **settings.FRONTIER_ORBITAL_ENERGY["homo_energy"])
-
-    def lumo_energy(self, text):
-        """
-        Extracts the LUMO energy.
-
-        Args:
-            text (str): text to extract data from.
-
-        Returns:
-            float | None
-        """
-        return self._frontier_orbital_energy(text, **settings.FRONTIER_ORBITAL_ENERGY["lumo_energy"])
 
     def zero_point_energy(self, text):
         """

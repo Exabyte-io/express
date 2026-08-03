@@ -15,6 +15,18 @@ class TestNwchemParser(IntegrationTestBase):
     def test_nwchem_total_energy(self):
         self.assertAlmostEqual(self.parser.total_energy(), TOTAL_ENERGY, places=2)
 
+    def test_nwchem_eigenvalues_at_vectors(self):
+        eigenvalues = self.parser.eigenvalues_at_vectors()
+        self.assertEqual(len(eigenvalues), EIGENVALUES_AT_VECTORS_COUNT)
+        self.assertDeepAlmostEqual(eigenvalues[0], EIGENVALUES_AT_VECTORS_FIRST, places=2)
+        self.assertDeepAlmostEqual(eigenvalues[-1], EIGENVALUES_AT_VECTORS_LAST, places=2)
+
+    def test_nwchem_eigenvalues_at_vectors_multistep(self):
+        eigenvalues = self.parser.eigenvalues_at_vectors()
+        self.assertEqual(len(eigenvalues), EIGENVALUES_AT_VECTORS_MULTISTEP_COUNT)
+        self.assertDeepAlmostEqual(eigenvalues[0], EIGENVALUES_AT_VECTORS_MULTISTEP_FIRST, places=2)
+        self.assertDeepAlmostEqual(eigenvalues[-1], EIGENVALUES_AT_VECTORS_MULTISTEP_LAST, places=2)
+
     def test_nwchem_homo_energy(self):
         homo_energy = self.parser.homo_energy()
         self.assertAlmostEqual(homo_energy, HOMO_ENERGY, places=2)

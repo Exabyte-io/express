@@ -49,25 +49,30 @@ class NwchemParser(BaseParser, IonicDataMixin, ElectronicDataMixin, ReciprocalDa
                     value1[key2] = value2 * Constant.HARTREE
         return energy_contributions
 
-    def homo_energy(self):
+    def eigenvalues_at_vectors(self):
         """
-        Returns HOMO energy.
+        Returns eigenvalues at molecular orbitals (vectors).
 
         Reference:
+            func: express.parsers.mixins.electronic.ElectronicDataMixin.eigenvalues_at_vectors
             NWChem orbital energies are defaulted to hartrees and are converted to eV in this method.
         """
-        homo_energy = self.txt_parser.homo_energy(self._get_file_content(self.stdout_file))
-        return None if homo_energy is None else Constant.HARTREE * homo_energy
+        orbitals = self.txt_parser.eigenvalues_at_vectors(self._get_file_content(self.stdout_file))
+        return [dict(orbital, energy=Constant.HARTREE * orbital["energy"]) for orbital in orbitals]
+
+    def homo_energy(self):
+        """
+        Returns HOMO energy, the highest energy among the occupied molecular orbitals.
+        """
+        energies = [orbital["energy"] for orbital in self.eigenvalues_at_vectors() if orbital["occupation"] > 0]
+        return max(energies) if energies else None
 
     def lumo_energy(self):
         """
-        Returns LUMO energy.
-
-        Reference:
-            NWChem orbital energies are defaulted to hartrees and are converted to eV in this method.
+        Returns LUMO energy, the lowest energy among the unoccupied molecular orbitals.
         """
-        lumo_energy = self.txt_parser.lumo_energy(self._get_file_content(self.stdout_file))
-        return None if lumo_energy is None else Constant.HARTREE * lumo_energy
+        energies = [orbital["energy"] for orbital in self.eigenvalues_at_vectors() if orbital["occupation"] == 0]
+        return min(energies) if energies else None
 
     def zero_point_energy(self):
         """
