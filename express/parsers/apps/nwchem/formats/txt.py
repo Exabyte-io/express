@@ -1,20 +1,7 @@
 from express.parsers.settings import Constant  # noqa: F401
 from express.parsers.apps.nwchem import settings
 from express.parsers.formats.txt import BaseTXTParser
-
-
-def _fortran_float(value):
-    """
-    Converts a Fortran-formatted float string (e.g. "-1.234D+01", double-precision
-    "D" exponent notation) to a Python float.
-
-    Args:
-        value (str): Fortran-formatted number, e.g. "-1.234D+01".
-
-    Returns:
-        float
-    """
-    return float(value.replace("D", "E").replace("d", "e"))
+from express.parsers.utils import _fortran_float
 
 
 class NwchemTXTParser(BaseTXTParser):
