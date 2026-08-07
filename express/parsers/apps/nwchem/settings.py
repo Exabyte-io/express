@@ -1,13 +1,19 @@
+import re
+
 from express.parsers.settings import GENERAL_REGEX
 
 COMMON_REGEX = r"{}\s+[=:<>]\s*([-+]?\d*\.?\d*([Ee][+-]?\d+)?)"
 DOUBLE_REGEX = GENERAL_REGEX["double_number"]
 NWCHEM_OUTPUT_FILE_REGEX = "Northwest Computational Chemistry Package"
 
+# Closed-shell runs print a single unlabeled section, spin-polarized (ODFT) ones an Alpha and a Beta.
+ORBITAL_ANALYSIS_BLOCK_REGEX = re.compile(r"DFT Final (?:(?P<spin>Alpha|Beta) )?Molecular Orbital Analysis")
+VECTOR_REGEX = re.compile(
+    r"Vector\s+(?P<vector>\d+)\s+Occ=\s*(?P<occupation>[\dDEe.+-]+)\s+E=\s*(?P<energy>[\dDEe.+-]+)"
+)
+
 REGEX = {
     "total_energy": {"regex": COMMON_REGEX.format("Total DFT energy"), "occurrences": -1, "output_type": "float"},
-    "homo_energy": {"regex": COMMON_REGEX.format("HOMO"), "occurrences": -1, "output_type": "float"},
-    "lumo_energy": {"regex": COMMON_REGEX.format("LUMO"), "occurrences": -1, "output_type": "float"},
     "zero_point_energy": {
         "regex": COMMON_REGEX.format("Zero-Point correction to Energy"),
         "occurrences": -1,

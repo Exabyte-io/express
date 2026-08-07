@@ -80,3 +80,18 @@ def lattice_basis_to_poscar(lattice: dict, basis: dict, basis_units: str = "cart
             "\n".join([" ".join(["{0:14.9f}".format(v) for v in x["value"]]) for x in basis["coordinates"]]),
         ]
     )
+
+
+
+def _fortran_float(value):
+    """
+    Converts a Fortran-formatted float string (e.g. "-1.234D+01", double-precision
+    "D" exponent notation) to a Python float.
+
+    Args:
+        value (str): Fortran-formatted number, e.g. "-1.234D+01".
+
+    Returns:
+        float
+    """
+    return float(value.replace("D", "E").replace("d", "e"))

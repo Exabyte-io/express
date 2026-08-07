@@ -1,6 +1,7 @@
 from express.parsers.settings import Constant  # noqa: F401
 from express.parsers.apps.nwchem import settings
 from express.parsers.formats.txt import BaseTXTParser
+from express.parsers.utils import _fortran_float
 
 
 class NwchemTXTParser(BaseTXTParser):
@@ -10,6 +11,34 @@ class NwchemTXTParser(BaseTXTParser):
 
     def __init__(self, work_dir):
         super(NwchemTXTParser, self).__init__(work_dir)
+
+    def eigenvalues_at_vectors(self, text):
+        """
+        Extracts eigenvalues at molecular orbitals (vectors). Geometry optimizations print one
+        orbital analysis section per step; the last one is read, for the final geometry. A
+        spin-polarized run prints an alpha and a beta section per step, both of which are read.
+
+        Units:
+            energy: Hartree
+
+        Args:
+            text (str): text to extract data from.
+
+        Returns:
+            list[dict]
+        """
+        blocks = list(settings.ORBITAL_ANALYSIS_BLOCK_REGEX.finditer(text))
+        ends = [block.start() for block in blocks[1:]] + [len(text)]
+        last_block_per_spin = {block.group("spin"): text[block.end() : end] for block, end in zip(blocks, ends)}
+        return [
+            {
+                "vector": int(orbital.group("vector")),
+                "occupation": _fortran_float(orbital.group("occupation")),
+                "energy": _fortran_float(orbital.group("energy")),
+            }
+            for block in last_block_per_spin.values()
+            for orbital in settings.VECTOR_REGEX.finditer(block)
+        ]
 
     def total_energy(self, text):
         """
@@ -39,30 +68,6 @@ class NwchemTXTParser(BaseTXTParser):
             if value is not None:
                 energy_contributions.update({contribution: {"name": contribution, "value": value}})
         return energy_contributions
-
-    def homo_energy(self, text):
-        """
-        Extracts HOMO energy.
-
-        Args:
-            text (str): text to extract data from.
-
-        Returns:
-            float | None
-        """
-        return self._general_output_parser(text, **settings.REGEX["homo_energy"])
-
-    def lumo_energy(self, text):
-        """
-        Extracts LUMO energy.
-
-        Args:
-            text (str): text to extract data from.
-
-        Returns:
-            float | None
-        """
-        return self._general_output_parser(text, **settings.REGEX["lumo_energy"])
 
     def zero_point_energy(self, text):
         """

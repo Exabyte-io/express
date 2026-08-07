@@ -15,11 +15,37 @@ class TestNwchemParser(IntegrationTestBase):
     def test_nwchem_total_energy(self):
         self.assertAlmostEqual(self.parser.total_energy(), TOTAL_ENERGY, places=2)
 
+    def test_nwchem_eigenvalues_at_vectors(self):
+        eigenvalues = self.parser.eigenvalues_at_vectors()
+        self.assertEqual(len(eigenvalues), EIGENVALUES_AT_VECTORS_COUNT)
+        self.assertDeepAlmostEqual(eigenvalues[0], EIGENVALUES_AT_VECTORS_FIRST, places=2)
+        self.assertDeepAlmostEqual(eigenvalues[-1], EIGENVALUES_AT_VECTORS_LAST, places=2)
+
+    def test_nwchem_eigenvalues_at_vectors_multistep(self):
+        eigenvalues = self.parser.eigenvalues_at_vectors()
+        self.assertEqual(len(eigenvalues), EIGENVALUES_AT_VECTORS_MULTISTEP_COUNT)
+        self.assertDeepAlmostEqual(eigenvalues[0], EIGENVALUES_AT_VECTORS_MULTISTEP_FIRST, places=2)
+        self.assertDeepAlmostEqual(eigenvalues[-1], EIGENVALUES_AT_VECTORS_MULTISTEP_LAST, places=2)
+
     def test_nwchem_homo_energy(self):
-        self.assertAlmostEqual(self.parser.homo_energy(), HOMO_ENERGY, places=2)
+        homo_energy = self.parser.homo_energy()
+        self.assertAlmostEqual(homo_energy, HOMO_ENERGY, places=2)
+        self.assertNotAlmostEqual(homo_energy, HOMO_ENERGY_INITIAL_GUESS, places=2)
 
     def test_nwchem_lumo_energy(self):
-        self.assertAlmostEqual(self.parser.lumo_energy(), LUMO_ENERGY, places=2)
+        lumo_energy = self.parser.lumo_energy()
+        self.assertAlmostEqual(lumo_energy, LUMO_ENERGY, places=2)
+        self.assertNotAlmostEqual(lumo_energy, LUMO_ENERGY_INITIAL_GUESS, places=2)
+
+    def test_nwchem_homo_energy_multistep(self):
+        homo_energy = self.parser.homo_energy()
+        self.assertAlmostEqual(homo_energy, HOMO_ENERGY_MULTISTEP, places=2)
+        self.assertNotAlmostEqual(homo_energy, HOMO_ENERGY_MULTISTEP_INITIAL_GUESS, places=2)
+
+    def test_nwchem_lumo_energy_multistep(self):
+        lumo_energy = self.parser.lumo_energy()
+        self.assertAlmostEqual(lumo_energy, LUMO_ENERGY_MULTISTEP, places=2)
+        self.assertNotAlmostEqual(lumo_energy, LUMO_ENERGY_MULTISTEP_INITIAL_GUESS, places=2)
 
     def test_nwchem_total_energy_contributions(self):
         self.assertDeepAlmostEqual(self.parser.total_energy_contributions(), TOTAL_ENERGY_CONTRIBUTION, places=2)

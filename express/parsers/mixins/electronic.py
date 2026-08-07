@@ -86,6 +86,28 @@ class ElectronicDataMixin(object):
         pass
 
     @abstractmethod
+    def eigenvalues_at_vectors(self):
+        """
+        Returns eigenvalues at molecular orbitals (vectors), the molecular analogue of
+        `eigenvalues_at_kpoints` for systems without reciprocal space.
+
+        Units:
+            energy: eV
+
+        Returns:
+             list[dict]
+
+        Example:
+            [
+                {'vector': 1, 'occupation': 2.0, 'energy': -520.7098},
+                {'vector': 2, 'occupation': 2.0, 'energy': -27.2698},
+                {'vector': 3, 'occupation': 0.0, 'energy': 1.7931},
+                ...
+            ]
+        """
+        pass
+
+    @abstractmethod
     def dos(self):
         """
         Returns density of states.
