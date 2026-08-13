@@ -22,7 +22,9 @@ class Material(BaseProperty):
 
     def __init__(self, name, parser, *args, **kwargs):
         super(Material, self).__init__(name, parser, *args, **kwargs)
-        self.is_non_periodic = kwargs.get("is_non_periodic", False)
+        # Fall back to what the application parser knows about itself: a molecular code produces
+        # molecules. An explicit kwarg still wins.
+        self.is_non_periodic = kwargs.get("is_non_periodic", getattr(parser, "is_non_periodic", False))
 
         cell_type = kwargs.get("cell_type", "original")
         structure_string = kwargs.get("structure_string")
@@ -114,6 +116,7 @@ class Material(BaseProperty):
             "unitCellFormula": self.unitCellFormula,
             "lattice": self.lattice,
             "basis": self.basis,
+            "isNonPeriodic": self.is_non_periodic,
             "derivedProperties": self.derived_properties,
             "creator": {"_id": "", "cls": "User", "slug": ""},
             "owner": {"_id": "", "cls": "Account", "slug": ""},

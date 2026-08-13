@@ -46,6 +46,9 @@ class MaterialTest(IntegrationTestBase):
         derived_props = self.filter_derived_props(material.is_non_periodic)
         json = deepcopy(data)
         json["derivedProperties"] = derived_props
+        # Same reason derivedProperties is adapted: the shared SI fixture is periodic, and each
+        # test picks the picture it wants.
+        json["isNonPeriodic"] = material.is_non_periodic
         self.assertDeepAlmostEqual(material.serialize_and_validate(), json, places=2)
         return True
 

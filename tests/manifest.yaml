@@ -30,6 +30,14 @@ test_nwchem_total_energy_contributions:
   workDir: fixtures/nwchem/test-001
   stdoutFile: fixtures/nwchem/test-001/nwchem-total-energy.log
 
+test_nwchem_structures_of_single_point:
+  workDir: fixtures/nwchem/test-001
+  stdoutFile: fixtures/nwchem/test-001/nwchem-total-energy.log
+
+test_nwchem_structures_of_optimization:
+  workDir: fixtures/nwchem/test-002
+  stdoutFile: fixtures/nwchem/test-002/nwchem-frequency.log
+
 test_nwchem_zero_point_energy:
   workDir: fixtures/nwchem/test-002
   stdoutFile: fixtures/nwchem/test-002/nwchem-frequency.log
@@ -256,3 +264,7 @@ test_espresso_hubbard_v:
 test_espresso_hubbard_v_nn:
   workDir: fixtures/espresso/v7_2/test-009
   stdoutFile: fixtures/espresso/v7_2/test-009/HUBBARD.dat
+
+test_nwchem_material_is_a_molecule_without_being_told:
+  workDir: fixtures/nwchem/test-002
+  stdoutFile: fixtures/nwchem/test-002/nwchem-frequency.log

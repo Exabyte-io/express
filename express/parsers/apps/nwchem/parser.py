@@ -13,6 +13,11 @@ class NwchemParser(BaseParser, IonicDataMixin, ElectronicDataMixin, ReciprocalDa
     Nwchem parser class.
     """
 
+    # NWChem works in the finite molecular picture, so the structures it produces are molecules.
+    # Material reads this when the caller does not say otherwise; rupy cannot, as it only ever
+    # sees the material's _id.
+    is_non_periodic = True
+
     def __init__(self, *args, **kwargs):
         super(NwchemParser, self).__init__(*args, **kwargs)
         self.work_dir = self.kwargs["work_dir"]
@@ -48,6 +53,44 @@ class NwchemParser(BaseParser, IonicDataMixin, ElectronicDataMixin, ReciprocalDa
                 if type(value2) is float:
                     value1[key2] = value2 * Constant.HARTREE
         return energy_contributions
+
+    def initial_basis(self):
+        """
+        Returns initial basis.
+
+        Reference:
+            func: express.parsers.mixins.ionic.IonicDataMixin.initial_basis
+        """
+        return self.txt_parser.initial_basis(self._get_file_content(self.stdout_file))
+
+    def final_basis(self):
+        """
+        Returns final basis.
+
+        Reference:
+            func: express.parsers.mixins.ionic.IonicDataMixin.final_basis
+        """
+        return self.txt_parser.final_basis(self._get_file_content(self.stdout_file))
+
+    def initial_lattice_vectors(self):
+        """
+        Returns initial lattice vectors.
+
+        Reference:
+            func: express.parsers.mixins.ionic.IonicDataMixin.initial_lattice_vectors
+            NWChem does not print a cell for a molecule; one is derived per made's convention.
+        """
+        return self.txt_parser.initial_lattice_vectors(self._get_file_content(self.stdout_file))
+
+    def final_lattice_vectors(self):
+        """
+        Returns final lattice vectors.
+
+        Reference:
+            func: express.parsers.mixins.ionic.IonicDataMixin.final_lattice_vectors
+            NWChem does not print a cell for a molecule; one is derived per made's convention.
+        """
+        return self.txt_parser.final_lattice_vectors(self._get_file_content(self.stdout_file))
 
     def eigenvalues_at_vectors(self):
         """

@@ -39,12 +39,45 @@ TOTAL_ENERGY_CONTRIBUTION = {
     "nuclear_repulsion": {"name": "nuclear_repulsion", "value": 250.20815670232923},
 }
 
+# test-001 is a single point, so its initial and final structures are the same one printed block.
+# Its input declares `units au`, so the coordinates below are the printed ones converted to
+# angstrom; they are then centered in the cell that made's convention derives for a molecule.
 BASIS = {
     "units": "angstrom",
     "elements": [{"id": 0, "value": "O"}, {"id": 1, "value": "H"}, {"id": 2, "value": "H"}],
     "coordinates": [
-        {"id": 0, "value": [0.00000000, 0.00000000, 0.22143053]},
-        {"id": 1, "value": [0.00000000, 1.43042809, -0.88572213]},
-        {"id": 2, "value": [0.00000000, -1.43042809, -0.88572213]},
+        {"id": 0, "value": [1.51390003, 1.51390003, 1.90448670]},
+        {"id": 1, "value": [1.51390003, 2.27085004, 1.31860669]},
+        {"id": 2, "value": [1.51390003, 0.75695001, 1.31860669]},
     ],
+}
+LATTICE_VECTORS = {
+    "vectors": {"a": [3.02780005, 0.0, 0.0], "b": [0.0, 3.02780005, 0.0], "c": [0.0, 0.0, 3.02780005], "alat": 1}
+}
+
+# test-002 optimizes, so its first and last blocks differ — and so do the cells derived from them.
+# 6-31G* geometry: O-H 0.96866 A after relaxation, not the 6-31G 0.9758 A the Cypress feature pins.
+INITIAL_BASIS_MULTISTEP = {
+    "units": "angstrom",
+    "elements": [{"id": 0, "value": "O"}, {"id": 1, "value": "H"}, {"id": 2, "value": "H"}],
+    "coordinates": [
+        {"id": 0, "value": [2.86085618, 2.86085618, 3.59895795]},
+        {"id": 1, "value": [1.43042809, 2.86085618, 2.49180529]},
+        {"id": 2, "value": [4.29128427, 2.86085618, 2.49180529]},
+    ],
+}
+FINAL_BASIS_MULTISTEP = {
+    "units": "angstrom",
+    "elements": [{"id": 0, "value": "O"}, {"id": 1, "value": "H"}, {"id": 2, "value": "H"}],
+    "coordinates": [
+        {"id": 0, "value": [1.52522962, 1.52522962, 1.92340345]},
+        {"id": 1, "value": [0.76261481, 1.52522962, 1.32614270]},
+        {"id": 2, "value": [2.28784443, 1.52522962, 1.32614270]},
+    ],
+}
+INITIAL_LATTICE_VECTORS_MULTISTEP = {
+    "vectors": {"a": [5.72171236, 0.0, 0.0], "b": [0.0, 5.72171236, 0.0], "c": [0.0, 0.0, 5.72171236], "alat": 1}
+}
+FINAL_LATTICE_VECTORS_MULTISTEP = {
+    "vectors": {"a": [3.05045924, 0.0, 0.0], "b": [0.0, 3.05045924, 0.0], "c": [0.0, 0.0, 3.05045924], "alat": 1}
 }

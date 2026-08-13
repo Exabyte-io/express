@@ -1,4 +1,7 @@
-from express.parsers.settings import Constant  # noqa: F401
+from mat3ra.made.tools.convert.utils import calculate_padded_cell_simple_cubic
+from mat3ra.made.utils import get_center_of_coordinates
+
+from express.parsers.settings import Constant
 from express.parsers.apps.nwchem import settings
 from express.parsers.formats.txt import BaseTXTParser
 from express.parsers.utils import _fortran_float
@@ -11,6 +14,128 @@ class NwchemTXTParser(BaseTXTParser):
 
     def __init__(self, work_dir):
         super(NwchemTXTParser, self).__init__(work_dir)
+
+    def _geometry_block(self, text, last):
+        """
+        Extracts one "Output coordinates" block as coordinates in angstrom.
+
+        A geometry optimization prints one block per step; a single-point run prints exactly one, so
+        the first and the last block coincide and the initial and final structures are equal. The
+        block is printed in whichever units the input declared, and the header carries the factor
+        converting them to a.u., so both `units angstrom` and `units au` runs are read correctly.
+
+        Args:
+            text (str): text to extract data from.
+            last (bool): whether to read the last block instead of the first.
+
+        Returns:
+            tuple[list[str], list[list[float]]]: elements and coordinates in angstrom.
+        """
+        headers = list(settings.GEOMETRY_BLOCK_REGEX.finditer(text))
+        if not headers:
+            return [], []
+
+        header = headers[-1] if last else headers[0]
+        following = [h for h in headers if h.start() > header.start()]
+        block = text[header.end() : following[0].start() if following else len(text)]
+        # The table runs from the dashed rule to the blank line after the last atom. Bounding it
+        # matters for the final block, which otherwise extends to EOF over unrelated tables.
+        rule = block.find("----")
+        if rule != -1:
+            block = block[rule:]
+            blank = block.find("\n\n")
+            block = block[:blank] if blank != -1 else block
+        # An `angstroms` block is taken verbatim; rescaling it through two Bohr radii that disagree
+        # in the last digits would perturb coordinates the file already gives exactly.
+        is_angstrom = header.group("units").startswith("angstrom")
+        to_angstrom = 1.0 if is_angstrom else float(header.group("scale")) * Constant.BOHR
+
+        elements, coordinates = [], []
+        for row in settings.GEOMETRY_ROW_REGEX.finditer(block):
+            # A numeric-looking row from some other table can satisfy the row shape; only a tag
+            # starting with an element symbol is one of ours. Skipping beats raising, which rupy
+            # would swallow into a silently missing final_structure.
+            element = settings.ELEMENT_FROM_TAG_REGEX.match(row.group("tag"))
+            if not element:
+                continue
+            elements.append(element.group(1))
+            coordinates.append([float(row.group(axis)) * to_angstrom for axis in ("x", "y", "z")])
+        return elements, coordinates
+
+    def _basis(self, text, last):
+        """
+        Extracts a basis, centered inside the cell that `_lattice_vectors` derives for the same
+        block. NWChem's coordinates straddle the origin and would otherwise sit outside the box.
+
+        Args:
+            text (str): text to extract data from.
+            last (bool): whether to read the last block instead of the first.
+
+        Returns:
+            dict
+
+        Example:
+            {
+                'units': 'angstrom',
+                'elements': [{'id': 0, 'value': 'O'}, {'id': 1, 'value': 'H'}],
+                'coordinates': [{'id': 0, 'value': [2.86, 2.86, 3.60]}, {'id': 1, 'value': [1.43, 2.86, 2.49]}]
+            }
+        """
+        elements, coordinates = self._geometry_block(text, last)
+        if not elements:
+            return None
+
+        # Take the edge from _lattice_vectors rather than deriving a second cell here, so the basis
+        # is centered in the very box that ships with it.
+        center = get_center_of_coordinates(coordinates)
+        box_center = self._lattice_vectors(text, last)["vectors"]["a"][0] / 2
+        return {
+            "units": "angstrom",
+            "elements": [{"id": index, "value": value} for index, value in enumerate(elements)],
+            "coordinates": [
+                {"id": index, "value": [x - center[axis] + box_center for axis, x in enumerate(coordinate)]}
+                for index, coordinate in enumerate(coordinates)
+            ],
+        }
+
+    def _lattice_vectors(self, text, last):
+        """
+        Derives a cell for a molecule, which NWChem does not print: made's simple-cubic padding
+        convention, the same one that gives every non-periodic material on the platform its box.
+        Initial and final geometries therefore get differently-sized boxes, as made would give them.
+
+        Args:
+            text (str): text to extract data from.
+            last (bool): whether to read the last block instead of the first.
+
+        Returns:
+            dict
+
+        Example:
+            {'vectors': {'a': [5.72, 0.0, 0.0], 'b': [0.0, 5.72, 0.0], 'c': [0.0, 0.0, 5.72], 'alat': 1}}
+        """
+        _, coordinates = self._geometry_block(text, last)
+        if not coordinates:
+            return None
+
+        a, b, c = calculate_padded_cell_simple_cubic(coordinates)
+        return {"vectors": {"a": a, "b": b, "c": c, "alat": 1}}
+
+    def initial_basis(self, text):
+        """Extracts initial basis, in angstrom. See `_basis`."""
+        return self._basis(text, last=False)
+
+    def final_basis(self, text):
+        """Extracts final basis, in angstrom. See `_basis`."""
+        return self._basis(text, last=True)
+
+    def initial_lattice_vectors(self, text):
+        """Extracts initial lattice vectors, in angstrom. See `_lattice_vectors`."""
+        return self._lattice_vectors(text, last=False)
+
+    def final_lattice_vectors(self, text):
+        """Extracts final lattice vectors, in angstrom. See `_lattice_vectors`."""
+        return self._lattice_vectors(text, last=True)
 
     def eigenvalues_at_vectors(self, text):
         """
