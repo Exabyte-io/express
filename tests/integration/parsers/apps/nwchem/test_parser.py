@@ -57,7 +57,6 @@ class TestNwchemParser(IntegrationTestBase):
     def test_nwchem_structures_of_optimization(self):
         self.assertDeepAlmostEqual(self.parser.initial_basis(), INITIAL_BASIS_MULTISTEP, places=6)
         self.assertDeepAlmostEqual(self.parser.final_basis(), FINAL_BASIS_MULTISTEP, places=6)
-        # One cell for both: the optimization moves atoms inside a fixed box, it does not resize it.
         self.assertDeepAlmostEqual(self.parser.initial_lattice_vectors(), LATTICE_VECTORS_MULTISTEP, places=6)
         self.assertDeepAlmostEqual(self.parser.final_lattice_vectors(), LATTICE_VECTORS_MULTISTEP, places=6)
         self.assertEqual(self.parser.initial_lattice_vectors(), self.parser.final_lattice_vectors())
@@ -77,9 +76,7 @@ class TestNwchemParser(IntegrationTestBase):
         )
 
     def test_nwchem_material_is_a_molecule_without_being_told(self):
-        # rupy only ever sees the material's _id, so it cannot pass is_non_periodic. NWChem works in
-        # the finite molecular picture, so the parser answers for itself -- otherwise a relaxed
-        # molecule comes back as a periodic crystal with volume/density instead of inchi/inchi_key.
+        # Constructed WITHOUT is_non_periodic on purpose: rupy never passes it.
         material = Material("material", self.parser, is_final_structure=True).serialize_and_validate()
         self.assertTrue(material["isNonPeriodic"])
         self.assertEqual(material["lattice"]["type"], "CUB")

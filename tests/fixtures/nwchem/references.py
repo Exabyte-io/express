@@ -75,9 +75,6 @@ FINAL_BASIS_MULTISTEP = {
         {"id": 2, "value": [3.62347099, 2.86085618, 2.66176926]},
     ],
 }
-# One cell for both structures: an optimization moves atoms inside a fixed box, it does not resize
-# the box. Deriving a second, tighter cell from the relaxed coordinates would shrink-wrap the
-# molecule and leave initial and final incomparable.
 LATTICE_VECTORS_MULTISTEP = {
     "vectors": {"a": [5.72171236, 0.0, 0.0], "b": [0.0, 5.72171236, 0.0], "c": [0.0, 0.0, 5.72171236], "alat": 1}
 }

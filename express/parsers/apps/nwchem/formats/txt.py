@@ -103,10 +103,10 @@ class NwchemTXTParser(BaseTXTParser):
         Derives a cell for a molecule, which NWChem does not print: made's simple-cubic padding
         convention, the same one that gives every non-periodic material on the platform its box.
 
-        Always derived from the FIRST geometry block, so the initial and final structures share one
-        cell. An optimization moves atoms inside a fixed box -- it does not resize the box -- and
-        deriving a second, tighter cell from the relaxed coordinates would shrink-wrap the molecule
-        and leave the two structures incomparable.
+        One cell for both structures, so they are comparable: an optimization moves atoms inside a
+        fixed box rather than resizing it. Sized to whichever of the two geometries needs more room,
+        because a relaxation that expands the molecule would otherwise leave atoms outside a box
+        derived from the initial one -- which reads as extra fragments and corrupts the InChI.
 
         Args:
             text (str): text to extract data from.
@@ -117,12 +117,16 @@ class NwchemTXTParser(BaseTXTParser):
         Example:
             {'vectors': {'a': [5.72, 0.0, 0.0], 'b': [0.0, 5.72, 0.0], 'c': [0.0, 0.0, 5.72], 'alat': 1}}
         """
-        _, coordinates = self._geometry_block(text, last=False)
-        if not coordinates:
+        edges = [
+            calculate_padded_cell_simple_cubic(coordinates)[0][0]
+            for coordinates in (self._geometry_block(text, last)[1] for last in (False, True))
+            if coordinates
+        ]
+        if not edges:
             return None
 
-        a, b, c = calculate_padded_cell_simple_cubic(coordinates)
-        return {"vectors": {"a": a, "b": b, "c": c, "alat": 1}}
+        edge = max(edges)
+        return {"vectors": {"a": [edge, 0.0, 0.0], "b": [0.0, edge, 0.0], "c": [0.0, 0.0, edge], "alat": 1}}
 
     def initial_basis(self, text):
         """Extracts initial basis, in angstrom. See `_basis`."""
@@ -137,7 +141,7 @@ class NwchemTXTParser(BaseTXTParser):
         return self._lattice_vectors(text)
 
     def final_lattice_vectors(self, text):
-        """Same cell as the initial structure: an optimization does not resize the box."""
+        """Same cell as the initial structure. See `_lattice_vectors`."""
         return self._lattice_vectors(text)
 
     def eigenvalues_at_vectors(self, text):

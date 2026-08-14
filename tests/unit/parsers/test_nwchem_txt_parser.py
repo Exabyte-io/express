@@ -138,3 +138,21 @@ class NwchemTXTParserGeometryTest(unittest.TestCase):
         )
         basis = self.parser.final_basis(text)
         self.assertEqual([e["value"] for e in basis["elements"]], ["O", "H"])
+
+    def test_shared_cell_fits_a_relaxation_that_expands(self):
+        # Sizing from the initial geometry alone would leave an expanded molecule outside the box,
+        # which reads as extra fragments and corrupts the InChI.
+        text = geometry_block("angstroms", "1.889725989", [
+            "    1 O                    8.0000     0.00000000     0.00000000     0.20000000",
+            "    2 H                    1.0000     0.00000000     0.00000000    -0.20000000",
+        ]) + geometry_block("angstroms", "1.889725989", [
+            "    1 O                    8.0000     0.00000000     0.00000000     2.50000000",
+            "    2 H                    1.0000     0.00000000     0.00000000    -2.50000000",
+        ])
+        edge = self.parser.final_lattice_vectors(text)["vectors"]["a"][0]
+        self.assertEqual(self.parser.initial_lattice_vectors(text), self.parser.final_lattice_vectors(text))
+        for basis in (self.parser.initial_basis(text), self.parser.final_basis(text)):
+            for coordinate in basis["coordinates"]:
+                for value in coordinate["value"]:
+                    self.assertGreaterEqual(value, 0.0)
+                    self.assertLessEqual(value, edge)
