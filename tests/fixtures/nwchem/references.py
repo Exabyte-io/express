@@ -70,14 +70,14 @@ FINAL_BASIS_MULTISTEP = {
     "units": "angstrom",
     "elements": [{"id": 0, "value": "O"}, {"id": 1, "value": "H"}, {"id": 2, "value": "H"}],
     "coordinates": [
-        {"id": 0, "value": [1.52522962, 1.52522962, 1.92340345]},
-        {"id": 1, "value": [0.76261481, 1.52522962, 1.32614270]},
-        {"id": 2, "value": [2.28784443, 1.52522962, 1.32614270]},
+        {"id": 0, "value": [2.86085618, 2.86085618, 3.25903001]},
+        {"id": 1, "value": [2.09824137, 2.86085618, 2.66176926]},
+        {"id": 2, "value": [3.62347099, 2.86085618, 2.66176926]},
     ],
 }
-INITIAL_LATTICE_VECTORS_MULTISTEP = {
+# One cell for both structures: an optimization moves atoms inside a fixed box, it does not resize
+# the box. Deriving a second, tighter cell from the relaxed coordinates would shrink-wrap the
+# molecule and leave initial and final incomparable.
+LATTICE_VECTORS_MULTISTEP = {
     "vectors": {"a": [5.72171236, 0.0, 0.0], "b": [0.0, 5.72171236, 0.0], "c": [0.0, 0.0, 5.72171236], "alat": 1}
-}
-FINAL_LATTICE_VECTORS_MULTISTEP = {
-    "vectors": {"a": [3.05045924, 0.0, 0.0], "b": [0.0, 3.05045924, 0.0], "c": [0.0, 0.0, 3.05045924], "alat": 1}
 }

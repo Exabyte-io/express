@@ -88,7 +88,7 @@ class NwchemTXTParser(BaseTXTParser):
         # Take the edge from _lattice_vectors rather than deriving a second cell here, so the basis
         # is centered in the very box that ships with it.
         center = get_center_of_coordinates(coordinates)
-        box_center = self._lattice_vectors(text, last)["vectors"]["a"][0] / 2
+        box_center = self._lattice_vectors(text)["vectors"]["a"][0] / 2
         return {
             "units": "angstrom",
             "elements": [{"id": index, "value": value} for index, value in enumerate(elements)],
@@ -98,15 +98,18 @@ class NwchemTXTParser(BaseTXTParser):
             ],
         }
 
-    def _lattice_vectors(self, text, last):
+    def _lattice_vectors(self, text):
         """
         Derives a cell for a molecule, which NWChem does not print: made's simple-cubic padding
         convention, the same one that gives every non-periodic material on the platform its box.
-        Initial and final geometries therefore get differently-sized boxes, as made would give them.
+
+        Always derived from the FIRST geometry block, so the initial and final structures share one
+        cell. An optimization moves atoms inside a fixed box -- it does not resize the box -- and
+        deriving a second, tighter cell from the relaxed coordinates would shrink-wrap the molecule
+        and leave the two structures incomparable.
 
         Args:
             text (str): text to extract data from.
-            last (bool): whether to read the last block instead of the first.
 
         Returns:
             dict
@@ -114,7 +117,7 @@ class NwchemTXTParser(BaseTXTParser):
         Example:
             {'vectors': {'a': [5.72, 0.0, 0.0], 'b': [0.0, 5.72, 0.0], 'c': [0.0, 0.0, 5.72], 'alat': 1}}
         """
-        _, coordinates = self._geometry_block(text, last)
+        _, coordinates = self._geometry_block(text, last=False)
         if not coordinates:
             return None
 
@@ -130,12 +133,12 @@ class NwchemTXTParser(BaseTXTParser):
         return self._basis(text, last=True)
 
     def initial_lattice_vectors(self, text):
-        """Extracts initial lattice vectors, in angstrom. See `_lattice_vectors`."""
-        return self._lattice_vectors(text, last=False)
+        """Extracts the lattice vectors, in angstrom. See `_lattice_vectors`."""
+        return self._lattice_vectors(text)
 
     def final_lattice_vectors(self, text):
-        """Extracts final lattice vectors, in angstrom. See `_lattice_vectors`."""
-        return self._lattice_vectors(text, last=True)
+        """Same cell as the initial structure: an optimization does not resize the box."""
+        return self._lattice_vectors(text)
 
     def eigenvalues_at_vectors(self, text):
         """

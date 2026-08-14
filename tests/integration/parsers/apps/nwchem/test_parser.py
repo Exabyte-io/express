@@ -57,10 +57,10 @@ class TestNwchemParser(IntegrationTestBase):
     def test_nwchem_structures_of_optimization(self):
         self.assertDeepAlmostEqual(self.parser.initial_basis(), INITIAL_BASIS_MULTISTEP, places=6)
         self.assertDeepAlmostEqual(self.parser.final_basis(), FINAL_BASIS_MULTISTEP, places=6)
-        self.assertDeepAlmostEqual(
-            self.parser.initial_lattice_vectors(), INITIAL_LATTICE_VECTORS_MULTISTEP, places=6
-        )
-        self.assertDeepAlmostEqual(self.parser.final_lattice_vectors(), FINAL_LATTICE_VECTORS_MULTISTEP, places=6)
+        # One cell for both: the optimization moves atoms inside a fixed box, it does not resize it.
+        self.assertDeepAlmostEqual(self.parser.initial_lattice_vectors(), LATTICE_VECTORS_MULTISTEP, places=6)
+        self.assertDeepAlmostEqual(self.parser.final_lattice_vectors(), LATTICE_VECTORS_MULTISTEP, places=6)
+        self.assertEqual(self.parser.initial_lattice_vectors(), self.parser.final_lattice_vectors())
 
     def test_nwchem_total_energy_contributions(self):
         self.assertDeepAlmostEqual(self.parser.total_energy_contributions(), TOTAL_ENERGY_CONTRIBUTION, places=2)
