@@ -6,15 +6,41 @@ COMMON_REGEX = r"{}\s+[=:<>]\s*([-+]?\d*\.?\d*([Ee][+-]?\d+)?)"
 DOUBLE_REGEX = GENERAL_REGEX["double_number"]
 NWCHEM_OUTPUT_FILE_REGEX = "Northwest Computational Chemistry Package"
 
-# Geometry blocks are printed in whichever units the input declared; `scale` converts them to a.u.
-GEOMETRY_BLOCK_REGEX = re.compile(
-    r"Output coordinates in (?P<units>\S+) \(scale by\s+(?P<scale>[\d.]+) to convert to a\.u\.\)"
-)
+# Primitives the two geometry expressions below are composed from.
+GEOMETRY_HEADER_REGEX = r"Output coordinates in (?P<units>\S+) \(scale by\s+(?P<scale>[\d.]+) to convert to a\.u\.\)"
 # The element symbol is the leading alphabetic part of the geometry tag, e.g. "O", "H2" -> "H".
-ELEMENT_FROM_TAG_REGEX = re.compile(r"^([A-Za-z]+)")
+ELEMENT_REGEX = r"[A-Za-z]+"
+# Requiring the tag to start with a symbol is what keeps a numeric-looking row of some other table
+# from matching: the row shape alone is not specific enough.
+GEOMETRY_TAG_REGEX = r"{}\S*".format(ELEMENT_REGEX)
+GEOMETRY_RULE_REGEX = r"^[ \t]*-{4,}[- \t]*$\n"
+GEOMETRY_ROW_TEMPLATE = r"^[ \t]*\d+[ \t]+{tag}[ \t]+{double}[ \t]+{x}[ \t]+{y}[ \t]+{z}[ \t]*$"
+# Anything up to the next block, and never across it, so a header is always paired with its own
+# table rather than reaching forward into the following one.
+UNTIL_NEXT_GEOMETRY_REGEX = r"(?:(?!Output coordinates in)[\s\S])*?"
+
+# Geometry blocks are printed in whichever units the input declared; `scale` converts them to a.u.
+# The trailing `(?:row)+` is what bounds the table: it stops at the first line that is not a row,
+# which is the blank line after the last atom.
+GEOMETRY_BLOCK_REGEX = re.compile(
+    GEOMETRY_HEADER_REGEX
+    + UNTIL_NEXT_GEOMETRY_REGEX
+    + GEOMETRY_RULE_REGEX
+    + r"(?P<rows>(?:{})+)".format(
+        GEOMETRY_ROW_TEMPLATE.format(
+            tag=GEOMETRY_TAG_REGEX, double=DOUBLE_REGEX, x=DOUBLE_REGEX, y=DOUBLE_REGEX, z=DOUBLE_REGEX
+        )
+        + r"\n"
+    ),
+    re.MULTILINE,
+)
 GEOMETRY_ROW_REGEX = re.compile(
-    r"^[ \t]*\d+[ \t]+(?P<tag>\S+)[ \t]+{0}[ \t]+(?P<x>{0})[ \t]+(?P<y>{0})[ \t]+(?P<z>{0})[ \t]*$".format(
-        DOUBLE_REGEX
+    GEOMETRY_ROW_TEMPLATE.format(
+        tag=r"(?P<element>{})\S*".format(ELEMENT_REGEX),
+        double=DOUBLE_REGEX,
+        x=r"(?P<x>{})".format(DOUBLE_REGEX),
+        y=r"(?P<y>{})".format(DOUBLE_REGEX),
+        z=r"(?P<z>{})".format(DOUBLE_REGEX),
     ),
     re.MULTILINE,
 )

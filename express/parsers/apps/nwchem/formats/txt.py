@@ -31,36 +31,21 @@ class NwchemTXTParser(BaseTXTParser):
         Returns:
             tuple[list[str], list[list[float]]]: elements and coordinates in angstrom.
         """
-        headers = list(settings.GEOMETRY_BLOCK_REGEX.finditer(text))
-        if not headers:
+        blocks = list(settings.GEOMETRY_BLOCK_REGEX.finditer(text))
+        if not blocks:
             return [], []
 
-        header = headers[-1] if last else headers[0]
-        following = [h for h in headers if h.start() > header.start()]
-        block = text[header.end() : following[0].start() if following else len(text)]
-        # The table runs from the dashed rule to the blank line after the last atom. Bounding it
-        # matters for the final block, which otherwise extends to EOF over unrelated tables.
-        rule = block.find("----")
-        if rule != -1:
-            block = block[rule:]
-            blank = block.find("\n\n")
-            block = block[:blank] if blank != -1 else block
+        block = blocks[-1] if last else blocks[0]
         # An `angstroms` block is taken verbatim; rescaling it through two Bohr radii that disagree
         # in the last digits would perturb coordinates the file already gives exactly.
-        is_angstrom = header.group("units").startswith("angstrom")
-        to_angstrom = 1.0 if is_angstrom else float(header.group("scale")) * Constant.BOHR
+        is_angstrom = block.group("units").startswith("angstrom")
+        to_angstrom = 1.0 if is_angstrom else float(block.group("scale")) * Constant.BOHR
 
-        elements, coordinates = [], []
-        for row in settings.GEOMETRY_ROW_REGEX.finditer(block):
-            # A numeric-looking row from some other table can satisfy the row shape; only a tag
-            # starting with an element symbol is one of ours. Skipping beats raising, which rupy
-            # would swallow into a silently missing final_structure.
-            element = settings.ELEMENT_FROM_TAG_REGEX.match(row.group("tag"))
-            if not element:
-                continue
-            elements.append(element.group(1))
-            coordinates.append([float(row.group(axis)) * to_angstrom for axis in ("x", "y", "z")])
-        return elements, coordinates
+        rows = list(settings.GEOMETRY_ROW_REGEX.finditer(block.group("rows")))
+        return (
+            [row.group("element") for row in rows],
+            [[float(row.group(axis)) * to_angstrom for axis in ("x", "y", "z")] for row in rows],
+        )
 
     def _basis(self, text, last):
         """
@@ -129,19 +114,15 @@ class NwchemTXTParser(BaseTXTParser):
         return {"vectors": {"a": [edge, 0.0, 0.0], "b": [0.0, edge, 0.0], "c": [0.0, 0.0, edge], "alat": 1}}
 
     def initial_basis(self, text):
-        """Extracts initial basis, in angstrom. See `_basis`."""
         return self._basis(text, last=False)
 
     def final_basis(self, text):
-        """Extracts final basis, in angstrom. See `_basis`."""
         return self._basis(text, last=True)
 
     def initial_lattice_vectors(self, text):
-        """Extracts the lattice vectors, in angstrom. See `_lattice_vectors`."""
         return self._lattice_vectors(text)
 
     def final_lattice_vectors(self, text):
-        """Same cell as the initial structure. See `_lattice_vectors`."""
         return self._lattice_vectors(text)
 
     def eigenvalues_at_vectors(self, text):
