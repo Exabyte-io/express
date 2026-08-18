@@ -6,9 +6,7 @@ COMMON_REGEX = r"{}\s+[=:<>]\s*([-+]?\d*\.?\d*([Ee][+-]?\d+)?)"
 DOUBLE_REGEX = GENERAL_REGEX["double_number"]
 NWCHEM_OUTPUT_FILE_REGEX = "Northwest Computational Chemistry Package"
 
-# Primitives the two geometry expressions below are composed from.
 GEOMETRY_HEADER_REGEX = r"Output coordinates in (?P<units>\S+) \(scale by\s+(?P<scale>[\d.]+) to convert to a\.u\.\)"
-# The element symbol is the leading alphabetic part of the geometry tag, e.g. "O", "H2" -> "H".
 ELEMENT_REGEX = r"[A-Za-z]+"
 # Requiring the tag to start with a symbol is what keeps a numeric-looking row of some other table
 # from matching: the row shape alone is not specific enough.

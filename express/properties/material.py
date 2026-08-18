@@ -22,8 +22,6 @@ class Material(BaseProperty):
 
     def __init__(self, name, parser, *args, **kwargs):
         super(Material, self).__init__(name, parser, *args, **kwargs)
-        # Fall back to what the application parser knows about itself: a molecular code produces
-        # molecules. An explicit kwarg still wins.
         self.is_non_periodic = kwargs.get("is_non_periodic", getattr(parser, "is_non_periodic", False))
 
         cell_type = kwargs.get("cell_type", "original")
@@ -121,7 +119,7 @@ class Material(BaseProperty):
             "creator": {"_id": "", "cls": "User", "slug": ""},
             "owner": {"_id": "", "cls": "Account", "slug": ""},
             "schemaVersion": "0.2.0",
-            "metadata": {}
+            "metadata": {},
         }
 
     def _elemental_ratios(self):

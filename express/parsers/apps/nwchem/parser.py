@@ -13,9 +13,6 @@ class NwchemParser(BaseParser, IonicDataMixin, ElectronicDataMixin, ReciprocalDa
     Nwchem parser class.
     """
 
-    # NWChem works in the finite molecular picture, so the structures it produces are molecules.
-    # Material reads this when the caller does not say otherwise; rupy cannot, as it only ever
-    # sees the material's _id.
     is_non_periodic = True
 
     def __init__(self, *args, **kwargs):
