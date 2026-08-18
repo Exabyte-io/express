@@ -39,9 +39,9 @@ TOTAL_ENERGY_CONTRIBUTION = {
     "nuclear_repulsion": {"name": "nuclear_repulsion", "value": 250.20815670232923},
 }
 
-# test-001 is a single point, so its initial and final structures are the same one printed block.
-# Its input declares `units au`, so the coordinates below are the printed ones converted to
-# angstrom; they are then centered in the cell that made's convention derives for a molecule.
+# test-001 declares `units au`, so these are its printed coordinates converted to angstrom and then
+# centered in the derived cell. Read as angstrom instead they give an O-H of 1.81 A, which is what
+# test_bond_length_of_an_atomic_units_block_is_physical guards against.
 BASIS = {
     "units": "angstrom",
     "elements": [{"id": 0, "value": "O"}, {"id": 1, "value": "H"}, {"id": 2, "value": "H"}],

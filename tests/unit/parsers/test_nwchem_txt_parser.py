@@ -1,3 +1,4 @@
+import math
 import unittest
 
 from express.parsers.apps.nwchem.formats.txt import NwchemTXTParser
@@ -116,6 +117,22 @@ class NwchemTXTParserGeometryTest(unittest.TestCase):
         coordinates = self.parser.final_basis(text)["coordinates"]
         self.assertAlmostEqual(coordinates[0]["value"][2] - coordinates[1]["value"][2], 2.0, places=6)
 
+    def test_bond_length_of_an_atomic_units_block_is_physical(self):
+        """test-001's rows verbatim. Read as angstrom they give an O-H of 1.81 A; the conversion is
+        what makes them the 0.9572 A of a real water molecule, and the BASIS fixture is those."""
+        text = geometry_block(
+            "a.u.",
+            "1.000000000",
+            [
+                "    1 O                    8.0000     0.00000000     0.00000000     0.22143053",
+                "    2 H                    1.0000     0.00000000     1.43042809    -0.88572213",
+                "    3 H                    1.0000     0.00000000    -1.43042809    -0.88572213",
+            ],
+        )
+        coordinates = [c["value"] for c in self.parser.final_basis(text)["coordinates"]]
+        self.assertAlmostEqual(math.dist(coordinates[0], coordinates[1]), 0.9572, places=4)
+        self.assertAlmostEqual(math.dist(coordinates[0], coordinates[2]), 0.9572, places=4)
+
     def test_centers_the_basis_inside_the_derived_cell(self):
         text = geometry_block("angstroms", "1.889725989", self.ANGSTROM_ROWS)
         edge = self.parser.final_lattice_vectors(text)["vectors"]["a"][0]
@@ -142,13 +159,21 @@ class NwchemTXTParserGeometryTest(unittest.TestCase):
     def test_shared_cell_fits_a_relaxation_that_expands(self):
         # Sizing from the initial geometry alone would leave an expanded molecule outside the box,
         # which reads as extra fragments and corrupts the InChI.
-        text = geometry_block("angstroms", "1.889725989", [
-            "    1 O                    8.0000     0.00000000     0.00000000     0.20000000",
-            "    2 H                    1.0000     0.00000000     0.00000000    -0.20000000",
-        ]) + geometry_block("angstroms", "1.889725989", [
-            "    1 O                    8.0000     0.00000000     0.00000000     2.50000000",
-            "    2 H                    1.0000     0.00000000     0.00000000    -2.50000000",
-        ])
+        text = geometry_block(
+            "angstroms",
+            "1.889725989",
+            [
+                "    1 O                    8.0000     0.00000000     0.00000000     0.20000000",
+                "    2 H                    1.0000     0.00000000     0.00000000    -0.20000000",
+            ],
+        ) + geometry_block(
+            "angstroms",
+            "1.889725989",
+            [
+                "    1 O                    8.0000     0.00000000     0.00000000     2.50000000",
+                "    2 H                    1.0000     0.00000000     0.00000000    -2.50000000",
+            ],
+        )
         edge = self.parser.final_lattice_vectors(text)["vectors"]["a"][0]
         self.assertEqual(self.parser.initial_lattice_vectors(text), self.parser.final_lattice_vectors(text))
         for basis in (self.parser.initial_basis(text), self.parser.final_basis(text)):

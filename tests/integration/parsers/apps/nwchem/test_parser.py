@@ -71,9 +71,7 @@ class TestNwchemParser(IntegrationTestBase):
         self.assertAlmostEqual(self.parser.thermal_correction_to_energy(), THERMAL_CORRECTION_TO_ENERGY, places=2)
 
     def test_nwchem_thermal_correction_to_enthalpy(self):
-        self.assertAlmostEqual(
-            self.parser.thermal_correction_to_enthalpy(), THERMAL_CORRECTION_TO_ENTHALPY, places=2
-        )
+        self.assertAlmostEqual(self.parser.thermal_correction_to_enthalpy(), THERMAL_CORRECTION_TO_ENTHALPY, places=2)
 
     def test_nwchem_material_is_a_molecule_without_being_told(self):
         # Constructed WITHOUT is_non_periodic on purpose: rupy never passes it.
