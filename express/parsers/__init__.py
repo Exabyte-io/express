@@ -8,6 +8,11 @@ class BaseParser(RoundNumericValuesMixin):
     Base Parser class.
     """
 
+    # Whether the structures this parser extracts are molecules rather than crystals. Read by
+    # `express.properties.material.Material`, which still uses getattr because it is also
+    # constructed with parser=None.
+    is_non_periodic = False
+
     def __init__(self, *args, **kwargs):
         self.args = args
         self.kwargs = kwargs

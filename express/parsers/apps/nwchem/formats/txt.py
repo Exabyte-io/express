@@ -23,6 +23,7 @@ class NwchemTXTParser(BaseTXTParser):
         the first and the last block coincide and the initial and final structures are equal. The
         block is printed in whichever units the input declared, and the header carries the factor
         converting them to a.u., so both `units angstrom` and `units au` runs are read correctly.
+        Returns empty lists when the blocks disagree -- see `_geometry_blocks`.
 
         Args:
             text (str): text to extract data from.
@@ -31,26 +32,40 @@ class NwchemTXTParser(BaseTXTParser):
         Returns:
             tuple[list[str], list[list[float]]]: elements and coordinates in angstrom.
         """
-        blocks = list(settings.GEOMETRY_BLOCK_REGEX.finditer(text))
-        if not blocks:
-            return [], []
+        blocks = self._geometry_blocks(text)
+        return blocks[-1 if last else 0] if blocks else ([], [])
 
-        block = blocks[-1] if last else blocks[0]
-        # An `angstroms` block is taken verbatim; rescaling it through two Bohr radii that disagree
-        # in the last digits would perturb coordinates the file already gives exactly.
-        is_angstrom = block.group("units").startswith("angstrom")
-        to_angstrom = 1.0 if is_angstrom else float(block.group("scale")) * Constant.BOHR
+    def _geometry_blocks(self, text):
+        """
+        Extracts every "Output coordinates" block, or nothing at all if they disagree on which
+        atoms are present. A log truncated mid-table parses as a shorter molecule, and the callers
+        below cannot tell that from a real one -- rupy would publish the fragment as
+        `final_structure`, formula and InChI included.
 
-        rows = list(settings.GEOMETRY_ROW_REGEX.finditer(block.group("rows")))
-        return (
-            [row.group("element") for row in rows],
-            [[float(row.group(axis)) * to_angstrom for axis in ("x", "y", "z")] for row in rows],
-        )
+        Args:
+            text (str): text to extract data from.
+
+        Returns:
+            list[tuple[list[str], list[list[float]]]]: elements and coordinates in angstrom.
+        """
+        blocks = []
+        for block in settings.GEOMETRY_BLOCK_REGEX.finditer(text):
+            to_angstrom = float(block.group("scale")) * Constant.BOHR
+            rows = list(settings.GEOMETRY_ROW_REGEX.finditer(block.group("rows")))
+            blocks.append(
+                (
+                    [row.group("element") for row in rows],
+                    [[float(row.group(axis)) * to_angstrom for axis in ("x", "y", "z")] for row in rows],
+                )
+            )
+        if len({tuple(elements) for elements, _ in blocks}) > 1:
+            return []
+        return blocks
 
     def _basis(self, text, last):
         """
-        Extracts a basis, centered inside the cell that `_lattice_vectors` derives for the same
-        block. NWChem's coordinates straddle the origin and would otherwise sit outside the box.
+        Extracts a basis, centered inside the one cell `_lattice_vectors` derives from both
+        blocks. NWChem's coordinates straddle the origin and would otherwise sit outside the box.
 
         Args:
             text (str): text to extract data from.
@@ -89,9 +104,11 @@ class NwchemTXTParser(BaseTXTParser):
         convention, the same one that gives every non-periodic material on the platform its box.
 
         One cell for both structures, so they are comparable: an optimization moves atoms inside a
-        fixed box rather than resizing it. Sized to whichever of the two geometries needs more room,
-        because a relaxation that expands the molecule would otherwise leave atoms outside a box
-        derived from the initial one -- which reads as extra fragments and corrupts the InChI.
+        fixed box rather than resizing it, and initial and final differ only where the atoms went.
+        Sized to whichever geometry needs more room. Containment is not the reason -- a cell derived
+        per structure always contains its own atoms; it is centering a basis in a cell derived from
+        the other block that puts atoms outside, which reads as extra fragments and corrupts the
+        InChI.
 
         Args:
             text (str): text to extract data from.
@@ -104,7 +121,7 @@ class NwchemTXTParser(BaseTXTParser):
         """
         edges = [
             calculate_padded_cell_simple_cubic(coordinates)[0][0]
-            for coordinates in (self._geometry_block(text, last)[1] for last in (False, True))
+            for _, coordinates in self._geometry_blocks(text)
             if coordinates
         ]
         if not edges:
@@ -122,8 +139,7 @@ class NwchemTXTParser(BaseTXTParser):
     def initial_lattice_vectors(self, text):
         return self._lattice_vectors(text)
 
-    def final_lattice_vectors(self, text):
-        return self._lattice_vectors(text)
+    final_lattice_vectors = initial_lattice_vectors
 
     def eigenvalues_at_vectors(self, text):
         """
