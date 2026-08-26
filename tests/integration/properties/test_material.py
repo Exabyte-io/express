@@ -3,9 +3,11 @@ from copy import deepcopy
 from typing import Dict, List
 
 from express.parsers.apps.espresso.parser import EspressoParser
+from express.parsers.apps.nwchem.parser import NwchemParser
 from express.parsers.apps.vasp.parser import VaspParser
 from express.properties.material import Material
 from tests.fixtures.data import SI as data
+from tests.fixtures.nwchem.references import FINAL_CELL_EDGE_MULTISTEP, FINAL_CRYSTAL_COORDINATES_MULTISTEP
 from tests.integration import IntegrationTestBase
 
 
@@ -23,6 +25,10 @@ class MaterialTest(IntegrationTestBase):
     @property
     def espresso_parser(self):
         return EspressoParser(work_dir=self.workDir, stdout_file=self.stdoutFile)
+
+    @property
+    def nwchem_parser(self):
+        return NwchemParser(work_dir=self.workDir, stdout_file=self.stdoutFile)
 
     @property
     def structure_string(self):
@@ -96,3 +102,26 @@ class MaterialTest(IntegrationTestBase):
     def test_material_serialize_and_validate(self):
         material = Material("material", self.vasp_parser, is_initial_structure=True, is_non_periodic=True)
         self.assertJsonEqual(material)
+
+    def test_nwchem_material_is_a_molecule_without_being_told(self):
+        # Constructed WITHOUT is_non_periodic on purpose: rupy never passes it.
+        material = Material("material", self.nwchem_parser, is_final_structure=True).serialize_and_validate()
+        self.assertTrue(material["isNonPeriodic"])
+        self.assertEqual(material["lattice"]["type"], "CUB")
+        derived = {p["name"] for p in material["derivedProperties"]}
+        self.assertIn("inchi", derived)
+        self.assertIn("inchi_key", derived)
+        self.assertNotIn("volume", derived)
+        self.assertNotIn("density", derived)
+
+    def test_nwchem_material_shares_one_cell_between_structures(self):
+        initial = Material("material", self.nwchem_parser, is_initial_structure=True).serialize_and_validate()
+        final = Material("material", self.nwchem_parser, is_final_structure=True).serialize_and_validate()
+        self.assertEqual(initial["lattice"], final["lattice"])
+
+    def test_nwchem_material_of_a_relaxed_molecule(self):
+        material = Material("material", self.nwchem_parser, is_final_structure=True).serialize_and_validate()
+        self.assertAlmostEqual(material["lattice"]["a"], FINAL_CELL_EDGE_MULTISTEP, places=6)
+        self.assertDeepAlmostEqual(
+            [c["value"] for c in material["basis"]["coordinates"]], FINAL_CRYSTAL_COORDINATES_MULTISTEP, places=6
+        )

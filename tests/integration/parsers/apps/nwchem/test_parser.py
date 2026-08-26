@@ -1,6 +1,5 @@
 # ruff: noqa: F403,F405
 from express.parsers.apps.nwchem.parser import NwchemParser
-from express.properties.material import Material
 from tests.fixtures.nwchem.references import *
 from tests.integration import IntegrationTestBase
 
@@ -67,26 +66,3 @@ class TestNwchemParser(IntegrationTestBase):
 
     def test_nwchem_thermal_correction_to_enthalpy(self):
         self.assertAlmostEqual(self.parser.thermal_correction_to_enthalpy(), THERMAL_CORRECTION_TO_ENTHALPY, places=2)
-
-    def test_nwchem_material_is_a_molecule_without_being_told(self):
-        # Constructed WITHOUT is_non_periodic on purpose: rupy never passes it.
-        material = Material("material", self.parser, is_final_structure=True).serialize_and_validate()
-        self.assertTrue(material["isNonPeriodic"])
-        self.assertEqual(material["lattice"]["type"], "CUB")
-        derived = {p["name"] for p in material["derivedProperties"]}
-        self.assertIn("inchi", derived)
-        self.assertIn("inchi_key", derived)
-        self.assertNotIn("volume", derived)
-        self.assertNotIn("density", derived)
-
-    def test_nwchem_material_shares_one_cell_between_structures(self):
-        initial = Material("material", self.parser, is_initial_structure=True).serialize_and_validate()
-        final = Material("material", self.parser, is_final_structure=True).serialize_and_validate()
-        self.assertEqual(initial["lattice"], final["lattice"])
-
-    def test_nwchem_material_of_a_relaxed_molecule(self):
-        material = Material("material", self.parser, is_final_structure=True).serialize_and_validate()
-        self.assertAlmostEqual(material["lattice"]["a"], FINAL_CELL_EDGE_MULTISTEP, places=6)
-        self.assertDeepAlmostEqual(
-            [c["value"] for c in material["basis"]["coordinates"]], FINAL_CRYSTAL_COORDINATES_MULTISTEP, places=6
-        )
