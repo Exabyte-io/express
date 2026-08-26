@@ -78,3 +78,18 @@ class TestNwchemParser(IntegrationTestBase):
         self.assertIn("inchi_key", derived)
         self.assertNotIn("volume", derived)
         self.assertNotIn("density", derived)
+
+    def test_nwchem_material_shares_one_cell_between_structures(self):
+        initial = Material("material", self.parser, is_initial_structure=True).serialize_and_validate()
+        final = Material("material", self.parser, is_final_structure=True).serialize_and_validate()
+        self.assertEqual(initial["lattice"], final["lattice"])
+
+    def test_nwchem_material_of_a_relaxed_molecule(self):
+        """The cell and the coordinates the live cluster job published, which express serializes in
+        crystal units, so they come back multiplied by the edge."""
+        material = Material("material", self.parser, is_final_structure=True).serialize_and_validate()
+        edge = material["lattice"]["a"]
+        self.assertAlmostEqual(edge, RELAXED_CELL_EDGE, places=6)
+        self.assertDeepAlmostEqual(
+            [[edge * x for x in c["value"]] for c in material["basis"]["coordinates"]], RELAXED_COORDINATES, places=6
+        )

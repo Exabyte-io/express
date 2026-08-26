@@ -268,3 +268,11 @@ test_espresso_hubbard_v_nn:
 test_nwchem_material_is_a_molecule_without_being_told:
   workDir: fixtures/nwchem/test-002
   stdoutFile: fixtures/nwchem/test-002/nwchem-frequency.log
+
+test_nwchem_material_shares_one_cell_between_structures:
+  workDir: fixtures/nwchem/test-002
+  stdoutFile: fixtures/nwchem/test-002/nwchem-frequency.log
+
+test_nwchem_material_of_a_relaxed_molecule:
+  workDir: fixtures/nwchem/test-003
+  stdoutFile: fixtures/nwchem/test-003/nwchem-relaxation.log

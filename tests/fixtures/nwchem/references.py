@@ -72,3 +72,13 @@ FINAL_BASIS_MULTISTEP = {
         {"id": 2, "value": [0.76261482, 0.0, -0.71575817]},
     ],
 }
+
+# What express published for the relaxed H2O of the live cluster job (B3LYP/6-31G), pinned from
+# web-app cypress/fixtures/properties/final-structure-nwchem-optimized.json. test-003 holds that
+# geometry translated to the origin, so the box and the centering are what have to put it back.
+RELAXED_CELL_EDGE = 3.163848897
+RELAXED_COORDINATES = [
+    [1.337365565, 1.554783897, 1.291226523],
+    [1.738223968, 0.806541518, 1.772181243],
+    [1.670183813, 2.38444793, 1.682365581],
+]
