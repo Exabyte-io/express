@@ -51,15 +51,10 @@ class TestNwchemParser(IntegrationTestBase):
     def test_nwchem_structures_of_single_point(self):
         self.assertDeepAlmostEqual(self.parser.initial_basis(), BASIS, places=6)
         self.assertDeepAlmostEqual(self.parser.final_basis(), BASIS, places=6)
-        self.assertDeepAlmostEqual(self.parser.initial_lattice_vectors(), LATTICE_VECTORS, places=6)
-        self.assertDeepAlmostEqual(self.parser.final_lattice_vectors(), LATTICE_VECTORS, places=6)
 
     def test_nwchem_structures_of_optimization(self):
         self.assertDeepAlmostEqual(self.parser.initial_basis(), INITIAL_BASIS_MULTISTEP, places=6)
         self.assertDeepAlmostEqual(self.parser.final_basis(), FINAL_BASIS_MULTISTEP, places=6)
-        self.assertDeepAlmostEqual(self.parser.initial_lattice_vectors(), LATTICE_VECTORS_MULTISTEP, places=6)
-        self.assertDeepAlmostEqual(self.parser.final_lattice_vectors(), LATTICE_VECTORS_MULTISTEP, places=6)
-        self.assertEqual(self.parser.initial_lattice_vectors(), self.parser.final_lattice_vectors())
 
     def test_nwchem_total_energy_contributions(self):
         self.assertDeepAlmostEqual(self.parser.total_energy_contributions(), TOTAL_ENERGY_CONTRIBUTION, places=2)

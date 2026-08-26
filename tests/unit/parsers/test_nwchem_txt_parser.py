@@ -100,8 +100,8 @@ class NwchemTXTParserGeometryTest(unittest.TestCase):
                 "    2 H                    1.0000     0.00000000     0.00000000    -0.50000000",
             ],
         )
-        initial = self.parser.initial_basis(text)["coordinates"]
-        final = self.parser.final_basis(text)["coordinates"]
+        initial = self.parser.basis(text, 0)["coordinates"]
+        final = self.parser.basis(text, -1)["coordinates"]
         self.assertAlmostEqual(initial[0]["value"][2] - initial[1]["value"][2], 2.0)
         self.assertAlmostEqual(final[0]["value"][2] - final[1]["value"][2], 1.0)
 
@@ -114,7 +114,7 @@ class NwchemTXTParserGeometryTest(unittest.TestCase):
                 "    2 H                    1.0000     0.00000000     0.00000000    -1.88972599",
             ],
         )
-        coordinates = self.parser.final_basis(text)["coordinates"]
+        coordinates = self.parser.basis(text, -1)["coordinates"]
         self.assertAlmostEqual(coordinates[0]["value"][2] - coordinates[1]["value"][2], 2.0, places=6)
 
     def test_bond_length_of_an_atomic_units_block_is_physical(self):
@@ -129,21 +129,12 @@ class NwchemTXTParserGeometryTest(unittest.TestCase):
                 "    3 H                    1.0000     0.00000000    -1.43042809    -0.88572213",
             ],
         )
-        coordinates = [c["value"] for c in self.parser.final_basis(text)["coordinates"]]
+        coordinates = [c["value"] for c in self.parser.basis(text, -1)["coordinates"]]
         self.assertAlmostEqual(math.dist(coordinates[0], coordinates[1]), 0.9572, places=4)
         self.assertAlmostEqual(math.dist(coordinates[0], coordinates[2]), 0.9572, places=4)
 
-    def test_centers_the_basis_inside_the_derived_cell(self):
-        text = geometry_block("angstroms", "1.889725989", self.ANGSTROM_ROWS)
-        edge = self.parser.final_lattice_vectors(text)["vectors"]["a"][0]
-        for coordinate in self.parser.final_basis(text)["coordinates"]:
-            for value in coordinate["value"]:
-                self.assertGreaterEqual(value, 0.0)
-                self.assertLessEqual(value, edge)
-
     def test_returns_nothing_without_a_geometry_block(self):
-        self.assertIsNone(self.parser.final_basis(" Total DFT energy = -76.4\n"))
-        self.assertIsNone(self.parser.final_lattice_vectors(" Total DFT energy = -76.4\n"))
+        self.assertIsNone(self.parser.basis(" Total DFT energy = -76.4\n", -1))
 
     def test_ignores_a_numeric_row_that_happens_to_fit_the_shape(self):
         # A row of bare numbers satisfies the column shape but has no element symbol. It must be
@@ -153,31 +144,5 @@ class NwchemTXTParserGeometryTest(unittest.TestCase):
             "1.889725989",
             self.ANGSTROM_ROWS + ["    3 1.0000    2.0000    3.0000     4.0000     5.0000"],
         )
-        basis = self.parser.final_basis(text)
+        basis = self.parser.basis(text, -1)
         self.assertEqual([e["value"] for e in basis["elements"]], ["O", "H"])
-
-    def test_shared_cell_fits_a_relaxation_that_expands(self):
-        # Sizing from the initial geometry alone would leave an expanded molecule outside the box,
-        # which reads as extra fragments and corrupts the InChI.
-        text = geometry_block(
-            "angstroms",
-            "1.889725989",
-            [
-                "    1 O                    8.0000     0.00000000     0.00000000     0.20000000",
-                "    2 H                    1.0000     0.00000000     0.00000000    -0.20000000",
-            ],
-        ) + geometry_block(
-            "angstroms",
-            "1.889725989",
-            [
-                "    1 O                    8.0000     0.00000000     0.00000000     2.50000000",
-                "    2 H                    1.0000     0.00000000     0.00000000    -2.50000000",
-            ],
-        )
-        edge = self.parser.final_lattice_vectors(text)["vectors"]["a"][0]
-        self.assertEqual(self.parser.initial_lattice_vectors(text), self.parser.final_lattice_vectors(text))
-        for basis in (self.parser.initial_basis(text), self.parser.final_basis(text)):
-            for coordinate in basis["coordinates"]:
-                for value in coordinate["value"]:
-                    self.assertGreaterEqual(value, 0.0)
-                    self.assertLessEqual(value, edge)

@@ -1,6 +1,3 @@
-from mat3ra.made.tools.convert.utils import calculate_padded_cell_simple_cubic
-from mat3ra.made.utils import get_center_of_coordinates
-
 from express.parsers.settings import Constant
 from express.parsers.apps.nwchem import settings
 from express.parsers.formats.txt import BaseTXTParser
@@ -15,32 +12,15 @@ class NwchemTXTParser(BaseTXTParser):
     def __init__(self, work_dir):
         super(NwchemTXTParser, self).__init__(work_dir)
 
-    def _geometry_block(self, text, last):
-        """
-        Extracts one "Output coordinates" block as coordinates in angstrom.
-
-        A geometry optimization prints one block per step; a single-point run prints exactly one, so
-        the first and the last block coincide and the initial and final structures are equal. The
-        block is printed in whichever units the input declared, and the header carries the factor
-        converting them to a.u., so both `units angstrom` and `units au` runs are read correctly.
-        Returns empty lists when the blocks disagree -- see `_geometry_blocks`.
-
-        Args:
-            text (str): text to extract data from.
-            last (bool): whether to read the last block instead of the first.
-
-        Returns:
-            tuple[list[str], list[list[float]]]: elements and coordinates in angstrom.
-        """
-        blocks = self._geometry_blocks(text)
-        return blocks[-1 if last else 0] if blocks else ([], [])
-
-    def _geometry_blocks(self, text):
+    def geometry_blocks(self, text):
         """
         Extracts every "Output coordinates" block, or nothing at all if they disagree on which
         atoms are present. A log truncated mid-table parses as a shorter molecule, and the callers
         below cannot tell that from a real one -- rupy would publish the fragment as
         `final_structure`, formula and InChI included.
+
+        A block is printed in whichever units the input declared, and its header carries the factor
+        converting them to a.u., so both `units angstrom` and `units au` runs are read correctly.
 
         Args:
             text (str): text to extract data from.
@@ -62,14 +42,14 @@ class NwchemTXTParser(BaseTXTParser):
             return []
         return blocks
 
-    def _basis(self, text, last):
+    def basis(self, text, index):
         """
-        Extracts a basis, centered inside the one cell `_lattice_vectors` derives from both
-        blocks. NWChem's coordinates straddle the origin and would otherwise sit outside the box.
+        Extracts the geometry block at the given index. An optimization prints one block per step;
+        a single-point run prints exactly one, so index 0 and index -1 then coincide.
 
         Args:
             text (str): text to extract data from.
-            last (bool): whether to read the last block instead of the first.
+            index (int): position of the block among those printed.
 
         Returns:
             dict
@@ -78,68 +58,19 @@ class NwchemTXTParser(BaseTXTParser):
             {
                 'units': 'angstrom',
                 'elements': [{'id': 0, 'value': 'O'}, {'id': 1, 'value': 'H'}],
-                'coordinates': [{'id': 0, 'value': [2.86, 2.86, 3.60]}, {'id': 1, 'value': [1.43, 2.86, 2.49]}]
+                'coordinates': [{'id': 0, 'value': [0.0, 0.0, 0.11]}, {'id': 1, 'value': [0.0, 0.75, -0.46]}]
             }
         """
-        elements, coordinates = self._geometry_block(text, last)
-        if not elements:
+        blocks = self.geometry_blocks(text)
+        if not blocks:
             return None
 
-        # Take the edge from _lattice_vectors rather than deriving a second cell here, so the basis
-        # is centered in the very box that ships with it.
-        center = get_center_of_coordinates(coordinates)
-        box_center = self._lattice_vectors(text)["vectors"]["a"][0] / 2
+        elements, coordinates = blocks[index]
         return {
             "units": "angstrom",
-            "elements": [{"id": index, "value": value} for index, value in enumerate(elements)],
-            "coordinates": [
-                {"id": index, "value": [x - center[axis] + box_center for axis, x in enumerate(coordinate)]}
-                for index, coordinate in enumerate(coordinates)
-            ],
+            "elements": [{"id": idx, "value": value} for idx, value in enumerate(elements)],
+            "coordinates": [{"id": idx, "value": coordinate} for idx, coordinate in enumerate(coordinates)],
         }
-
-    def _lattice_vectors(self, text):
-        """
-        Derives a cell for a molecule, which NWChem does not print: made's simple-cubic padding
-        convention, the same one that gives every non-periodic material on the platform its box.
-
-        One cell for both structures, so they are comparable: an optimization moves atoms inside a
-        fixed box rather than resizing it, and initial and final differ only where the atoms went.
-        Sized to whichever geometry needs more room. Containment is not the reason -- a cell derived
-        per structure always contains its own atoms; it is centering a basis in a cell derived from
-        the other block that puts atoms outside, which reads as extra fragments and corrupts the
-        InChI.
-
-        Args:
-            text (str): text to extract data from.
-
-        Returns:
-            dict
-
-        Example:
-            {'vectors': {'a': [5.72, 0.0, 0.0], 'b': [0.0, 5.72, 0.0], 'c': [0.0, 0.0, 5.72], 'alat': 1}}
-        """
-        edges = [
-            calculate_padded_cell_simple_cubic(coordinates)[0][0]
-            for _, coordinates in self._geometry_blocks(text)
-            if coordinates
-        ]
-        if not edges:
-            return None
-
-        edge = max(edges)
-        return {"vectors": {"a": [edge, 0.0, 0.0], "b": [0.0, edge, 0.0], "c": [0.0, 0.0, edge], "alat": 1}}
-
-    def initial_basis(self, text):
-        return self._basis(text, last=False)
-
-    def final_basis(self, text):
-        return self._basis(text, last=True)
-
-    def initial_lattice_vectors(self, text):
-        return self._lattice_vectors(text)
-
-    final_lattice_vectors = initial_lattice_vectors
 
     def eigenvalues_at_vectors(self, text):
         """

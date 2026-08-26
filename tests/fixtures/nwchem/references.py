@@ -39,42 +39,36 @@ TOTAL_ENERGY_CONTRIBUTION = {
     "nuclear_repulsion": {"name": "nuclear_repulsion", "value": 250.20815670232923},
 }
 
-# test-001 declares `units au`, so these are its printed coordinates converted to angstrom and then
-# centered in the derived cell. Read as angstrom instead they give an O-H of 1.81 A, which is what
+# test-001 declares `units au`, so these are its printed coordinates converted to angstrom. Read as
+# angstrom instead they give an O-H of 1.81 A, which is what
 # test_bond_length_of_an_atomic_units_block_is_physical guards against.
 BASIS = {
     "units": "angstrom",
     "elements": [{"id": 0, "value": "O"}, {"id": 1, "value": "H"}, {"id": 2, "value": "H"}],
     "coordinates": [
-        {"id": 0, "value": [1.51390003, 1.51390003, 1.90448670]},
-        {"id": 1, "value": [1.51390003, 2.27085004, 1.31860669]},
-        {"id": 2, "value": [1.51390003, 0.75695001, 1.31860669]},
+        {"id": 0, "value": [0.0, 0.0, 0.11717600]},
+        {"id": 1, "value": [0.0, 0.75695001, -0.46870401]},
+        {"id": 2, "value": [0.0, -0.75695001, -0.46870401]},
     ],
 }
-LATTICE_VECTORS = {
-    "vectors": {"a": [3.02780005, 0.0, 0.0], "b": [0.0, 3.02780005, 0.0], "c": [0.0, 0.0, 3.02780005], "alat": 1}
-}
 
-# test-002 optimizes, so its first and last blocks differ — and so do the cells derived from them.
+# test-002 optimizes, so its first and last blocks differ.
 # 6-31G* geometry: O-H 0.96866 A after relaxation, not the 6-31G 0.9758 A the Cypress feature pins.
 INITIAL_BASIS_MULTISTEP = {
     "units": "angstrom",
     "elements": [{"id": 0, "value": "O"}, {"id": 1, "value": "H"}, {"id": 2, "value": "H"}],
     "coordinates": [
-        {"id": 0, "value": [2.86085618, 2.86085618, 3.59895795]},
-        {"id": 1, "value": [1.43042809, 2.86085618, 2.49180529]},
-        {"id": 2, "value": [4.29128427, 2.86085618, 2.49180529]},
+        {"id": 0, "value": [0.0, 0.0, 0.22143053]},
+        {"id": 1, "value": [-1.43042811, 0.0, -0.88572214]},
+        {"id": 2, "value": [1.43042811, 0.0, -0.88572214]},
     ],
 }
 FINAL_BASIS_MULTISTEP = {
     "units": "angstrom",
     "elements": [{"id": 0, "value": "O"}, {"id": 1, "value": "H"}, {"id": 2, "value": "H"}],
     "coordinates": [
-        {"id": 0, "value": [2.86085618, 2.86085618, 3.25903001]},
-        {"id": 1, "value": [2.09824137, 2.86085618, 2.66176926]},
-        {"id": 2, "value": [3.62347099, 2.86085618, 2.66176926]},
+        {"id": 0, "value": [0.0, 0.0, -0.11849741]},
+        {"id": 1, "value": [-0.76261482, 0.0, -0.71575817]},
+        {"id": 2, "value": [0.76261482, 0.0, -0.71575817]},
     ],
-}
-LATTICE_VECTORS_MULTISTEP = {
-    "vectors": {"a": [5.72171236, 0.0, 0.0], "b": [0.0, 5.72171236, 0.0], "c": [0.0, 0.0, 5.72171236], "alat": 1}
 }
