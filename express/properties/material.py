@@ -13,6 +13,7 @@ from express.properties.scalar.p_norm import PNorm
 from express.properties.scalar.volume import Volume
 from express.properties.structural.inchi import Inchi
 from express.properties.structural.inchi_key import InchiKey
+from express.properties.utils import box_molecule
 
 
 class Material(BaseProperty):
@@ -36,6 +37,8 @@ class Material(BaseProperty):
                 else:
                     basis = self.parser.initial_basis()
                     lattice = self.parser.initial_lattice_vectors()
+                    if self.is_non_periodic and lattice is None:
+                        lattice, basis = box_molecule(basis, [basis, self.parser.final_basis()])
                     structure_string = lattice_basis_to_poscar(lattice, basis)
 
             if kwargs.get("is_final_structure"):
@@ -45,6 +48,8 @@ class Material(BaseProperty):
                 else:
                     basis = self.parser.final_basis()
                     lattice = self.parser.final_lattice_vectors()
+                    if self.is_non_periodic and lattice is None:
+                        lattice, basis = box_molecule(basis, [self.parser.initial_basis(), basis])
                     structure_string = lattice_basis_to_poscar(lattice, basis)
 
         if self.is_non_periodic:
