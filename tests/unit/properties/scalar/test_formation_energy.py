@@ -12,6 +12,6 @@ class FormationEnergyTest(UnitTestBase):
         super().tearDown()
 
     def test_formation_energy(self):
-        parser = self.get_mocked_parser("formation_energy", FORMATION_ENERGY["value"])  # noqa : F841
+        parser = self.get_mocked_parser("formation_energy", FORMATION_ENERGY["value"]) # noqa : F841
         property_ = ScalarPropertyFromContext("formation_energy", None, value=FORMATION_ENERGY["value"])
         self.assertDeepAlmostEqual(property_.serialize_and_validate(), FORMATION_ENERGY)

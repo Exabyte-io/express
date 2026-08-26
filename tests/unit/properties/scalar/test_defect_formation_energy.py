@@ -12,5 +12,7 @@ class DefectFormationEnergyTest(UnitTestBase):
         super().tearDown()
 
     def test_defect_formation_energy(self):
-        property_ = ScalarPropertyFromContext("defect_formation_energy", None, value=DEFECT_FORMATION_ENERGY["value"])
+        property_ = ScalarPropertyFromContext(
+            "defect_formation_energy", None, value=DEFECT_FORMATION_ENERGY["value"]
+        )
         self.assertDeepAlmostEqual(property_.serialize_and_validate(), DEFECT_FORMATION_ENERGY)
