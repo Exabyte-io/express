@@ -52,7 +52,7 @@ class NwchemTXTParser(BaseTXTParser):
             index (int): position of the block among those printed.
 
         Returns:
-            dict
+            dict | None
 
         Example:
             {

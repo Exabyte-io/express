@@ -33,30 +33,28 @@ def to_array_with_ids(array):
     return [{"id": index, "value": value} for index, value in enumerate(array)]
 
 
-def box_molecule(basis, bases):
+def box_molecule(selected_basis, parsed_bases):
     """
-    Puts a molecule into the cell its application does not print: made's simple-cubic padding
-    convention, the same one that gives every non-periodic material on the platform its box.
-
-    One cell for every basis in `bases`, so the structures of one calculation stay comparable: an
-    optimization moves atoms inside a fixed box rather than resizing it. Sized to whichever geometry
-    needs the most room, and the basis is then centered in it -- printed coordinates straddle the
-    origin, and atoms outside the box read as extra fragments and corrupt the InChI.
+    Derives the cell a molecule's application does not print -- made's simple-cubic padding, sized to
+    hold every structure of the calculation so an optimization moves atoms inside a fixed box rather
+    than resizing it -- and centers the selected basis in it. Printed coordinates straddle the origin,
+    and atoms outside the box read as extra fragments and corrupt the InChI.
 
     Args:
-        basis (dict): the basis to center.
-        bases (list): every basis the cell has to hold.
+        selected_basis (dict): the basis to center.
+        parsed_bases (list): every basis the cell has to hold.
 
     Returns:
-        tuple[dict, dict]: lattice vectors and the centered basis.
+        tuple[dict, dict]: lattice vectors, and the selected basis centered in them.
     """
-    coordinates = [coordinate["value"] for coordinate in basis["coordinates"]]
-    edge = max(
-        calculate_padded_cell_simple_cubic([point["value"] for point in other["coordinates"]])[0][0] for other in bases
-    )
+    coordinates = [coordinate["value"] for coordinate in selected_basis["coordinates"]]
+    cells = [
+        calculate_padded_cell_simple_cubic([point["value"] for point in other["coordinates"]]) for other in parsed_bases
+    ]
+    edge = max(vectors[0][0] for vectors in cells)
     center = get_center_of_coordinates(coordinates)
     centered = [[x - center[axis] + edge / 2 for axis, x in enumerate(coordinate)] for coordinate in coordinates]
     return (
         {"vectors": {"a": [edge, 0.0, 0.0], "b": [0.0, edge, 0.0], "c": [0.0, 0.0, edge], "alat": 1}},
-        dict(basis, coordinates=to_array_with_ids(centered)),
+        dict(selected_basis, coordinates=to_array_with_ids(centered)),
     )

@@ -11,6 +11,9 @@ from express.parsers.apps.nwchem import settings
 class NwchemParser(BaseParser, IonicDataMixin, ElectronicDataMixin, ReciprocalDataMixin):
     """
     Nwchem parser class.
+
+    NWChem prints no cell for a molecule, so the lattice methods are left unimplemented and return
+    None: `express.properties.utils.box_molecule` derives the box, rather than a parser inventing it.
     """
 
     is_non_periodic = True

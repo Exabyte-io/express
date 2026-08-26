@@ -40,8 +40,7 @@ TOTAL_ENERGY_CONTRIBUTION = {
 }
 
 # test-001 declares `units au`, so these are its printed coordinates converted to angstrom. Read as
-# angstrom instead they give an O-H of 1.81 A, which is what
-# test_bond_length_of_an_atomic_units_block_is_physical guards against.
+# angstrom instead they give an O-H of 1.81 A, which is what the bond length test guards against.
 BASIS = {
     "units": "angstrom",
     "elements": [{"id": 0, "value": "O"}, {"id": 1, "value": "H"}, {"id": 2, "value": "H"}],
@@ -74,8 +73,8 @@ FINAL_BASIS_MULTISTEP = {
 }
 
 # What express serializes for test-002's final block: made's cubic padding sized to fit both
-# structures, and the basis centered in it. Taken from a488316, where the parser did that itself --
-# these are the numbers the move into the properties layer had to leave alone.
+# structures, and the basis centered in it. These are the numbers the move of that work out of the
+# parser and into the properties layer had to leave alone.
 FINAL_CELL_EDGE_MULTISTEP = 5.721712
 FINAL_CRYSTAL_COORDINATES_MULTISTEP = [
     [0.5, 0.5, 0.569589977],
