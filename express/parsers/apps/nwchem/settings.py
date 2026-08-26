@@ -7,19 +7,15 @@ DOUBLE_REGEX = GENERAL_REGEX["double_number"]
 NWCHEM_OUTPUT_FILE_REGEX = "Northwest Computational Chemistry Package"
 
 GEOMETRY_HEADER_REGEX = r"Output coordinates in (?P<units>\S+) \(scale by\s+(?P<scale>[\d.]+) to convert to a\.u\.\)"
+# Requiring the tag to start with a symbol keeps a numeric-looking row of another table from matching.
 ELEMENT_REGEX = r"[A-Za-z]+"
-# Requiring the tag to start with a symbol is what keeps a numeric-looking row of some other table
-# from matching: the row shape alone is not specific enough.
 GEOMETRY_TAG_REGEX = r"{}\S*".format(ELEMENT_REGEX)
 GEOMETRY_RULE_REGEX = r"^[ \t]*-{4,}[- \t]*$\n"
 GEOMETRY_ROW_TEMPLATE = r"^[ \t]*\d+[ \t]+{tag}[ \t]+{double}[ \t]+{x}[ \t]+{y}[ \t]+{z}[ \t]*$"
-# Anything up to the next block, and never across it, so a header is always paired with its own
-# table rather than reaching forward into the following one.
+# Never across the next block, so a header is always paired with its own table.
 UNTIL_NEXT_GEOMETRY_REGEX = r"(?:(?!Output coordinates in)[\s\S])*?"
 
-# Geometry blocks are printed in whichever units the input declared; `scale` converts them to a.u.
-# The trailing `(?:row)+` is what bounds the table: it stops at the first line that is not a row,
-# which is the blank line after the last atom.
+# The trailing `(?:row)+` bounds the table: it stops at the blank line after the last atom.
 GEOMETRY_BLOCK_REGEX = re.compile(
     GEOMETRY_HEADER_REGEX
     + UNTIL_NEXT_GEOMETRY_REGEX

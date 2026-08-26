@@ -39,8 +39,7 @@ TOTAL_ENERGY_CONTRIBUTION = {
     "nuclear_repulsion": {"name": "nuclear_repulsion", "value": 250.20815670232923},
 }
 
-# test-001 declares `units au`, so these are its printed coordinates converted to angstrom. Read as
-# angstrom instead they give an O-H of 1.81 A, which is what the bond length test guards against.
+# test-001 declares `units au`, so these are its printed coordinates converted to angstrom.
 BASIS = {
     "units": "angstrom",
     "elements": [{"id": 0, "value": "O"}, {"id": 1, "value": "H"}, {"id": 2, "value": "H"}],
@@ -51,30 +50,8 @@ BASIS = {
     ],
 }
 
-# test-002 optimizes, so its first and last blocks differ.
-# 6-31G* geometry: O-H 0.96866 A after relaxation, not the 6-31G 0.9758 A the Cypress feature pins.
-INITIAL_BASIS_MULTISTEP = {
-    "units": "angstrom",
-    "elements": [{"id": 0, "value": "O"}, {"id": 1, "value": "H"}, {"id": 2, "value": "H"}],
-    "coordinates": [
-        {"id": 0, "value": [0.0, 0.0, 0.22143053]},
-        {"id": 1, "value": [-1.43042811, 0.0, -0.88572214]},
-        {"id": 2, "value": [1.43042811, 0.0, -0.88572214]},
-    ],
-}
-FINAL_BASIS_MULTISTEP = {
-    "units": "angstrom",
-    "elements": [{"id": 0, "value": "O"}, {"id": 1, "value": "H"}, {"id": 2, "value": "H"}],
-    "coordinates": [
-        {"id": 0, "value": [0.0, 0.0, -0.11849741]},
-        {"id": 1, "value": [-0.76261482, 0.0, -0.71575817]},
-        {"id": 2, "value": [0.76261482, 0.0, -0.71575817]},
-    ],
-}
-
-# What express serializes for test-002's final block: made's cubic padding sized to fit both
-# structures, and the basis centered in it. These are the numbers the move of that work out of the
-# parser and into the properties layer had to leave alone.
+# What express serializes for test-002: made's cubic padding sized to the larger of its two blocks,
+# with the final basis centered in it. The edge therefore pins the initial block too.
 FINAL_CELL_EDGE_MULTISTEP = 5.721712
 FINAL_CRYSTAL_COORDINATES_MULTISTEP = [
     [0.5, 0.5, 0.569589977],

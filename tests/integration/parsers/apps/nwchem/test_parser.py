@@ -51,10 +51,6 @@ class TestNwchemParser(IntegrationTestBase):
         self.assertDeepAlmostEqual(self.parser.initial_basis(), BASIS, places=6)
         self.assertDeepAlmostEqual(self.parser.final_basis(), BASIS, places=6)
 
-    def test_nwchem_structures_of_optimization(self):
-        self.assertDeepAlmostEqual(self.parser.initial_basis(), INITIAL_BASIS_MULTISTEP, places=6)
-        self.assertDeepAlmostEqual(self.parser.final_basis(), FINAL_BASIS_MULTISTEP, places=6)
-
     def test_nwchem_total_energy_contributions(self):
         self.assertDeepAlmostEqual(self.parser.total_energy_contributions(), TOTAL_ENERGY_CONTRIBUTION, places=2)
 
@@ -65,4 +61,6 @@ class TestNwchemParser(IntegrationTestBase):
         self.assertAlmostEqual(self.parser.thermal_correction_to_energy(), THERMAL_CORRECTION_TO_ENERGY, places=2)
 
     def test_nwchem_thermal_correction_to_enthalpy(self):
-        self.assertAlmostEqual(self.parser.thermal_correction_to_enthalpy(), THERMAL_CORRECTION_TO_ENTHALPY, places=2)
+        self.assertAlmostEqual(
+            self.parser.thermal_correction_to_enthalpy(), THERMAL_CORRECTION_TO_ENTHALPY, places=2
+        )

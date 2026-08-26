@@ -35,17 +35,10 @@ def to_array_with_ids(array):
 
 def box_molecule(selected_basis, parsed_bases):
     """
-    Derives the cell a molecule's application does not print -- made's simple-cubic padding, sized to
-    hold every structure of the calculation so an optimization moves atoms inside a fixed box rather
-    than resizing it -- and centers the selected basis in it. Printed coordinates straddle the origin,
-    and atoms outside the box read as extra fragments and corrupt the InChI.
-
-    Args:
-        selected_basis (dict): the basis to center.
-        parsed_bases (list): every basis the cell has to hold.
-
-    Returns:
-        tuple[dict, dict]: lattice vectors, and the selected basis centered in them.
+    Returns lattice vectors and the selected basis centered in them: made's simple-cubic padding,
+    sized to hold every basis in `parsed_bases` so an optimization moves atoms inside a fixed box
+    rather than resizing it. Printed coordinates straddle the origin, and atoms left outside the box
+    read as extra fragments and corrupt the InChI.
     """
     coordinates = [coordinate["value"] for coordinate in selected_basis["coordinates"]]
     cells = [

@@ -103,25 +103,14 @@ class MaterialTest(IntegrationTestBase):
         material = Material("material", self.vasp_parser, is_initial_structure=True, is_non_periodic=True)
         self.assertJsonEqual(material)
 
-    def test_nwchem_material_is_a_molecule_without_being_told(self):
-        # Constructed WITHOUT is_non_periodic on purpose: rupy never passes it.
-        material = Material("material", self.nwchem_parser, is_final_structure=True).serialize_and_validate()
-        self.assertTrue(material["isNonPeriodic"])
-        self.assertEqual(material["lattice"]["type"], "CUB")
-        derived = {p["name"] for p in material["derivedProperties"]}
-        self.assertIn("inchi", derived)
-        self.assertIn("inchi_key", derived)
-        self.assertNotIn("volume", derived)
-        self.assertNotIn("density", derived)
-
-    def test_nwchem_material_shares_one_cell_between_structures(self):
-        initial = Material("material", self.nwchem_parser, is_initial_structure=True).serialize_and_validate()
-        final = Material("material", self.nwchem_parser, is_final_structure=True).serialize_and_validate()
-        self.assertEqual(initial["lattice"], final["lattice"])
-
     def test_nwchem_material_of_a_relaxed_molecule(self):
+        # Constructed WITHOUT is_non_periodic on purpose: rupy never passes it.
+        initial = Material("material", self.nwchem_parser, is_initial_structure=True).serialize_and_validate()
         material = Material("material", self.nwchem_parser, is_final_structure=True).serialize_and_validate()
+        coordinates = [c["value"] for c in material["basis"]["coordinates"]]
+        self.assertEqual(initial["lattice"], material["lattice"])
+        self.assertEqual([material["isNonPeriodic"], material["lattice"]["type"]], [True, "CUB"])
         self.assertAlmostEqual(material["lattice"]["a"], FINAL_CELL_EDGE_MULTISTEP, places=6)
-        self.assertDeepAlmostEqual(
-            [c["value"] for c in material["basis"]["coordinates"]], FINAL_CRYSTAL_COORDINATES_MULTISTEP, places=6
-        )
+        self.assertDeepAlmostEqual(coordinates, FINAL_CRYSTAL_COORDINATES_MULTISTEP, places=6)
+        derived = {p["name"] for p in material["derivedProperties"]}
+        self.assertEqual(derived & {"inchi", "inchi_key", "volume", "density"}, {"inchi", "inchi_key"})

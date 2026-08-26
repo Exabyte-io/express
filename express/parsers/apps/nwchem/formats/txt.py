@@ -14,38 +14,25 @@ class NwchemTXTParser(BaseTXTParser):
 
     def geometry_blocks(self, text):
         """
-        Extracts every "Output coordinates" block, or nothing at all if they disagree on which
-        atoms are present. A log truncated mid-table parses as a shorter molecule, and the callers
-        below cannot tell that from a real one -- rupy would publish the fragment as
-        `final_structure`, formula and InChI included.
-
-        A block is printed in whichever units the input declared, and its header carries the factor
-        converting them to a.u., so both `units angstrom` and `units au` runs are read correctly.
-
-        Args:
-            text (str): text to extract data from.
-
-        Returns:
-            list[tuple[list[str], list[list[float]]]]: elements and coordinates in angstrom.
+        Extracts every "Output coordinates" block as elements and angstrom coordinates -- the header
+        carries the a.u. factor, so `units au` runs read correctly too -- or nothing at all if the
+        blocks disagree on their atoms: a log truncated mid-table parses as a shorter molecule, and
+        rupy would publish the fragment as `final_structure`.
         """
         blocks = []
         for block in settings.GEOMETRY_BLOCK_REGEX.finditer(text):
             to_angstrom = float(block.group("scale")) * Constant.BOHR
             rows = list(settings.GEOMETRY_ROW_REGEX.finditer(block.group("rows")))
-            blocks.append(
-                (
-                    [row.group("element") for row in rows],
-                    [[float(row.group(axis)) * to_angstrom for axis in ("x", "y", "z")] for row in rows],
-                )
-            )
+            elements = [row.group("element") for row in rows]
+            blocks.append((elements, [[float(row.group(axis)) * to_angstrom for axis in "xyz"] for row in rows]))
         if len({tuple(elements) for elements, _ in blocks}) > 1:
             return []
         return blocks
 
     def basis(self, text, index):
         """
-        Extracts the geometry block at the given index. An optimization prints one block per step;
-        a single-point run prints exactly one, so index 0 and index -1 then coincide.
+        Returns the geometry block at the given index. A single-point run prints exactly one block,
+        so index 0 and index -1 then coincide.
 
         Args:
             text (str): text to extract data from.
