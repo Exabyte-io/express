@@ -63,7 +63,6 @@ coverage.xml
 # Django stuff:
 *.log
 !tests/fixtures/nwchem/test-002/*.log
-!tests/fixtures/nwchem/test-003/*.log
 local_settings.py
 
 # Flask stuff:

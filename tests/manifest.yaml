@@ -274,5 +274,5 @@ test_nwchem_material_shares_one_cell_between_structures:
   stdoutFile: fixtures/nwchem/test-002/nwchem-frequency.log
 
 test_nwchem_material_of_a_relaxed_molecule:
-  workDir: fixtures/nwchem/test-003
-  stdoutFile: fixtures/nwchem/test-003/nwchem-relaxation.log
+  workDir: fixtures/nwchem/test-002
+  stdoutFile: fixtures/nwchem/test-002/nwchem-frequency.log

@@ -73,12 +73,12 @@ FINAL_BASIS_MULTISTEP = {
     ],
 }
 
-# What express published for the relaxed H2O of the live cluster job (B3LYP/6-31G), pinned from
-# web-app cypress/fixtures/properties/final-structure-nwchem-optimized.json. test-003 holds that
-# geometry translated to the origin, so the box and the centering are what have to put it back.
-RELAXED_CELL_EDGE = 3.163848897
-RELAXED_COORDINATES = [
-    [1.337365565, 1.554783897, 1.291226523],
-    [1.738223968, 0.806541518, 1.772181243],
-    [1.670183813, 2.38444793, 1.682365581],
+# What express serializes for test-002's final block: made's cubic padding sized to fit both
+# structures, and the basis centered in it. Taken from a488316, where the parser did that itself --
+# these are the numbers the move into the properties layer had to leave alone.
+FINAL_CELL_EDGE_MULTISTEP = 5.721712
+FINAL_CRYSTAL_COORDINATES_MULTISTEP = [
+    [0.5, 0.5, 0.569589977],
+    [0.366715633, 0.5, 0.465205011],
+    [0.633284367, 0.5, 0.465205011],
 ]
