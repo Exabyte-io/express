@@ -60,7 +60,7 @@ class NwchemTXTParserTest(unittest.TestCase):
     def test_returns_nothing_without_an_orbital_analysis_section(self):
         self.assertEqual(self.parser.eigenvalues_at_vectors(" Total DFT energy = -76.4\n"), [])
 
-
+# NOTE: use fixtures in the future instead of inline strings below; tentatively, mat3ra-fixtures
 def geometry_block(units, scale, *rows):
     return "\n".join(
         [
