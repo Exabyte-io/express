@@ -3,9 +3,11 @@ from copy import deepcopy
 from typing import Dict, List
 
 from express.parsers.apps.espresso.parser import EspressoParser
+from express.parsers.apps.nwchem.parser import NwchemParser
 from express.parsers.apps.vasp.parser import VaspParser
 from express.properties.material import Material
 from tests.fixtures.data import SI as data
+from tests.fixtures.nwchem.references import FINAL_CELL_EDGE_MULTISTEP, FINAL_CRYSTAL_COORDINATES_MULTISTEP
 from tests.integration import IntegrationTestBase
 
 
@@ -23,6 +25,10 @@ class MaterialTest(IntegrationTestBase):
     @property
     def espresso_parser(self):
         return EspressoParser(work_dir=self.workDir, stdout_file=self.stdoutFile)
+
+    @property
+    def nwchem_parser(self):
+        return NwchemParser(work_dir=self.workDir, stdout_file=self.stdoutFile)
 
     @property
     def structure_string(self):
@@ -46,6 +52,9 @@ class MaterialTest(IntegrationTestBase):
         derived_props = self.filter_derived_props(material.is_non_periodic)
         json = deepcopy(data)
         json["derivedProperties"] = derived_props
+        # Same reason derivedProperties is adapted: the shared SI fixture is periodic, and each
+        # test picks the picture it wants.
+        json["isNonPeriodic"] = material.is_non_periodic
         self.assertDeepAlmostEqual(material.serialize_and_validate(), json, places=2)
         return True
 
@@ -93,3 +102,15 @@ class MaterialTest(IntegrationTestBase):
     def test_material_serialize_and_validate(self):
         material = Material("material", self.vasp_parser, is_initial_structure=True, is_non_periodic=True)
         self.assertJsonEqual(material)
+
+    def test_nwchem_material_of_a_relaxed_molecule(self):
+        # Constructed WITHOUT is_non_periodic on purpose: rupy never passes it.
+        initial = Material("material", self.nwchem_parser, is_initial_structure=True).serialize_and_validate()
+        material = Material("material", self.nwchem_parser, is_final_structure=True).serialize_and_validate()
+        coordinates = [c["value"] for c in material["basis"]["coordinates"]]
+        self.assertEqual(initial["lattice"], material["lattice"])
+        self.assertEqual([material["isNonPeriodic"], material["lattice"]["type"]], [True, "CUB"])
+        self.assertAlmostEqual(material["lattice"]["a"], FINAL_CELL_EDGE_MULTISTEP, places=6)
+        self.assertDeepAlmostEqual(coordinates, FINAL_CRYSTAL_COORDINATES_MULTISTEP, places=6)
+        derived = {p["name"] for p in material["derivedProperties"]}
+        self.assertEqual(derived & {"inchi", "inchi_key", "volume", "density"}, {"inchi", "inchi_key"})

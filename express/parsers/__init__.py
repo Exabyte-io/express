@@ -8,6 +8,8 @@ class BaseParser(RoundNumericValuesMixin):
     Base Parser class.
     """
 
+    is_non_periodic = False
+
     def __init__(self, *args, **kwargs):
         self.args = args
         self.kwargs = kwargs

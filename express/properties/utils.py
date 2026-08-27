@@ -1,3 +1,7 @@
+from mat3ra.made.tools.convert.utils import calculate_padded_cell_simple_cubic
+from mat3ra.made.utils import get_center_of_coordinates
+
+
 def eigenvalues(eigenvalues_at_kpoints, kpoint_index=0, spin_index=0):
     """
     Returns eigenvalues for a given kpoint and spin.
@@ -27,3 +31,23 @@ def to_array_with_ids(array):
         list
     """
     return [{"id": index, "value": value} for index, value in enumerate(array)]
+
+
+def box_molecule(selected_basis, parsed_bases):
+    """
+    Returns lattice vectors and the selected basis centered in them: made's simple-cubic padding,
+    sized to hold every basis in `parsed_bases` so an optimization moves atoms inside a fixed box
+    rather than resizing it. Printed coordinates straddle the origin, and atoms left outside the box
+    read as extra fragments and corrupt the InChI.
+    """
+    coordinates = [coordinate["value"] for coordinate in selected_basis["coordinates"]]
+    cells = [
+        calculate_padded_cell_simple_cubic([point["value"] for point in other["coordinates"]]) for other in parsed_bases
+    ]
+    edge = max(vectors[0][0] for vectors in cells)
+    center = get_center_of_coordinates(coordinates)
+    centered = [[x - center[axis] + edge / 2 for axis, x in enumerate(coordinate)] for coordinate in coordinates]
+    return (
+        {"vectors": {"a": [edge, 0.0, 0.0], "b": [0.0, edge, 0.0], "c": [0.0, 0.0, edge], "alat": 1}},
+        dict(selected_basis, coordinates=to_array_with_ids(centered)),
+    )

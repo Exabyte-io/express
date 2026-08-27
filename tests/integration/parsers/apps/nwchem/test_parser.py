@@ -47,6 +47,10 @@ class TestNwchemParser(IntegrationTestBase):
         self.assertAlmostEqual(lumo_energy, LUMO_ENERGY_MULTISTEP, places=2)
         self.assertNotAlmostEqual(lumo_energy, LUMO_ENERGY_MULTISTEP_INITIAL_GUESS, places=2)
 
+    def test_nwchem_structures_of_single_point(self):
+        self.assertDeepAlmostEqual(self.parser.initial_basis(), BASIS, places=6)
+        self.assertDeepAlmostEqual(self.parser.final_basis(), BASIS, places=6)
+
     def test_nwchem_total_energy_contributions(self):
         self.assertDeepAlmostEqual(self.parser.total_energy_contributions(), TOTAL_ENERGY_CONTRIBUTION, places=2)
 

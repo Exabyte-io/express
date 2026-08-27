@@ -1,4 +1,4 @@
-from express.parsers.settings import Constant  # noqa: F401
+from express.parsers.settings import Constant
 from express.parsers.apps.nwchem import settings
 from express.parsers.formats.txt import BaseTXTParser
 from express.parsers.utils import _fortran_float
@@ -11,6 +11,53 @@ class NwchemTXTParser(BaseTXTParser):
 
     def __init__(self, work_dir):
         super(NwchemTXTParser, self).__init__(work_dir)
+
+    def geometry_blocks(self, text):
+        """
+        Extracts every "Output coordinates" block as elements and angstrom coordinates -- the header
+        carries the a.u. factor, so `units au` runs read correctly too -- or nothing at all if the
+        blocks disagree on their atoms: a log truncated mid-table parses as a shorter molecule, and
+        rupy would publish the fragment as `final_structure`.
+        """
+        blocks = []
+        for block in settings.GEOMETRY_BLOCK_REGEX.finditer(text):
+            to_angstrom = float(block.group("scale")) * Constant.BOHR
+            rows = list(settings.GEOMETRY_ROW_REGEX.finditer(block.group("rows")))
+            elements = [row.group("element") for row in rows]
+            blocks.append((elements, [[float(row.group(axis)) * to_angstrom for axis in "xyz"] for row in rows]))
+        if len({tuple(elements) for elements, _ in blocks}) > 1:
+            return []
+        return blocks
+
+    def basis(self, text, index):
+        """
+        Returns the geometry block at the given index. A single-point run prints exactly one block,
+        so index 0 and index -1 then coincide.
+
+        Args:
+            text (str): text to extract data from.
+            index (int): position of the block among those printed.
+
+        Returns:
+            dict | None
+
+        Example:
+            {
+                'units': 'angstrom',
+                'elements': [{'id': 0, 'value': 'O'}, {'id': 1, 'value': 'H'}],
+                'coordinates': [{'id': 0, 'value': [0.0, 0.0, 0.11]}, {'id': 1, 'value': [0.0, 0.75, -0.46]}]
+            }
+        """
+        blocks = self.geometry_blocks(text)
+        if not blocks:
+            return None
+
+        elements, coordinates = blocks[index]
+        return {
+            "units": "angstrom",
+            "elements": [{"id": idx, "value": value} for idx, value in enumerate(elements)],
+            "coordinates": [{"id": idx, "value": coordinate} for idx, coordinate in enumerate(coordinates)],
+        }
 
     def eigenvalues_at_vectors(self, text):
         """

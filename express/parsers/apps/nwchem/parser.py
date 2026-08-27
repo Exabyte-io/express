@@ -11,7 +11,12 @@ from express.parsers.apps.nwchem import settings
 class NwchemParser(BaseParser, IonicDataMixin, ElectronicDataMixin, ReciprocalDataMixin):
     """
     Nwchem parser class.
+
+    NWChem prints no cell for a molecule, so the lattice methods are left unimplemented and return
+    None: `express.properties.utils.box_molecule` derives the box, rather than a parser inventing it.
     """
+
+    is_non_periodic = True
 
     def __init__(self, *args, **kwargs):
         super(NwchemParser, self).__init__(*args, **kwargs)
@@ -48,6 +53,24 @@ class NwchemParser(BaseParser, IonicDataMixin, ElectronicDataMixin, ReciprocalDa
                 if type(value2) is float:
                     value1[key2] = value2 * Constant.HARTREE
         return energy_contributions
+
+    def initial_basis(self):
+        """
+        Returns initial basis.
+
+        Reference:
+            func: express.parsers.mixins.ionic.IonicDataMixin.initial_basis
+        """
+        return self.txt_parser.basis(self._get_file_content(self.stdout_file), 0)
+
+    def final_basis(self):
+        """
+        Returns final basis.
+
+        Reference:
+            func: express.parsers.mixins.ionic.IonicDataMixin.final_basis
+        """
+        return self.txt_parser.basis(self._get_file_content(self.stdout_file), -1)
 
     def eigenvalues_at_vectors(self):
         """

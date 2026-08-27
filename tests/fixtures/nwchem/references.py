@@ -39,12 +39,22 @@ TOTAL_ENERGY_CONTRIBUTION = {
     "nuclear_repulsion": {"name": "nuclear_repulsion", "value": 250.20815670232923},
 }
 
+# test-001 declares `units au`, so these are its printed coordinates converted to angstrom.
 BASIS = {
     "units": "angstrom",
     "elements": [{"id": 0, "value": "O"}, {"id": 1, "value": "H"}, {"id": 2, "value": "H"}],
     "coordinates": [
-        {"id": 0, "value": [0.00000000, 0.00000000, 0.22143053]},
-        {"id": 1, "value": [0.00000000, 1.43042809, -0.88572213]},
-        {"id": 2, "value": [0.00000000, -1.43042809, -0.88572213]},
+        {"id": 0, "value": [0.0, 0.0, 0.11717600]},
+        {"id": 1, "value": [0.0, 0.75695001, -0.46870401]},
+        {"id": 2, "value": [0.0, -0.75695001, -0.46870401]},
     ],
 }
+
+# What express serializes for test-002: made's cubic padding sized to the larger of its two blocks,
+# with the final basis centered in it. The edge therefore pins the initial block too.
+FINAL_CELL_EDGE_MULTISTEP = 5.721712
+FINAL_CRYSTAL_COORDINATES_MULTISTEP = [
+    [0.5, 0.5, 0.569589977],
+    [0.366715633, 0.5, 0.465205011],
+    [0.633284367, 0.5, 0.465205011],
+]
